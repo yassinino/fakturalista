@@ -1,0 +1,219 @@
+{
+  "_Pagination-1a08656d.js": {
+    "file": "assets/Pagination-1a08656d.js",
+    "imports": [
+      "resources/js/main.js"
+    ]
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.ttf": {
+    "file": "assets/fa-brands-400-2ef6fdde.ttf",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.ttf"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-f4617423.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf": {
+    "file": "assets/fa-regular-400-12dea17b.ttf",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-7ba24c41.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf": {
+    "file": "assets/fa-solid-900-67a880b4.ttf",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-e2c5cf54.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
+  },
+  "resources/js/main.css": {
+    "file": "assets/main-1c6ff284.css",
+    "src": "resources/js/main.css"
+  },
+  "resources/js/main.js": {
+    "assets": [
+      "assets/fa-regular-400-7ba24c41.woff2",
+      "assets/fa-regular-400-12dea17b.ttf",
+      "assets/fa-solid-900-e2c5cf54.woff2",
+      "assets/fa-solid-900-67a880b4.ttf",
+      "assets/fa-brands-400-f4617423.woff2",
+      "assets/fa-brands-400-2ef6fdde.ttf"
+    ],
+    "css": [
+      "assets/main-1c6ff284.css"
+    ],
+    "dynamicImports": [
+      "resources/js/views/starter/LandingView.vue",
+      "resources/js/views/SignIn.vue",
+      "resources/js/views/starter/DashboardView.vue",
+      "resources/js/views/admin/customers/index.vue",
+      "resources/js/views/admin/customers/create.vue",
+      "resources/js/views/admin/customers/edit.vue",
+      "resources/js/views/admin/customers/show.vue",
+      "resources/js/views/admin/quotes/index.vue",
+      "resources/js/views/admin/quotes/create.vue",
+      "resources/js/views/admin/quotes/edit.vue",
+      "resources/js/views/admin/invoices/index.vue",
+      "resources/js/views/admin/invoices/create.vue",
+      "resources/js/views/admin/invoices/edit.vue",
+      "resources/js/views/admin/items/index.vue",
+      "resources/js/views/admin/items/edit.vue"
+    ],
+    "file": "assets/main-20ed3d01.js",
+    "isEntry": true,
+    "src": "resources/js/main.js"
+  },
+  "resources/js/views/SignIn.vue": {
+    "file": "assets/SignIn-9b133935.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/SignIn.vue"
+  },
+  "resources/js/views/admin/customers/create.vue": {
+    "file": "assets/create-685eb652.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/customers/create.vue"
+  },
+  "resources/js/views/admin/customers/edit.vue": {
+    "file": "assets/edit-17b79843.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/customers/edit.vue"
+  },
+  "resources/js/views/admin/customers/index.vue": {
+    "file": "assets/index-b49d6c30.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/customers/index.vue"
+  },
+  "resources/js/views/admin/customers/show.vue": {
+    "file": "assets/show-91af3070.js",
+    "imports": [
+      "resources/js/main.js",
+      "_Pagination-1a08656d.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/customers/show.vue"
+  },
+  "resources/js/views/admin/invoices/create.css": {
+    "file": "assets/edit-81b7c8c2.css",
+    "src": "resources/js/views/admin/quotes/create.css"
+  },
+  "resources/js/views/admin/invoices/create.vue": {
+    "css": [
+      "assets/edit-81b7c8c2.css"
+    ],
+    "file": "assets/create-9f6c6e6e.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/invoices/create.vue"
+  },
+  "resources/js/views/admin/invoices/edit.css": {
+    "file": "assets/edit-81b7c8c2.css",
+    "src": "resources/js/views/admin/quotes/create.css"
+  },
+  "resources/js/views/admin/invoices/edit.vue": {
+    "css": [
+      "assets/edit-81b7c8c2.css"
+    ],
+    "file": "assets/edit-469afc16.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/invoices/edit.vue"
+  },
+  "resources/js/views/admin/invoices/index.vue": {
+    "file": "assets/index-7c14c2d7.js",
+    "imports": [
+      "resources/js/main.js",
+      "_Pagination-1a08656d.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/invoices/index.vue"
+  },
+  "resources/js/views/admin/items/edit.vue": {
+    "file": "assets/edit-95beb658.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/items/edit.vue"
+  },
+  "resources/js/views/admin/items/index.vue": {
+    "file": "assets/index-4f2007b7.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/items/index.vue"
+  },
+  "resources/js/views/admin/quotes/create.css": {
+    "file": "assets/edit-81b7c8c2.css",
+    "src": "resources/js/views/admin/quotes/create.css"
+  },
+  "resources/js/views/admin/quotes/create.vue": {
+    "css": [
+      "assets/edit-81b7c8c2.css"
+    ],
+    "file": "assets/create-26a8ad97.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/quotes/create.vue"
+  },
+  "resources/js/views/admin/quotes/edit.css": {
+    "file": "assets/edit-81b7c8c2.css",
+    "src": "resources/js/views/admin/quotes/create.css"
+  },
+  "resources/js/views/admin/quotes/edit.vue": {
+    "css": [
+      "assets/edit-81b7c8c2.css"
+    ],
+    "file": "assets/edit-35e55cb4.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/quotes/edit.vue"
+  },
+  "resources/js/views/admin/quotes/index.vue": {
+    "file": "assets/index-54c712ff.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/admin/quotes/index.vue"
+  },
+  "resources/js/views/starter/DashboardView.vue": {
+    "file": "assets/DashboardView-dda319a4.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/starter/DashboardView.vue"
+  },
+  "resources/js/views/starter/LandingView.vue": {
+    "file": "assets/LandingView-d737968c.js",
+    "imports": [
+      "resources/js/main.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/views/starter/LandingView.vue"
+  }
+}

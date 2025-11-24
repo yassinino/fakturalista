@@ -1,0 +1,1 @@
+import{o as c,b as r,O as u,r as _,x as i,R as p}from"./main-20ed3d01.js";const l={__name:"create",setup(m){const o=p({}),s=u();async function a(e){i.post("/invoices",e).then(t=>{o.success(t.data.message),s.push("/backend/invoices")})}return(e,t)=>{const n=_("CreateDocument");return c(),r(n,{title:"Nueva factura",onSaveDocument:a})}}};export{l as default};
