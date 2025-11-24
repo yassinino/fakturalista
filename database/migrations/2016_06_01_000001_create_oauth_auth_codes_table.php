@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
-$table->char('id', 36);
-$table->primary('id');
+            $table->uuid('id')->primary(); // ✅ clé primaire numérique obligatoire pour MySQL
             $table->unsignedBigInteger('user_id')->index();
             $table->uuid('client_id');
             $table->text('scopes')->nullable();
