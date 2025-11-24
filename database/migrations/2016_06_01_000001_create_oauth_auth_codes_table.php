@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
-            $table->uuid('id');                 // CHAR(36)
+            $table->string('id', 100);
+            $table->primary('id'); // 👈 perfectly fine for DigitalOcean
             $table->unsignedBigInteger('user_id')->index();
             $table->uuid('client_id');
             $table->text('scopes')->nullable();
