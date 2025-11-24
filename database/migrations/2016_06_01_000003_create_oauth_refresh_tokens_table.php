@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->id(); // ✅ clé primaire numérique obligatoire pour MySQL
-            $table->uuid('uuid');
+            $table->id();
             $table->string('access_token_id', 100)->index();
             $table->boolean('revoked');
             $table->dateTime('expires_at')->nullable();
