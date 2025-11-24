@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::view('/', 'app'); // si ce n'est pas déjà fait
+
+Route::get('/{any}', function () {
     return view('app');
-});
+})->where('any', '^(?!api).*$');

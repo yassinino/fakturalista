@@ -1,1 +1,0 @@
-import{o as c,b as u,O as r,r as _,x as p,R as m}from"./main-20ed3d01.js";const v={__name:"create",setup(i){const o=m({}),s=r();async function a(e){p.post("/quotes",e).then(t=>{o.success(t.data.message),s.push("/backend/quotes")})}return(e,t)=>{const n=_("CreateDocument");return c(),u(n,{title:"New Quote",onSaveDocument:a})}}};export{v as default};

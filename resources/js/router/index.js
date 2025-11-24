@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import NProgress from "nprogress/nprogress.js";
 
@@ -189,7 +189,7 @@ const routes = [
 
 // Create Router
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   linkActiveClass: "active",
   linkExactActiveClass: "active",
   scrollBehavior() {
