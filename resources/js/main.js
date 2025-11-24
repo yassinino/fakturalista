@@ -210,11 +210,11 @@ axios.interceptors.response.use(function (response) {
 
     if (error.response.status === 401 || error.response.status === 403) {
         store.logoutUser();
-        router.replace('/auth/signin');
+        router.replace('/login');
     }
 
     if (error.response.status === 423) {
-        router.replace('/auth/signin');
+        router.replace('/login');
     }
 
     return Promise.reject(error)
