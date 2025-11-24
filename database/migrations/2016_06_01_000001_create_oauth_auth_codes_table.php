@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
             $table->uuid('id');                 // CHAR(36)
-            $table->primary('id');              // 👈 clé primaire
             $table->unsignedBigInteger('user_id')->index();
             $table->uuid('client_id');
             $table->text('scopes')->nullable();
