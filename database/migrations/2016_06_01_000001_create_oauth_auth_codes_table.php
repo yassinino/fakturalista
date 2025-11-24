@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
-            $table->string('id', 100);          // 👈 juste la colonne
-            $table->primary('id');  
+            $table->uuid('id');                 // CHAR(36)
+            $table->primary('id');              // 👈 clé primaire
             $table->unsignedBigInteger('user_id')->index();
             $table->uuid('client_id');
             $table->text('scopes')->nullable();
