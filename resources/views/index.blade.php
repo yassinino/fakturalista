@@ -1,21 +1,63 @@
-<script setup></script>
+@extends('layouts.master')
 
-<template>
-    <section class="featured">
+@section('title', 'Home Page')
+
+@section('content')
+     <!--==========================-->
+        <!--=         Banner         =-->
+        <!--==========================-->
+        <section class="banner banner-one">
+            <div class="circle-shape" data-parallax='{"y" : 230}'><img src="media/banner/circle-shape.png" alt="circle"></div>
+            <div class="container">
+                <div class="banner-content-wrap">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="banner-content">
+                                <h1 class="banner-title wow pixFadeUp" data-wow-delay="0.3s">
+                                    Plataforma de facturación y gestión <span>intuitiva <br>
+                                        </span> y <span>  eficiente </span>
+                                    
+                                </h1>
+
+                                <p class="description wow pixFadeUp" data-wow-delay="0.5s">
+                                   La forma más fácil y amigable de gestionar y facturar tu negocio!
+                                </p>
+
+                                {{-- <a href="#" class="pxs-btn banner-btn wow pixFadeUp" data-wow-delay="0.6s">Get Started</a> --}}
+                            </div><!-- /.banner-content -->
+                        </div><!-- /.col-lg-6 -->
+
+                        <div class="col-lg-6">
+                            <div class="promo-mockup wow pixFadeLeft">
+                                <img src="{{ url('assets/generat_factura.png') }}" alt="mpckup">
+                            </div><!-- /.promo-mockup -->
+                        </div><!-- /.col-lg-6 -->
+                    </div><!-- /.row -->
+                </div><!-- /.banner-content-wrap -->
+            </div><!-- /.container -->
+
+            <div class="bg-shape">
+                <img src="media/banner/shape-bg.png" alt="">
+            </div>
+        </section><!-- /.banner banner-one -->
+
+        <!--===========================-->
+        <!--=         Feature         =-->
+        <!--===========================-->
+        <section class="featured">
             <div class="container">
                 <div class="section-title text-center wow pixFade">
-                    <h3 class="sub-title">Working Process</h3>
-                    <h2 class="title">The only app you will need</h2>
+                    <h2 class="title">El software de facturación más fácil que jamás hayas usado.</h2>
                 </div><!-- /.section-title -->
 
                 <div class="row">
                     <div class="col-md-4">
                         <div class="saaspik-icon-box-wrapper style-one wow pixFadeLeft" data-wow-delay="0.3s">
                             <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/1.png" alt="">
+                                <img src="{{ url('assets/icon_1.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">New sharing made for<br> people</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">Facturas profesionales en segundos</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -23,10 +65,10 @@
                     <div class="col-md-4">
                         <div class="saaspik-icon-box-wrapper style-one wow pixFadeLeft" data-wow-delay="0.5s">
                             <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/2.png" alt="">
+                                <img src="{{ url('assets/icon_2.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">One integrated solution <br>Manage</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">Gestión inteligente de clientes</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -34,10 +76,10 @@
                     <div class="col-md-4">
                         <div class="saaspik-icon-box-wrapper style-one wow pixFadeLeft" data-wow-delay="0.7s">
                             <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/3.png" alt="">
+                                <img src="{{ url('assets/icon_3.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Thousand of features and <br>Custom option.</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">Controla tus gastos.</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -54,13 +96,9 @@
 
                     <div class="editure-feature-image wow pixFadeRight">
                         <div class="image-one" data-parallax='{"x" : 30}'>
-                            <img src="media/feature/4.png" class="wow pixFadeRight" data-wow-delay="0.3s" alt="feature-image">
+                            <img src="{{ url('assets/section_1.png') }}" class="wow pixFadeRight" data-wow-delay="0.3s" alt="feature-image">
                         </div>
-                        <div class="image-two">
-                            <div class="image-two-inner" data-parallax='{"x" : -30}'>
-                                <img src="media/feature/41.png" class="wow pixFadeLeft" data-wow-delay="0.5s" alt="feature-image">
-                            </div>
-                        </div>
+
 
                     </div>
 
@@ -68,22 +106,21 @@
                         <div class="editor-content">
                             <div class="section-title style-two">
                                 <h2 class="title wow pixFadeUp" data-wow-delay="0.3s">
-                                    An editor designed<br>
-                                    for contracts.
+                                   Generador de facturas en línea
                                 </h2>
-
+{{-- 
                                 <p class="wow pixFadeUp" data-wow-delay="0.5s">
                                     Having attractive showcase has never<br>
                                     been easier
-                                </p>
+                                </p> --}}
                             </div>
 
                             <div class="description wow pixFadeUp" data-wow-delay="0.7s">
                                 <p>
-                                    The bee's knees off his nut cack it's all gone to pot tinkety tonk old fruit blow off, tosser codswallop I chinwag. Brilliant bobby haggle James Bond tickety-boo horse play is spend a penny gutted mate absolutely.!
+                                    Gestiona tu facturación en cualquier momento y lugar con nuestro generador de facturas seguro y siempre conectado!
                                 </p>
 
-                                <a href="#" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">Discover More</a>
+                                <a href="#" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">Usa el generador de facturas ahora</a>
                             </div>
                         </div><!-- /.editor-content -->
                     </div><!-- /.col-lg-6 -->
@@ -103,32 +140,33 @@
                     <div class="col-lg-6 pix-order-one">
                         <div class="section-title style-two">
                             <h2 class="title wow pixFadeUp">
-                                Genera informes <br>completos con un solo
+                                Genera informes completos con un solo clic
                             </h2>
 
                             <p class="wow pixFadeUp" data-wow-delay="0.3s">
-                                Burke blow off arse gutted mate what a plonker cup<br> of tea fantastic get stuffed mate.!
+                                Simplifica tu trabajo y obtén reportes claros, visuales y en tiempo real.
+                                Analiza tus ventas, controla tus ingresos y toma decisiones inteligentes para hacer crecer tu negocio.
                             </p>
                         </div><!-- /.section-title style-two -->
 
                         <ul class="list-items wow pixFadeUp" data-wow-delay="0.4s">
-                            <li>Quick Access</li>
-                            <li>Easily Manage</li>
-                            <li>7/24h Support</li>
+                            <li>Acceso rápido</li>
+                            <li>Gestión sencilla</li>
+                            <li>Soporte 24/7</li>
                         </ul>
 
-                        <a href="#" class="pix-btn btn-outline wow pixFadeUp" data-wow-delay="0.5s">Discover More</a>
+                        {{-- <a href="#" class="pix-btn btn-outline wow pixFadeUp" data-wow-delay="0.5s">Discover More</a> --}}
                     </div><!-- /.col-lg-6 -->
 
 
                     <div class="informes-feature-image">
                         <div class="image-one" data-parallax='{"y" : 20}'>
-                            <img src="media/feature/5.png" class="wow pixFadeDown" alt="informes">
+                            <img src="{{ url('assets/section_2.png') }}" class="wow pixFadeDown" alt="informes">
                         </div>
-
+{{-- 
                         <div class="image-two" data-parallax='{"y" : -20}'>
                             <img src="media/feature/51.png" class=" mw-none wow pixFadeDown" data-wow-delay="0.3s" alt="informes">
-                        </div>
+                        </div> --}}
 
                     </div>
 
@@ -140,271 +178,11 @@
             </div>
         </section><!-- /.genera-informes -->
 
-        <!--=================================-->
-        <!--=         Revolutionize         =-->
-        <!--=================================-->
-        <section class="revolutionize">
-            <div class="bg-angle"></div>
-            <div class="container">
-                <div class="section-title dark-title text-center">
-                    <h3 class="sub-title wow pixFadeUp">Updated Screen</h3>
-                    <h2 class="title wow pixFadeUp" data-wow-delay="0.3s">
-                        Revolutionize your online<br>
-                        business today
-                    </h2>
-                </div><!-- /.section-title dark-title -->
-
-                <div id="pix-tabs" class="wow pixFadeUp" data-wow-delay="0.5s">
-                    <ul id="pix-tabs-nav">
-                        <li><a href="#tab1">Quick Access </a></li>
-                        <li><a href="#tab2">Easily Manage </a></li>
-                        <li><a href="#tab3">Data Transfer </a></li>
-                        <li><a href="#tab4">7/24h Support</a></li>
-                    </ul> <!-- tabs-nav -->
-
-                    <div id="pix-tabs-content">
-                        <div id="tab1" class="content">
-                            <img src="media/revolutionize/2.jpg" alt="revolutionize">
-
-                            <div class="shape-shadow"></div>
-                        </div>
-                        <div id="tab2" class="content">
-                            <img src="media/revolutionize/1.jpg" alt="revolutionize">
-                            <div class="shape-shadow"></div>
-                        </div>
-                        <div id="tab3" class="content">
-                            <img src="media/revolutionize/3.jpg" alt="revolutionize">
-                            <div class="shape-shadow"></div>
-                        </div>
-
-                        <div id="tab4" class="content">
-                            <img src="media/revolutionize/4.jpg" alt="revolutionize">
-                            <div class="shape-shadow"></div>
-                        </div>
-                    </div> <!-- tabs-content -->
-                </div> <!-- Tabs -->
-            </div><!-- /.container -->
-        </section><!-- /.revolutionize -->
-
-        <!--===========================-->
-        <!--=         Service         =-->
-        <!--===========================-->
-        <section class="featured-two">
-            <div class="container">
-                <div class="section-title text-center">
-                    <h3 class="sub-title wow pixFadeUp">Our service</h3>
-                    <h2 class="title wow pixFadeUp" data-wow-delay="0.2s">Why you choose Our plugin</h2>
-                </div><!-- /.section-title -->
-
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.4s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/6.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">App Development</a></h3>
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.5s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/7.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Customization</a></h3>
-
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.6s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/8.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Multiple Managers</a></h3>
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.7s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/9.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Cloud Data Saved</a></h3>
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.8s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/10.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">UI/UX Branding</a></h3>
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="saaspik-icon-box-wrapper style-two wow pixFadeRight" data-wow-delay="0.9s">
-                            <div class="saaspik-icon-box-icon">
-                                <img src="media/feature/11.png" alt="feature">
-                            </div>
-                            <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Customer Support</a></h3>
-                                <p>
-                                    The full monty do one nancy boy<br>
-                                    say gutted mate cockup Why at <br>
-                                    public school.!
-                                </p>
-                            </div>
-                        </div><!-- /.pixsass-box style-two -->
-                    </div><!-- /.col-lg-4 col-md-6 -->
-                </div><!-- /.row -->
-            </div><!-- /.container -->
-        </section><!-- /.featured -->
-
-        <!--===============================-->
-        <!--=         Testimonial         =-->
-        <!--===============================-->
-        <section class="testimonials swiper-init">
-            <div class="container">
-                <div class="section-title text-center">
-                    <h3 class="sub-title wow pixFadeUp">Testiimonial</h3>
-                    <h2 class="title wow pixFadeUp" data-wow-delay="0.3s">What our client say about us</h2>
-                </div><!-- /.section-title -->
-
-                <div class="testimonial-wrapper wow pixFadeUp" data-wow-delay="0.5s">
-                    <div class="swiper-container" id="testimonial" data-speed="700" data-autoplay="5000">
-
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="testimonial">
-                                    <div class="single-bio-thumb">
-                                        <img src="media/testimonial/1.jpg" alt="testimonial">
-                                    </div>
-                                    <!-- /.single-bio-thumb -->
-
-
-                                    <div class="testimonial-content">
-                                        <p>Tosser nancy boy super tickety-boo lemon squeezy easy peasy quaint, hunky-dory baking cakes pear shaped butty do one, it's all gone to pot chinwag I cuppa Eaton. Porkies amongst cockup absolutely bladdered cobblers.!</p>
-                                    </div>
-                                    <!-- /.testimonial-content -->
-
-                                    <div class="bio-info">
-                                        <h3 class="name">Desmond Eagle</h3>
-                                        <span class="job">Web designer</span>
-                                    </div>
-                                    <!-- /.bio-info -->
-
-                                </div>
-                                <!-- /.testimonial -->
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="testimonial">
-                                    <div class="single-bio-thumb">
-                                        <img src="media/testimonial/1.jpg" alt="testimonial">
-                                    </div>
-                                    <!-- /.single-bio-thumb -->
-
-
-                                    <div class="testimonial-content">
-                                        <p>Tosser nancy boy super tickety-boo lemon squeezy easy peasy quaint, hunky-dory baking cakes pear shaped butty do one, it's all gone to pot chinwag I cuppa Eaton. Porkies amongst cockup absolutely bladdered cobblers.!</p>
-                                    </div>
-                                    <!-- /.testimonial-content -->
-
-                                    <div class="bio-info">
-                                        <h3 class="name">Desmond Eagle</h3>
-                                        <span class="job">Web designer</span>
-                                    </div>
-                                    <!-- /.bio-info -->
-                                </div>
-                                <!-- /.testimonial -->
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="testimonial">
-                                    <div class="single-bio-thumb">
-                                        <img src="media/testimonial/1.jpg" alt="testimonial">
-                                    </div>
-                                    <!-- /.single-bio-thumb -->
-
-
-                                    <div class="testimonial-content">
-                                        <p>Tosser nancy boy super tickety-boo lemon squeezy easy peasy quaint, hunky-dory baking cakes pear shaped butty do one, it's all gone to pot chinwag I cuppa Eaton. Porkies amongst cockup absolutely bladdered cobblers.!</p>
-                                    </div>
-                                    <!-- /.testimonial-content -->
-
-                                    <div class="bio-info">
-                                        <h3 class="name">Desmond Eagle</h3>
-                                        <span class="job">Web designer</span>
-                                    </div>
-                                    <!-- /.bio-info -->
-                                </div>
-                                <!-- /.testimonial -->
-                            </div>
-
-                        </div><!-- /.swiper-wrapper -->
-
-
-                    </div><!-- /.swiper-container -->
-                    <div class="shape-shadow"></div>
-                    <div class="slider-nav wow pixFadeUp" data-wow-delay="0.3s">
-                        <div id="slide-prev" class="swiper-button-prev">
-                            <i class="ei ei-arrow_left"></i>
-                        </div>
-                        <div id="slide-next" class=" swiper-button-next">
-                            <i class="ei ei-arrow_right"></i>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.testimonial-wrapper -->
-            </div>
-            <!-- /.container -->
-
-            <div class="scroll-circle wow pixFadeDown">
-                <img src="media/background/circle9.png" data-parallax='{"y" : 250}' alt="circle">
-            </div>
-        </section><!-- /.testimonial -->
 
         <!--===========================-->
         <!--=         Pricing         =-->
         <!--===========================-->
-        <section class="pricing">
+        {{-- <section class="pricing">
             <div class="container">
                 <div class="section-title text-center">
                     <h3 class="sub-title wow pixFadeUp">Pricing Plan</h3>
@@ -532,10 +310,10 @@
 
                 </div>
                 <!-- /.advanced-pricing-table -->
-            </div>
+            </div> --}}
             <!-- /.container -->
 
-            <div class="faq-section">
+            {{-- <div class="faq-section">
                 <div class="container">
                     <div class="section-title text-center">
                         <h3 class="sub-title wow pixFadeUp">Frequently ask Question</h3>
@@ -844,11 +622,38 @@
                 </div>
                 <!-- /.container -->
             </div>
-            <!-- /.faq-section -->
-
-            <div class="scroll-circle wow pixFadeLeft">
+            <!-- /.faq-section --> 
+         <div class="scroll-circle wow pixFadeLeft">
                 <img src="media/background/circle8.png" data-parallax='{"y" : 130}' alt="circle">
             </div>
-        </section>
+        </section> --}}
         <!-- /.pricing -->
-</template>
+
+        <!--==================================-->
+        <!--=         Call To Action         =-->
+        <!--==================================-->
+        <section class="call-to-action">
+            <div class="overlay-bg"><img src="media/background/ellipse.png" alt="bg"></div>
+            <div class="container">
+                <div class="action-content text-center wow pixFadeUp">
+                    <h2 class="title">
+                        Empieza ahora, es gratis
+                    </h2>
+
+                    <p>
+                        Envía tu primera factura hoy mismo, totalmente gratis.
+                    </p>
+
+                    <a href="#" class="pix-btn btn-light">Empezar</a>
+                </div>
+                <!-- /.action-content -->
+            </div>
+            <!-- /.container -->
+
+            <div class="scroll-circle">
+                <img src="media/background/circle13.png" data-parallax='{"y" : -130}' alt="circle">
+            </div>
+            <!-- /.scroll-circle -->
+        </section>
+        <!-- /.call-to-action -->
+@endsection

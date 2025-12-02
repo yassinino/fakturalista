@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'app'); // si ce n'est pas déjà fait
+Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/{any}', function () {
+Route::get('/admin/{any}', function () {
     return view('app');
 })->where('any', '^(?!api).*$');
+

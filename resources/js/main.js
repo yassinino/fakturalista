@@ -210,11 +210,11 @@ axios.interceptors.response.use(function (response) {
 
     if (error.response.status === 401 || error.response.status === 403) {
         store.logoutUser();
-        router.replace('/login');
+        router.replace('/admin/login');
     }
 
     if (error.response.status === 423) {
-        router.replace('/login');
+        router.replace('/admin/login');
     }
 
     return Promise.reject(error)
@@ -233,7 +233,7 @@ router.beforeEach((to, from, next) => {
             next();
             return;
         } else {
-            router.replace('/auth/signin');
+            router.replace('/admin/login');
         }
     } else {
         next();

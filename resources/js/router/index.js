@@ -5,6 +5,7 @@ import NProgress from "nprogress/nprogress.js";
 // Main layouts
 import LayoutBackend from "@/layouts/variations/BackendStarter.vue";
 import LayoutSimple from "@/layouts/variations/Simple.vue";
+import LayoutFront from "@/layouts/variations/Front.vue";
 
 // Frontend: Landing
 const Landing = () => import("@/views/starter/LandingView.vue");
@@ -41,7 +42,7 @@ const EditItem = () => import("@/views/admin/items/edit.vue");
 const routes = [
   {
     path: "/",
-    component: LayoutSimple,
+    component: LayoutFront,
     children: [
       {
         path: "",
@@ -51,7 +52,7 @@ const routes = [
     ],
   },
   {
-    path: "/backend",
+    path: "/admin/backend",
     redirect: "/backend/dashboard",
     component: LayoutBackend,
     children: [
@@ -174,7 +175,7 @@ const routes = [
   |
   */
   {
-    path: "/",
+    path: "/admin",
     component: LayoutSimple,
     children: [
       {
