@@ -3,8 +3,6 @@
 /public/hot
 /public/storage
 /public/media
-/public/dependencies
-/public/front
 /storage/*.key
 /vendor
 .env
