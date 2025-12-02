@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Home Page')
+@section('title', 'Plataforma de facturación y gestión')
 
 @section('content')
      <!--==========================-->

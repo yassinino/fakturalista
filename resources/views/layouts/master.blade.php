@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-    <title>@yield('title', 'Fakturalista')</title>
+    <title>@yield('title', 'Fakturalista') - Fakturalista</title>
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/fav/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/fav/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/fav/favicon-16x16.png" />
@@ -14,7 +14,9 @@
 
     <meta name="msapplication-TileColor" content="#fa7070" />
     <meta name="theme-color" content="#fa7070" />
-
+    <meta name="description" content="Fakturalista es una plataforma moderna de facturación online que te permite crear, enviar y gestionar facturas profesionales en segundos.">
+    <meta name="keywords" content="facturación, facturas online, SaaS, gestión de gastos, pagos instantáneos, software de facturación, Fakturalista">
+    <meta name="author" content="Fakturalista">
     <!-- Dependency Styles -->
     <link rel="stylesheet" href="dependencies/bootstrap/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="dependencies/fontawesome/css/all.min.css" type="text/css" />
@@ -23,6 +25,13 @@
     <link rel="stylesheet" href="dependencies/magnific-popup/css/magnific-popup.css" type="text/css" />
     <link rel="stylesheet" href="dependencies/components-elegant-icons/css/elegant-icons.min.css" type="text/css" />
     <link rel="stylesheet" href="dependencies/simple-line-icons/css/simple-line-icons.css" type="text/css" />
+
+    <meta property="og:title" content="@yield('title', 'Fakturalista – Software de facturación online')" />
+    <meta property="og:description" content="Crea y envía facturas profesionales, controla tus gastos y acepta pagos instantáneos con Fakturalista." />
+    <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fakturalista" />
 
     <!-- Site Stylesheet -->
     <link rel="stylesheet" href="front/assets/css/app.css" type="text/css" />
