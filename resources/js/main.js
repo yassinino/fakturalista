@@ -228,13 +228,20 @@ axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.app.accessTok
 
 
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth) ) {
+    const isLoginRoute = to.name === 'auth-signin' || to.path === '/admin/login';
+
+    // If already authenticated, skip the login screen
+    if (store.app.isLoggedUserIn && isLoginRoute) {
+        next({ name: 'backend-customers' });
+        return;
+    }
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
         if (store.app.isLoggedUserIn) {
             next();
             return;
-        } else {
-            router.replace('/admin/login');
         }
+        next('/admin/login');
     } else {
         next();
     }

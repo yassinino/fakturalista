@@ -4,7 +4,7 @@
     <BaseBlock :title="'Cliente - ' + state.name ">
       <template #options>
         <div class="block-options-item">
-          <router-link :to="'/backend/customers/edit/' + state.uuid" class="btn btn-primary">Editar</router-link>
+          <router-link :to="'/admin/customers/edit/' + state.uuid" class="btn btn-primary">Editar</router-link>
         </div>
       </template>
 

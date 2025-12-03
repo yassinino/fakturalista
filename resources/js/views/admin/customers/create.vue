@@ -515,7 +515,7 @@ async function onSubmit() {
   axios.post('/customers',state).then(res => {
                               
     toaster.success(res.data.message);
-    route.push('/backend/customers')
+    route.push('/admin/customers')
 
 			})
 }

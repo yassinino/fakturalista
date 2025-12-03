@@ -59,6 +59,7 @@ export const useTemplateStore = defineStore({
     },
     logoutUser () {
       this.app.isLoggedUserIn = false;
+      this.app.accessToken = null;
       this.app.token = '';
       localStorage.removeItem('accessToken');
       localStorage.removeItem('geseno_user');

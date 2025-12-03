@@ -149,7 +149,7 @@ async function onSubmit() {
   axios.post('/login',state).then(res => {
                               store.loginUser(res.data.data);
 															  // Go to dashboard
-                              window.location.href = '/backend/customers';
+                              window.location.href = '/admin/customers';
 	})		
 
 }

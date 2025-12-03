@@ -79,7 +79,7 @@
                                 <img src="{{ url('assets/icon_3.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Controla tus gastos.</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">Controla tus gastos</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->

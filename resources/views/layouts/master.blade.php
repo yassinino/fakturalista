@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <title>@yield('title', 'Fakturalista') - Fakturalista</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/fav/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/fav/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/fav/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/icon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url('assets/icon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url('assets/icon.svg') }}" />
     <link rel="mask-icon" href="assets/img/fav/safari-pinned-tab.svg" color="#fa7070" />
 
     <meta name="msapplication-TileColor" content="#fa7070" />
@@ -90,8 +90,8 @@
 
                     <div class="site-mobile-logo">
                         <a href="index.html" class="logo">
-                            <img src="assets/img/main-logo.png" alt="site logo" class="main-logo" />
-                            <img src="assets/img/sticky-logo.png" alt="site logo" class="sticky-logo" />
+                            <img src="{{ url('assets/icon.svg') }}" alt="site logo" class="main-logo" />
+                            <img src="{{ url('assets/icon.svg') }}" alt="site logo" class="sticky-logo" />
                         </a>
                     </div>
 
@@ -103,8 +103,8 @@
 
                         <div class="site-logo">
                             <a href="{{ url('/') }}" class="logo">
-                                <img src="assets/img/main-logo.png" alt="site logo" class="main-logo" />
-                                <img src="assets/img/sticky-logo.png" alt="site logo" class="sticky-logo" />
+                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="main-logo" />
+                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="sticky-logo" />
                             </a>
                         </div>
                         <!-- /.site-logo -->
@@ -148,8 +148,8 @@
                             <div class="widget footer-widget">
                                 <div class="site-logo">
                             <a href="{{ url('/') }}" class="logo">
-                                <img src="assets/img/main-logo.png" alt="site logo" class="main-logo" />
-                                <img src="assets/img/sticky-logo.png" alt="site logo" class="sticky-logo" />
+                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="main-logo" />
+                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="sticky-logo" />
                             </a>
                         </div>
                             </div>

@@ -11,6 +11,7 @@ import LayoutFront from "@/layouts/variations/Front.vue";
 const Landing = () => import("@/views/starter/LandingView.vue");
 
 const AuthSignIn = () => import("@/views/SignIn.vue");
+const AuthSignOut = () => import("@/views/SignOut.vue");
 
 // Backend: Dashboard
 const Dashboard = () => import("@/views/starter/DashboardView.vue");
@@ -52,14 +53,30 @@ const routes = [
     ],
   },
   {
-    path: "/admin/backend",
-    redirect: "/backend/dashboard",
+    path: "/admin",
+    redirect: "/dashboard",
     component: LayoutBackend,
     children: [
       {
         path: "dashboard",
         name: "backend-dashboard",
         component: Dashboard,
+      },
+      {
+        path: "customers",
+        name: "backend-pages-generic-profile",
+        component: Customers,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "customers",
+        name: "auth-signout",
+        component: Customers,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: "customers",
@@ -182,6 +199,11 @@ const routes = [
         path: "login",
         name: "auth-signin",
         component: AuthSignIn,
+      },
+      {
+        path: "logout",
+        name: "auth-signout",
+        component: AuthSignOut,
       },
 
     ],
