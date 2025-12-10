@@ -5,18 +5,21 @@
       <div class="row justify-content-center push">
         <div class="col-md-8 col-lg-6 col-xl-4">
           <!-- Sign In Block -->
-          <BaseBlock title="CONNEXION" class="mb-0">
+          <BaseBlock title="Iniciar sesión" class="mb-0">
             <template #options>
               <RouterLink
               :to="{ name: 'auth-signin' }"
                 class="btn-block-option fs-sm"
-                >Forgot Password?</RouterLink
+                >¿Olvidaste tu contraseña?</RouterLink
               >
             </template>
 
             <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
               <h1 class="h2 mb-1">Fakturalista</h1>
               <!-- <p class="fw-medium text-muted">CONNEXION</p> -->
+              <div v-if="errorMessage" class="alert alert-danger" role="alert">
+                {{ errorMessage }}
+              </div>
 
               <!-- Sign In Form -->
               <form @submit.prevent="onSubmit">
@@ -27,7 +30,7 @@
                       class="form-control form-control-alt form-control-lg"
                       id="login-email"
                       name="login-email"
-                      placeholder="email"
+                      placeholder="Correo electrónico"
                       :class="{
                         'is-invalid': v$.email.$errors.length,
                       }"
@@ -38,7 +41,7 @@
                       v-if="v$.email.$errors.length"
                       class="invalid-feedback animated fadeIn"
                     >
-                      Required
+                      Requerido
                     </div>
                   </div>
                   <div class="mb-4">
@@ -47,7 +50,7 @@
                       class="form-control form-control-alt form-control-lg"
                       id="login-password"
                       name="login-password"
-                      placeholder="Password"
+                      placeholder="Contraseña"
                       :class="{
                         'is-invalid': v$.password.$errors.length,
                       }"
@@ -58,7 +61,7 @@
                       v-if="v$.password.$errors.length"
                       class="invalid-feedback animated fadeIn"
                     >
-                      Required
+                      Requerido
                     </div>
                   </div>
                   <!-- <div class="mb-4">
@@ -77,10 +80,10 @@
                   </div> -->
                 </div>
                 <div class="row mb-4">
-                  <div class="col-md-6 col-xl-5">
-                    <button type="submit" class="btn w-100 btn-alt-primary">
+                  <div class="col-md-6 col-xl-12">
+                    <button type="submit" class="btn btn-block btn-alt-primary">
                       <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i>
-                      Sign In
+                      Iniciar sesión
                     </button>
                   </div>
                 </div>
@@ -102,7 +105,7 @@
 
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useTemplateStore } from "@/stores/template";
 import axios from 'axios'
@@ -113,6 +116,7 @@ import { required, minLength, email } from "@vuelidate/validators";
 
 // Main store and Router
 const store = useTemplateStore();
+const errorMessage = ref('');
 
 // Input state variables
 const state = reactive({
@@ -146,11 +150,20 @@ async function onSubmit() {
     return;
   }
 
+  errorMessage.value = '';
+
   axios.post('/login',state).then(res => {
                               store.loginUser(res.data.data);
 															  // Go to dashboard
                               window.location.href = '/admin/customers';
-	})		
+	}).catch(error => {
+    if (error.response?.status === 401) {
+      errorMessage.value = 'Las credenciales no son correctas.';
+      return;
+    }
+
+    errorMessage.value = 'No se pudo iniciar sesión. Inténtalo nuevamente.';
+  })		
 
 }
 </script>

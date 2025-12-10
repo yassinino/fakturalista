@@ -122,7 +122,7 @@
                             </ul>
 
                             <div class="nav-right">
-                                <a href="#" class="nav-btn">Iniciar sesión / Registrarse</a>
+                                <a href="{{ url('admin/login') }}" class="nav-btn">Iniciar sesión</a>
                             </div>
                         </div>
                         <!-- /.menu-wrapper -->

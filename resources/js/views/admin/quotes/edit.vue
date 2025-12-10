@@ -49,7 +49,7 @@ async function saveQuote(state) {
     }).then(res => {
                                 
       toaster.success(res.data.message);
-      router.push('/backend/quotes')
+      router.push('/admin/quotes')
   
     })
 }

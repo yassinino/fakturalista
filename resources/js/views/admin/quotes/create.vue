@@ -23,7 +23,7 @@ async function saveQuote(state) {
   axios.post('/quotes', state).then(res => {
                               
     toaster.success(res.data.message);
-    route.push('/backend/quotes')
+    route.push('/admin/quotes')
 
   })
 }

@@ -14,7 +14,7 @@ const AuthSignIn = () => import("@/views/SignIn.vue");
 const AuthSignOut = () => import("@/views/SignOut.vue");
 
 // Backend: Dashboard
-const Dashboard = () => import("@/views/starter/DashboardView.vue");
+
 
 
 
@@ -38,6 +38,10 @@ const EditInvoice = () => import("@/views/admin/invoices/edit.vue");
 const Items = () => import("@/views/admin/items/index.vue");
 const CreateItem = () => import("@/views/admin/items/create.vue");
 const EditItem = () => import("@/views/admin/items/edit.vue");
+const Profile = () => import("@/views/admin/profile.vue");
+const Settings = () => import("@/views/admin/settings.vue");
+const Dashboard = () => import("@/views/admin/dashboard.vue");
+const Subscription = () => import("@/views/admin/subscription.vue");
 
 // Set all routes
 const routes = [
@@ -178,6 +182,30 @@ const routes = [
         path: "items/edit/:id",
         name: "backend-edit-item",
         component: EditItem,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "profile",
+        name: "backend-profile",
+        component: Profile,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "settings",
+        name: "backend-settings",
+        component: Settings,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "subscription",
+        name: "backend-subscription",
+        component: Subscription,
         meta: {
           requiresAuth: true
         }

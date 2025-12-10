@@ -22,6 +22,7 @@ class InvoiceController extends Controller
         $paginator = Invoice::with('customer')->orderBy('created_at', 'desc')->orderByDesc('date')
         ->paginate($perPage);
 
+
         $paginator->getCollection()->transform(function ($invoice) {
             return [
                 'checked' => false,
@@ -72,7 +73,7 @@ class InvoiceController extends Controller
             'customer_id' => $customer->id,
             'date' => $request->date,
             'status' => $request->status,
-            'expiration_date' => $request->expiration_date,
+            'expiration_date' => date('Y-m-d', strtotime($request->expiration_date)),
             'payment_terms' => $request->payment_terms,
             'sub_total' => $request->sub_total,
             'discount_rate' => $request->discount_rate,

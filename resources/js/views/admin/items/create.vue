@@ -334,7 +334,7 @@
     axios.post('/items',state).then(res => {
                                 
       toaster.success(res.data.message);
-      route.push('/backend/items')
+      route.push('/admin/items')
   
               })
   }

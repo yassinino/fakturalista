@@ -23,7 +23,7 @@
     axios.post('/invoices', state).then(res => {
                                 
       toaster.success(res.data.message);
-      route.push('/backend/invoices')
+      route.push('/admin/invoices')
   
     })
   }

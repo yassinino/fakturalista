@@ -29,13 +29,15 @@ export default {
     {
       name: "Facturas",
       to: "backend-invoices",
-      icon: "si si-list",
+      icon: "si si-note",
     },
+
     {
-      name: "Perfil",
-      to: "backend-invoices",
-      icon: "si si-user",
+      name: "Informes",
+      to: "backend-dashboard",
+      icon: "si si-speedometer",
     },
+
   ],
 
  

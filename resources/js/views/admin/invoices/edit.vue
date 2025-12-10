@@ -49,7 +49,7 @@ async function saveInvoice(state) {
     }).then(res => {
                                 
       toaster.success(res.data.message);
-      router.push('/backend/invoices')
+      router.push('/admin/invoices')
   
     })
 }
