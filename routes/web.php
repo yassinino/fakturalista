@@ -14,4 +14,9 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+
+Route::domain('fakturalista.com')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    // tu peux ajouter autant de pages que tu veux ici
+});
