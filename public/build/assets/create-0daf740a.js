@@ -1,1 +1,0 @@
-import{o as c,K as r,z as u,x as _,s as i,H as p}from"./main-59537e72.js";const l={__name:"create",setup(m){const s=p({}),o=u();async function a(e){i.post("/invoices",e).then(t=>{s.success(t.data.message),o.push("/admin/invoices")})}return(e,t)=>{const n=_("CreateDocument");return c(),r(n,{title:"Nueva factura",onSaveDocument:a})}}};export{l as default};
