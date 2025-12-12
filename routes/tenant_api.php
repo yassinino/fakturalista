@@ -23,10 +23,8 @@ use App\Http\Controllers\StatsController;
 |
 */
 
-
-// Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login']);
 Route::get('/countries', [CountryController::class, 'index']);
-
 Route::middleware(['auth:api'])->group(function () {
     Route::resource('/items', ItemController::class);
     Route::resource('/families', FamilyController::class);

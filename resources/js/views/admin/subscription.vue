@@ -126,28 +126,34 @@ const methods = [
             </tbody>
           </table>
         </div>
-
-        <div v-if="selectedPlan" class="mt-4">
+      </template>
+    </BaseBlock>
+    <div v-if="selectedPlan" class=" mt-4">
           <h4 class="mb-3">
             Plan seleccionado:
             <span class="fw-bold">{{ selectedPlan.name }} ({{ selectedPlan.price }})</span>
           </h4>
           <BaseBlock title="Método de pago">
             <template #content>
-              <div class="row g-3">
+              <div class="row g-3 content">
                 <div
-                  class="col-md-3"
+                  class="col-md-6"
                   v-for="method in methods"
                   :key="method.id"
                 >
                   <div
-                    class="form-check border rounded p-3 h-100"
-                    :class="{ 'border-primary': paymentMethod === method.id }"
-                  >
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      :id="`pay-${method.id}`"
+                  class="form-check border rounded p-3 h-100"
+                  :class="{
+                    'border-primary': paymentMethod === method.id,
+                    'cursor-pointer': true
+                  }"
+                  role="button"
+                  @click="paymentMethod = method.id"
+                >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    :id="`pay-${method.id}`"
                       name="payment-method"
                       :value="method.id"
                       v-model="paymentMethod"
@@ -157,8 +163,8 @@ const methods = [
                     </label>
                   </div>
                 </div>
-              </div>
-              <div class="mt-4 d-flex justify-content-between align-items-center">
+
+              <div class="mb-3 mt-4 d-flex justify-content-between align-items-center">
                 <div class="text-muted">
                   Selecciona PayPal o Stripe y continúa.
                 </div>
@@ -170,11 +176,13 @@ const methods = [
                   Continuar
                 </button>
               </div>
+              </div>
             </template>
           </BaseBlock>
+
         </div>
-      </template>
-    </BaseBlock>
+
+
     <!-- END Classic Design -->
   </div>
   <!-- END Page Content -->

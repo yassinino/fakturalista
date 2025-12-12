@@ -55,8 +55,24 @@ return [
     */
 
     'personal_access_client' => [
-        'id' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_ID'),
-        'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
+        'id'     => env('PASSPORT_PERSONAL_ACCESS_CLIENT_ID', null),
+        'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET', null),
     ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Storage (IMPORTANT POUR MULTITENANCY)
+    |--------------------------------------------------------------------------
+    | On force Passport à utiliser la connexion "mysql" (DB centrale)
+    | pour lire/écrire dans oauth_clients, oauth_access_tokens, etc.
+    */
+
+    'storage' => [
+            'database' => [
+                'connection' => env('PASSPORT_DB_CONNECTION', 'mysql'),
+            ],
+    ],
+
 
 ];

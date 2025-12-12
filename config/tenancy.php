@@ -39,40 +39,19 @@ return [
      * Database tenancy config. Used by DatabaseTenancyBootstrapper.
      */
     'database' => [
-        'central_connection' => env('DB_CONNECTION', 'central'),
+        // La connexion "centrale" est mysql
+        'central_connection' => 'mysql',
 
-        /**
-         * Connection used as a "template" for the dynamically created tenant database connection.
-         * Note: don't name your template connection tenant. That name is reserved by package.
-         */
+        // On utilise la même config comme template pour les tenants
         'template_tenant_connection' => null,
 
-        /**
-         * Tenant database names are created like this:
-         * prefix + tenant_id + suffix.
-         */
         'prefix' => 'tenant',
         'suffix' => '',
 
-        /**
-         * TenantDatabaseManagers are classes that handle the creation & deletion of tenant databases.
-         */
         'managers' => [
-            'sqlite' => Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager::class,
             'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
+            'sqlite' => Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager::class,
             'pgsql' => Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLDatabaseManager::class,
-
-        /**
-         * Use this database manager for MySQL to have a DB user created for each tenant database.
-         * You can customize the grants given to these users by changing the $grants property.
-         */
-            // 'mysql' => Stancl\Tenancy\TenantDatabaseManagers\PermissionControlledMySQLDatabaseManager::class,
-
-        /**
-         * Disable the pgsql manager above, and enable the one below if you
-         * want to separate tenant DBs by schemas rather than databases.
-         */
-            // 'pgsql' => Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLSchemaManager::class, // Separate by schema instead of database
         ],
     ],
 
@@ -126,7 +105,7 @@ return [
          * edge cases, it can cause issues (like using Passport with Vapor - see #196), so
          * you may want to disable this if you are experiencing these edge case issues.
          */
-        'suffix_storage_path' => true,
+        'suffix_storage_path' => false,
 
         /**
          * By default, asset() calls are made multi-tenant too. You can use global_asset() and mix()
