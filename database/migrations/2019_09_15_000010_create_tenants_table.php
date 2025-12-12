@@ -15,11 +15,15 @@ class CreateTenantsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('tenants', function (Blueprint $table) {
-            $table->string('id')->primary();   // <-- ID string (UUID)
-            $table->json('data')->nullable();
-            $table->timestamps();
-        });
+         DB::statement("
+            CREATE TABLE `tenants` (
+                `id` varchar(255) NOT NULL,
+                `data` json NULL,
+                `created_at` timestamp NULL,
+                `updated_at` timestamp NULL,
+                PRIMARY KEY (`id`)
+            ) default character set utf8mb4 collate 'utf8mb4_unicode_ci';
+        ");
     }
 
     /**
