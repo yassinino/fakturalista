@@ -17,16 +17,15 @@ use App\Http\Controllers\HomeController;
 | Feel free to customize them however you want. Good luck!
 |
 */
-
+Route::get('/', function () {
+    return redirect('/admin/login');
+});
 Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/', [HomeController::class, 'index']);
-
     Route::get('/admin/{any}', function () {
         return view('app');
     })->where('any', '^(?!api).*$');
-
 });
