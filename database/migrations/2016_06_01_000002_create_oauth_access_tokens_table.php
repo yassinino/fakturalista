@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use DB;
 return new class extends Migration
 {
     /**
@@ -11,16 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('oauth_access_tokens', function (Blueprint $table) {
-            $table->string('id', 100)->primary();   // 👈 très important
-            $table->unsignedBigInteger('user_id')->nullable()->index();
-            $table->unsignedBigInteger('client_id')->index();
-            $table->string('name')->nullable();
-            $table->text('scopes')->nullable();
-            $table->boolean('revoked');
-            $table->timestamps();
-            $table->dateTime('expires_at')->nullable();
-        });
+        DB::statement("
+            CREATE TABLE `oauth_access_tokens` (
+                `id` varchar(100) NOT NULL,
+                `user_id` bigint unsigned NULL,
+                `client_id` bigint unsigned NOT NULL,
+                `name` varchar(255) NULL,
+                `scopes` text NULL,
+                `revoked` tinyint(1) NOT NULL,
+                `created_at` timestamp NULL,
+                `updated_at` timestamp NULL,
+                `expires_at` datetime NULL,
+                PRIMARY KEY (`id`),
+                KEY `oauth_access_tokens_user_id_index` (`user_id`),
+                KEY `oauth_access_tokens_client_id_index` (`client_id`)
+            ) default character set utf8mb4 collate 'utf8mb4_unicode_ci';
+        ");
     }
 
     /**
