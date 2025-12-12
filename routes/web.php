@@ -15,8 +15,3 @@ use App\Http\Controllers\HomeController;
 */
 
 Route::get('/', [HomeController::class, 'index']);
-
-Route::get('/admin/{any}', function () {
-    return view('app');
-})->where('any', '^(?!api).*$');
-
