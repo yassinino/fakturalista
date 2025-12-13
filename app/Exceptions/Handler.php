@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-
+use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedOnDomainException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -44,5 +44,23 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        // Si le domaine ne correspond à aucun tenant
+        if ($e instanceof TenantCouldNotBeIdentifiedOnDomainException) {
+
+            // 🔹 Option 1 : simple 404
+            // return abort(404);
+
+            // 🔹 Option 2 : page custom 404 tenant
+            // return response()->view('errors.tenant-not-found', [], 404);
+
+            // 🔹 Option 3 : rediriger vers le site principal
+            return redirect()->away('https://fakturalista.com');
+        }
+
+        return parent::render($request, $e);
     }
 }
