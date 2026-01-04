@@ -1,333 +1,301 @@
 <?php
 use Carbon\Carbon;
-$date_invoice = Carbon::parse($invoice->date)->format('d-m-Y');
+use Illuminate\Support\Facades\Storage;
+use App\Models\InvoiceTemplate;
+use App\Models\CompanyProfile;
+
+$date_invoice = $invoice->date ? Carbon::parse($invoice->date)->format('d-m-Y') : Carbon::now()->format('d-m-Y');
+
+$defaults = [
+    'primary' => '#dad7d2',
+    'text' => '#1f1c1a',
+    'muted' => '#6b6764',
+    'table_header_bg' => '#dedad5',
+    'table_header_text' => '#4a4745',
+    'table_border' => '#cfcac5',
+    'font_family' => 'Arial, sans-serif',
+    'font_size' => 'medium',
+    'logo_width_mm' => 50,
+    'logo_position' => 'above', // above|left
+    'show_payment_terms' => true,
+    'show_customer_number' => false,
+    'show_customer_phone' => false,
+    'show_shipping_address' => true,
+    'billing_address_right' => false,
+    'show_discount' => false,
+    'show_tax_column' => true,
+    'show_subtotal' => true,
+    'show_tax_breakdown' => true,
+    'bold_total' => true,
+    'payment_note' => '',
+    'show_payment_note' => true,
+];
+
+$template = InvoiceTemplate::where('is_active', true)
+    ->orderByDesc('is_default')
+    ->latest('created_at')
+    ->first();
+
+$settings = $template?->settings ?? [];
+
+$design = $defaults;
+foreach ($settings as $key => $val) {
+    if (array_key_exists($key, $design)) {
+        $design[$key] = $val;
+    }
+}
+
+if ($template) {
+    foreach ($defaults as $key => $defaultVal) {
+        if ($template->$key !== null) {
+            $design[$key] = $template->$key;
+        }
+    }
+}
+
+$fontSize = match($design['font_size'] ?? 'medium') {
+    'small' => 13,
+    'large' => 16,
+    default => 14,
+};
+
+$mmToPx = fn($mm) => $mm ? $mm * 3.78 : 0;
+$logoWidthPx = $mmToPx($design['logo_width_mm'] ?? 50);
+$isLogoAbove = ($design['logo_position'] ?? 'above') === 'above';
+
+// Logo: template first, fallback to company
+$company = CompanyProfile::first();
+$logoPath = $design['logo_path'] ?? null;
+if (empty($logoPath) && $company && $company->logo_path) {
+    $logoPath = $company->logo_path;
+}
+
+$logoSrc = null;
+if (!empty($logoPath)) {
+    $logoDisk = Storage::disk('public');
+    $candidate = $logoPath;
+
+    if (preg_match('~^https?://~i', $candidate)) {
+        $candidate = parse_url($candidate, PHP_URL_PATH) ?? '';
+    }
+
+    if (!empty($candidate) && is_file($candidate)) {
+        $logoSrc = 'file://' . $candidate;
+    } else {
+        $candidate = ltrim($candidate, '/');
+        if (str_starts_with($candidate, 'storage/')) {
+            $candidate = substr($candidate, strlen('storage/'));
+        }
+        if (!empty($candidate) && $logoDisk->exists($candidate)) {
+            $logoSrc = 'file://' . $logoDisk->path($candidate);
+        }
+    }
+}
+
 ?>
 
 <!doctype html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    
     <style>
-
-    body {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        font-size: 11px;
-        line-height: 24px;
-        font-family: 'blogger',sans-serif;
-        color: #000;
-    }
-
-    
-    body table {
-        width: 100%;
-        line-height: inherit;
-        text-align: left;
-    }
-    
-    body table td {
-        vertical-align: top;
-    }
-
-/*    
-    body table tr td:nth-child(2) {
-        text-align: right;
-    }
-    */
-    body table tr.top table td {
-        padding-bottom: 20px;
-    }
-    
-    body table tr.top table td.title {
-        font-size: 45px;
-        line-height: 45px;
-        color: #333;
-    }
-
-    body table tr.top table td.title img {
-      width: auto;
-    }
-    
-    body table tr.information td table{
-        padding-bottom: 50px;
-        padding-left: 0px;
-    }
-
-    body table tr.heading td {
-        color: #909090;
-        line-height: 22px;
-        padding-top: 15px;
-        padding-bottom: 8px;
-        text-align: center;
-        font-weight: bold;
-        border-bottom: 0.4px dashed #c4c4c4;
-    }
-
-    body table .heading{
-        margin-bottom: 5px;
-    }
-    
-    body table tr.details td {
-        padding-bottom: 20px;
-    }
-    
-    body table tr.item td{
-        border-bottom: 0.4px dashed #c4c4c4;
-        padding-top: 10px;
-        padding-bottom: 5px;
-    }
-
-    body table tr.item span{
-        font-size: 12px;
-    }
-    
-    body table tr.item.last td {
-        border-bottom: none;
-    }
-    
-    .tx-right {
-        text-align: right;
-    }
-
-    .price {
-        font-size: 20px;
-        font-weight: bold;
-    }
-    
-    @media only screen and (max-width: 600px) {
-        body table tr.top table td {
-            width: 100%;
-            display: block;
-            text-align: center;
+        :root {
+            --primary: {{ $design['primary'] }};
+            --text: {{ $design['text'] }};
+            --muted: {{ $design['muted'] }};
+            --table-header-bg: {{ $design['table_header_bg'] }};
+            --table-header-text: {{ $design['table_header_text'] }};
+            --table-border: {{ $design['table_border'] }};
+            --font-family: {{ $design['font_family'] }};
+            --font-size: {{ $fontSize }}px;
         }
-        
-        body table tr.information table td {
-            width: 100%;
-            display: block;
-            text-align: center;
+        body {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px 12px 24px;
+            font-size: var(--font-size);
+            line-height: 24px;
+            font-family: var(--font-family);
+            color: var(--text);
+            background: #ffffff;
         }
-    }
-    .information .titres span {
-        margin-bottom: 0px;
-        color: #909090;
-        font-size: 15px;
-    }
-    
-    /** RTL **/
-    .rtl {
-        direction: rtl;
-        font-family: 'blogger', 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-    }
-    
-    .rtl table {
-        text-align: right;
-    }
-    
-    .rtl table tr td:nth-child(2) {
-        text-align: left;
-    }
+        .muted { color: var(--muted); }
+        .header-row {
+            display: flex;
+            align-items: {{ $isLogoAbove ? 'flex-start' : 'center' }};
+            gap: 12px;
+            flex-direction: {{ $isLogoAbove ? 'column' : 'row' }};
+            margin-bottom: 10px;
+        }
+        .logo img { max-width: 100%; height: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 10px; }
+        th {
+            background: var(--table-header-bg);
+            color: var(--table-header-text);
+            border-bottom: 1px solid var(--table-border);
+            text-align: left;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        td {
+            
+            vertical-align: top;
+        }
 
-    tr.s_total td{
-        padding-top: 20px;
-    }
-
-    tr.total_final td {
-        padding-bottom: 8px;
-    }
-
-    .tx-total {
-        text-align: right;
-        padding-right : 5px;
-        margin-bottom: 10px;
-    }
-
-    .footer {
-      list-style-type: none;
-      margin: 0;
-      padding: 0
-    }
-
-    .footer li {
-      float: left;
-    }
-
-    #footer {
-         position: absolute; 
-         bottom:-100;
-         right:0;
-        /* margin-left: 500px;*/
-        float: right;
-    } 
-
-    @page {
-      header: page-header;
-      footer: page-footer;
-    }
-
+        .rows td{
+            border-bottom: 1px solid var(--table-border);
+        }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .section-title { font-weight: 800; font-size: {{ $fontSize + 6 }}px; color: var(--primary); }
+        .subheading { font-weight: 700; color: var(--text); }
+        .total-row td { font-weight: {{ ($design['bold_total'] ?? true) ? '800' : '500' }}; }
+        .summary td { border: none; padding: 4px 10px; }
+        .summary tr td:first-child { text-align: right; }
+        .mt-2 { margin-top: 12px; }
+        .mb-2 { margin-bottom: 12px; }
+        .hr-light { border: 0; border-top: 1px solid var(--table-border); margin: 14px 0; }
+        .totals-wrapper { display: flex; justify-content: flex-end; width: 100%; }
     </style>
 </head>
 <body>
-    <div class="invoice-box">
-        <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="4" style="padding-bottom: 40px;padding-left: 5px;">
-                   <p style="color: #000000;font-size: 16px;"><span style="font-weight: bold;">Factura Núm. </span> {{ $invoice->reference  }}</p>
-                </td>
-            </tr>
+        <div class="header-row">
+            @if($logoSrc)
+                <div class="logo" style="max-width: {{ $logoWidthPx }}px;">
+                    <img src="{{ $logoSrc }}" alt="Logo">
+                </div>
+            @endif
+            <div style="flex:1; width:100%; text-align: right;">
+                <div class="section-title">Factura Núm. {{ $invoice->reference }}</div>
+                <div class="muted">{{ $date_invoice }}</div>
+            </div>
+        </div>
 
-             <tr class="information" style="padding-top:20px;">
-                <td colspan="6">
-                    <table>
-                        <tr style="font-size: 14px;">
-                            <td style="width: 50%; color: gray">
-                                <img src="{{ public_path('assets/logo_tachua.png') }}" style="width:200px;">
-                            </td>
-                            <td style="color: gray; text-align: right;">
-                                Ángel Jiménez Rodriguez<br>
-                                NIF : 12321909-G<br>
-                                Diseminat, 47 - Apt. Correos 261<br>
-                                43480 VILA-SECA (Tarragona)<br>
-                                TEL : 657 985 633 / 652 138 016<br>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-            
-            <tr class="information" style="padding-top:20px;">
-                <td colspan="6">
-                    <table>
-                        <tr class="titres" style="font-size: 18px;">
-
-                            <td style="width: 30%;">
-                                <span style="color : black; font-weight: bold;">Fecha</span>
-                                <div style="color: gray ;font-size: 14px;">
-                                    {{ $date_invoice }}
-                                </div>
-                            </td>
-                            <td style="width: 50%;">
-                                <span style="color : black; font-weight: bold;">Cliente</span>
-                                <div style="color: gray; font-size: 14px;">
-                                    {{$invoice->customer->type == 1 ? $invoice->customer->name : $invoice->customer->first_name }} <br>
-                                    <span>{!! nl2br(e($invoice->customer->address_billing)) !!}</span>
-                                </div>
-                            </td>
-                            <td style="width: 20%;">
-                                <span style="color : black; font-weight: bold;">NIF</span>
-                                <div style="color: gray ;font-size: 14px;">{{$invoice->customer->ice}}</div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-
-            <tr class="detail">
-                <td colspan="4">
-                     <table>
-                        <tr>
-                            <td style="width:30%;background: #E3E0DC;padding: 10px;">
-                                <span style="">Detalles de la factura</span>
-                            </td>
-                            <td style="width:40%;padding: 10px;"></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            
-            <tr class="heading">
-                <td style="text-align: left;">
-                    Producto
-                </td>
-                
-                <td style="width: 20%">
-                    Cantidad
-                </td>
-
-                <td style="width: 10%">
-                    Unidad
-                </td>
-
-                <td style="text-align: right;width: 25%;">
-                    Precio
-                </td>
-
-                <td>
-                    IVA%
-                </td>
-
-                <td style="text-align: right;">
-                    IMPORTE
-                </td>
-            </tr>
-
-            @foreach($invoice['carts'] as $item)
-
-            <tr class="item">
-                <td style="width: 50%">
-                   {{ $item->product ? $item->product->name : '' }}
-                    <span style="font-size: 9px;"> {{ $item->description ? ' - ' : '' }} {!! nl2br(e($item->description)) !!}</span>
-                </td>
-                <td style="text-align: center;">
-                   {{number_format($item->qty, 2,",",".") }}
-                </td>
-
-                <td style="text-align: center;">
-                   {{$item->unite == 'pc' ? 'pieza' : ($item->unite == 'hr' ? 'hora' : ($item->unite == 'kg' ? 'kg' : ($item->unite == 'm' ? 'metro' : ($item->unite == 'lt' ? 'litro' : ''))))}}
-                </td>
-
-                <td style="text-align: right;">
-                    {{number_format($item->price, 2,",",".") }}<br>
-                </td>
-
-                <td style="text-align: center;">
-                   {{$item->vta}}
-                </td>
-                
-                <td style="text-align: right;padding-right: 5px;">
-                    {{number_format($item->total, 2,",",".") }}
-                </td>
-            </tr>
-
-            @endforeach
-
-            <tr class="s_total tx-total">
-                <td colspan="4"></td>
-                <td style="text-align:right;font-weight: bold;">SUMA</td>
-                <td style="text-align:right;padding-right: 5px;">{{number_format($invoice->sub_total, 2,",",".") }}</td>
-            </tr>
-            <tr class="tva tx-total">
-                <td colspan="4"></td>
-                <td style="text-align:right;padding-top: 5px;font-weight: bold;">IVA(4%)</td>
-                <td style="text-align:right;padding-top: 5px;padding-right: 5px;">{{number_format($invoice->vta4, 2,",",".")}}</td>
-            </tr>
-            <tr class="tva tx-total">
-                <td colspan="4"></td>
-                <td style="text-align:right;padding-top: 5px;font-weight: bold;">IVA(10%)</td>
-                <td style="text-align:right;padding-top: 5px;padding-right: 5px;">{{number_format($invoice->vta10, 2,",",".")}}</td>
-            </tr>
-            <tr class="tva tx-total">
-                <td colspan="4"></td>
-                <td style="text-align:right;padding-top: 5px;font-weight: bold;">IVA(21%)</td>
-                <td style="text-align:right;padding-top: 5px;padding-right: 5px;">{{number_format($invoice->vta21, 2,",",".")}}</td>
-            </tr>
-            <tr class="total tx-total">
-                <td colspan="4"></td>
-                <td style="text-align:right;padding-top: 5px;font-weight: bold;">TOTAL</td>
-                <td style="text-align:right;padding-top: 5px;padding-right: 5px;">{{number_format($invoice->total, 2,",",".")}}</td>
-            </tr>
+        <table style="margin-top: 8px;">
+            <thead>
+                <tr>
+                    <td> 
+                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">Dirección de facturación</div>
+                        <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
+                        @if(!empty($design['show_customer_number']) && !empty($invoice->customer->reference))
+                            <div class="muted">Cliente #{{ $invoice->customer->reference }}</div>
+                        @endif
+                        <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_billing ?? '')) !!}</div>
+                        @if(!empty($design['show_customer_phone']) && !empty($invoice->customer->phone))
+                            <div class="muted">Tel: {{ $invoice->customer->phone }}</div>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">Dirección de envío</div>
+                        <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
+                        <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_delivery ?? $invoice->customer->address_billing ?? '')) !!}</div>
+                    </td>
+                </tr>
+            </thead>
         </table>
-        
-    </div>
 
-        {{-- <div style="position: absolute;bottom: 350px;line-height: 15px;">
-            <p>Arrété la présente Note d'Honoraires à la somme totale TTC de :</p>
-            <p>{{$invoice['montant_lettre']}}, Seulement.</p>
-          </div> --}}
+        <table style="margin-top: 30px;" class="rows">
+            <thead>
+                <tr>
+                    <th style="width:40%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                        Nombre de artículo y descripción
+                    </th>
+                    @if(!empty($design['show_tax_column']))
+                        <th class="text-center" style="width:10%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                            IVA
+                        </th>
+                    @endif
+                    @if(!empty($design['show_discount']))
+                        <th class="text-center" style="width:10%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                            Dto.
+                        </th>
+                    @endif
+                    <th class="text-center" style="width:12%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                        Cantidad
+                    </th>
+                    <th class="text-center" style="width:12%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                        Precio unitario
+                    </th>
+                    <th class="text-right" style="width:16%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
+                        Importe
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($invoice->carts as $item)
+                    <tr>
+                        <td>
+                            <strong>{{ $item->product->name ?? '' }}</strong>
+                            @if(!empty($item->description))
+                                <div class="muted" style="font-size: {{ $fontSize - 1 }}px;">{!! nl2br(e($item->description)) !!}</div>
+                            @endif
+                        </td>
+                        @if(!empty($design['show_tax_column']))
+                            <td class="text-center">{{ $item->vta ?? 0 }}%</td>
+                        @endif
+                        @if(!empty($design['show_discount']))
+                            <td class="text-center"></td>
+                        @endif
+                        <td class="text-center">{{ number_format($item->qty, 2, ",", ".") }}</td>
+                        <td class="text-center">{{ number_format($item->price, 2, ",", ".") }} € /day</td>
+                        <td class="text-right">{{ number_format($item->total, 2, ",", ".") }} €</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
+        <div class="totals-wrapper">
+            <table class="summary" style="margin-top: 8px; width: auto; min-width: 360px; margin-left: auto; text-align: right;">
+                <tbody>
+                    @if(!empty($design['show_subtotal']))
+                    <tr>
+                        <td style="font-weight:700; text-align:right;">Subtotal</td>
+                        <td class="text-right">{{ number_format($invoice->sub_total, 2, ",", ".") }} €</td>
+                    </tr>
+                    @endif
+                    @if(!empty($design['show_tax_breakdown']))
+                        @php $base = $invoice->sub_total; @endphp
+                        @if($invoice->vta4)
+                            <tr>
+                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 4%)</td>
+                                <td class="text-right">{{ number_format($invoice->vta4, 2, ",", ".") }} €</td>
+                            </tr>
+                        @endif
+                        @if($invoice->vta10)
+                            <tr>
+                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 10%)</td>
+                                <td class="text-right">{{ number_format($invoice->vta10, 2, ",", ".") }} €</td>
+                            </tr>
+                        @endif
+                        @if($invoice->vta21)
+                            <tr>
+                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 21%)</td>
+                                <td class="text-right">{{ number_format($invoice->vta21, 2, ",", ".") }} €</td>
+                            </tr>
+                        @endif
+                    @endif
+                    <tr class="total-row">
+                        <td style="font-weight:700; text-align:right;">Total</td>
+                        <td class="text-right">{{ number_format($invoice->total, 2, ",", ".") }} €</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        @if(!empty($design['show_payment_terms']) && !empty($invoice->payment_terms))
+            <div class="mt-2" style="display:flex; justify-content: center; gap: 28px; color: var(--muted); font-weight: 700;">
+                <div>Términos de pago</div>
+                <div style="text-align: right;">{{ $invoice->payment_terms }}</div>
+            </div>
+        @endif
 
+        @if(!empty($design['show_payment_note']) && !empty($design['payment_note']))
+            <div class="mt-2">
+                <div style="font-weight:700;">Información de Pago</div>
+                <div class="muted" style="white-space: pre-line;">{!! nl2br(e($design['payment_note'])) !!}</div>
+            </div>
+        @endif
 </body>
 </html>

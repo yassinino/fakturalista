@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SubscriptionController;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -23,6 +24,11 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+
+    Route::prefix('admin/subscription/checkout')->group(function () {
+        Route::get('/success', [HomeController::class, 'success'])->name('admin.subscription.checkout.success');
+        Route::get('/cancel', [HomeController::class, 'cancel'])->name('admin.subscription.checkout.cancel');
+    });
 
     Route::get('/', function () {
         return redirect('/admin/login');

@@ -11,6 +11,10 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\StatsController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\CompanyProfileController;
+use App\Http\Controllers\InvoiceTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +30,17 @@ use App\Http\Controllers\StatsController;
 Route::post('login', [AuthController::class, 'login']);
 Route::get('/countries', [CountryController::class, 'index']);
 Route::middleware(['auth:api'])->group(function () {
+
+
+    Route::get('/subscription', [SubscriptionController::class, 'index']);
+    Route::post('/subscription/checkout', [SubscriptionController::class, 'createCheckoutSession']);
+    // Route::get('/subscription/checkout/success', [SubscriptionController::class, 'checkoutSuccess'])
+    //     ->name('subscription.checkout.success');
+    // Route::get('/subscription/checkout/cancel', [SubscriptionController::class, 'checkoutCancel'])
+    //     ->name('subscription.checkout.cancel');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel']);
+    Route::resource('/plans', PlanController::class);
+
     Route::resource('/items', ItemController::class);
     Route::resource('/families', FamilyController::class);
     Route::resource('/customers', CustomerController::class);
@@ -37,5 +52,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/user', [AuthController::class, 'update']);
     Route::get('/stats/counts', [StatsController::class, 'counts']);
     Route::post('/templates/save', [TemplateController::class, 'save_template']);
+    // Company profile/settings
+    Route::get('/settings', [CompanyProfileController::class, 'show']);
+    Route::match(['post', 'put'], '/settings', [CompanyProfileController::class, 'update']);
+    Route::resource('/invoice-templates', InvoiceTemplateController::class);
     Route::post('/logout', [AuthController::class, 'logout']);
 });

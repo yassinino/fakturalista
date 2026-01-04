@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <!-- Meta Data -->
@@ -18,13 +18,13 @@
     <meta name="keywords" content="facturación, facturas online, SaaS, gestión de gastos, pagos instantáneos, software de facturación, Fakturalista">
     <meta name="author" content="Fakturalista">
     <!-- Dependency Styles -->
-    <link rel="stylesheet" href="dependencies/bootstrap/css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/fontawesome/css/all.min.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/swiper/css/swiper.min.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/wow/css/animate.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/magnific-popup/css/magnific-popup.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/components-elegant-icons/css/elegant-icons.min.css" type="text/css" />
-    <link rel="stylesheet" href="dependencies/simple-line-icons/css/simple-line-icons.css" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/bootstrap/css/bootstrap.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/fontawesome/css/all.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/swiper/css/swiper.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/wow/css/animate.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/magnific-popup/css/magnific-popup.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/components-elegant-icons/css/elegant-icons.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('dependencies/simple-line-icons/css/simple-line-icons.css') }}" type="text/css" />
 
     <meta property="og:title" content="@yield('title', 'Fakturalista – Software de facturación online')" />
     <meta property="og:description" content="Crea y envía facturas profesionales, controla tus gastos y acepta pagos instantáneos con Fakturalista." />
@@ -34,7 +34,7 @@
     <meta property="og:site_name" content="Fakturalista" />
 
     <!-- Site Stylesheet -->
-    <link rel="stylesheet" href="front/assets/css/app.css" type="text/css" />
+    <link rel="stylesheet" href="{{ url('front/assets/css/app.css') }}" type="text/css" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -111,18 +111,14 @@
 
                         <div class="menu-wrapper" data-top="992">
                             <ul class="site-main-menu">
-                                <li>
-                                    <a href="{{ url('/') }}">Inicio</a>
-                                </li>
-                                <li><a href="#">Características</a></li>
-                                <li><a href="#">Precios</a></li>
-                                <li><a href="#">Nosotros</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Contacto</a></li>
+                                 <li><a href="{{ url('/pricing') }}">Precios</a></li>
+                                <li><a href="{{ url('/about') }}">Nosotros</a></li>
+                                <li><a href="{{ url('/blog') }}">Blog</a></li>
+                                <li><a href="{{ url('/contact') }}">Contacto</a></li>
                             </ul>
 
                             <div class="nav-right">
-                                <a href="{{ url('admin/login') }}" class="nav-btn">Iniciar sesión</a>
+                                <a href="{{ url('/free-trial') }}" class="nav-btn">Prueba gratis</a>
                             </div>
                         </div>
                         <!-- /.menu-wrapper -->
@@ -162,9 +158,9 @@
                                 <h3 class="widget-title">Empresa</h3>
 
                                 <ul class="footer-menu">
-                                    <li><a href="#">Sobre nosotros</a></li>
-                                    <li><a href="#">Blog</a></li>
-                                    <li><a href="#">Contacto</a></li>
+                                    <li><a href="{{ url('/about') }}">Sobre nosotros</a></li>
+                                    <li><a href="{{ url('/blog') }}">Blog</a></li>
+                                    <li><a href="{{ url('/contact') }}">Contacto</a></li>
                                 </ul>
                             </div>
                             <!-- /.widget footer-widget -->
@@ -176,10 +172,10 @@
                                 <h3 class="widget-title">Producto</h3>
 
                                 <ul class="footer-menu">
-                                    <li><a href="#">Precios</a></li>
+                                    <li><a href="{{ url('/pricing') }}">Precios</a></li>
                                     <li><a href="#">Seguridad</a></li>
                                     <li><a href="#">Integraciones</a></li>
-                                    <li><a href="#">Preguntas frecuentes (FAQ)</a></li>
+                                    <li><a href="{{ url('/faq') }}">Preguntas frecuentes (FAQ)</a></li>
                                 </ul>
                             </div>
                             <!-- /.widget footer-widget -->
@@ -213,6 +209,18 @@
                         <li><a href="#">Política de priva.</a></li>
                         <li><a href="#">Aviso l.</a></li>
                     </ul>
+
+                    <div class="site-language" style="display: flex; align-items: center; gap: 8px;">
+                        <label for="site-locale">Idioma</label>
+                        <form method="POST" action="{{ url('/locale') }}">
+                            @csrf
+                            <select id="site-locale" name="locale" onchange="this.form.submit()">
+                                <option value="es" {{ app()->getLocale() === 'es' ? 'selected' : '' }}>Español</option>
+                                <option value="fr" {{ app()->getLocale() === 'fr' ? 'selected' : '' }}>Français</option>
+                                <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>English</option>
+                            </select>
+                        </form>
+                    </div>
                 </div><!-- /.site-info -->
             </div><!-- /.container -->
         </footer><!-- /#footer -->
@@ -221,22 +229,22 @@
     <!-- /#site -->
 
     <!-- Dependency Scripts -->
-    <script src="dependencies/jquery/jquery.min.js"></script>
-    <script src="dependencies/bootstrap/js/bootstrap.min.js"></script>
-    <script src="dependencies/swiper/js/swiper.min.js"></script>
-    <script src="dependencies/jquery.appear/jquery.appear.js"></script>
-    <script src="dependencies/wow/js/wow.min.js"></script>
-    <script src="dependencies/countUp.js/countUp.min.js"></script>
-    <script src="dependencies/isotope-layout/isotope.pkgd.min.js"></script>
-    <script src="dependencies/imagesloaded/imagesloaded.pkgd.min.js"></script>
-    <script src="dependencies/jquery.parallax-scroll/js/jquery.parallax-scroll.js"></script>
-    <script src="dependencies/magnific-popup/js/jquery.magnific-popup.min.js"></script>
-    <script src="dependencies/gmap3/js/gmap3.min.js"></script>
+    <script src="{{ url('dependencies/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url('dependencies/swiper/js/swiper.min.js') }}"></script>
+    <script src="{{ url('dependencies/jquery.appear/jquery.appear.js') }}"></script>
+    <script src="{{ url('dependencies/wow/js/wow.min.js') }}"></script>
+    <script src="{{ url('dependencies/countUp.js/countUp.min.js') }}"></script>
+    <script src="{{ url('dependencies/isotope-layout/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url('dependencies/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ url('dependencies/jquery.parallax-scroll/js/jquery.parallax-scroll.js') }}"></script>
+    <script src="{{ url('dependencies/magnific-popup/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ url('dependencies/gmap3/js/gmap3.min.js') }}"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDk2HrmqE4sWSei0XdKGbOMOHN3Mm2Bf-M&#038;ver=2.1.6"></script>
 
     <!-- Site Scripts -->
-    <script src="front/assets/js/header.js"></script>
-    <script src="front/assets/js/app.js"></script>
+    <script src="{{ url('front/assets/js/header.js') }}"></script>
+    <script src="{{ url('front/assets/js/app.js') }}"></script>
 
 </body>
 

@@ -644,7 +644,7 @@
                         Envía tu primera factura hoy mismo, totalmente gratis.
                     </p>
 
-                    <a href="#" class="pix-btn btn-light">Empezar</a>
+                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">Empezar</a>
                 </div>
                 <!-- /.action-content -->
             </div>

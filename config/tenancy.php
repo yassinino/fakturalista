@@ -19,6 +19,7 @@ return [
     'central_domains' => [
         'fakturalista.com',
         'www.fakturalista.com',
+        'fakturalista.test',
         '127.0.0.1',
         'localhost',
     ],

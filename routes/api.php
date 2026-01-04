@@ -9,7 +9,6 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\StatsController;
 
 /*
@@ -38,6 +37,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
     Route::get('/stats/counts', [StatsController::class, 'counts']);
-    Route::post('/templates/save', [TemplateController::class, 'save_template']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });

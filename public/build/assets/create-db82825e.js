@@ -1,1 +1,0 @@
-import{o as c,K as u,z as r,x as _,s as p,H as m}from"./main-e01f9188.js";const v={__name:"create",setup(i){const o=m({}),s=r();async function a(e){p.post("/quotes",e).then(t=>{o.success(t.data.message),s.push("/admin/quotes")})}return(e,t)=>{const n=_("CreateDocument");return c(),u(n,{title:"New Quote",onSaveDocument:a})}}};export{v as default};

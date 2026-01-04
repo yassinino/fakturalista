@@ -163,9 +163,9 @@
       role="dialog"
       aria-labelledby="modal-block-vcenter"
       aria-hidden="true"
+      ref="modal_family"
     >
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document" ref="modal_family"
->
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <BaseBlock title="Crea una familia de productos" transparent class="mb-0">
             <template #options>
@@ -230,6 +230,7 @@
   <script setup>
   import { reactive,ref, computed, onMounted } from "vue";
   import axios from 'axios'
+  import { Modal } from 'bootstrap'
   import VueSelect from "vue-select";
   import { createToaster } from '@meforma/vue-toaster';
   const toaster = createToaster({ /* options */ });
@@ -268,11 +269,15 @@
   });
   
   const modal_family = ref()
+  let familyModal = null
   const families = ref([]);
   onMounted(async () => {
           
           let response = await axios.get('/families');
           families.value = response.data.families
+          if (modal_family.value) {
+            familyModal = new Modal(modal_family.value);
+          }
   });
   
   
@@ -318,7 +323,9 @@
       families.value.push(res.data.family)
       family.name = ''
       console.log(modal_family.value)
-      modal_family.value.hide()
+      if (familyModal) {
+        familyModal.hide()
+      }
       
      })
   }

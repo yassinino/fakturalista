@@ -225,10 +225,30 @@ console.log(store.app.accessToken)
 
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.app.accessToken;
 
+const activeSubscriptionStatuses = ["active", "trialing"];
+let subscriptionStatusCache = { checked: false, active: false };
+
+const hasActiveSubscription = async () => {
+    if (subscriptionStatusCache.checked) {
+        return subscriptionStatusCache.active;
+    }
+
+    try {
+        const { data } = await axios.get('/subscription');
+        const status = data?.subscription?.status ?? null;
+        const isActive = status ? activeSubscriptionStatuses.includes(status) : false;
+        subscriptionStatusCache = { checked: true, active: isActive };
+        return isActive;
+    } catch (error) {
+        subscriptionStatusCache = { checked: true, active: false };
+        return false;
+    }
+};
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const isLoginRoute = to.name === 'auth-signin' || to.path === '/admin/login';
+    const isSubscriptionRoute = to.name === 'backend-subscription' || to.path === '/admin/subscription';
 
     // If already authenticated, skip the login screen
     if (store.app.isLoggedUserIn && isLoginRoute) {
@@ -238,6 +258,13 @@ router.beforeEach((to, from, next) => {
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (store.app.isLoggedUserIn) {
+            if (!isSubscriptionRoute) {
+                const active = await hasActiveSubscription();
+                if (!active) {
+                    next({ name: 'backend-subscription' });
+                    return;
+                }
+            }
             next();
             return;
         }

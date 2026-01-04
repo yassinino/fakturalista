@@ -40,6 +40,7 @@ const CreateItem = () => import("@/views/admin/items/create.vue");
 const EditItem = () => import("@/views/admin/items/edit.vue");
 const Profile = () => import("@/views/admin/profile.vue");
 const Settings = () => import("@/views/admin/settings.vue");
+const Templates = () => import("@/views/admin/templates.vue");
 const Dashboard = () => import("@/views/admin/dashboard.vue");
 const Subscription = () => import("@/views/admin/subscription.vue");
 
@@ -198,6 +199,14 @@ const routes = [
         path: "settings",
         name: "backend-settings",
         component: Settings,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "templates",
+        name: "backend-templates",
+        component: Templates,
         meta: {
           requiresAuth: true
         }

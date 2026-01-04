@@ -42,5 +42,4 @@ class Quote extends Model
         return $this->morphMany(Cart::class, 'cartable');
     }
 
-
 }
