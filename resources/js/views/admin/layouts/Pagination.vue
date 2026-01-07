@@ -19,7 +19,7 @@
     </button>
 
     <div class="d-flex align-items-center ms-2" v-if="showPerPage">
-      <small class="me-2">Por página</small>
+      <small class="me-2">{{ $t("common.perPage") }}</small>
       <select class="form-select form-select-sm" style="width:auto"
               :value="meta.perPage"
               @change="$emit('update:perPage', +$event.target.value)">

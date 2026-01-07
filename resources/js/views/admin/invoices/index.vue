@@ -1,10 +1,12 @@
 <template>
     <div class="content">
     
-      <BaseBlock title="Facturas">
+      <BaseBlock :title="$t('invoices.title')">
               <template #options>
                 <div class="block-options-item">
-                  <router-link to="invoices/new" class="btn btn-primary">Nueva factura</router-link>
+                  <router-link to="invoices/new" class="btn btn-primary">
+                    {{ $t("invoices.newTitle") }}
+                  </router-link>
                 </div>
               </template>
     
@@ -15,24 +17,24 @@
                       <input type="checkbox" class="form-check-input" @change="clickedAll">
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Numero
+                      {{ $t("invoices.table.number") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Cliente
+                      {{ $t("invoices.table.customer") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Fecha
+                      {{ $t("invoices.table.date") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      SUMA
+                      {{ $t("invoices.table.subtotal") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Total
+                      {{ $t("invoices.table.total") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Estado
+                      {{ $t("invoices.table.status") }}
                     </th>
-                    <th class="text-center" style="width: 100px">Acciones</th>
+                    <th class="text-center" style="width: 100px">{{ $t("common.actions") }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -59,7 +61,7 @@
                       <span 
                       class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill"
                       :class="invoice.status == 1 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'">
-                      {{ invoice.status == 1 ? 'Pagado' : 'No Pagado' }}
+                      {{ invoice.status == 1 ? $t('invoices.statusPaid') : $t('invoices.statusUnpaid') }}
                       </span>
                     </td>
                     <td class="text-center">
@@ -80,8 +82,8 @@
                         >
                           <a class="dropdown-item"                
                           href="javascript:void(0)" 
-                          @click.prevent="printInvoice(invoice)">Documento</a>
-                          <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">Eliminar</a>
+                          @click.prevent="printInvoice(invoice)">{{ $t("invoices.document") }}</a>
+                          <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">{{ $t("common.delete") }}</a>
                         </div>
                       </div>
                     </td>
@@ -110,13 +112,15 @@
     
     
     <script setup>
-    import { ref,reactive, onMounted } from "vue";
+    import { ref, reactive, onMounted } from "vue";
     import axios from 'axios'
     import Pagination from '@/views/admin/layouts/Pagination.vue';
     import { createToaster } from '@meforma/vue-toaster';
     const toaster = createToaster({ /* options */ });
+    import { useI18n } from "vue-i18n";
     // Input state variables
     const invoices = ref([])
+    const { t } = useI18n();
     const meta = reactive({
       current_page: 1,
       last_page: 1,
@@ -151,7 +155,7 @@
     }
     
     const deleteInvoice = (invoice) => {
-      if (confirm('¿Estás seguro de que deseas eliminar esta factura?')) {
+      if (confirm(t('invoices.confirmDelete'))) {
           axios.delete('/invoices/' + invoice.uuid)
           .then(response => {
               invoices.value = invoices.value.filter(inv => inv.uuid !== invoice.uuid);

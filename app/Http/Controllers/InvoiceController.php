@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\Cart;
 use App\Models\Item;
+use App\Models\CompanyProfile;
 use App\Http\Requests\InvoiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class InvoiceController extends Controller
             return [
                 'checked' => false,
                 'uuid' => $invoice->uuid,
-                'customer' => $invoice->customer->name,
+                'customer' => $invoice->customer?->name,
                 'reference' => $invoice->reference,
                 'date' => $invoice->date,
                 'expiration_date' => $invoice->expiration_date,
@@ -200,10 +201,23 @@ class InvoiceController extends Controller
     public function print_invoice(Request $request)
     {
         $invoice = Invoice::where('uuid', $request->uuid)->with('customer', 'carts.product')->first();
+        $locale = $request->user()?->locale
+            ?? CompanyProfile::first()?->locale
+            ?? config('app.locale', 'es');
+        
+        $host = request()->getHost();;
 
-        $pdf = Pdf::loadView('invoices.show', [
-            'invoice' => $invoice
-        ])->setPaper('a4'); // 'a4', 'letter', etc.
+        if($host == 'client1.fakturalista.test'){
+            $pdf = Pdf::loadView('invoices.yassine', [
+                'invoice' => $invoice
+            ])->setPaper('a4'); // 'a4', 'letter', etc.
+        }else{
+                    $pdf = Pdf::loadView('invoices.show', [
+                'invoice' => $invoice
+            ])->setPaper('a4'); // 'a4', 'letter', etc.
+        }
+
+
 
         // 3. Define file name and path
         $fileName = 'invoice_' . $invoice->uuid . '.pdf';

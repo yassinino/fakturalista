@@ -4,7 +4,24 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\InvoiceTemplate;
 use App\Models\CompanyProfile;
 
-$date_invoice = $invoice->date ? Carbon::parse($invoice->date)->format('d-m-Y') : Carbon::now()->format('d-m-Y');
+$locale = app()->getLocale() ?: config('app.locale', 'es');
+$supportedLocales = config('app.supported_locales', ['es', 'fr', 'en']);
+if (! in_array($locale, $supportedLocales, true)) {
+    $locale = config('app.locale', 'es');
+}
+
+[$decimalSeparator, $thousandsSeparator, $dateFormat] = match ($locale) {
+    'en' => ['.', ',', 'm/d/Y'],
+    'fr' => [',', ' ', 'd/m/Y'],
+    default => [',', '.', 'd-m-Y'],
+};
+
+$formatNumber = fn($value, $decimals = 2) => number_format((float) $value, $decimals, $decimalSeparator, $thousandsSeparator);
+$formatMoney = fn($value) => $formatNumber($value, 2) . ' €';
+
+$date_invoice = $invoice->date
+    ? Carbon::parse($invoice->date)->format($dateFormat)
+    : Carbon::now()->format($dateFormat);
 
 $defaults = [
     'primary' => '#dad7d2',
@@ -168,7 +185,7 @@ if (!empty($logoPath)) {
                 </div>
             @endif
             <div style="flex:1; width:100%; text-align: right;">
-                <div class="section-title">Factura Núm. {{ $invoice->reference }}</div>
+                <div class="section-title">{{ __('invoice.title', ['number' => $invoice->reference]) }}</div>
                 <div class="muted">{{ $date_invoice }}</div>
             </div>
         </div>
@@ -177,18 +194,18 @@ if (!empty($logoPath)) {
             <thead>
                 <tr>
                     <td> 
-                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">Dirección de facturación</div>
+                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.billing_address') }}</div>
                         <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
                         @if(!empty($design['show_customer_number']) && !empty($invoice->customer->reference))
-                            <div class="muted">Cliente #{{ $invoice->customer->reference }}</div>
+                            <div class="muted">{{ __('invoice.customer_number', ['number' => $invoice->customer->reference]) }}</div>
                         @endif
                         <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_billing ?? '')) !!}</div>
                         @if(!empty($design['show_customer_phone']) && !empty($invoice->customer->phone))
-                            <div class="muted">Tel: {{ $invoice->customer->phone }}</div>
+                            <div class="muted">{{ __('invoice.phone', ['phone' => $invoice->customer->phone]) }}</div>
                         @endif
                     </td>
                     <td>
-                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">Dirección de envío</div>
+                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.shipping_address') }}</div>
                         <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
                         <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_delivery ?? $invoice->customer->address_billing ?? '')) !!}</div>
                     </td>
@@ -200,26 +217,26 @@ if (!empty($logoPath)) {
             <thead>
                 <tr>
                     <th style="width:40%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                        Nombre de artículo y descripción
+                        {{ __('invoice.item_description') }}
                     </th>
                     @if(!empty($design['show_tax_column']))
                         <th class="text-center" style="width:10%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                            IVA
+                            {{ __('invoice.tax') }}
                         </th>
                     @endif
                     @if(!empty($design['show_discount']))
                         <th class="text-center" style="width:10%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                            Dto.
+                            {{ __('invoice.discount') }}
                         </th>
                     @endif
                     <th class="text-center" style="width:12%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                        Cantidad
+                        {{ __('invoice.quantity') }}
                     </th>
                     <th class="text-center" style="width:12%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                        Precio unitario
+                        {{ __('invoice.unit_price') }}
                     </th>
                     <th class="text-right" style="width:16%; background: {{ $design['table_header_bg'] }}; color: {{ $design['table_header_text'] }}; border-bottom: 1px solid {{ $design['table_border'] }}; border-top: 1px solid {{ $design['table_border'] }};">
-                        Importe
+                        {{ __('invoice.amount') }}
                     </th>
                 </tr>
             </thead>
@@ -238,9 +255,9 @@ if (!empty($logoPath)) {
                         @if(!empty($design['show_discount']))
                             <td class="text-center"></td>
                         @endif
-                        <td class="text-center">{{ number_format($item->qty, 2, ",", ".") }}</td>
-                        <td class="text-center">{{ number_format($item->price, 2, ",", ".") }} € /day</td>
-                        <td class="text-right">{{ number_format($item->total, 2, ",", ".") }} €</td>
+                        <td class="text-center">{{ $formatNumber($item->qty) }}</td>
+                        <td class="text-center">{{ $formatMoney($item->price) }}</td>
+                        <td class="text-right">{{ $formatMoney($item->total) }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -251,34 +268,34 @@ if (!empty($logoPath)) {
                 <tbody>
                     @if(!empty($design['show_subtotal']))
                     <tr>
-                        <td style="font-weight:700; text-align:right;">Subtotal</td>
-                        <td class="text-right">{{ number_format($invoice->sub_total, 2, ",", ".") }} €</td>
+                        <td style="font-weight:700; text-align:right;">{{ __('invoice.subtotal') }}</td>
+                        <td class="text-right">{{ $formatMoney($invoice->sub_total) }}</td>
                     </tr>
                     @endif
                     @if(!empty($design['show_tax_breakdown']))
                         @php $base = $invoice->sub_total; @endphp
                         @if($invoice->vta4)
                             <tr>
-                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 4%)</td>
-                                <td class="text-right">{{ number_format($invoice->vta4, 2, ",", ".") }} €</td>
+                                <td class="muted" style="text-align:right;">{{ __('invoice.tax_line', ['base' => $formatMoney($base), 'rate' => 4]) }}</td>
+                                <td class="text-right">{{ $formatMoney($invoice->vta4) }}</td>
                             </tr>
                         @endif
                         @if($invoice->vta10)
                             <tr>
-                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 10%)</td>
-                                <td class="text-right">{{ number_format($invoice->vta10, 2, ",", ".") }} €</td>
+                                <td class="muted" style="text-align:right;">{{ __('invoice.tax_line', ['base' => $formatMoney($base), 'rate' => 10]) }}</td>
+                                <td class="text-right">{{ $formatMoney($invoice->vta10) }}</td>
                             </tr>
                         @endif
                         @if($invoice->vta21)
                             <tr>
-                                <td class="muted" style="text-align:right;">IVA ({{ number_format($base, 2, ",", ".") }} € x 21%)</td>
-                                <td class="text-right">{{ number_format($invoice->vta21, 2, ",", ".") }} €</td>
+                                <td class="muted" style="text-align:right;">{{ __('invoice.tax_line', ['base' => $formatMoney($base), 'rate' => 21]) }}</td>
+                                <td class="text-right">{{ $formatMoney($invoice->vta21) }}</td>
                             </tr>
                         @endif
                     @endif
                     <tr class="total-row">
-                        <td style="font-weight:700; text-align:right;">Total</td>
-                        <td class="text-right">{{ number_format($invoice->total, 2, ",", ".") }} €</td>
+                        <td style="font-weight:700; text-align:right;">{{ __('invoice.total') }}</td>
+                        <td class="text-right">{{ $formatMoney($invoice->total) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -286,14 +303,14 @@ if (!empty($logoPath)) {
 
         @if(!empty($design['show_payment_terms']) && !empty($invoice->payment_terms))
             <div class="mt-2" style="display:flex; justify-content: center; gap: 28px; color: var(--muted); font-weight: 700;">
-                <div>Términos de pago</div>
+                <div>{{ __('invoice.payment_terms') }}</div>
                 <div style="text-align: right;">{{ $invoice->payment_terms }}</div>
             </div>
         @endif
 
         @if(!empty($design['show_payment_note']) && !empty($design['payment_note']))
             <div class="mt-2">
-                <div style="font-weight:700;">Información de Pago</div>
+                <div style="font-weight:700;">{{ __('invoice.payment_info') }}</div>
                 <div class="muted" style="white-space: pre-line;">{!! nl2br(e($design['payment_note'])) !!}</div>
             </div>
         @endif

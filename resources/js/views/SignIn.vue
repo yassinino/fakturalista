@@ -5,12 +5,12 @@
       <div class="row justify-content-center push">
         <div class="col-md-8 col-lg-6 col-xl-4">
           <!-- Sign In Block -->
-          <BaseBlock title="Iniciar sesión" class="mb-0">
+          <BaseBlock :title="$t('auth.signInTitle')" class="mb-0">
             <template #options>
               <RouterLink
               :to="{ name: 'auth-signin' }"
                 class="btn-block-option fs-sm"
-                >¿Olvidaste tu contraseña?</RouterLink
+                >{{ $t("auth.forgotPassword") }}</RouterLink
               >
             </template>
 
@@ -30,7 +30,7 @@
                       class="form-control form-control-alt form-control-lg"
                       id="login-email"
                       name="login-email"
-                      placeholder="Correo electrónico"
+                      :placeholder="$t('auth.emailPlaceholder')"
                       :class="{
                         'is-invalid': v$.email.$errors.length,
                       }"
@@ -41,7 +41,7 @@
                       v-if="v$.email.$errors.length"
                       class="invalid-feedback animated fadeIn"
                     >
-                      Requerido
+                      {{ $t("auth.required") }}
                     </div>
                   </div>
                   <div class="mb-4">
@@ -50,7 +50,7 @@
                       class="form-control form-control-alt form-control-lg"
                       id="login-password"
                       name="login-password"
-                      placeholder="Contraseña"
+                      :placeholder="$t('auth.passwordPlaceholder')"
                       :class="{
                         'is-invalid': v$.password.$errors.length,
                       }"
@@ -61,7 +61,7 @@
                       v-if="v$.password.$errors.length"
                       class="invalid-feedback animated fadeIn"
                     >
-                      Requerido
+                      {{ $t("auth.required") }}
                     </div>
                   </div>
                   <!-- <div class="mb-4">
@@ -83,7 +83,7 @@
                   <div class="col-md-6 col-xl-12">
                     <button type="submit" class="btn btn-block btn-alt-primary">
                       <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i>
-                      Iniciar sesión
+                      {{ $t("auth.submit") }}
                     </button>
                   </div>
                 </div>
@@ -106,9 +106,10 @@
 
 <script setup>
 import { reactive, computed, ref } from "vue";
-import { useRouter } from "vue-router";
 import { useTemplateStore } from "@/stores/template";
 import axios from 'axios'
+import { useI18n } from "vue-i18n";
+import { setLocale } from "@/i18n";
 
 // Vuelidate, for more info and examples you can check out https://github.com/vuelidate/vuelidate
 import useVuelidate from "@vuelidate/core";
@@ -117,6 +118,7 @@ import { required, minLength, email } from "@vuelidate/validators";
 // Main store and Router
 const store = useTemplateStore();
 const errorMessage = ref('');
+const { t } = useI18n();
 
 // Input state variables
 const state = reactive({
@@ -154,15 +156,16 @@ async function onSubmit() {
 
   axios.post('/login',state).then(res => {
                               store.loginUser(res.data.data);
+                              setLocale(res.data.data?.user?.locale || "es");
 															  // Go to dashboard
                               window.location.href = '/admin/customers';
 	}).catch(error => {
     if (error.response?.status === 401) {
-      errorMessage.value = 'Las credenciales no son correctas.';
+      errorMessage.value = t('auth.invalidCredentials');
       return;
     }
 
-    errorMessage.value = 'No se pudo iniciar sesión. Inténtalo nuevamente.';
+    errorMessage.value = t('auth.failed');
   })		
 
 }

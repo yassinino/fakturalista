@@ -18,7 +18,7 @@
                   {{ isLoadingStats ? '...' : stats.invoices }}
                 </dt>
                 <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">
-                  Facturas
+                  {{ $t("reports.cards.invoices") }}
                 </dd>
               </dl>
               <div class="item item-rounded-lg bg-body-light">
@@ -30,7 +30,7 @@
                 class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between"
                 href="javascript:void(0)"
               >
-                <span>Ver facturas</span>
+                <span>{{ $t("reports.actions.viewInvoices") }}</span>
                 <i
                   class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"
                 ></i>
@@ -52,7 +52,7 @@
                   {{ isLoadingStats ? '...' : stats.customers }}
                 </dt>
                 <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">
-                  Clientes
+                  {{ $t("reports.cards.customers") }}
                 </dd>
               </dl>
               <div class="item item-rounded-lg bg-body-light">
@@ -64,7 +64,7 @@
                 class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between"
                 href="javascript:void(0)"
               >
-                <span>Ver clientes</span>
+                <span>{{ $t("reports.actions.viewCustomers") }}</span>
                 <i
                   class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"
                 ></i>
@@ -86,7 +86,7 @@
                   {{ isLoadingStats ? '...' : stats.items }}
                 </dt>
                 <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">
-                  Productos
+                  {{ $t("reports.cards.items") }}
                 </dd>
               </dl>
               <div class="item item-rounded-lg bg-body-light">
@@ -98,7 +98,7 @@
                 class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between"
                 href="javascript:void(0)"
               >
-                <span>Ver productos</span>
+                <span>{{ $t("reports.actions.viewItems") }}</span>
                 <i
                   class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"
                 ></i>
@@ -120,7 +120,7 @@
                   {{ isLoadingStats ? '...' : formatCurrency(stats.totalEarnings) }}
                 </dt>
                 <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">
-                  Ganancias totales
+                  {{ $t("reports.cards.totalEarnings") }}
                 </dd>
               </dl>
               <div class="item item-rounded-lg bg-body-light">
@@ -132,7 +132,7 @@
                 class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between"
                 href="javascript:void(0)"
               >
-                <span>Ver ingresos</span>
+                <span>{{ $t("reports.actions.viewEarnings") }}</span>
                 <i
                   class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"
                 ></i>
@@ -146,7 +146,7 @@
     <!-- END Overview -->
 
     <!-- Últimas facturas -->
-    <BaseBlock title="Últimas facturas">
+    <BaseBlock :title="$t('reports.latestInvoicesTitle')">
       <template #content>
         <div class="block-content">
           <div v-if="invoicesError" class="alert alert-warning" role="alert">
@@ -156,21 +156,21 @@
             <table class="table table-hover table-vcenter">
               <thead>
                 <tr>
-                  <th>Numero</th>
-                  <th>Cliente</th>
-                  <th>Fecha</th>
-                  <th class="text-end">SUMA</th>
-                  <th class="text-end">Total</th>
-                  <th class="text-center">Estado</th>
+                  <th>{{ $t("invoices.table.number") }}</th>
+                  <th>{{ $t("invoices.table.customer") }}</th>
+                  <th>{{ $t("invoices.table.date") }}</th>
+                  <th class="text-end">{{ $t("invoices.table.subtotal") }}</th>
+                  <th class="text-end">{{ $t("invoices.table.total") }}</th>
+                  <th class="text-center">{{ $t("invoices.table.status") }}</th>
                 </tr>
               </thead>
               <tbody class="fs-sm">
                 <tr v-if="isLoadingInvoices">
-                  <td colspan="6" class="text-center text-muted">Cargando...</td>
+                  <td colspan="6" class="text-center text-muted">{{ $t("common.loading") }}</td>
                 </tr>
                 <tr v-else-if="!lastInvoices.length">
                   <td colspan="6" class="text-center text-muted">
-                    No hay facturas recientes.
+                    {{ $t("reports.emptyInvoices") }}
                   </td>
                 </tr>
                 <tr v-else v-for="invoice in lastInvoices" :key="invoice.uuid">
@@ -183,7 +183,7 @@
                       <span 
                       class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill"
                       :class="invoice.status == 1 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'">
-                      {{ invoice.status == 1 ? 'Pagado' : 'No Pagado' }}
+                      {{ invoice.status == 1 ? $t('invoices.statusPaid') : $t('invoices.statusUnpaid') }}
                       </span>
                   </td>
                 </tr>
@@ -203,6 +203,7 @@
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import axios from "axios";
+import { useI18n } from "vue-i18n";
 
 // vue-chartjs, for more info and examples you can check out https://vue-chartjs.org/ and http://www.chartjs.org/docs/ -->
 import { Line, Bar } from "vue-chartjs";
@@ -225,6 +226,7 @@ Chart.defaults.plugins.legend.labels.boxWidth = 10;
 // Helper variables
 const orderSearch = ref(false);
 const isLoadingStats = ref(true);
+const { locale, t } = useI18n();
 const stats = reactive({
   invoices: 0,
   customers: 0,
@@ -232,8 +234,13 @@ const stats = reactive({
   totalEarnings: 0,
 });
 const statsError = ref("");
+const localeMap = {
+  es: "es-ES",
+  en: "en-US",
+  fr: "fr-FR",
+};
 const formatCurrency = (value) =>
-  new Intl.NumberFormat("es-ES", {
+  new Intl.NumberFormat(localeMap[locale.value] || "es-ES", {
     style: "currency",
     currency: "EUR",
     minimumFractionDigits: 2,
@@ -251,7 +258,7 @@ const loadStats = async () => {
     stats.items = data?.items ?? 0;
     stats.totalEarnings = data?.total_earnings ?? 0;
   } catch (error) {
-    statsError.value = "No se pudieron cargar las estadísticas.";
+    statsError.value = t("reports.errors.stats");
   } finally {
     isLoadingStats.value = false;
   }
@@ -261,7 +268,7 @@ const lastInvoices = ref([]);
 const isLoadingInvoices = ref(true);
 const invoicesError = ref("");
 const formatDate = (value) =>
-  value ? new Date(value).toLocaleDateString("es-ES") : "";
+  value ? new Date(value).toLocaleDateString(localeMap[locale.value] || "es-ES") : "";
 
 const loadLastInvoices = async () => {
   isLoadingInvoices.value = true;
@@ -273,7 +280,7 @@ const loadLastInvoices = async () => {
     });
     lastInvoices.value = data?.invoices ?? [];
   } catch (error) {
-    invoicesError.value = "No se pudieron cargar las últimas facturas.";
+    invoicesError.value = t("reports.errors.invoices");
   } finally {
     isLoadingInvoices.value = false;
   }

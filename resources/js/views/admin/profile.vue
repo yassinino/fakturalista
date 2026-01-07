@@ -3,23 +3,25 @@
   <!-- Page Content -->
   <div class="content content-boxed">
     <!-- User Profile -->
-    <BaseBlock title="Perfil de usuario">
+    <BaseBlock :title="$t('profile.title')">
       <form @submit.prevent="submitProfile">
         <div class="row push">
           <div class="col-lg-4">
             <p class="fs-sm text-muted">
-              Actualiza tus datos de acceso y la imagen de tu cuenta.
+              {{ $t("profile.description") }}
             </p>
           </div>
           <div class="col-lg-8 col-xl-5">
             <div class="mb-4">
-              <label class="form-label" for="one-profile-edit-name">Nombre</label>
+              <label class="form-label" for="one-profile-edit-name">{{
+                $t("profile.nameLabel")
+              }}</label>
               <input
                 type="text"
                 class="form-control"
                 id="one-profile-edit-name"
                 name="one-profile-edit-name"
-                placeholder="Introduce tu nombre.."
+                :placeholder="$t('profile.namePlaceholder')"
                 v-model="profileForm.name"
                 :disabled="isLoadingProfile || isSavingProfile"
                 :class="{ 'is-invalid': profileErrors.name }"
@@ -31,14 +33,14 @@
 
             <div class="mb-4">
               <label class="form-label" for="one-profile-edit-email"
-                >Correo electrónico</label
+                >{{ $t("profile.emailLabel") }}</label
               >
               <input
                 type="email"
                 class="form-control"
                 id="one-profile-edit-email"
                 name="one-profile-edit-email"
-                placeholder="Enter your email.."
+                :placeholder="$t('profile.emailPlaceholder')"
                 v-model="profileForm.email"
                 :disabled="isLoadingProfile || isSavingProfile"
                 :class="{ 'is-invalid': profileErrors.email }"
@@ -48,7 +50,27 @@
               </div>
             </div>
             <div class="mb-4">
-              <label class="form-label">Imagen de perfil</label>
+              <label class="form-label" for="one-profile-edit-locale">{{
+                $t("profile.languageLabel")
+              }}</label>
+              <select
+                id="one-profile-edit-locale"
+                name="one-profile-edit-locale"
+                class="form-select"
+                v-model="profileForm.locale"
+                :disabled="isLoadingProfile || isSavingProfile"
+                :class="{ 'is-invalid': profileErrors.locale }"
+              >
+                <option value="es">{{ $t("languages.es") }}</option>
+                <option value="en">{{ $t("languages.en") }}</option>
+                <option value="fr">{{ $t("languages.fr") }}</option>
+              </select>
+              <div v-if="profileErrors.locale" class="invalid-feedback">
+                {{ profileErrors.locale[0] }}
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">{{ $t("profile.avatarLabel") }}</label>
               <div class="mb-4">
                 <img
                   class="img-avatar"
@@ -58,7 +80,7 @@
               </div>
               <div class="mb-4">
                 <label for="one-profile-edit-avatar" class="form-label"
-                  >Elige un nuevo imagen</label
+                  >{{ $t("profile.avatarChoose") }}</label
                 >
                 <input
                   class="form-control"
@@ -67,7 +89,11 @@
                   accept="image/*"
                   @change="onAvatarChange"
                   :disabled="isSavingProfile"
+                  :class="{ 'is-invalid': profileErrors.avatar }"
                 />
+                <div v-if="profileErrors.avatar" class="invalid-feedback">
+                  {{ profileErrors.avatar[0] }}
+                </div>
               </div>
             </div>
             <div class="mb-4">
@@ -82,7 +108,7 @@
                   role="status"
                   aria-hidden="true"
                 ></span>
-                Guardar
+                {{ $t("profile.save") }}
               </button>
             </div>
           </div>
@@ -92,18 +118,18 @@
     <!-- END User Profile -->
 
     <!-- Change Password -->
-    <BaseBlock title="Cambiar contraseña">
+    <BaseBlock :title="$t('profile.passwordTitle')">
       <form @submit.prevent="submitPassword">
         <div class="row push">
           <div class="col-lg-4">
             <p class="fs-sm text-muted">
-              Cambiar tu contraseña de inicio de sesión es una forma fácil de mantener tu cuenta segura.
+              {{ $t("profile.passwordDescription") }}
             </p>
           </div>
           <div class="col-lg-8 col-xl-5">
             <div class="mb-4">
               <label class="form-label" for="one-profile-edit-password"
-                >Contraseña actual</label
+                >{{ $t("profile.currentPassword") }}</label
               >
               <input
                 type="password"
@@ -121,7 +147,7 @@
             <div class="row mb-4">
               <div class="col-12">
                 <label class="form-label" for="one-profile-edit-password-new"
-                  >Nueva contraseña</label
+                  >{{ $t("profile.newPassword") }}</label
                 >
                 <input
                 type="password"
@@ -142,7 +168,7 @@
                 <label
                   class="form-label"
                   for="one-profile-edit-password-new-confirm"
-                  >Confirmar nueva contraseña</label
+                  >{{ $t("profile.confirmPassword") }}</label
                 >
                 <input
                 type="password"
@@ -173,7 +199,7 @@
                   role="status"
                   aria-hidden="true"
                 ></span>
-                Guardar
+                {{ $t("profile.save") }}
               </button>
             </div>
           </div>
@@ -189,15 +215,19 @@
 import { reactive, ref, onMounted } from "vue";
 import axios from 'axios'
 import { createToaster } from '@meforma/vue-toaster';
+import { useI18n } from "vue-i18n";
+import { setLocale } from "@/i18n";
 const toaster = createToaster({ /* options */ });
 
 const defaultAvatar = '/assets/media/avatars/avatar13.jpg';
 const avatarPreview = ref(defaultAvatar);
 const avatarFile = ref(null);
+const { t } = useI18n();
 
 const profileForm = reactive({
   name: '',
   email: '',
+  locale: 'es',
 });
 const passwordForm = reactive({
   current_password: '',
@@ -211,6 +241,14 @@ const isSavingProfile = ref(false);
 const isSavingPassword = ref(false);
 const isLoadingProfile = ref(true);
 
+const setAvatarPreview = (url) => {
+  if (avatarPreview.value?.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value);
+  }
+
+  avatarPreview.value = url || defaultAvatar;
+};
+
 const fetchProfile = async () => {
   isLoadingProfile.value = true;
   profileErrors.value = {};
@@ -219,14 +257,18 @@ const fetchProfile = async () => {
     const { data } = await axios.get('/user');
     profileForm.name = data?.user?.name ?? '';
     profileForm.email = data?.user?.email ?? '';
+    profileForm.locale = data?.user?.locale ?? 'es';
+    if (data?.user?.locale) {
+      setLocale(data.user.locale);
+    }
 
     if (data?.user?.avatar_url) {
-      avatarPreview.value = data.user.avatar_url;
+      setAvatarPreview(data.user.avatar_url);
     } else if (!avatarFile.value) {
-      avatarPreview.value = defaultAvatar;
+      setAvatarPreview(defaultAvatar);
     }
   } catch (error) {
-    toaster.error('No se pudo cargar tu perfil.');
+    toaster.error(t('notifications.profileLoadError'));
   } finally {
     isLoadingProfile.value = false;
   }
@@ -239,9 +281,9 @@ const onAvatarChange = (event) => {
   avatarFile.value = file || null;
 
   if (file) {
-    avatarPreview.value = URL.createObjectURL(file);
+    setAvatarPreview(URL.createObjectURL(file));
   } else {
-    avatarPreview.value = defaultAvatar;
+    setAvatarPreview(defaultAvatar);
   }
 };
 
@@ -254,6 +296,7 @@ const submitProfile = async () => {
     formData.append('_method', 'put');
     formData.append('name', profileForm.name ?? '');
     formData.append('email', profileForm.email ?? '');
+    formData.append('locale', profileForm.locale ?? 'es');
     if (avatarFile.value) {
       formData.append('avatar', avatarFile.value);
     }
@@ -264,14 +307,26 @@ const submitProfile = async () => {
       },
     });
 
-    toaster.success(data?.message ?? 'Perfil actualizado correctamente.');
+    toaster.success(t('notifications.profileUpdateSuccess'));
+    setLocale(data?.user?.locale ?? profileForm.locale ?? 'es');
+    avatarFile.value = null;
+    if (data?.user?.avatar_url) {
+      setAvatarPreview(data.user.avatar_url);
+    } else {
+      setAvatarPreview(defaultAvatar);
+    }
+    if (data?.user) {
+      window.dispatchEvent(new CustomEvent('user-profile-updated', {
+        detail: { user: data.user },
+      }));
+    }
   } catch (error) {
     if (error.response?.status === 422) {
       profileErrors.value = error.response.data?.errors || {};
       return;
     }
 
-    toaster.error('No se pudo actualizar el perfil.');
+    toaster.error(t('notifications.profileUpdateError'));
   } finally {
     isSavingProfile.value = false;
   }
@@ -282,14 +337,14 @@ const submitPassword = async () => {
   passwordErrors.value = {};
 
   try {
-    const { data } = await axios.post('/user', {
+    await axios.post('/user', {
       _method: 'put',
       current_password: passwordForm.current_password,
       password: passwordForm.password,
       password_confirmation: passwordForm.password_confirmation,
     });
 
-    toaster.success(data?.message ?? 'Contraseña actualizada correctamente.');
+    toaster.success(t('notifications.passwordUpdateSuccess'));
     passwordForm.current_password = '';
     passwordForm.password = '';
     passwordForm.password_confirmation = '';
@@ -299,7 +354,7 @@ const submitPassword = async () => {
       return;
     }
 
-    toaster.error('No se pudo actualizar la contraseña.');
+    toaster.error(t('notifications.passwordUpdateError'));
   } finally {
     isSavingPassword.value = false;
   }

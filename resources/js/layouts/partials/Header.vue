@@ -3,6 +3,8 @@ import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useTemplateStore } from "@/stores/template";
 import axios from "axios";
+import { useI18n } from "vue-i18n";
+import { setLocale } from "@/i18n";
 
 // Grab example data
 import notifications from "@/data/notifications";
@@ -10,12 +12,18 @@ import notifications from "@/data/notifications";
 // Main store and Router
 const store = useTemplateStore();
 const router = useRouter();
+const { t, locale } = useI18n();
 
 // Reactive variables
 const baseSearchTerm = ref("");
 const userName = ref("");
+const defaultAvatar = "/assets/media/avatars/avatar10.jpg";
+const userAvatar = ref(defaultAvatar);
 const isLoadingUser = ref(true);
-const userDisplayName = computed(() => userName.value || "Usuario");
+const userDisplayName = computed(() => {
+  locale.value;
+  return userName.value || t("header.userFallback");
+});
 
 // On form search submit functionality
 function onSubmitSearch() {
@@ -33,12 +41,14 @@ function eventHeaderSearch(event) {
 // Attach ESCAPE key event listener
 onMounted(() => {
   document.addEventListener("keydown", eventHeaderSearch);
+  window.addEventListener("user-profile-updated", handleUserProfileUpdated);
   loadUser();
 });
 
 // Remove keydown event listener
 onUnmounted(() => {
   document.removeEventListener("keydown", eventHeaderSearch);
+  window.removeEventListener("user-profile-updated", handleUserProfileUpdated);
 });
 
 const loadUser = async () => {
@@ -46,10 +56,27 @@ const loadUser = async () => {
   try {
     const { data } = await axios.get("/user");
     userName.value = data?.user?.name ?? "";
+    userAvatar.value = data?.user?.avatar_url || defaultAvatar;
+    if (data?.user?.locale) {
+      setLocale(data.user.locale);
+    }
   } catch (error) {
     // keep fallback display name
   } finally {
     isLoadingUser.value = false;
+  }
+};
+
+const handleUserProfileUpdated = (event) => {
+  const user = event?.detail?.user;
+  if (!user) {
+    return;
+  }
+
+  userName.value = user.name ?? userName.value;
+  userAvatar.value = user.avatar_url || defaultAvatar;
+  if (user.locale) {
+    setLocale(user.locale);
   }
 };
 </script>
@@ -103,7 +130,7 @@ const loadUser = async () => {
                   <input
                     type="text"
                     class="form-control form-control-alt"
-                    placeholder="Search.."
+                    :placeholder="$t('header.searchPlaceholder')"
                     id="page-header-search-input2"
                     name="page-header-search-input2"
                     v-model="baseSearchTerm"
@@ -134,7 +161,7 @@ const loadUser = async () => {
                 >
                   <img
                     class="rounded-circle"
-                    src="/assets/media/avatars/avatar10.jpg"
+                    :src="userAvatar"
                     alt="Header Avatar"
                     style="width: 21px"
                   />
@@ -152,7 +179,7 @@ const loadUser = async () => {
                   >
                     <img
                       class="img-avatar img-avatar48 img-avatar-thumb"
-                      src="/assets/media/avatars/avatar10.jpg"
+                      :src="userAvatar"
                       alt="Header Avatar"
                     />
                     <p class="mt-2 mb-0 fw-medium">
@@ -166,7 +193,15 @@ const loadUser = async () => {
                       :to="{ name: 'backend-profile' }"
                       class="dropdown-item d-flex align-items-center justify-content-between"
                     >
-                      <span class="fs-sm fw-medium">Perfil</span>
+                      <span class="fs-sm fw-medium">{{ $t("menu.profile") }}</span>
+                      <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
+                    </RouterLink>
+
+                    <RouterLink
+                      :to="{ name: 'backend-templates' }"
+                      class="dropdown-item d-flex align-items-center justify-content-between"
+                    >
+                      <span class="fs-sm fw-medium">{{ $t("menu.templates") }}</span>
                       <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
                     </RouterLink>
 
@@ -174,7 +209,7 @@ const loadUser = async () => {
                       :to="{ name: 'backend-subscription' }"
                       class="dropdown-item d-flex align-items-center justify-content-between"
                     >
-                      <span class="fs-sm fw-medium">Suscripción</span>
+                      <span class="fs-sm fw-medium">{{ $t("menu.subscription") }}</span>
                       <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
                     </RouterLink>
 
@@ -182,7 +217,7 @@ const loadUser = async () => {
                       :to="{ name: 'backend-settings' }"
                       class="dropdown-item d-flex align-items-center justify-content-between"
                     >
-                      <span class="fs-sm fw-medium">Configuración</span>
+                      <span class="fs-sm fw-medium">{{ $t("menu.settings") }}</span>
                       <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
                     </RouterLink>
 
@@ -194,7 +229,7 @@ const loadUser = async () => {
                       :to="{ name: 'auth-signout' }"
                       class="dropdown-item d-flex align-items-center justify-content-between"
                     >
-                      <span class="fs-sm fw-medium">Cerrar sesión</span>
+                      <span class="fs-sm fw-medium">{{ $t("menu.logout") }}</span>
                     </RouterLink>
                   </div>
                 </div>
@@ -232,7 +267,7 @@ const loadUser = async () => {
               <input
                 type="text"
                 class="form-control"
-                placeholder="Search or hit ESC.."
+                :placeholder="$t('header.searchPlaceholderAlt')"
                 id="page-header-search-input"
                 name="page-header-search-input"
                 v-model="baseSearchTerm"

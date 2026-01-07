@@ -1,10 +1,12 @@
 <template>
     <div class="content">    
     
-      <BaseBlock title="Productos o Servicios">
+      <BaseBlock :title="$t('items.title')">
               <template #options>
                 <div class="block-options-item">
-                  <router-link to="items/new" class="btn btn-primary">Nuevo producto o servicio</router-link>
+                  <router-link to="items/new" class="btn btn-primary">
+                    {{ $t("items.newTitle") }}
+                  </router-link>
                 </div>
               </template>
     
@@ -15,21 +17,21 @@
                       <input type="checkbox" class="form-check-input" @change="clickedAll">
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Nombre
+                      {{ $t("items.fields.name") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Descripción
+                      {{ $t("items.fields.description") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Referencia
+                      {{ $t("items.fields.reference") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Precio de venta
+                      {{ $t("items.fields.salesPrice") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Precio de compra
+                      {{ $t("items.fields.purchasePrice") }}
                     </th>
-                    <th class="text-center" style="width: 100px">Acciones</th>
+                    <th class="text-center" style="width: 100px">{{ $t("common.actions") }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -68,8 +70,12 @@
                           class="dropdown-menu fs-sm"
                           aria-labelledby="dropdown-dropleft-dark"
                         >
-                          <router-link class="dropdown-item danger" :to="'items/edit/' + product.uuid">Editar</router-link>
-                          <a class="dropdown-item danger" href="javascript:void(0)" @click.prevent="deleteProduct(product)">Eliminar</a>
+                          <router-link class="dropdown-item danger" :to="'items/edit/' + product.uuid">
+                            {{ $t("common.edit") }}
+                          </router-link>
+                          <a class="dropdown-item danger" href="javascript:void(0)" @click.prevent="deleteProduct(product)">
+                            {{ $t("common.delete") }}
+                          </a>
                         </div>
                       </div>
                     </td>
@@ -86,10 +92,12 @@
     <script setup>
     import { ref, onMounted } from "vue";
     import axios from 'axios'
+    import { useI18n } from "vue-i18n";
     
     
     // Input state variables
     const items = ref([])
+    const { t } = useI18n();
     
     onMounted(async () => {
             
@@ -99,7 +107,7 @@
     
     
     const deleteProduct = (product) => {
-      if (confirm('¿Estás seguro de que deseas eliminar este producto o servicio?')) {
+      if (confirm(t('items.confirmDelete'))) {
           axios.delete('/items/' + product.uuid)
           .then(response => {
               items.value = items.value.filter(item => item.uuid !== product.uuid);

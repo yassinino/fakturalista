@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 // use Laravel\Sanctum\HasApiTokens;
 use Laravel\Passport\HasApiTokens;
 
@@ -23,6 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'locale',
+        'avatar_path',
     ];
 
     /**
@@ -36,6 +39,15 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'avatar_url',
+    ];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -43,4 +55,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (!$this->avatar_path) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->avatar_path);
+    }
 }

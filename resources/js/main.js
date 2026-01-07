@@ -5,17 +5,16 @@ import App from "./App.vue";
 // You can use the following starter router instead of the default one as a clean starting point
 // import router from "./router/starter";
 import router from "./router";
+import { i18n } from "@/i18n";
 
 // Template components
 import BaseBlock from "@/components/BaseBlock.vue";
 import BaseBackground from "@/components/BaseBackground.vue";
 import BasePageHeading from "@/components/BasePageHeading.vue";
-import SalesHeading from "@/views/admin/layouts/SalesHeading.vue";
 import CreateDocument from "@/views/admin/layouts/documents/create.vue";
 import EditDocument from "@/views/admin/layouts/documents/edit.vue";
 import printDocument from "@/views/admin/layouts/documents/print.vue";
 import AddProduct from "@/views/admin/items/create.vue";
-import showListProduct from "@/views/admin/layouts/showListProduct.vue";
 
 import Toaster from '@meforma/vue-toaster';
 import "vue-select/dist/vue-select.css";
@@ -36,12 +35,10 @@ const app = createApp(App);
 app.component("BaseBlock", BaseBlock);
 app.component("BaseBackground", BaseBackground);
 app.component("BasePageHeading", BasePageHeading);
-app.component("SalesHeading", SalesHeading);
 app.component("CreateDocument", CreateDocument);
 app.component("EditDocument", EditDocument);
 app.component("printDocument", printDocument);
 app.component("AddProduct", AddProduct);
-app.component("showListProduct", showListProduct);
 
 // Register global directives
 app.directive("click-ripple", clickRipple);
@@ -49,6 +46,7 @@ app.directive("click-ripple", clickRipple);
 // Use Pinia and Vue Router
 app.use(createPinia());
 app.use(Toaster)
+app.use(i18n);
 app.use(router);
 
 // keep your helper as-is or use this slightly harder version

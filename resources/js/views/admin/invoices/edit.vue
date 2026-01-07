@@ -1,7 +1,7 @@
 <template>
     
   <EditDocument 
-  :title="'Factura #' + state.reference"
+  :title="$t('invoices.editTitle', { number: state.reference })"
   :state="state"
   @saveDocument = "saveInvoice"
   >

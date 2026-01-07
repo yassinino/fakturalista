@@ -12,7 +12,7 @@
             <div class="col-lg-6">
                 <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-customer"
-                    >Cliente<span class="text-danger">*</span></label>
+                    >{{ $t("documents.customer") }}<span class="text-danger">*</span></label>
                     <div class="col-sm-8">
                     <VueSelect
                       id="quote-customer"
@@ -25,20 +25,20 @@
                       :class="{
                         'is-invalid': v$.customer_id.$errors.length,
                       }"
-                      placeholder="Selecciona un cliente"
+                      :placeholder="$t('documents.selectCustomer')"
                     ></VueSelect>
                     <div
                         v-if="v$.customer_id.$errors.length"
                         class="invalid-feedback animated fadeIn"
                       >
-                      Requerida
+                      {{ $t("validation.required") }}
                       </div>
 
                   </div>
                 </div>
                 <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-address"
-                    >Dirección</label>
+                    >{{ $t("documents.address") }}</label>
                   <div class="col-sm-8">
                     <textarea class="form-control" v-model="state.address" rows="5" id="quote-address" disabled></textarea>
                   </div>
@@ -48,7 +48,7 @@
             <div class="col-lg-6">
                 <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-date"
-                    >Fecha<span class="text-danger">*</span></label>
+                    >{{ $t("documents.date") }}<span class="text-danger">*</span></label>
                   <div class="col-sm-8">
                     <FlatPickr
                       id="quote-date"
@@ -60,16 +60,16 @@
                 </div>
                 <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-status"
-                    >Estado</label>
+                    >{{ $t("documents.status") }}</label>
                   <div class="col-sm-8">
                     <select
                       class="form-select"
                       id="quote-status"
                       v-model="state.status"
                       >
-                      <option selected>Seleccione un estado</option>
-                      <option value="1">Pagado</option>
-                      <option value="0">No Pagado</option>
+                      <option selected>{{ $t("documents.statusPlaceholder") }}</option>
+                      <option value="1">{{ $t("documents.statusPaid") }}</option>
+                      <option value="0">{{ $t("documents.statusUnpaid") }}</option>
                     </select>
                   </div>
                 </div>
@@ -112,22 +112,22 @@
                 <thead>
                   <tr>
                     <th class="d-none d-sm-table-cell" style="width: 35%;">
-                      Descripción
+                      {{ $t("documents.description") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Cantidad
+                      {{ $t("documents.quantity") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Unidad
+                      {{ $t("documents.unit") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Precio unitario
+                      {{ $t("documents.unitPrice") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      IMPORTE
+                      {{ $t("documents.amount") }}
                     </th>
                     <th class="text-center">
-                      IVA%
+                      {{ $t("documents.tax") }}
                     </th>
                     <th></th>
                   </tr>
@@ -144,7 +144,7 @@
                               :options="items"
                               label="name"
                               :reduce="(option) => option.id"
-                              placeholder="Seleccionar producto"
+                              :placeholder="$t('documents.selectProduct')"
                             ></VueSelect>
 
                             <textarea class="form-control mt-2" rows="2" v-model="cart.description"></textarea>
@@ -168,8 +168,8 @@
                       id="cart-vta"
                       v-model="cart.unite"
                       >
-                      <option value="pc">pieza</option>
-                      <option value="kg">kg</option>
+                      <option value="pc">{{ $t("units.piece") }}</option>
+                      <option value="kg">{{ $t("units.kilogram") }}</option>
                     </select>
                     </th>
                     <th>
@@ -210,7 +210,7 @@
               </table>
               <button 
                 class="btn btn-primary" @click.prevent="addNewItem()">
-                <i class="fa fa-fw fa-plus"></i> Agregar nuevo artículo
+                <i class="fa fa-fw fa-plus"></i> {{ $t("documents.addItem") }}
               </button>
 
             </div>
@@ -219,7 +219,7 @@
             <div class="col-lg-6">
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-note"
-                    >Nota</label>
+                    >{{ $t("documents.note") }}</label>
                   <div class="col-sm-8">
                     <textarea class="form-control" v-model="state.note" rows="3" id="quote-note"></textarea>
                   </div>
@@ -228,7 +228,7 @@
             <div class="col-lg-6">
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-subtotal"
-                    >SUMA</label>
+                    >{{ $t("documents.subtotal") }}</label>
                   <div class="col-sm-8">
                     <input type="text" 
                       class="form-control" 
@@ -260,7 +260,7 @@
               <hr>
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-vta"
-                    >IVA(4%)</label>
+                    >{{ $t("documents.taxLabel", { rate: 4 }) }}</label>
                   <div class="col-sm-8">
                     <input type="text" 
                       class="form-control" 
@@ -270,7 +270,7 @@
               </div>
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-vta"
-                    >IVA(10%)</label>
+                    >{{ $t("documents.taxLabel", { rate: 10 }) }}</label>
                   <div class="col-sm-8">
                     <input type="text" 
                       class="form-control" 
@@ -280,7 +280,7 @@
               </div>
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-vta"
-                    >IVA(21%)</label>
+                    >{{ $t("documents.taxLabel", { rate: 21 }) }}</label>
                   <div class="col-sm-8">
                     <input type="text" 
                       class="form-control" 
@@ -290,7 +290,7 @@
               </div>
               <div class="row mb-2">
                   <label class="col-sm-4 col-form-label" for="quote-total"
-                    >Total</label>
+                    >{{ $t("documents.total") }}</label>
                   <div class="col-sm-8">
                     <input type="text" 
                       class="form-control" 
@@ -321,7 +321,7 @@
             @click.prevent="saveQuote"
             type="button" 
             class="btn btn-lg btn-primary mb-3">
-            Guardar</button>
+            {{ $t("common.save") }}</button>
   
           </template>
   
@@ -329,7 +329,6 @@
       
   
       </form>
-      <!-- <showListProduct @sendCarts="getcarts"/> -->
 
     
     </div>
@@ -348,6 +347,8 @@
   const toaster = createToaster({ /* options */ });
   import { useRoute } from 'vue-router'
   const route = useRoute()
+  import { useI18n } from "vue-i18n";
+  const { t } = useI18n();
   
   import useVuelidate from "@vuelidate/core";
   import {
@@ -460,7 +461,7 @@
   });
 
   const removeCart = (cart) => {
-    if (confirm("¿Estás seguro de que quieres eliminar este elemento?"))
+    if (confirm(t("documents.removeConfirm")))
         state.value.carts = state.value.carts.filter(ct => ct != cart)
   }
   

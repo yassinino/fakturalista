@@ -1,17 +1,19 @@
 <template>
     <div class="content">
     
-    <BaseBlock :title="'Cliente - ' + state.name ">
+    <BaseBlock :title="$t('customers.detailTitle', { name: customerDisplayName })">
       <template #options>
         <div class="block-options-item">
-          <router-link :to="'/admin/customers/edit/' + state.uuid" class="btn btn-primary">Editar</router-link>
+          <router-link :to="'/admin/customers/edit/' + state.uuid" class="btn btn-primary">
+            {{ $t("common.edit") }}
+          </router-link>
         </div>
       </template>
 
       <div class="row">
         <div class="col-md-6">
           <div class="mb-4">
-            <h5 class="mb-1">Nombre</h5>
+            <h5 class="mb-1">{{ $t("customers.fields.name") }}</h5>
             <p class="fs-sm text-muted">
               {{ state.type == 1 ? state.name : state.first_name + ' ' + state.last_name }}
             </p>
@@ -19,7 +21,7 @@
         </div>
         <div class="col-md-6">
           <div class="mb-4">
-            <h5 class="mb-1">Correo electrónico</h5>
+            <h5 class="mb-1">{{ $t("customers.fields.email") }}</h5>
             <p class="fs-sm text-muted">
               {{ state.email }}
             </p>
@@ -27,7 +29,7 @@
         </div>
         <div class="col-md-6">
           <div class="mb-4">
-            <h5 class="mb-1">Teléfono</h5>
+            <h5 class="mb-1">{{ $t("customers.fields.phone") }}</h5>
             <p class="fs-sm text-muted">
               {{ state.phone }}
             </p>
@@ -36,7 +38,7 @@
 
         <div class="col-md-6">
           <div class="mb-4">
-            <h5 class="mb-1">Dirección de facturación</h5>
+            <h5 class="mb-1">{{ $t("customers.fields.billingAddress") }}</h5>
             <p class="fs-sm text-muted">
               {{ state.address_billing }}
             </p>
@@ -44,7 +46,7 @@
         </div>
         <div class="col-md-6">
           <div class="mb-4">
-            <h5 class="mb-1">NIF</h5>
+            <h5 class="mb-1">{{ $t("customers.fields.nif") }}</h5>
             <p class="fs-sm text-muted">
               {{ state.ice }}
             </p>
@@ -58,7 +60,7 @@
 
 
 
-      <BaseBlock title="Facturas">
+      <BaseBlock :title="$t('customers.invoicesTitle')">
               <template #options>
                 <div class="block-options-item">
                 </div>
@@ -71,24 +73,24 @@
                       <input type="checkbox" class="form-check-input" @change="clickedAll">
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Numero
+                      {{ $t("invoices.table.number") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Cliente
+                      {{ $t("invoices.table.customer") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Fecha
+                      {{ $t("invoices.table.date") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      SUMA
+                      {{ $t("invoices.table.subtotal") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Total
+                      {{ $t("invoices.table.total") }}
                     </th>
                     <th class="d-none d-sm-table-cell">
-                      Estado
+                      {{ $t("invoices.table.status") }}
                     </th>
-                    <th class="text-center" style="width: 100px">Acciones</th>
+                    <th class="text-center" style="width: 100px">{{ $t("common.actions") }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -115,7 +117,7 @@
                       <span 
                       class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill"
                       :class="invoice.status == 1 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'">
-                      {{ invoice.status == 1 ? 'Pagado' : 'No Pagado' }}
+                      {{ invoice.status == 1 ? $t('invoices.statusPaid') : $t('invoices.statusUnpaid') }}
                       </span>
                     </td>
                     <td class="text-center">
@@ -136,8 +138,8 @@
                         >
                           <a class="dropdown-item"                
                           href="javascript:void(0)" 
-                          @click.prevent="printInvoice(invoice)">Documento</a>
-                          <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">Eliminar</a>
+                          @click.prevent="printInvoice(invoice)">{{ $t("invoices.document") }}</a>
+                          <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">{{ $t("common.delete") }}</a>
                         </div>
                       </div>
                     </td>
@@ -166,14 +168,16 @@
     
     
 <script setup>
-    import { ref,reactive, onMounted } from "vue";
+    import { ref, reactive, onMounted, computed } from "vue";
     import axios from 'axios'
     import Pagination from '@/views/admin/layouts/Pagination.vue';
     import { createToaster } from '@meforma/vue-toaster';
     const toaster = createToaster({ /* options */ });
       import { useRoute } from 'vue-router'
+    import { useI18n } from "vue-i18n";
     // Input state variables
     const invoices = ref([])
+    const { t } = useI18n();
     const meta = reactive({
       current_page: 1,
       last_page: 1,
@@ -181,6 +185,14 @@
       total: 0
     });
     const state = ref({});
+    const customerDisplayName = computed(() => {
+      if (state.value?.type == 1) {
+        return state.value?.name ?? "";
+      }
+      const first = state.value?.first_name ?? "";
+      const last = state.value?.last_name ?? "";
+      return `${first} ${last}`.trim();
+    });
     const route = useRoute()
     const uuid = ref(route.params.id)
     async function fetchCustomerInvoices(page = meta.current_page, perPage = meta.per_page) {
@@ -212,7 +224,7 @@
     }
     
     const deleteInvoice = (invoice) => {
-      if (confirm('¿Estás seguro de que deseas eliminar esta factura?')) {
+      if (confirm(t('invoices.confirmDelete'))) {
           axios.delete('/invoices/' + invoice.uuid)
           .then(response => {
               invoices.value = invoices.value.filter(inv => inv.uuid !== invoice.uuid);

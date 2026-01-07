@@ -2,10 +2,12 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useTemplateStore } from "@/stores/template";
+import { useI18n } from "vue-i18n";
 
 // Main store and Route
 const store = useTemplateStore();
 const route = useRoute();
+const { t, locale } = useI18n();
 
 // Component properties
 const props = defineProps({
@@ -105,6 +107,11 @@ function linkClicked(e, submenu) {
     }
   }
 }
+
+function resolveLabel(node) {
+  locale.value;
+  return node.i18nKey ? t(node.i18nKey) : node.name;
+}
 </script>
 
 <template>
@@ -122,7 +129,7 @@ function linkClicked(e, submenu) {
       }"
     >
       <!-- Heading -->
-      {{ node.heading ? node.name : "" }}
+      {{ node.heading ? resolveLabel(node) : "" }}
       <!-- Normal Link -->
       <div v-if="!node.heading && !node.sub" @click="linkClicked($event)">
         <RouterLink
@@ -134,8 +141,8 @@ function linkClicked(e, submenu) {
           :active-class="node.to && node.to !== '#' ? 'active' : ''"
         >
           <i v-if="node.icon" :class="`nav-main-link-icon ${node.icon}`"></i>
-          <span v-if="node.name" class="nav-main-link-name">
-            {{ node.name }}
+          <span v-if="node.name || node.i18nKey" class="nav-main-link-name">
+            {{ resolveLabel(node) }}
           </span>
           <span
             v-if="node.badge"
@@ -155,8 +162,8 @@ function linkClicked(e, submenu) {
           :target="node.target || null"
         >
           <i v-if="node.icon" :class="`nav-main-link-icon ${node.icon}`"></i>
-          <span v-if="node.name" class="nav-main-link-name">
-            {{ node.name }}
+          <span v-if="node.name || node.i18nKey" class="nav-main-link-name">
+            {{ resolveLabel(node) }}
           </span>
           <span
             v-if="node.badge"
@@ -180,7 +187,9 @@ function linkClicked(e, submenu) {
         @click.prevent="linkClicked($event, true)"
       >
         <i v-if="node.icon" :class="`nav-main-link-icon ${node.icon}`"></i>
-        <span v-if="node.name" class="nav-main-link-name">{{ node.name }}</span>
+        <span v-if="node.name || node.i18nKey" class="nav-main-link-name">
+          {{ resolveLabel(node) }}
+        </span>
         <span
           v-if="node.badge"
           class="nav-main-link-badge badge rounded-pill"

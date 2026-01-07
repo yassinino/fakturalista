@@ -1,10 +1,12 @@
 <template>
 <div class="content">
 
-  <BaseBlock title="Clientes">
+  <BaseBlock :title="$t('customers.title')">
           <template #options>
             <div class="block-options-item">
-              <router-link to="customers/new" class="btn btn-primary">Nuevo cliente</router-link>
+              <router-link to="customers/new" class="btn btn-primary">
+                {{ $t("customers.newTitle") }}
+              </router-link>
             </div>
           </template>
 
@@ -15,21 +17,21 @@
                   <input type="checkbox" class="form-check-input" @change="clickedAll">
                 </th>
                 <th class="d-none d-sm-table-cell">
-                  Nombre
+                  {{ $t("customers.table.name") }}
                 </th>
                 <th class="d-none d-sm-table-cell">
-                  Dirección
+                  {{ $t("customers.table.address") }}
                 </th>
                 <th class="d-none d-sm-table-cell">
-                  Correo electrónico
+                  {{ $t("customers.table.email") }}
                 </th>
                 <th class="d-none d-sm-table-cell">
-                  Teléfono
+                  {{ $t("customers.table.phone") }}
                 </th>
                 <th class="d-none d-sm-table-cell">
-                  Número de cliente
+                  {{ $t("customers.table.customerNumber") }}
                 </th>
-                <th class="text-center" style="width: 100px">Actions</th>
+                <th class="text-center" style="width: 100px">{{ $t("common.actions") }}</th>
               </tr>
             </thead>
             <tbody>
@@ -68,8 +70,12 @@
                       class="dropdown-menu fs-sm"
                       aria-labelledby="dropdown-dropleft-dark"
                     >
-                      <router-link class="dropdown-item danger" :to="'customers/edit/' + customer.uuid">Editar</router-link>
-                      <a class="dropdown-item danger" href="javascript:void(0)" @click.prevent="deleteCustomer(customer)">Eliminar</a>
+                      <router-link class="dropdown-item danger" :to="'customers/edit/' + customer.uuid">
+                        {{ $t("common.edit") }}
+                      </router-link>
+                      <a class="dropdown-item danger" href="javascript:void(0)" @click.prevent="deleteCustomer(customer)">
+                        {{ $t("common.delete") }}
+                      </a>
                     </div>
                   </div>
                 </td>
@@ -86,10 +92,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from 'axios'
+import { useI18n } from "vue-i18n";
 
 
 // Input state variables
 const customers = ref([])
+const { t } = useI18n();
 
 onMounted(async () => {
         
@@ -99,7 +107,7 @@ onMounted(async () => {
 
 
 const deleteCustomer = (customer) => {
-  if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+  if (confirm(t('customers.confirmDelete'))) {
         axios.delete('/customers/' + customer.uuid)
         .then(response => {
             customers.value = customers.value.filter(c => c.uuid !== customer.uuid)
@@ -120,4 +128,3 @@ const clickedAll = (value) => {
 
 
 </script>
-

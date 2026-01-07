@@ -5,7 +5,7 @@
   <div class="content">
     <!-- Modern Design -->
 
-    <h2 class="content-heading">Elige un plan para seguir usando en Fakturalista</h2>
+    <h2 class="content-heading">{{ $t("subscription.title") }}</h2>
     <BaseBlock>
       <template #content>
         <div class="table-responsive">
@@ -15,10 +15,11 @@
             <thead class="table-dark text-uppercase fs-sm">
               <tr>
                 <th class="py-3" style="width: 180px"></th>
-                <th class="py-3">Básico</th>
-                <th class="py-3">Profesional</th>
+                <th class="py-3">{{ $t("subscription.plans.basic") }}</th>
+                <th class="py-3">{{ $t("subscription.plans.professional") }}</th>
                 <th class="py-3 bg-primary">
-                  <i class="fa fa-thumbs-up me-1"></i> Empresa
+                  <i class="fa fa-thumbs-up me-1"></i>
+                  {{ $t("subscription.plans.enterprise") }}
                 </th>
               </tr>
             </thead>
@@ -27,43 +28,45 @@
                 <td></td>
                 <td class="py-4">
                   <div class="h1 fw-bold mb-2">9 €</div>
-                  <div class="h6 text-muted mb-0">por mes</div>
+                  <div class="h6 text-muted mb-0">{{ $t("subscription.perMonth") }}</div>
                 </td>
                 <td class="py-4">
                   <div class="h1 fw-bold mb-2">19 €</div>
-                  <div class="h6 text-muted mb-0">por mes</div>
+                  <div class="h6 text-muted mb-0">{{ $t("subscription.perMonth") }}</div>
                 </td>
                 <td class="py-4">
                   <div class="h1 fw-bold text-primary mb-2">29 €</div>
-                  <div class="h6 text-primary-light mb-0">por mes</div>
+                  <div class="h6 text-primary-light mb-0">{{ $t("subscription.perMonth") }}</div>
                 </td>
               </tr>
               <tr>
-                <td class="fw-semibold text-start">Facturas</td>
+                <td class="fw-semibold text-start">{{ $t("subscription.features.invoices") }}</td>
                 <td>10</td>
                 <td>100</td>
-                <td>Ilimitadas</td>
+                <td>{{ $t("subscription.values.unlimitedFeminine") }}</td>
               </tr>
               <tr>
-                <td class="fw-semibold text-start">Usuarios del equipo</td>
+                <td class="fw-semibold text-start">{{ $t("subscription.features.teamUsers") }}</td>
                 <td>3</td>
                 <td>10</td>
-                <td>Ilimitados</td>
+                <td>{{ $t("subscription.values.unlimitedMasculine") }}</td>
               </tr>
               <tr>
-                <td class="fw-semibold text-start">Clientes</td>
+                <td class="fw-semibold text-start">{{ $t("subscription.features.customers") }}</td>
                 <td>10</td>
                 <td>100</td>
-                <td>Ilimitados</td>
+                <td>{{ $t("subscription.values.unlimitedMasculine") }}</td>
               </tr>
               <tr>
-                <td class="fw-semibold text-start">Soporte</td>
-                <td>Email</td>
-                <td>Completo</td>
-                <td>Prioritario</td>
+                <td class="fw-semibold text-start">{{ $t("subscription.features.support") }}</td>
+                <td>{{ $t("subscription.values.supportEmail") }}</td>
+                <td>{{ $t("subscription.values.supportFull") }}</td>
+                <td>{{ $t("subscription.values.supportPriority") }}</td>
               </tr>
               <tr>
-                <td class="fw-semibold text-start">Personalización de template PDF</td>
+                <td class="fw-semibold text-start">
+                  {{ $t("subscription.features.pdfCustomization") }}
+                </td>
                 <td>
                   <i class="fa fa-check fa-fw text-success"></i>
                 </td>
@@ -86,7 +89,11 @@
                     :disabled="isCurrentPlan(plan)"
                     @click="selectPlan(plan)"
                   >
-                    {{ isCurrentPlan(plan) ? "Tu plan actual" : "Elegir este plan" }}
+                    {{
+                      isCurrentPlan(plan)
+                        ? $t("subscription.currentPlan")
+                        : $t("subscription.choosePlan")
+                    }}
                   </button>
                 </td>
               </tr>
@@ -97,13 +104,13 @@
     </BaseBlock>
 <div v-if="selectedPlan" class="mt-4">
   <h4 class="mb-3">
-    Plan seleccionado:
+    {{ $t("subscription.selectedPlan") }}
     <span class="fw-bold">
-      {{ selectedPlan.name }} ({{ selectedPlan.price }})
+      {{ getPlanLabel(selectedPlan) }} ({{ selectedPlan.price }})
     </span>
   </h4>
 
-  <BaseBlock title="Método de pago">
+  <BaseBlock :title="$t('subscription.paymentMethodTitle')">
     <template #content>
       <div class="row g-3 content">
         <div
@@ -149,7 +156,7 @@
           class="mb-3 mt-4 d-flex justify-content-between align-items-center"
         >
           <div class="text-muted">
-            Selecciona PayPal o Stripe y continúa.
+            {{ $t("subscription.paymentHint") }}
           </div>
           <button
             type="button"
@@ -157,9 +164,10 @@
             :disabled="!paymentMethod || !selectedPlan || loading"
             @click="continuePayment"
           >
-            <span v-if="!loading">Continuar</span>
+            <span v-if="!loading">{{ $t("subscription.continue") }}</span>
             <span v-else>
-              <i class="fa fa-sync fa-spin me-1"></i> Procesando...
+              <i class="fa fa-sync fa-spin me-1"></i>
+              {{ $t("subscription.processing") }}
             </span>
           </button>
         </div>
@@ -177,6 +185,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const plans = ref(true);
 const planError = ref("");
@@ -186,7 +197,7 @@ const loadPlans = async () => {
     const { data } = await axios.get("/plans");
     plans.value = data?.plans ?? [];
   } catch (error) {
-    planError.value = "No se pudieron cargar planes.";
+    planError.value = t("subscription.errors.loadPlans");
   } finally {
    
   }
@@ -212,6 +223,17 @@ const selectedPlan = ref(null);
 const paymentMethod = ref("");
 const loading = ref(false);
 const errorMessage = ref("");
+const planNameMap = {
+  "B\u00e1sico": "basic",
+  Basico: "basic",
+  Profesional: "professional",
+  Empresa: "enterprise",
+};
+
+const getPlanLabel = (plan) => {
+  const key = planNameMap[plan?.name] ?? null;
+  return key ? t(`subscription.plans.${key}`) : plan?.name ?? "";
+};
 
 const selectPlan = (plan) => {
   if (isCurrentPlan(plan)) {
@@ -252,12 +274,12 @@ const continuePayment = async () => {
   errorMessage.value = "";
 
   if (!selectedPlan.value) {
-    errorMessage.value = "Por favor, selecciona un plan.";
+    errorMessage.value = t("subscription.errors.selectPlan");
     return;
   }
 
   if (!paymentMethod.value) {
-    errorMessage.value = "Por favor, selecciona un método de pago.";
+    errorMessage.value = t("subscription.errors.selectPaymentMethod");
     return;
   }
 
@@ -273,7 +295,7 @@ const continuePayment = async () => {
       const checkoutUrl = response.data.checkout_url;
 
       if (!checkoutUrl) {
-        throw new Error("No se ha recibido la URL de pago.");
+        throw new Error(t("subscription.errors.missingCheckoutUrl"));
       }
 
       // 🔥 Redirection vers la page sécurisée Stripe
@@ -282,14 +304,13 @@ const continuePayment = async () => {
       console.error(error);
       errorMessage.value =
         error.response?.data?.message ||
-        "Ha ocurrido un error al iniciar el pago con Stripe.";
+        t("subscription.errors.stripeStart");
     } finally {
       loading.value = false;
     }
   } else if (paymentMethod.value === "paypal") {
     // On laissera ce bloc pour plus tard
-    errorMessage.value =
-      "El pago con PayPal estará disponible próximamente.";
+    errorMessage.value = t("subscription.errors.paypalSoon");
   }
 };
 </script>

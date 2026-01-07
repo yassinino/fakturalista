@@ -1,7 +1,7 @@
 <template>
     
     <CreateDocument 
-    title="Nueva factura"
+    :title="$t('invoices.newTitle')"
     @saveDocument = "saveInvoice"
     >
 

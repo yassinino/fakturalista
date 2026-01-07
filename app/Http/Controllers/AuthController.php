@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -45,9 +47,13 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        $supportedLocales = config('app.supported_locales', ['es', 'fr', 'en']);
+
         $rules = [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->id,
+            'locale' => ['sometimes', 'required', 'string', 'max:10', Rule::in($supportedLocales)],
+            'avatar' => 'nullable|image|max:2048',
         ];
 
         // Only enforce password fields when a new password is provided
@@ -88,6 +94,19 @@ class AuthController extends Controller
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
+        }
+
+        if ($request->filled('locale')) {
+            $user->locale = $request->input('locale');
+        }
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar_path) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar_path = $avatarPath;
         }
 
         $user->save();

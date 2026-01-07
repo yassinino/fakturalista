@@ -7,11 +7,11 @@
   
   
             <!-- Floating Labels -->
-      <BaseBlock title="Editar cliente" content-full>
+      <BaseBlock :title="$t('customers.editTitle')" content-full>
           <div class="row">
             <div class="col-lg-3">
               <p class="fs-sm text-muted">
-                Descripción general
+                {{ $t("customers.overview") }}
               </p>
             </div>
             <div class="col-lg-9">
@@ -30,7 +30,7 @@
                     />
                     <label class="form-check-label" for="type1">
                       <span class="d-block p-1 fw-normal text-center my-1">
-                        <span class="fs-4 fw-semibold">Empresa</span>
+                        <span class="fs-4 fw-semibold">{{ $t("customers.types.company") }}</span>
                       </span>
                     </label>
                   </div>
@@ -48,7 +48,7 @@
                     />
                     <label class="form-check-label" for="type2">
                       <span class="d-block p-1 fw-normal text-center my-1">
-                        <span class="fs-4 fw-semibold">Individual</span>
+                        <span class="fs-4 fw-semibold">{{ $t("customers.types.individual") }}</span>
                       </span>
                     </label>
                   </div>
@@ -66,15 +66,18 @@
                   }"
                   v-model="state.name"
                   @blur="v$.name.$touch"
-                  placeholder="Company Name"
+                  :placeholder="$t('customers.fields.companyName')"
                 />
                 <div
                   v-if="v$.name.$errors.length"
                   class="invalid-feedback animated fadeIn"
                 >
-                Requerida
+                {{ $t("validation.required") }}
                 </div>
-                <label for="val-name">Nombre de empresa<span class="text-danger">*</span></label>
+                <label for="val-name">
+                  {{ $t("customers.fields.companyName") }}
+                  <span class="text-danger">*</span>
+                </label>
               </div>
   
               <div class="row g-3" v-if="state.type == 2">
@@ -84,10 +87,10 @@
                     id="val-first-name"
                     class="form-control"
                     v-model="state.first_name"
-                    placeholder="First Name"
+                    :placeholder="$t('customers.fields.firstName')"
   
                   />
-                  <label for="val-first-name">Nombre</label>
+                  <label for="val-first-name">{{ $t("customers.fields.firstName") }}</label>
                 </div>
                 <div class="form-floating col-4 mb-4">
                   <input
@@ -99,15 +102,18 @@
                     }"
                     v-model="state.last_name"
                     @blur="v$.last_name.$touch"
-                    placeholder="Last Name"
+                    :placeholder="$t('customers.fields.lastName')"
                   />
                   <div
                     v-if="v$.name.$errors.length"
                     class="invalid-feedback animated fadeIn"
                   >
-                    Requerida
+                    {{ $t("validation.required") }}
                   </div>
-                  <label for="val-last-name">Apellido<span class="text-danger">*</span></label>
+                  <label for="val-last-name">
+                    {{ $t("customers.fields.lastName") }}
+                    <span class="text-danger">*</span>
+                  </label>
                 </div>
   
                 <div class="form-floating col-4 mb-4">
@@ -116,58 +122,58 @@
                     id="val-middle-name"
                     class="form-control"
                     v-model="state.middle_name"
-                    placeholder="Middle Name"
+                    :placeholder="$t('customers.fields.middleName')"
                   />
-                  <label for="val-middle-name">Segundo nombre</label>
+                  <label for="val-middle-name">{{ $t("customers.fields.middleName") }}</label>
                 </div>
               </div>
   
               <div class="form-floating mb-4">
                 <input
-                  type="text"
-                  id="val-email"
-                  class="form-control"
-                  v-model="state.email"
-                  placeholder="Email"
-                />
-                <label for="val-email">Correo electrónico</label>
-              </div>
+                type="text"
+                id="val-email"
+                class="form-control"
+                v-model="state.email"
+                :placeholder="$t('customers.fields.email')"
+              />
+              <label for="val-email">{{ $t("customers.fields.email") }}</label>
+            </div>
   
   
               <div class="row g-3">
                 <div class="form-floating col-6 mb-4">
                   <input
-                    type="text"
-                    id="val-phone-name"
-                    class="form-control"
-                    v-model="state.phone"
-                    placeholder="Phone"
-                  />
-                  <label for="val-phone-name">Teléfono</label>
-                </div>
-                <div class="form-floating col-6 mb-4">
-                  <input
-                    type="text"
-                    id="val-website"
-                    class="form-control"
-                    v-model="state.website"
-                    placeholder="Website"
-                  />
-                  <label for="val-website">Sitio web</label>
-                </div>
+                  type="text"
+                  id="val-phone-name"
+                  class="form-control"
+                  v-model="state.phone"
+                  :placeholder="$t('customers.fields.phone')"
+                />
+                <label for="val-phone-name">{{ $t("customers.fields.phone") }}</label>
+              </div>
+              <div class="form-floating col-6 mb-4">
+                <input
+                  type="text"
+                  id="val-website"
+                  class="form-control"
+                  v-model="state.website"
+                  :placeholder="$t('customers.fields.website')"
+                />
+                <label for="val-website">{{ $t("customers.fields.website") }}</label>
+              </div>
   
               </div>
 
                <div class="form-floating mb-4">
                 <input
-                  type="text"
-                  id="val-nif"
-                  class="form-control"
-                  v-model="state.ice"
-                  placeholder="NIF"
-                />
-                <label for="val-email">NIF</label>
-              </div>
+                type="text"
+                id="val-nif"
+                class="form-control"
+                v-model="state.ice"
+                :placeholder="$t('customers.fields.nif')"
+              />
+              <label for="val-email">{{ $t("customers.fields.nif") }}</label>
+            </div>
   
   
             </div>
@@ -178,33 +184,33 @@
           <div class="row">
             <div class="col-lg-3">
               <p class="fs-sm text-muted">
-                Dirección
+                {{ $t("customers.addressSection") }}
               </p>
             </div>
             <div class="col-lg-9">
   
               <div class="form-floating mb-4">
                 <input
-                  type="text"
-                  id="val-billing-address"
-                  class="form-control"
-                  v-model="state.address_billing"
-                  placeholder="Billing Address"
-                />
-                <label for="val-billing-address">Dirección</label>
-              </div>
+                type="text"
+                id="val-billing-address"
+                class="form-control"
+                v-model="state.address_billing"
+                :placeholder="$t('customers.fields.address')"
+              />
+              <label for="val-billing-address">{{ $t("customers.fields.address") }}</label>
+            </div>
   
               <div class="row g-3">
                   <div class="form-floating col-6 mb-4">
                   <input
                     type="text"
-                    id="val-city"
-                    class="form-control"
-                    v-model="state.city"
-                    placeholder="City"
+                  id="val-city"
+                  class="form-control"
+                  v-model="state.city"
+                  :placeholder="$t('customers.fields.city')"
   
                   />
-                  <label for="val-city">Ciudad</label>
+                  <label for="val-city">{{ $t("customers.fields.city") }}</label>
                 </div>
   
   
@@ -214,9 +220,9 @@
                     id="val-post-code"
                     class="form-control"
                     v-model="state.post_code"
-                    placeholder="Post Code"
+                    :placeholder="$t('customers.fields.postalCode')"
                   />
-                  <label for="val-post-code">Código postal</label>
+                  <label for="val-post-code">{{ $t("customers.fields.postalCode") }}</label>
                 </div>
               </div>
   
@@ -233,10 +239,10 @@
                   v-model="state.billing_country_id"
                   aria-label="Floating label select example"
                   >
-                  <option selected>Seleccione una opción</option>
+                  <option selected>{{ $t("common.selectOption") }}</option>
                   <option :value="country.id" v-for="country in countries">{{country.name}}</option>
                 </select>
-                <label for="example-select-floating">País</label>
+                <label for="example-select-floating">{{ $t("customers.fields.country") }}</label>
                 </div>
   
               </div>
@@ -398,7 +404,9 @@
   
   
           <template class="text-right" #footer>
-            <button type="submit" class="btn btn-lg btn-primary mb-3">Guardar</button>
+            <button type="submit" class="btn btn-lg btn-primary mb-3">
+              {{ $t("common.save") }}
+            </button>
   
           </template>
   
@@ -416,6 +424,8 @@
   import { createToaster } from '@meforma/vue-toaster';
   const toaster = createToaster({ /* options */ });
   import { useRoute } from 'vue-router'
+  import { useI18n } from "vue-i18n";
+  const { t } = useI18n();
   
   // Vuelidate, for more info and examples you can check out https://github.com/vuelidate/vuelidate
   import useVuelidate from "@vuelidate/core";
@@ -493,7 +503,7 @@
   }
   
   const deleteCustomer = (index) =>{
-    if (confirm("Are you sure you want to delete this element?"))
+    if (confirm(t("documents.removeConfirm")))
     state.value.contacts.splice(index, 1);
   }
   

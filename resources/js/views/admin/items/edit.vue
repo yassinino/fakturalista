@@ -7,7 +7,7 @@
   
   
             <!-- Floating Labels -->
-      <BaseBlock title="Nuevo producto o servicio" content-full>
+      <BaseBlock :title="$t('items.editTitle')" content-full>
           <div class="row">
             <div class="col-lg-12">
   
@@ -26,7 +26,7 @@
                     />
                     <label class="form-check-label" for="type2">
                       <span class="d-block p-1 fw-normal text-center my-1">
-                        <span class="fs-4 fw-semibold">Producto</span>
+                        <span class="fs-4 fw-semibold">{{ $t("items.types.product") }}</span>
                       </span>
                     </label>
                   </div>
@@ -45,7 +45,7 @@
                     />
                     <label class="form-check-label" for="type1">
                       <span class="d-block p-1 fw-normal text-center my-1">
-                        <span class="fs-4 fw-semibold">Servicio</span>
+                        <span class="fs-4 fw-semibold">{{ $t("items.types.service") }}</span>
                       </span>
                     </label>
                   </div>
@@ -60,7 +60,7 @@
             <div class="col-lg-9 offset-lg-3">
                 <div class="row mb-2">
                   <label class="col-sm-3 col-form-label" for="item-name"
-                    >Nombre<span class="text-danger">*</span></label>
+                    >{{ $t("items.fields.name") }}<span class="text-danger">*</span></label>
                   <div class="col-sm-9">
                     <input type="text" 
                     class="form-control" 
@@ -72,7 +72,7 @@
                 </div>
                 <div class="row mb-2">
                   <label class="col-sm-3 col-form-label" for="item-sales-price"
-                    >Precio de venta</label>
+                    >{{ $t("items.fields.salesPrice") }}</label>
                   <div class="col-sm-9">
                     <input type="text" class="form-control" v-model="state.sales_price" id="item-sales-price" 
                     v-decimal="{ decimals: 2 }"
@@ -83,7 +83,7 @@
                 </div>
                 <div class="row mb-2" v-if="state.type == 2">
                   <label class="col-sm-3 col-form-label" for="item-purchase-price"
-                    >Precio de compra</label>
+                    >{{ $t("items.fields.purchasePrice") }}</label>
                   <div class="col-sm-9">
                     <input type="text" class="form-control" v-model="state.purchase_price" id="item-purchase-price" 
                     v-decimal="{ decimals: 2 }"
@@ -93,15 +93,15 @@
                 </div>
                 <div class="row mb-2" v-if="state.type == 2">
                   <label class="col-sm-3 col-form-label" for="item-purchase-price"
-                    >Unidad</label>
+                    >{{ $t("items.fields.unit") }}</label>
                   <div class="col-sm-9">
                     <select
                       class="form-select"
                       id="cart-vta"
                       v-model="state.unite"
                       >
-                      <option value="pc">pieza</option>
-                      <option value="kg">kg</option>
+                      <option value="pc">{{ $t("units.piece") }}</option>
+                      <option value="kg">{{ $t("units.kilogram") }}</option>
                     </select>
                   </div>
                 </div>
@@ -112,7 +112,7 @@
             <div class="col-lg-9 offset-lg-3">
                 <div class="row mb-2">
                   <label class="col-sm-3 col-form-label" for="item-description"
-                    >Descripción</label>
+                    >{{ $t("items.fields.description") }}</label>
                   <div class="col-sm-9">
                     <textarea class="form-control" rows="4" v-model="state.description" id="item-description" ></textarea>
                   </div>
@@ -121,7 +121,7 @@
 
                 <div class="row mb-2">
                   <label class="col-sm-3 col-form-label" for="item-family"
-                    >Familia</label>
+                    >{{ $t("items.fields.family") }}</label>
                   <div class="col-sm-9">
                     <VueSelect
                       id="quote-customer"
@@ -129,16 +129,22 @@
                       :options="families"
                       label="name"
                       :reduce="(option) => option.id"
-                      placeholder="Elige un valor..."
+                      :placeholder="$t('items.selectFamilyPlaceholder')"
                     ></VueSelect>
-                    <small><a href="" data-bs-toggle="modal" data-bs-target="#modal-block-vcenter">Crear uno nuevo</a></small>
+                    <small>
+                      <a href="" data-bs-toggle="modal" data-bs-target="#modal-block-vcenter">
+                        {{ $t("items.createFamilyLink") }}
+                      </a>
+                    </small>
                   </div>
                 </div>
             </div>
           </div>
 
             <template class="text-right" #footer>
-            <button type="submit" class="btn btn-lg btn-primary mb-3">Guardar</button>
+            <button type="submit" class="btn btn-lg btn-primary mb-3">
+              {{ $t("common.save") }}
+            </button>
           </template>
   
       </BaseBlock>
@@ -157,7 +163,7 @@
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document" ref="modal_family"
 >
         <div class="modal-content">
-          <BaseBlock title="Crea una familia de productos" transparent class="mb-0">
+          <BaseBlock :title="$t('items.createFamilyTitle')" transparent class="mb-0">
             <template #options>
               <button
                 type="button"
@@ -176,7 +182,7 @@
                             <div class="col-lg-9 offset-lg-3">
                                 <div class="row mb-2">
                                     <label class="col-sm-3 col-form-label" for="item-name"
-                                    >Nombre<span class="text-danger">*</span></label>
+                                    >{{ $t("items.familyNameLabel") }}<span class="text-danger">*</span></label>
                                     <div class="col-sm-9">
                                         <input type="text" 
                                         class="form-control"                 
@@ -195,13 +201,13 @@
                         class="btn btn-sm btn-alt-secondary me-1"
                         data-bs-dismiss="modal"
                         >
-                        Cerrar
+                        {{ $t("common.close") }}
                         </button>
                         <button
                         type="submit"
                         class="btn btn-sm btn-primary"
                         >
-                        Guardar
+                        {{ $t("common.save") }}
                         </button>
                     </div>
                  </form>

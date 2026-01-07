@@ -12,12 +12,12 @@ export default {
     //   icon: "si si-speedometer",
     // },
     {
-      name: "Clientes",
+      i18nKey: "nav.customers",
       to: "backend-customers",
       icon: "si si-user",
     },
     {
-      name: "Productos",
+      i18nKey: "nav.items",
       to: "backend-items",
       icon: "si si-bag",
     },
@@ -27,13 +27,13 @@ export default {
     //   icon: "si si-doc",
     // },
     {
-      name: "Facturas",
+      i18nKey: "nav.invoices",
       to: "backend-invoices",
       icon: "si si-note",
     },
 
     {
-      name: "Informes",
+      i18nKey: "nav.reports",
       to: "backend-dashboard",
       icon: "si si-speedometer",
     },
