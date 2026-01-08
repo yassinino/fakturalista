@@ -1,0 +1,1 @@
+import{o as c,M as u,B as r,z as _,x as p,J as m}from"./main-84df2961.js";const v={__name:"create",setup(i){const o=m({}),s=r();async function a(e){p.post("/quotes",e).then(t=>{o.success(t.data.message),s.push("/admin/quotes")})}return(e,t)=>{const n=_("CreateDocument");return c(),u(n,{title:"New Quote",onSaveDocument:a})}}};export{v as default};
