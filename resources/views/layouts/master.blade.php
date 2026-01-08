@@ -196,8 +196,7 @@
                                 <h3 class="widget-title">Conecta con Fakturalista</h3>
                                 <ul class="footer-social-link">
                                     <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                    <li><a href="https://www.instagram.com/fakturalista"><i class="fab fa-instagram"></i></a></li>
                                 </ul>
                             </div>
                             <!-- /.widget footer-widget -->
