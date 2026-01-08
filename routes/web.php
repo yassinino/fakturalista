@@ -34,7 +34,7 @@ Route::domain('fakturalista.com')
     ->middleware('set.locale')
     ->group($siteRoutes);
     
-Route::domain('wwww.fakturalista.com')
+Route::domain('www.fakturalista.com')
     ->middleware('set.locale')
     ->group($siteRoutes);
 
