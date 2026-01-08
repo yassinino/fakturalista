@@ -30,6 +30,10 @@ $siteRoutes = function () {
     // tu peux ajouter autant de pages que tu veux ici
 };
 
+Route::domain('fakturalista.com')
+    ->middleware('set.locale')
+    ->group($siteRoutes);
+    
 Route::domain('wwww.fakturalista.com')
     ->middleware('set.locale')
     ->group($siteRoutes);
