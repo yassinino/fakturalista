@@ -211,6 +211,11 @@ class InvoiceController extends Controller
             $pdf = Pdf::loadView('invoices.yassine', [
                 'invoice' => $invoice
             ])->setPaper('a4'); // 'a4', 'letter', etc.
+        }
+        elseif($host == 'tachua.fakturalista.com'){
+            $pdf = Pdf::loadView('invoices.tachua', [
+                'invoice' => $invoice
+            ])->setPaper('a4'); // 'a4', 'letter', etc.
         }else{
                     $pdf = Pdf::loadView('invoices.show', [
                 'invoice' => $invoice
