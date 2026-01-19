@@ -212,7 +212,7 @@ class InvoiceController extends Controller
                 'invoice' => $invoice
             ])->setPaper('a4'); // 'a4', 'letter', etc.
         }
-        elseif($host == 'tachua.fakturalista.com'){
+        else if($host == 'tachua.fakturalista.com'){
             $pdf = Pdf::loadView('invoices.tachua', [
                 'invoice' => $invoice
             ])->setPaper('a4'); // 'a4', 'letter', etc.
