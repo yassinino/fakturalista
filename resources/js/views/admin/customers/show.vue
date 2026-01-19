@@ -99,7 +99,7 @@
                       <input type="checkbox" name="" class="form-check-input" v-model="invoice.checked">
                     </th>
                     <td class="d-none d-sm-table-cell">
-                      <router-link :to="'invoices/edit/' + invoice.uuid">{{ invoice.reference }}</router-link>
+                      <router-link :to="'/invoices/edit/' + invoice.uuid">{{ invoice.reference }}</router-link>
                     </td>
                     <td class="d-none d-sm-table-cell">
                       {{ invoice.customer }}
