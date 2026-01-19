@@ -205,7 +205,8 @@ class InvoiceController extends Controller
             ?? CompanyProfile::first()?->locale
             ?? config('app.locale', 'es');
         
-        $host = request()->getHost();;
+        $host = request()->getHost();
+        dd($host);
 
         if($host == 'client1.fakturalista.test'){
             $pdf = Pdf::loadView('invoices.yassine', [
