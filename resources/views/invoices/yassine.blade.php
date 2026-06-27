@@ -195,7 +195,7 @@
             </tr>
             <tr class="top">
                 <td colspan="4" style="padding-bottom: 40px;padding-left: 5px;">
-                   <p style="color: #000000;font-size: 16px;"><span style="font-weight: bold;">Facture </span>N° {{ $invoice->reference  }}</p>
+                   <p style="color: #000000;font-size: 16px;"><span style="font-weight: bold;">Devis </span>N° {{ $invoice->reference  }}</p>
                 </td>
             </tr>
             
@@ -239,7 +239,7 @@
                                 <span style="">Details</span>
                             </td>
                             <td style="width:40%; text-align: right;"></td>
-                            <td style="text-align: right;">Somme exprimée en euros (€)</td>
+                            <td style="text-align: right;">Somme exprimée en Euro (€)</td>
                         </tr>
                     </table>
                 </td>
@@ -312,11 +312,21 @@
             {{-- <p>{{$model['montant_lettre']}} EUR, Seulement.</p> --}}
           </div> -->
           <div style="position: absolute;bottom: 100px;line-height: 15px;">
+            <p>
+                Acompte de 40% (600€) à la signature du devis. Solde de 900€ à la livraison finale.
+            </p>
             <span style="color: #909090; font-size:12px;">Coordonnées bancaires: </span>
-            <p style="line-height: 14px;">Name : Yassine AIT TOUIJAR<br>
+            {{-- <p style="line-height: 14px;">Yassine AIT TOUIJAR<br>
+              RIB: 230 010 2906605211018400 61<br>
+              IBAN: MA64 2300 1029 0660 5211 0184 0061<br>
+              Code SWIFT: CIHMMAMC <br>
+            </p><br> --}}
+
+
+            <p style="line-height: 14px;">Yassine AIT TOUIJAR<br>
               IBAN: BE43 9671 9028 8401<br>
-              BIC: TRWIBEB1XXX <br>
-              Wise, Rue du Trône 100, 3rd floor, Brussels, 1050, Belgium
+              Code SWIFT: TRWIBEB1XXX <br>
+              Address:  Wise, Rue du Trône 100, 3rd floor, Brussels, 1050, Belgium<br>
             </p><br>
 
             {{-- <p style="line-height: 14px;">Paypal ID:  aittouijar.yassine@gmail.com  <br> --}}

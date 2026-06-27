@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StripeWebhookController;
 /*
@@ -26,8 +27,11 @@ $siteRoutes = function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+    Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
-    // tu peux ajouter autant de pages que tu veux ici
+    // tu peux ajouter autant de páginas como quieras aquí
 };
 
 Route::domain('fakturalista.com')

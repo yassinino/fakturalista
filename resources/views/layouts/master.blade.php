@@ -14,8 +14,19 @@
 
     <meta name="msapplication-TileColor" content="#fa7070" />
     <meta name="theme-color" content="#fa7070" />
-    <meta name="description" content="Fakturalista es una plataforma moderna de facturación online que te permite crear, enviar y gestionar facturas profesionales en segundos.">
-    <meta name="keywords" content="facturación, facturas online, SaaS, gestión de gastos, pagos instantáneos, software de facturación, Fakturalista">
+    @hasSection('meta')
+        @yield('meta')
+    @else
+        <meta name="description" content="Fakturalista es una plataforma moderna de facturación online que te permite crear, enviar y gestionar facturas profesionales en segundos.">
+        <meta name="keywords" content="facturación, facturas online, SaaS, gestión de gastos, pagos instantáneos, software de facturación, Fakturalista">
+        <meta property="og:title" content="Fakturalista – Software de facturación online" />
+        <meta property="og:description" content="Crea y envía facturas profesionales, controla tus gastos y acepta pagos instantáneos con Fakturalista." />
+        <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
+        <meta property="og:url" content="{{ url()->current() }}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Fakturalista" />
+        <link rel="canonical" href="{{ url()->current() }}" />
+    @endif
     <meta name="author" content="Fakturalista">
     <!-- Dependency Styles -->
     <link rel="stylesheet" href="{{ url('dependencies/bootstrap/css/bootstrap.min.css') }}" type="text/css" />
@@ -25,13 +36,6 @@
     <link rel="stylesheet" href="{{ url('dependencies/magnific-popup/css/magnific-popup.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ url('dependencies/components-elegant-icons/css/elegant-icons.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ url('dependencies/simple-line-icons/css/simple-line-icons.css') }}" type="text/css" />
-
-    <meta property="og:title" content="@yield('title', 'Fakturalista – Software de facturación online')" />
-    <meta property="og:description" content="Crea y envía facturas profesionales, controla tus gastos y acepta pagos instantáneos con Fakturalista." />
-    <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
-    <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Fakturalista" />
 
     <!-- Site Stylesheet -->
     <link rel="stylesheet" href="{{ url('front/assets/css/app.css') }}" type="text/css" />
@@ -209,7 +213,7 @@
 
                 <div class="site-info">
                     <div class="copyright">
-                        <p>© 2025 Fakturalista — Todos los derechos reservados.</p>
+                        <p>© 2026 Fakturalista — Todos los derechos reservados.</p>
                     </div>
 
                     <ul class="site-info-menu">
