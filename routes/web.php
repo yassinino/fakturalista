@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\TenantNotFoundController;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,7 +32,8 @@ $siteRoutes = function () {
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
     Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
-    // tu peux ajouter autant de páginas como quieras aquí
+    // Shown when $onFail redirects an unknown tenant subdomain to the central domain.
+    Route::get('/tenant-not-found', [TenantNotFoundController::class, 'show'])->name('tenant.not-found');
 };
 
 Route::domain('fakturalista.com')
