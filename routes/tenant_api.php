@@ -9,7 +9,6 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PlanController;
@@ -95,7 +94,6 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         Route::post('/invoices/print', [InvoiceController::class, 'print_invoice']);
 
         // Templates
-        Route::post('/templates/save', [TemplateController::class, 'save_template']);
         Route::post('/invoice-templates/upload-logo', [InvoiceTemplateController::class, 'uploadLogo']);
         Route::resource('/invoice-templates', InvoiceTemplateController::class);
 
