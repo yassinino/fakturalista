@@ -32,8 +32,17 @@ return [
     ],
 
     'stripe' => [
-        'key' => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
-        'webhook_secret'=> env('STRIPE_WEBHOOK_SECRET'),
+        'key'                    => env('STRIPE_KEY'),
+        'secret'                 => env('STRIPE_SECRET'),
+        'webhook_secret'         => env('STRIPE_WEBHOOK_SECRET'),
+        // Stripe Connect (OAuth) — from Stripe Dashboard → Connect → Settings
+        'connect_client_id'      => env('STRIPE_CONNECT_CLIENT_ID'),       // ca_xxx
+        'connect_webhook_secret' => env('STRIPE_CONNECT_WEBHOOK_SECRET'),  // whsec_xxx (Connect webhook)
+    ],
+
+    'gemini' => [
+        'key'     => env('GEMINI_API_KEY'),
+        'model'   => env('GEMINI_MODEL', 'gemini-2.0-flash'),
+        'default_vat' => env('INVOICE_DEFAULT_VAT', 0),
     ],
 ];

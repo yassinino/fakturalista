@@ -127,7 +127,7 @@
         <article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
 
             <a href="{{ route('blog.index') }}" class="back-link">
-                <i class="fas fa-arrow-left"></i> Volver al blog
+                <i class="fas fa-arrow-left"></i> {{ __('site.blog.back_to_blog') }}
             </a>
 
             {{-- Featured image --}}
@@ -150,9 +150,9 @@
             <hr style="margin: 48px 0 32px; border-color: #efe7e7;">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <a href="{{ route('blog.index') }}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Todos los artículos
+                    <i class="fas fa-arrow-left"></i> {{ __('site.blog.all_articles') }}
                 </a>
-                <a href="{{ url('/free-trial') }}" class="pix-btn">Prueba Fakturalista gratis</a>
+                <a href="{{ url('/free-trial') }}" class="pix-btn">{{ __('site.blog.try_cta') }}</a>
             </div>
 
         </article>

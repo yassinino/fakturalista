@@ -39,9 +39,23 @@ class CompanyProfile extends Model
         'bank_name',
         'iban',
         'swift',
+        // Stripe Connect
+        'stripe_account_id',
+        'stripe_connection_status',
+        'onboarding_completed',
+        'charges_enabled',
+        'payouts_enabled',
+        'stripe_connected_at',
+        // Onboarding wizard
+        'onboarding_completed_at',
     ];
 
     protected $casts = [
-        'invoice_next_number' => 'integer',
+        'invoice_next_number'     => 'integer',
+        'onboarding_completed'    => 'boolean',
+        'charges_enabled'         => 'boolean',
+        'payouts_enabled'         => 'boolean',
+        'stripe_connected_at'     => 'datetime',
+        'onboarding_completed_at' => 'datetime',
     ];
 }

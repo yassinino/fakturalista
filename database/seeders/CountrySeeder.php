@@ -13,8 +13,6 @@ class CountrySeeder extends Seeder
      */
     public function run(): void
     {
-        Country::truncate();
-  
         $countries = [
             ['name' => 'Afghanistan', 'code' => 'AF'],
             ['name' => 'Åland Islands', 'code' => 'AX'],
@@ -267,8 +265,8 @@ class CountrySeeder extends Seeder
             ['name' => 'Zimbabwe', 'code' => 'ZW'],
         ];
           
-        foreach ($countries as $key => $value) {
-            Country::create($value);
+        foreach ($countries as $value) {
+            Country::updateOrCreate(['code' => $value['code']], ['name' => $value['name']]);
         }
     }
 }

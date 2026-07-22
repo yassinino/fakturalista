@@ -120,4 +120,16 @@ class ItemController extends Controller
 
         return response(['message' => '¡Producto eliminado!'], 200);
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'string',
+        ]);
+
+        $count = Item::whereIn('uuid', $validated['ids'])->delete();
+
+        return response()->json(['message' => "$count item(s) deleted."]);
+    }
 }

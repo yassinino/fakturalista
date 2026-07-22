@@ -1,5 +1,11 @@
 <template>
   <BaseLayout>
+    <!-- Billing banners (trial countdown + read-only notice) -->
+    <template #page-top-content>
+      <BillingBanners />
+    </template>
+    <!-- END Billing banners -->
+
     <!-- Side Overlay Content -->
     <!-- Using the available v-slot, we can override the default Side Overlay content from layouts/partials/SideOvelay.vue -->
     <template #side-overlay-content>
@@ -20,43 +26,8 @@
     </template>
     <!-- END Sidebar Content -->
 
-    <!-- Header Content Left -->
-    <!-- Using the available v-slot, we can override the default Header content from layouts/partials/Header.vue -->
-    <template #header-content-left>
-      <!-- Toggle Sidebar -->
-      <button
-        type="button"
-        class="btn btn-sm btn-alt-secondary me-2 d-lg-none"
-        @click="store.sidebar({ mode: 'toggle' })"
-      >
-        <i class="fa fa-fw fa-bars"></i>
-      </button>
-      <!-- END Toggle Sidebar -->
+    <!-- Header slots intentionally empty — Header.vue handles all content directly -->
 
-      <!-- Toggle Mini Sidebar -->
-      <button
-        type="button"
-        class="btn btn-sm btn-alt-secondary me-2 d-none d-lg-inline-block"
-        @click="store.sidebarMini({ mode: 'toggle' })"
-      >
-        <i class="fa fa-fw fa-ellipsis-v"></i>
-      </button>
-      <!-- END Toggle Mini Sidebar -->
-    </template>
-    <!-- END Header Content Left -->
-
-    <!-- Header Content Right -->
-    <!-- Using the available v-slot, we can override the default Header content from layouts/partials/Header.vue -->
-    <template #header-content-right></template>
-    <!-- END Header Content Right -->
-
-    <!-- Footer Content Left -->
-    <!-- Using the available v-slot, we can override the default Footer content from layouts/partials/Footer.vue -->
-    <template #footer-content-left>
-      <strong>{{ store.app.name }}</strong>
-      &copy; {{ store.app.copyright }}
-    </template>
-    <!-- END Footer Content Left -->
   </BaseLayout>
 </template>
 
@@ -65,24 +36,25 @@ import { useTemplateStore } from "@/stores/template";
 
 import BaseLayout from "@/layouts/BaseLayout.vue";
 import BaseNavigation from "@/components/BaseNavigation.vue";
+import BillingBanners from "@/views/admin/layouts/BillingBanners.vue";
 
 import axios from 'axios'
 import { ref, onMounted } from "vue";
 
-
 // Main store
 const store = useTemplateStore();
-
 
 import menu from "@/data/menu";
 
 const navigation = menu.main;
 const user = ref()
 
-
 onMounted(async () => {
-        let response = await axios.get('/user');
-        user.value = response.data.user
+  const response = await axios.get('/user');
+  user.value = response.data.user;
+  if (response.data.billing) {
+    store.setBillingStatus(response.data.billing);
+  }
 });
 
 

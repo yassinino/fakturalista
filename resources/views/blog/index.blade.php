@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
-@section('title', 'Blog')
+@section('title', __('site.blog.page_title'))
 
 @section('meta')
-<meta name="description" content="Artículos y consejos sobre facturación, gestión para autónomos y pymes — Fakturalista Blog." />
-<meta property="og:title" content="Blog — Fakturalista" />
-<meta property="og:description" content="Artículos y consejos sobre facturación, gestión para autónomos y pymes." />
+<meta name="description" content="{{ __('site.blog.meta_desc') }}" />
+<meta property="og:title" content="{{ __('site.blog.og_title') }}" />
+<meta property="og:description" content="{{ __('site.blog.og_desc') }}" />
 <meta property="og:type" content="website" />
 <link rel="canonical" href="{{ url('/blog') }}" />
 @endsection
@@ -38,8 +38,8 @@
 <section class="page-banner">
     <div class="container">
         <div class="page-title-wrapper">
-            <h1 class="page-title">Blog</h1>
-            <p>Consejos de facturación, gestión y productividad para autónomos y pymes.</p>
+            <h1 class="page-title">{{ __('site.blog.banner_title') }}</h1>
+            <p>{{ __('site.blog.banner_sub') }}</p>
         </div>
     </div>
     <svg class="circle" data-parallax='{"x" : -200}' xmlns="http://www.w3.org/2000/svg" width="950px" height="950px">
@@ -63,8 +63,8 @@
         @if ($posts->isEmpty())
             <div class="blog-empty">
                 <i class="far fa-newspaper"></i>
-                <h3>Próximamente</h3>
-                <p>Estamos preparando el primer artículo. ¡Vuelve pronto!</p>
+                <h3>{{ __('site.blog.empty_title') }}</h3>
+                <p>{{ __('site.blog.empty_text') }}</p>
             </div>
         @else
             <div class="row">
@@ -107,7 +107,7 @@
                             @endif
 
                             <a href="{{ route('blog.show', $post->slug) }}" class="read-more-link">
-                                Leer más &rarr;
+                                {{ __('site.blog.read_more') }} &rarr;
                             </a>
                         </div>
                     </article>

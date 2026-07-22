@@ -18,4 +18,7 @@ return [
     'payment_terms' => 'Conditions de paiement',
     'payment_info' => 'Informations de paiement',
     'per_day' => '/jour',
+    'date'    => 'Date de facture',
+    'status'  => 'Statut',
+    'notes'   => 'Notes',
 ];

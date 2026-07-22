@@ -14,6 +14,16 @@ export const useTemplateStore = defineStore({
       copyright: new Date().getFullYear(),
     },
 
+    // Billing / onboarding state — refreshed on login and /user, persisted to localStorage
+    billing: {
+      onboardingCompleted: localStorage.getItem('billing_onboarding') === 'true',
+      subscriptionStatus:  localStorage.getItem('billing_status') || null,
+      trialEndsAt:         localStorage.getItem('billing_trial_ends_at') || null,
+      trialDaysLeft:       null,
+      isReadOnly:          localStorage.getItem('billing_readonly') === 'true',
+      showTrialBanner:     localStorage.getItem('billing_show_banner') === 'true',
+    },
+
     // Default layout options
     layout: {
       header: true,
@@ -56,6 +66,9 @@ export const useTemplateStore = defineStore({
       localStorage.setItem('accessToken', data.accessToken)
       localStorage.setItem('geseno_user', data.user);
 
+      if (data.billing) {
+        this.setBillingStatus(data.billing);
+      }
     },
     logoutUser () {
       this.app.isLoggedUserIn = false;
@@ -63,6 +76,25 @@ export const useTemplateStore = defineStore({
       this.app.token = '';
       localStorage.removeItem('accessToken');
       localStorage.removeItem('geseno_user');
+      localStorage.removeItem('billing_onboarding');
+      localStorage.removeItem('billing_status');
+      localStorage.removeItem('billing_trial_ends_at');
+      localStorage.removeItem('billing_readonly');
+      localStorage.removeItem('billing_show_banner');
+    },
+    setBillingStatus (data) {
+      this.billing.onboardingCompleted = data.onboarding_completed ?? false;
+      this.billing.subscriptionStatus  = data.subscription_status  ?? null;
+      this.billing.trialEndsAt         = data.trial_ends_at        ?? null;
+      this.billing.trialDaysLeft       = data.trial_days_left      ?? null;
+      this.billing.isReadOnly          = data.is_read_only         ?? false;
+      this.billing.showTrialBanner     = data.show_trial_banner    ?? false;
+
+      localStorage.setItem('billing_onboarding',     this.billing.onboardingCompleted ? 'true' : 'false');
+      localStorage.setItem('billing_status',          this.billing.subscriptionStatus  ?? '');
+      localStorage.setItem('billing_trial_ends_at',  this.billing.trialEndsAt         ?? '');
+      localStorage.setItem('billing_readonly',        this.billing.isReadOnly          ? 'true' : 'false');
+      localStorage.setItem('billing_show_banner',     this.billing.showTrialBanner     ? 'true' : 'false');
     },
     // Sets the layout, useful for setting different layouts (under layouts/variations/)
     setLayout(payload) {

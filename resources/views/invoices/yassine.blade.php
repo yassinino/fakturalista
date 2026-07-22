@@ -219,10 +219,10 @@
                             <td>
                                 
                                     <span style="font-size: 15px;color: black;">Client</span> <br /> 
-                                    <span style="font-size: 15px;color: gray;">{{$invoice->customer->name}} <br /> 
-                                        {!! nl2br(e($invoice->customer->address_billing ?? '')) !!}
-                                    
-                                     {{$invoice->customer->ice ? 'ICE : ' . $invoice->customer->ice : ''}}<br> 
+                                    <span style="font-size: 15px;color: gray;">{{$invoice->customer?->name ?? '—'}} <br />
+                                        {!! nl2br(e($invoice->customer?->address_billing ?? '')) !!}
+
+                                     {{($invoice->customer?->ice) ? 'ICE : ' . $invoice->customer->ice : ''}}<br>
                                     </span>
                             </td>
  

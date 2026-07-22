@@ -93,7 +93,10 @@ class CompanyProfileController extends Controller
      */
     protected function getProfile(): CompanyProfile
     {
-        return CompanyProfile::first();
+        return CompanyProfile::firstOrCreate(
+            [],
+            ['legal_name' => '']
+        );
     }
 
     /**

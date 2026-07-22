@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useTemplateStore } from "@/stores/template.js";
 
 import NProgress from "nprogress/nprogress.js";
 
@@ -10,8 +11,11 @@ import LayoutFront from "@/layouts/variations/Front.vue";
 // Frontend: Landing
 const Landing = () => import("@/views/starter/LandingView.vue");
 
-const AuthSignIn = () => import("@/views/SignIn.vue");
-const AuthSignOut = () => import("@/views/SignOut.vue");
+const AuthSignIn     = () => import("@/views/SignIn.vue");
+const AuthSignOut    = () => import("@/views/SignOut.vue");
+const ForgotPassword = () => import("@/views/ForgotPassword.vue");
+const ResetPassword  = () => import("@/views/ResetPassword.vue");
+const Onboarding     = () => import("@/views/admin/Onboarding.vue");
 
 // Backend: Dashboard
 
@@ -43,6 +47,7 @@ const Settings = () => import("@/views/admin/settings.vue");
 const Templates = () => import("@/views/admin/templates.vue");
 const Dashboard = () => import("@/views/admin/dashboard.vue");
 const Subscription = () => import("@/views/admin/subscription.vue");
+const Payments = () => import("@/views/admin/payments.vue");
 
 // Set all routes
 const routes = [
@@ -219,6 +224,14 @@ const routes = [
           requiresAuth: true
         }
       },
+      {
+        path: "payments",
+        name: "backend-payments",
+        component: Payments,
+        meta: {
+          requiresAuth: true
+        }
+      },
     ],
   },
     /*
@@ -242,7 +255,21 @@ const routes = [
         name: "auth-signout",
         component: AuthSignOut,
       },
-
+      {
+        path: "forgot-password",
+        name: "auth-forgot-password",
+        component: ForgotPassword,
+      },
+      {
+        path: "reset-password",
+        name: "auth-reset-password",
+        component: ResetPassword,
+      },
+      {
+        path: "onboarding",
+        name: "onboarding",
+        component: Onboarding,
+      },
     ],
   },
 ];
@@ -272,5 +299,43 @@ router.afterEach((to, from) => {
   NProgress.done();
 });
 /*eslint-enable no-unused-vars*/
+
+// Auth + billing navigation guard
+const AUTH_ROUTES  = ['auth-signin', 'auth-signout', 'auth-forgot-password', 'auth-reset-password'];
+const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'landing'];
+
+router.beforeEach((to, from, next) => {
+  const store = useTemplateStore();
+  const isLoggedIn = !!store.app.accessToken;
+
+  // Unauthenticated → send to login (except public routes)
+  if (!isLoggedIn && !AUTH_ROUTES.includes(to.name) && to.name !== 'landing') {
+    return next({ name: 'auth-signin' });
+  }
+
+  if (isLoggedIn) {
+    // Redirect authenticated users away from login page
+    if (to.name === 'auth-signin') {
+      return next({ name: 'backend-dashboard' });
+    }
+
+    // Onboarding not done → lock to onboarding page
+    if (!store.billing.onboardingCompleted && to.name !== 'onboarding' && !AUTH_ROUTES.includes(to.name)) {
+      return next({ name: 'onboarding' });
+    }
+
+    // Trial expired or canceled → lock to subscription page (allow onboarding through)
+    const lockedStatuses = ['expired', 'canceled'];
+    if (
+      store.billing.onboardingCompleted &&
+      lockedStatuses.includes(store.billing.subscriptionStatus) &&
+      !BYPASS_NAMES.includes(to.name)
+    ) {
+      return next({ name: 'backend-subscription' });
+    }
+  }
+
+  next();
+});
 
 export default router;

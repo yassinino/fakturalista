@@ -11,8 +11,114 @@
 // For example you can create _component1.scss and include it as follows:
 // @import 'component1';
 
-.form-control, .form-select, .btn, .dropdown-menu.show{
-    border-radius: 2px;
+// ── Form controls & dropdowns — subtle radius ──────────────────────────
+.form-control, .form-select, .dropdown-menu.show {
+  border-radius: 8px;
+}
+
+// ── Fakturalista button design system ─────────────────────────────────
+// Flat colors, no gradients. Subtle lift + shadow on hover.
+// Size/radius/weight are set via $btn-* SCSS variables in _variables.scss.
+// Here we only set the color semantics and interaction feedback.
+//
+// Strategy: override Bootstrap's CSS custom properties directly on each
+// variant class. This works with Bootstrap 5's --bs-btn-* architecture
+// without fighting specificity wars.
+
+// All buttons: icon + text gap, inline-flex alignment
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ── Primary ──────────────────────────────────────────────────────────
+.btn-primary,
+.btn-alt-primary {
+  --bs-btn-bg:                 #E91E63;
+  --bs-btn-border-color:       #E91E63;
+  --bs-btn-color:              #fff;
+  --bs-btn-hover-bg:           #c2185b;
+  --bs-btn-hover-border-color: #c2185b;
+  --bs-btn-hover-color:        #fff;
+  --bs-btn-active-bg:          #ad1457;
+  --bs-btn-active-border-color: #ad1457;
+  --bs-btn-active-color:       #fff;
+  --bs-btn-disabled-bg:        #E91E63;
+  --bs-btn-disabled-border-color: #E91E63;
+  --bs-btn-disabled-color:     #fff;
+  --bs-btn-focus-shadow-rgb:   233, 30, 99;
+  background-image: none;
+
+  &:hover:not(:disabled):not(.disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
+    background-image: none;
+  }
+
+  &:active,
+  &.active {
+    transform: none;
+    box-shadow: none;
+    background-image: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    transform: none;
+    box-shadow: none;
+    background-image: none;
+    pointer-events: none;
+  }
+}
+
+// ── Outline primary ───────────────────────────────────────────────────
+.btn-outline-primary {
+  --bs-btn-hover-bg:           #fff0f6;
+  --bs-btn-hover-border-color: #E91E63;
+  --bs-btn-hover-color:        #E91E63;
+  --bs-btn-active-bg:          #fce7f0;
+  --bs-btn-active-border-color: #E91E63;
+  --bs-btn-active-color:       #E91E63;
+  --bs-btn-focus-shadow-rgb:   233, 30, 99;
+
+  &:hover:not(:disabled):not(.disabled) {
+    transform: translateY(-1px);
+  }
+}
+
+// ── Outline secondary (ghost) ─────────────────────────────────────────
+.btn-outline-secondary {
+  --bs-btn-color:              #374151;
+  --bs-btn-border-color:       #e5e7eb;
+  --bs-btn-hover-bg:           #f9fafb;
+  --bs-btn-hover-border-color: #d1d5db;
+  --bs-btn-hover-color:        #111827;
+  --bs-btn-active-bg:          #f3f4f6;
+  --bs-btn-active-border-color: #d1d5db;
+  --bs-btn-active-color:       #111827;
+
+  &:hover:not(:disabled):not(.disabled) {
+    transform: translateY(-1px);
+  }
+}
+
+// ── Outline danger ────────────────────────────────────────────────────
+.btn-outline-danger {
+  --bs-btn-hover-bg:           #fff5f5;
+  --bs-btn-hover-border-color: #f87171;
+  --bs-btn-focus-shadow-rgb:   220, 38, 38;
+
+  &:hover:not(:disabled):not(.disabled) {
+    transform: translateY(-1px);
+  }
+}
+
+// ── Secondary (filled, used sparingly) ────────────────────────────────
+.btn-secondary {
+  &:hover:not(:disabled):not(.disabled) {
+    transform: translateY(-1px);
+  }
 }
 
 .text-right{
@@ -25,4 +131,30 @@
 
 .dropstart .dropdown-toggle::before{
     content: none;
+}
+
+// ── Page background: subtle dot grid + soft corner glow ──────────────
+// Applies to the root admin wrapper — covers every page automatically.
+// Only background-image/size is set here so the inherited background-color
+// ($body-bg: #ebeef2) still acts as the base, keeping cards visible.
+#page-container {
+  background-image:
+    radial-gradient(circle, rgba(100, 116, 139, 0.09) 1px, transparent 1px),
+    radial-gradient(ellipse 65% 45% at 0% 0%, rgba(186, 230, 253, 0.18) 0%, transparent 55%);
+  background-size: 22px 22px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-position: 0 0, 0 0;
+}
+
+// Dark mode: OneUI places .dark-mode on #page-container itself.
+// Override background-color here too (deep navy) since the dot grid
+// needs a dark base to render correctly.
+#page-container.dark-mode {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(circle, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    radial-gradient(ellipse 65% 45% at 0% 0%, rgba(30, 58, 138, 0.20) 0%, transparent 55%);
+  background-size: 22px 22px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-position: 0 0, 0 0;
 }

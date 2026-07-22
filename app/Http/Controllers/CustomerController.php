@@ -230,4 +230,16 @@ class CustomerController extends Controller
 
         return response(['message' => 'Cliente eliminado!'], 200);
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'   => 'required|array|min:1',
+            'ids.*' => 'string',
+        ]);
+
+        $count = Customer::whereIn('uuid', $validated['ids'])->delete();
+
+        return response()->json(['message' => "$count customer(s) deleted."]);
+    }
 }

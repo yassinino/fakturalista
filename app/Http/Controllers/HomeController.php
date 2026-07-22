@@ -92,7 +92,7 @@ class HomeController extends Controller
             ]);
         }
 
-        return back()->with('status', 'Mensaje enviado correctamente.');
+        return back()->with('status', __('site.contact.status_success'));
     }
 
     public function sendFreeTrial(Request $request)

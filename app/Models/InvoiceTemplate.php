@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceTemplate extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $appends = ['logo_url'];
 
     protected $fillable = [
         'name',
@@ -84,6 +83,21 @@ class InvoiceTemplate extends Model
         'settings' => 'array',
         'placeholders' => 'array',
     ];
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (empty($this->logo_path)) {
+            return null;
+        }
+        $path = ltrim($this->logo_path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+        return null;
+    }
 
     protected static function booted(): void
     {

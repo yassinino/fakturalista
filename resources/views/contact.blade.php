@@ -1,147 +1,204 @@
 @extends('layouts.master')
 
-@section('title', 'Contato')
+@section('title', __('site.contact.page_title'))
+
+@section('meta')
+<meta name="description" content="{{ __('site.contact.meta_desc') }}" />
+<meta property="og:title" content="{{ __('site.contact.page_title') }} — Fakturalista" />
+<meta property="og:description" content="{{ __('site.contact.meta_desc') }}" />
+<meta property="og:type" content="website" />
+<link rel="canonical" href="{{ url('/contact') }}" />
+@endsection
 
 @section('content')
-
 <style>
-
     .site-header .site-main-menu li > a{
         color: #000000;
     }
 </style>
+<div class="ct-page">
 
+    <!-- ============================
+         HEADER BAND
+         ============================ -->
+    <section class="ct-header">
+        <div class="container">
+            <span class="ct-header-tag">
+                <i class="fas fa-headset"></i>
+                {{ __('site.contact.header_tag') }}
+            </span>
+            <h1 class="ct-header-title">{{ __('site.contact.header_title') }}</h1>
+            <p class="ct-header-sub">{!! __('site.contact.header_sub') !!}</p>
+        </div>
+    </section>
 
-        <!--==========================-->
-        <!--=         Banner         =-->
-        <!--==========================-->
-        <section class="page-banner-contact">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="page-title-wrapper">
-                            <div class="page-title-inner">
-                                <h1 class="page-title">¿En qué podemos ayudarte?</h1>
+    <!-- ============================
+         MAIN — INFO PANEL + FORM
+         ============================ -->
+    <section class="ct-main">
+        <div class="container">
+            <div class="row g-4 align-items-start">
 
-                                <p>
-                                   ¿Tienes alguna pregunta, sugerencia o necesitas ayuda? <br>
-                                   Estamos aquí para ayudarte.
-                                </p>
-                                <p>
-                                   Nuestro equipo estará encantado de responderte y acompañarte en el uso de la aplicación.
-                                </p>
-                            </div>
-                            <!-- /.page-title-inner -->
-                        </div>
-                        <!-- /.page-title-wrapper -->
-                    </div>
-                    <!-- /.col-lg-8 -->
+                <!-- ── Left: contact info ── -->
+                <div class="col-lg-4">
+                    <div class="ct-info-panel">
 
-                    <div class="col-lg-4">
-                        <div class="animate-element-contact">
-                            <img src="media/animated/001.png" alt="" class="wow pixFadeDown" data-wow-duration="1s">
-                            <img src="media/animated/002.png" alt="" class="wow pixFadeUp" data-wow-duration="2s">
-                            <img src="media/animated/003.png" alt="" class="wow pixFadeLeft" data-wow-delay="0.3s" data-wow-duration="2s">
-                            <img src="media/animated/004.png" alt="man" class="wow pixFadeUp" data-wow-duration="2s">
-                        </div>
-                        <!-- /.animate-element-contact -->
-                    </div>
-                    <!-- /.col-lg-4 -->
-                </div>
-                <!-- /.row -->
+                        <!-- Contact details card -->
+                        <div class="ct-info-card">
+                            <p class="ct-info-card-title">{{ __('site.contact.info_title') }}</p>
 
-            </div>
-            <!-- /.container -->
-
-            <svg class="circle" data-parallax='{"y" : 250}' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="950px" height="950px">
-                <path fill-rule="evenodd" stroke="rgb(250, 112, 112)" stroke-width="100px" stroke-linecap="butt" stroke-linejoin="miter" opacity="0.051" fill="none" d="M450.000,50.000 C670.914,50.000 850.000,229.086 850.000,450.000 C850.000,670.914 670.914,850.000 450.000,850.000 C229.086,850.000 50.000,670.914 50.000,450.000 C50.000,229.086 229.086,50.000 450.000,50.000 Z" />
-            </svg>
-
-            <ul class="animate-ball">
-                <li class="ball"></li>
-                <li class="ball"></li>
-                <li class="ball"></li>
-                <li class="ball"></li>
-                <li class="ball"></li>
-            </ul>
-        </section>
-        <!-- /.page-banner -->
-
-        <!--===========================-->
-        <!--=         Contact         =-->
-        <!--===========================-->
-        <section class="contactus">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="contact-infos">
-
-                            <div class="contact-info">
-                                <h3 class="title">Contáctanos</h3>
-                                <div class="info">
-                                    <i class="ei ei-icon_mail_alt"></i>
-                                    <span>contact@fakturalista.com</span>
+                            <div class="ct-info-block">
+                                <div class="ct-info-icon">
+                                    <i class="fas fa-envelope"></i>
                                 </div>
-                                 <div class="info">
-                                    <i class="ei ei-icon_phone"></i>
-                                    <span>+34 912 345 678</span>
+                                <div class="ct-info-text">
+                                    <strong>{{ __('site.contact.label_email') }}</strong>
+                                    <a href="mailto:contact@fakturalista.com">contact@fakturalista.com</a>
                                 </div>
                             </div>
-                            <!-- /.contact-info -->
+
+                            <div class="ct-info-block">
+                                <div class="ct-info-icon">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <div class="ct-info-text">
+                                    <strong>{{ __('site.contact.label_phone') }}</strong>
+                                    <a href="tel:+34912345678">+34 912 345 678</a>
+                                </div>
+                            </div>
+
+                            <div class="ct-info-block">
+                                <div class="ct-info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="ct-info-text">
+                                    <strong>{{ __('site.contact.label_hours') }}</strong>
+                                    <span>{{ __('site.contact.hours_value') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="ct-info-block">
+                                <div class="ct-info-icon">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <div class="ct-info-text">
+                                    <strong>{{ __('site.contact.label_social') }}</strong>
+                                    <div class="ct-social-row">
+                                        <a href="https://www.instagram.com/fakturalista"
+                                           class="ct-social-link"
+                                           target="_blank" rel="noopener"
+                                           aria-label="Instagram">
+                                            <i class="fab fa-instagram"></i>
+                                        </a>
+                                        <a href="#" class="ct-social-link" aria-label="Facebook">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <!-- /.contact-infos -->
-                    </div>
-                    <!-- /.col-md-4 -->
-                    <div class="col-md-8">
-                        <div class="contact-froms">
-                            @if (session('status'))
-                                <div class="alert alert-success mb-4">
-                                    {{ session('status') }}
-                                </div>
-                            @endif
-                            @if ($errors->any())
-                                <div class="alert alert-danger mb-4">
-                                    Por favor revisa los campos e intenta de nuevo.
-                                </div>
-                            @endif
-                            <form method="POST" action="{{ route('contact.send') }}" class="contact-form" data-pixsaas="contact-froms">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="text" name="name" placeholder="Nombre" value="{{ old('name') }}" required>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <input type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email') }}" required>
-                                    </div>
-                                </div>
-
-                                <input type="text" name="subject" placeholder="Asunto" value="{{ old('subject') }}">
-                                <textarea name="content" placeholder="Tu Comentario" required>{{ old('content') }}</textarea>
-
-                                <button type="submit" class="pix-btn submit-btn">
-                                    <span class="btn-text">Enviar Tu Mensaje</span>
-                                    <i class="fas fa-spinner fa-spin"></i>
-                                </button>
-                                <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
-
-
-                                <div class="row">
-                                    <div class="form-result alert">
-                                        <div class="content"></div>
-                                    </div>
-                                </div>
-                            </form>
-                            <!-- /.contact-froms -->
+                        <!-- Reassurance note -->
+                        <div class="ct-reassurance">
+                            <i class="fas fa-shield-alt"></i>
+                            <p>
+                                <strong>{{ __('site.contact.privacy_title') }}</strong><br>
+                                {{ __('site.contact.privacy_text') }}
+                            </p>
                         </div>
-                        <!-- /.faq-froms -->
+
                     </div>
-                    <!-- /.col-md-8 -->
                 </div>
-                <!-- /.row -->
+                <!-- /left -->
+
+                <!-- ── Right: form ── -->
+                <div class="col-lg-8">
+                    <div class="ct-form-card">
+                        <h2 class="ct-form-title">{{ __('site.contact.form_title') }}</h2>
+                        <p class="ct-form-sub">{{ __('site.contact.form_sub') }}</p>
+
+                        {{-- Alerts --}}
+                        @if (session('status'))
+                            <div class="ct-alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                        @if ($errors->any())
+                            <div class="ct-alert-error">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ __('site.contact.alert_error') }}
+                            </div>
+                        @endif
+
+                        {{-- ★ Form — field names, action, data-* and JS hooks preserved ★ --}}
+                        <form method="POST"
+                              action="{{ route('contact.send') }}"
+                              class="contact-form"
+                              data-pixsaas="contact-froms">
+                            @csrf
+
+                            <div class="row g-3">
+                                <div class="col-sm-6 ct-field">
+                                    <label class="ct-label" for="ct-name">{{ __('site.contact.label_name') }}</label>
+                                    <input class="ct-input @error('name') is-invalid @enderror"
+                                           type="text"
+                                           id="ct-name"
+                                           name="name"
+                                           placeholder="{{ __('site.contact.placeholder_name') }}"
+                                           value="{{ old('name') }}"
+                                           required>
+                                </div>
+                                <div class="col-sm-6 ct-field">
+                                    <label class="ct-label" for="ct-email">{{ __('site.contact.label_email_f') }}</label>
+                                    <input class="ct-input @error('email') is-invalid @enderror"
+                                           type="email"
+                                           id="ct-email"
+                                           name="email"
+                                           placeholder="{{ __('site.contact.placeholder_email') }}"
+                                           value="{{ old('email') }}"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="ct-field">
+                                <label class="ct-label" for="ct-subject">{{ __('site.contact.label_subject') }}</label>
+                                <input class="ct-input @error('subject') is-invalid @enderror"
+                                       type="text"
+                                       id="ct-subject"
+                                       name="subject"
+                                       placeholder="{{ __('site.contact.placeholder_subject') }}"
+                                       value="{{ old('subject') }}">
+                            </div>
+
+                            <div class="ct-field" style="margin-bottom: 24px;">
+                                <label class="ct-label" for="ct-content">{{ __('site.contact.label_message') }}</label>
+                                <textarea class="ct-textarea @error('content') is-invalid @enderror"
+                                          id="ct-content"
+                                          name="content"
+                                          placeholder="{{ __('site.contact.placeholder_message') }}"
+                                          required>{{ old('content') }}</textarea>
+                            </div>
+
+                            <button type="submit" class="ct-submit-btn submit-btn">
+                                <span class="btn-text">{{ __('site.contact.btn_submit') }} &rarr;</span>
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </button>
+
+                            <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+
+                            <div class="ct-form-result form-result alert">
+                                <div class="content"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /right -->
+
             </div>
-            <!-- /.container -->
-        </section>
-        <!-- /.contactus -->
+        </div>
+    </section>
+
+</div>
 
 @endsection

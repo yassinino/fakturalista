@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Plataforma de facturación y gestión')
+@section('title', __('site.home.page_title'))
 
 @section('content')
      <!--==========================-->
@@ -14,13 +14,12 @@
                         <div class="col-lg-6">
                             <div class="banner-content">
                                 <h1 class="banner-title wow pixFadeUp" data-wow-delay="0.3s">
-                                    Plataforma de facturación y gestión <span>intuitiva <br>
-                                        </span> y <span>  eficiente </span>
-                                    
+                                    {{ __('site.home.banner_pre') }} <span>{{ __('site.home.banner_accent1') }}<br></span>
+                                    {{ __('site.home.banner_mid') }} <span>{{ __('site.home.banner_accent2') }}</span>
                                 </h1>
 
                                 <p class="description wow pixFadeUp" data-wow-delay="0.5s">
-                                   La forma más fácil y amigable de gestionar y facturar tu negocio!
+                                    {{ __('site.home.banner_desc') }}
                                 </p>
 
                                 {{-- <a href="#" class="pxs-btn banner-btn wow pixFadeUp" data-wow-delay="0.6s">Get Started</a> --}}
@@ -47,7 +46,7 @@
         <section class="featured">
             <div class="container">
                 <div class="section-title text-center wow pixFade">
-                    <h2 class="title">El software de facturación más fácil que jamás hayas usado.</h2>
+                    <h2 class="title">{{ __('site.home.feat_title') }}</h2>
                 </div><!-- /.section-title -->
 
                 <div class="row">
@@ -57,7 +56,7 @@
                                 <img src="{{ url('assets/icon_1.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Facturas profesionales en segundos</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.home.feat_1') }}</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -68,7 +67,7 @@
                                 <img src="{{ url('assets/icon_2.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Gestión inteligente de clientes</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.home.feat_2') }}</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -79,7 +78,7 @@
                                 <img src="{{ url('assets/icon_3.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Controla tus gastos</a></h3>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.home.feat_3') }}</a></h3>
                             </div>
                         </div><!-- /.pixsass-box style-one -->
                     </div><!-- /.col-md-4 -->
@@ -106,7 +105,7 @@
                         <div class="editor-content">
                             <div class="section-title style-two">
                                 <h2 class="title wow pixFadeUp" data-wow-delay="0.3s">
-                                   Generador de facturas en línea
+                                    {{ __('site.home.gen_title') }}
                                 </h2>
 {{-- 
                                 <p class="wow pixFadeUp" data-wow-delay="0.5s">
@@ -117,10 +116,10 @@
 
                             <div class="description wow pixFadeUp" data-wow-delay="0.7s">
                                 <p>
-                                    Gestiona tu facturación en cualquier momento y lugar con nuestro generador de facturas seguro y siempre conectado!
+                                    {{ __('site.home.gen_desc') }}
                                 </p>
 
-                                <a href="#" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">Usa el generador de facturas ahora</a>
+                                <a href="#" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">{{ __('site.home.gen_cta') }}</a>
                             </div>
                         </div><!-- /.editor-content -->
                     </div><!-- /.col-lg-6 -->
@@ -140,19 +139,18 @@
                     <div class="col-lg-6 pix-order-one">
                         <div class="section-title style-two">
                             <h2 class="title wow pixFadeUp">
-                                Genera informes completos con un solo clic
+                                {{ __('site.home.rep_title') }}
                             </h2>
 
                             <p class="wow pixFadeUp" data-wow-delay="0.3s">
-                                Simplifica tu trabajo y obtén reportes claros, visuales y en tiempo real.
-                                Analiza tus ventas, controla tus ingresos y toma decisiones inteligentes para hacer crecer tu negocio.
+                                {{ __('site.home.rep_desc') }}
                             </p>
                         </div><!-- /.section-title style-two -->
 
                         <ul class="list-items wow pixFadeUp" data-wow-delay="0.4s">
-                            <li>Acceso rápido</li>
-                            <li>Gestión sencilla</li>
-                            <li>Soporte 24/7</li>
+                            <li>{{ __('site.home.rep_li_1') }}</li>
+                            <li>{{ __('site.home.rep_li_2') }}</li>
+                            <li>{{ __('site.home.rep_li_3') }}</li>
                         </ul>
 
                         {{-- <a href="#" class="pix-btn btn-outline wow pixFadeUp" data-wow-delay="0.5s">Discover More</a> --}}

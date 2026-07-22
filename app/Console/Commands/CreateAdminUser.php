@@ -30,7 +30,7 @@ class CreateAdminUser extends Command
         ]);
 
         $this->info("Admin user [{$email}] created successfully.");
-        $this->line('Log in at: ' . url('/admin'));
+        $this->line('Log in at: ' . url('/backoffice'));
 
         return self::SUCCESS;
     }

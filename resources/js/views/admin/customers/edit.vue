@@ -7,7 +7,7 @@
   
   
             <!-- Floating Labels -->
-      <BaseBlock :title="$t('customers.editTitle')" content-full>
+      <BaseBlock class="customer-form-card" :title="$t('customers.editTitle')" content-full>
           <div class="row">
             <div class="col-lg-3">
               <p class="fs-sm text-muted">
@@ -530,3 +530,10 @@
   </script>
   
   
+
+<style scoped>
+:global(.customer-form-card) {
+  overflow: hidden;
+  border-top: 3px solid #E91E63 !important;
+}
+</style>

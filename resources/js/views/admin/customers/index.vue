@@ -1,130 +1,157 @@
 <template>
-<div class="content">
+  <div class="content">
 
-  <BaseBlock :title="$t('customers.title')">
-          <template #options>
-            <div class="block-options-item">
-              <router-link to="customers/new" class="btn btn-primary">
-                {{ $t("customers.newTitle") }}
-              </router-link>
-            </div>
-          </template>
+    <BaseBlock :title="$t('customers.title')">
+      <template #options>
+        <div class="block-options-item">
+          <router-link to="customers/new" class="btn btn-primary">
+            {{ $t("customers.newTitle") }}
+          </router-link>
+        </div>
+      </template>
 
-          <table class="table table-vcenter">
-            <thead>
-              <tr>
-                <th class="text-center">
-                  <input type="checkbox" class="form-check-input" @change="clickedAll">
-                </th>
-                <th class="d-none d-sm-table-cell">
-                  {{ $t("customers.table.name") }}
-                </th>
-                <th class="d-none d-sm-table-cell">
-                  {{ $t("customers.table.address") }}
-                </th>
-                <th class="d-none d-sm-table-cell">
-                  {{ $t("customers.table.email") }}
-                </th>
-                <th class="d-none d-sm-table-cell">
-                  {{ $t("customers.table.phone") }}
-                </th>
-                <th class="d-none d-sm-table-cell">
-                  {{ $t("customers.table.customerNumber") }}
-                </th>
-                <th class="text-center" style="width: 100px">{{ $t("common.actions") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="customer in customers" :key="customer.id">
-                <th class="text-center" scope="row">
-                  <input type="checkbox" name="" class="form-check-input" v-model="customer.checked">
-                </th>
-                <td class="d-none d-sm-table-cell">
-                  <router-link :to="'customers/' + customer.uuid">{{ customer.name }}</router-link>
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  {{ customer.address_billing }}
-                </td>
-                <td class="d-none d-sm-table-cell">
-                    {{ customer.email }}
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  {{ customer.phone }}
-                </td>
-                <td class="d-none d-sm-table-cell">
-                  {{ customer.reference }}
-                </td>
-                <td class="text-center">
-                  <div class="dropdown dropstart push">
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary dropdown-toggle"
-                      id="dropdown-dropleft-dark"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i class="fa fa-fw fa-ellipsis-v"></i>
-                    </button>
-                    <div
-                      class="dropdown-menu fs-sm"
-                      aria-labelledby="dropdown-dropleft-dark"
-                    >
-                      <router-link class="dropdown-item danger" :to="'customers/edit/' + customer.uuid">
-                        {{ $t("common.edit") }}
-                      </router-link>
-                      <a class="dropdown-item danger" href="javascript:void(0)" @click.prevent="deleteCustomer(customer)">
-                        {{ $t("common.delete") }}
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </BaseBlock>
+      <BulkActionBar
+        :count="selectedIds.length"
+        :loading="bulkDeleting"
+        @delete="showBulkDeleteModal = true"
+        @clear="clearSelection"
+      />
 
-</div>
+      <DataTableShell
+        :rows="customers"
+        :server-side="false"
+        :status-options="[]"
+        :show-date-filter="false"
+        :search-fields="['name', 'email', 'phone', 'reference']"
+        search-placeholder="Search clients…"
+      >
+        <template #head="{ sortField, sortDir, setSort }">
+          <tr>
+            <th class="dt-cb-col">
+              <input type="checkbox" class="form-check-input" @change="clickedAll">
+            </th>
+            <th class="dt-sortable" @click="setSort('name')">
+              {{ $t("customers.table.name") }}
+              <i class="fa fa-fw ms-1"
+                :class="sortField === 'name' ? (sortDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th>{{ $t("customers.table.address") }}</th>
+            <th class="dt-sortable" @click="setSort('email')">
+              {{ $t("customers.table.email") }}
+              <i class="fa fa-fw ms-1"
+                :class="sortField === 'email' ? (sortDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="dt-sortable" @click="setSort('phone')">
+              {{ $t("customers.table.phone") }}
+              <i class="fa fa-fw ms-1"
+                :class="sortField === 'phone' ? (sortDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="dt-sortable" @click="setSort('reference')">
+              {{ $t("customers.table.customerNumber") }}
+              <i class="fa fa-fw ms-1"
+                :class="sortField === 'reference' ? (sortDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="dt-ac-col">{{ $t("common.actions") }}</th>
+          </tr>
+        </template>
 
+        <template #body="{ items }">
+          <tr v-for="customer in items" :key="customer.uuid">
+            <td class="dt-cb-col">
+              <input type="checkbox" class="form-check-input" v-model="customer.checked">
+            </td>
+            <td>
+              <router-link :to="'customers/' + customer.uuid">{{ customer.name }}</router-link>
+            </td>
+            <td>{{ customer.address_billing }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.phone }}</td>
+            <td>{{ customer.reference }}</td>
+            <td class="dt-ac-col">
+              <RowActionMenu>
+                <router-link class="dropdown-item" :to="'customers/edit/' + customer.uuid">
+                  <i class="fa fa-pencil fa-fw me-1"></i>{{ $t("common.edit") }}
+                </router-link>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-danger" href="javascript:void(0)" @click.prevent="deleteCustomer(customer)">
+                  <i class="fa fa-trash fa-fw me-1"></i>{{ $t("common.delete") }}
+                </a>
+              </RowActionMenu>
+            </td>
+          </tr>
+        </template>
+      </DataTableShell>
+    </BaseBlock>
+
+  </div>
+
+  <BulkDeleteModal
+    :show="showBulkDeleteModal"
+    :count="selectedIds.length"
+    :loading="bulkDeleting"
+    @confirm="bulkDelete"
+    @cancel="showBulkDeleteModal = false"
+  />
 </template>
 
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from 'axios'
+import { ref, computed, onMounted } from "vue";
+import axios from 'axios';
 import { useI18n } from "vue-i18n";
+import DataTableShell  from '@/views/admin/layouts/DataTableShell.vue';
+import BulkActionBar   from '@/views/admin/layouts/BulkActionBar.vue';
+import BulkDeleteModal from '@/views/admin/layouts/BulkDeleteModal.vue';
+import RowActionMenu   from '@/views/admin/layouts/RowActionMenu.vue';
+import { createToaster } from '@meforma/vue-toaster';
 
+const toaster   = createToaster();
+const { t }     = useI18n();
+const customers = ref([]);
 
-// Input state variables
-const customers = ref([])
-const { t } = useI18n();
+const showBulkDeleteModal = ref(false);
+const bulkDeleting        = ref(false);
+const selectedIds         = computed(() => customers.value.filter(c => c.checked).map(c => c.uuid));
 
 onMounted(async () => {
-        
-        let response = await axios.get('/customers');
-        customers.value = response.data.customers
+  const response = await axios.get('/customers');
+  customers.value = response.data.customers;
 });
-
 
 const deleteCustomer = (customer) => {
   if (confirm(t('customers.confirmDelete'))) {
-        axios.delete('/customers/' + customer.uuid)
-        .then(response => {
-            customers.value = customers.value.filter(c => c.uuid !== customer.uuid)
-        })
-        .catch(error => {
-            console.error('There was an error!', error);
-        });
-    }
+    axios.delete('/customers/' + customer.uuid)
+      .then(() => {
+        customers.value = customers.value.filter(c => c.uuid !== customer.uuid);
+      })
+      .catch(error => {
+        console.error('Error deleting customer:', error);
+      });
+  }
+};
+
+function clickedAll(e) {
+  const checked = e.target.checked;
+  customers.value = customers.value.map(c => ({ ...c, checked }));
 }
 
-const clickedAll = (value) => {
-  customers.value = customers.value.map(customer => {
-              customer.checked = value
-              return customer;
-  })
+function clearSelection() {
+  customers.value = customers.value.map(c => ({ ...c, checked: false }));
 }
 
-
-
+async function bulkDelete() {
+  const ids = selectedIds.value.slice();
+  if (!ids.length) return;
+  bulkDeleting.value = true;
+  try {
+    await axios.post('/customers/bulk-delete', { ids });
+    customers.value = customers.value.filter(c => !ids.includes(c.uuid));
+    showBulkDeleteModal.value = false;
+    toaster.success(t('common.bulkDeleteSuccess', { count: ids.length }));
+  } catch (e) {
+    toaster.error(e.response?.data?.message ?? t('customers.errorGeneric'));
+  } finally {
+    bulkDeleting.value = false;
+  }
+}
 </script>

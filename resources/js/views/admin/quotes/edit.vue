@@ -1,67 +1,49 @@
 <template>
-    
-  <EditDocument 
-  title="Edit Quote"
-  :state="state"
-  @saveDocument = "saveQuote"
-  >
-
-  </EditDocument>
-
+  <EditQuoteForm
+    v-if="quote"
+    :quote="quote"
+    @saveDocument="saveQuote"
+  />
+  <div v-else class="content">
+    <div style="padding: 40px; text-align: center; color: #9ca3af;">
+      <i class="fa fa-spinner fa-spin fa-2x"></i>
+    </div>
+  </div>
 </template>
 
 <script setup>
-  import { reactive, ref, computed, onMounted } from "vue";
-import axios from 'axios'
-import { createToaster } from '@meforma/vue-toaster';
-const toaster = createToaster({ /* options */ });
-import { useRoute, useRouter } from 'vue-router'
-const router = useRouter()
-const route = useRoute()
-const uuid = ref(route.params.id)
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { createToaster } from "@meforma/vue-toaster";
+import { useRoute, useRouter } from "vue-router";
+import EditQuoteForm from "./EditQuoteForm.vue";
 
-const state = ref({
-    customer_id: '',
-    address : '',
-    discount_rate : 0,
-    discount_amount : 0,
-    date : '',
-    status : '',
-    expiration_date : '',
-    carts : [],
-  });
+const toaster = createToaster();
+const router  = useRouter();
+const route   = useRoute();
+
+const uuid  = route.params.id;
+const quote = ref(null);
 
 onMounted(async () => {
-            
-            let res = await axios.get('/quotes/' + uuid.value + '/edit');
-            state.value = res.data.quote
-
+  const res = await axios.get("/quotes/" + uuid + "/edit");
+  quote.value = res.data.quote;
 });
 
-
-// On form submission
 async function saveQuote(state) {
-
-  axios.post('/quotes/' + state.value.uuid ,state.value, {
-        params: {
-        _method: "put",
-      },
-    }).then(res => {
-                                
-      toaster.success(res.data.message);
-      router.push('/admin/quotes')
-  
-    })
+  try {
+    const res = await axios.post("/quotes/" + state.uuid, state, {
+      params: { _method: "put" },
+    });
+    toaster.success(res.data.message);
+    router.push("/admin/quotes");
+  } catch (e) {
+    toaster.error(e.response?.data?.message ?? "Ha ocurrido un error. Inténtalo de nuevo.");
+  }
 }
 </script>
 
-
 <style lang="scss">
-// Flatpickr + Custom overrides
 @import "flatpickr/dist/flatpickr.css";
 @import "@/assets/scss/vendor/flatpickr";
-
-// Dropzone + Custom overrides
-@import "dropzone/dist/dropzone.css";
-@import "@/assets/scss/vendor/dropzone";
 </style>

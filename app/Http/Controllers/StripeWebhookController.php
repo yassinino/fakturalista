@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
+use App\Models\InvoiceHistory;
 use App\Models\Plan;
 use App\Models\BillingProfile;
 use App\Models\Subscription;
 use App\Models\Payment;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
@@ -43,11 +46,24 @@ class StripeWebhookController extends Controller
 
         switch ($type) {
             case 'checkout.session.completed':
-                $this->handleCheckoutSessionCompleted($event->data->object);
+                // Route to invoice payment handler if invoice_uuid is in metadata
+                if (!empty($event->data->object->metadata->invoice_uuid)) {
+                    $this->handleInvoicePayment($event->data->object);
+                } else {
+                    $this->handleCheckoutSessionCompleted($event->data->object);
+                }
                 break;
 
             case 'invoice.payment_succeeded':
                 $this->handleInvoicePaymentSucceeded($event->data->object);
+                break;
+
+            case 'customer.subscription.updated':
+                $this->handleSubscriptionUpdated($event->data->object);
+                break;
+
+            case 'customer.subscription.deleted':
+                $this->handleSubscriptionDeleted($event->data->object);
                 break;
 
             default:
@@ -56,6 +72,73 @@ class StripeWebhookController extends Controller
         }
 
         return response('OK', 200);
+    }
+
+    /**
+     * 1️⃣ Premier paiement: on crée/maj l'abonnement central.
+     *    (on ne gère pas le Payment ici, on le centralise dans invoice.payment_succeeded)
+     */
+    /**
+     * Handle invoice payment completion.
+     * Bootstraps the correct tenant DB context from metadata, then marks the invoice paid.
+     */
+    protected function handleInvoicePayment($session): void
+    {
+        $invoiceUuid = $session->metadata->invoice_uuid ?? null;
+        $tenantId    = $session->metadata->tenant_id    ?? null;
+
+        if (!$invoiceUuid || !$tenantId) {
+            Log::warning('Invoice payment webhook: missing metadata', [
+                'invoice_uuid' => $invoiceUuid,
+                'tenant_id'    => $tenantId,
+            ]);
+            return;
+        }
+
+        $tenant = Tenant::find($tenantId);
+        if (!$tenant) {
+            Log::error('Invoice payment webhook: tenant not found', ['tenant_id' => $tenantId]);
+            return;
+        }
+
+        tenancy()->initialize($tenant);
+
+        try {
+            $invoice = Invoice::where('uuid', $invoiceUuid)->first();
+
+            if (!$invoice) {
+                Log::warning('Invoice payment webhook: invoice not found', ['uuid' => $invoiceUuid]);
+                return;
+            }
+
+            if ($invoice->isPaid()) {
+                return; // idempotent — already handled
+            }
+
+            $invoice->update([
+                'status'  => Invoice::STATUS_PAID,
+                'paid_at' => now(),
+                'paid_via'=> 'stripe',
+            ]);
+
+            $invoice->logHistory(InvoiceHistory::ACTION_PAID, [
+                'via'        => 'stripe',
+                'session_id' => $session->id,
+            ]);
+
+            Log::info('Invoice marked paid via Stripe', [
+                'invoice_uuid' => $invoiceUuid,
+                'tenant_id'    => $tenantId,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Error in handleInvoicePayment', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+        } finally {
+            tenancy()->end();
+        }
     }
 
     /**
@@ -123,7 +206,7 @@ class StripeWebhookController extends Controller
                 ],
                 [
                     'plan_id'               => $plan->id,
-                    'status'                => $stripeSub->status, // 'active', 'trialing', ...
+                    'status'                => $stripeSub->status,
                     'trial_ends_at'         => $stripeSub->trial_end
                         ? Carbon::createFromTimestamp($stripeSub->trial_end)
                         : null,
@@ -132,6 +215,11 @@ class StripeWebhookController extends Controller
                         : null,
                 ]
             );
+
+            // Sync the denormalized subscription_status on the Tenant row so
+            // the paywall middleware can check it without joining subscriptions.
+            $tenant = Tenant::find($tenantId);
+            $tenant?->syncSubscriptionStatus($stripeSub->status);
 
             Log::info('🎉 Subscription saved/updated', [
                 'subscription_id' => $subscription->id,
@@ -145,6 +233,69 @@ class StripeWebhookController extends Controller
                 'line'    => $e->getLine(),
             ]);
         }
+    }
+
+    /**
+     * Sync Tenant.subscription_status when a subscription changes (e.g. renewal, past_due).
+     */
+    protected function handleSubscriptionUpdated(object $stripeSub): void
+    {
+        $tenantId = $this->resolveTenantIdFromSub($stripeSub);
+        if (!$tenantId) {
+            return;
+        }
+
+        Subscription::where('provider', 'stripe')
+            ->where('provider_subscription_id', $stripeSub->id)
+            ->update([
+                'status'                 => $stripeSub->status,
+                'current_period_ends_at' => $stripeSub->current_period_end
+                    ? Carbon::createFromTimestamp($stripeSub->current_period_end)
+                    : null,
+            ]);
+
+        $tenant = Tenant::find($tenantId);
+        $tenant?->syncSubscriptionStatus($stripeSub->status);
+
+        Log::info('Subscription updated', ['tenant_id' => $tenantId, 'status' => $stripeSub->status]);
+    }
+
+    /**
+     * Sync Tenant.subscription_status = 'canceled' when a subscription is deleted.
+     */
+    protected function handleSubscriptionDeleted(object $stripeSub): void
+    {
+        $tenantId = $this->resolveTenantIdFromSub($stripeSub);
+        if (!$tenantId) {
+            return;
+        }
+
+        Subscription::where('provider', 'stripe')
+            ->where('provider_subscription_id', $stripeSub->id)
+            ->update(['status' => 'canceled']);
+
+        $tenant = Tenant::find($tenantId);
+        $tenant?->syncSubscriptionStatus('canceled');
+
+        Log::info('Subscription deleted/canceled', ['tenant_id' => $tenantId]);
+    }
+
+    private function resolveTenantIdFromSub(object $stripeSub): ?string
+    {
+        $sub = Subscription::where('provider', 'stripe')
+            ->where('provider_subscription_id', $stripeSub->id)
+            ->first();
+
+        if ($sub) {
+            return $sub->tenant_id;
+        }
+
+        // Fallback via BillingProfile customer ID
+        $billingProfile = BillingProfile::where('provider', 'stripe')
+            ->where('provider_customer_id', $stripeSub->customer ?? '')
+            ->first();
+
+        return $billingProfile?->tenant_id;
     }
 
     /**

@@ -1,41 +1,20 @@
 <template>
-    
-    <CreateDocument 
-    :title="$t('invoices.newTitle')"
-    @saveDocument = "saveInvoice"
-    >
-
-    </CreateDocument>
-
+  <CreateInvoiceForm @saveDocument="saveInvoice" />
 </template>
-  
-  <script setup>
-//   import { reactive, ref, computed, onMounted } from "vue";
-  import axios from 'axios'
-  import { createToaster } from '@meforma/vue-toaster';
-  const toaster = createToaster({ /* options */ });
-  import { useRouter } from 'vue-router'
-  const route = useRouter()
-  
-  // On form submission
-  async function saveInvoice(state) {
 
-    axios.post('/invoices', state).then(res => {
-                                
-      toaster.success(res.data.message);
-      route.push('/admin/invoices')
-  
-    })
-  }
-  </script>
-  
-  
-  <style lang="scss">
-// Flatpickr + Custom overrides
-@import "flatpickr/dist/flatpickr.css";
-@import "@/assets/scss/vendor/flatpickr";
+<script setup>
+import CreateInvoiceForm from "./CreateInvoiceForm.vue";
+import axios from "axios";
+import { createToaster } from "@meforma/vue-toaster";
+import { useRouter } from "vue-router";
 
-// Dropzone + Custom overrides
-@import "dropzone/dist/dropzone.css";
-@import "@/assets/scss/vendor/dropzone";
-</style>
+const toaster = createToaster();
+const router = useRouter();
+
+async function saveInvoice(state) {
+  axios.post("/invoices", state).then((res) => {
+    toaster.success(res.data.message);
+    router.push("/admin/invoices");
+  });
+}
+</script>

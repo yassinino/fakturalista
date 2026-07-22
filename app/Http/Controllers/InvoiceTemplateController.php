@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\InvoiceTemplate;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class InvoiceTemplateController extends Controller
@@ -24,39 +26,63 @@ class InvoiceTemplateController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $template = InvoiceTemplate::first();
 
-        // Si ya existe, permitimos mismo slug ignorando su id en la validación
         $data = $this->validatedData($request, $template?->id);
 
         if ($template) {
             $template->fill($data);
             $template->save();
-            $status = 200;
+            $template->refresh();
+            $status  = 200;
             $message = 'Plantilla actualizada correctamente.';
         } else {
             $template = InvoiceTemplate::create($data);
-            $status = 201;
+            $template->refresh();
+            $status  = 201;
             $message = 'Plantilla creada correctamente.';
         }
 
-        return response([
-            'message' => $message,
+        return response()->json([
+            'message'  => $message,
             'template' => $template,
         ], $status);
     }
 
-    public function update(Request $request, InvoiceTemplate $invoiceTemplate)
+    public function uploadLogo(Request $request): JsonResponse
+    {
+        $request->validate([
+            'logo' => 'required|file|mimes:jpeg,jpg,png,gif,webp|max:3072',
+        ]);
+
+        $file    = $request->file('logo');
+        $path    = $file->store('templates/logos', 'public');
+        $url     = Storage::disk('public')->url($path);
+
+        // Delete the previous template logo if different
+        $existing = InvoiceTemplate::first();
+        if ($existing && $existing->logo_path && $existing->logo_path !== $path) {
+            Storage::disk('public')->delete($existing->logo_path);
+        }
+
+        return response()->json([
+            'logo_path' => $path,
+            'logo_url'  => $url,
+        ], 200);
+    }
+
+    public function update(Request $request, InvoiceTemplate $invoiceTemplate): JsonResponse
     {
         $data = $this->validatedData($request, $invoiceTemplate->id);
 
         $invoiceTemplate->fill($data);
         $invoiceTemplate->save();
+        $invoiceTemplate->refresh();
 
-        return response([
-            'message' => 'Plantilla actualizada correctamente.',
+        return response()->json([
+            'message'  => 'Plantilla actualizada correctamente.',
             'template' => $invoiceTemplate,
         ], 200);
     }
@@ -78,7 +104,7 @@ class InvoiceTemplateController extends Controller
                 'required',
                 'string',
                 'max:160',
-                Rule::unique('invoice_templates')->ignore($ignoreId),
+                Rule::unique('invoice_templates')->ignore($ignoreId)->whereNull('deleted_at'),
             ],
             'version' => 'nullable|integer|min:1',
             'is_default' => 'sometimes|boolean',
@@ -111,13 +137,9 @@ class InvoiceTemplateController extends Controller
             'bold_total' => 'sometimes|boolean',
             'payment_note' => 'nullable|string',
             'show_payment_note' => 'sometimes|boolean',
-            'settings' => 'nullable|array',
-            'placeholders' => 'nullable|array',
-            'logo_path' => 'nullable|string|max:255',
-            'signature_path' => 'nullable|string|max:255',
-            'background_path' => 'nullable|string|max:255',
-            'created_by' => 'nullable',
-            'updated_by' => 'nullable',
+            // logo_path, signature_path, background_path, settings, placeholders:
+            // columns not yet in the DB — migration pending user approval.
+            // Remove this comment and restore these rules once the migration is run.
         ];
 
         $validated = $request->validate($rules);

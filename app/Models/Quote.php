@@ -11,10 +11,16 @@ class Quote extends Model
 {
     use HasFactory, SoftDeletes;
   
+    const STATUS_DRAFT     = 'draft';
+    const STATUS_SENT      = 'sent';
+    const STATUS_CONVERTED = 'converted';
+    const STATUS_CANCELLED = 'cancelled';
+
     protected $fillable = [
-        'customer_id', 
+        'customer_id',
+        'invoice_id',
         'reference',
-        'uuid', 
+        'uuid',
         'date',
         'status',
         'expiration_date',
@@ -32,9 +38,19 @@ class Quote extends Model
         return 'uuid';
     }
 
+    public function isPaid(): bool
+    {
+        return false; // quotes are never "paid" — method required by shared blade template
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === self::STATUS_CANCELLED;
+    }
+
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id')->withTrashed();
     }
 
     public function carts(): MorphMany

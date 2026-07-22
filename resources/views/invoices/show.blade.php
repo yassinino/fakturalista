@@ -24,20 +24,20 @@ $date_invoice = $invoice->date
     : Carbon::now()->format($dateFormat);
 
 $defaults = [
-    'primary' => '#dad7d2',
+    'primary' => '#E91E63',
     'text' => '#1f1c1a',
     'muted' => '#6b6764',
-    'table_header_bg' => '#dedad5',
-    'table_header_text' => '#4a4745',
-    'table_border' => '#cfcac5',
+    'table_header_bg' => '#E91E63',
+    'table_header_text' => '#ffffff',
+    'table_border' => '#e5e0db',
     'font_family' => 'Arial, sans-serif',
     'font_size' => 'medium',
     'logo_width_mm' => 50,
-    'logo_position' => 'above', // above|left
+    'logo_position' => 'left',
     'show_payment_terms' => true,
     'show_customer_number' => false,
     'show_customer_phone' => false,
-    'show_shipping_address' => true,
+    'show_shipping_address' => false,
     'billing_address_right' => false,
     'show_discount' => false,
     'show_tax_column' => true,
@@ -45,7 +45,7 @@ $defaults = [
     'show_tax_breakdown' => true,
     'bold_total' => true,
     'payment_note' => '',
-    'show_payment_note' => true,
+    'show_payment_note' => false,
 ];
 
 $template = InvoiceTemplate::where('is_active', true)
@@ -184,7 +184,7 @@ if (!empty($logoPath)) {
                     <img src="{{ $logoSrc }}" alt="Logo">
                 </div>
             @endif
-            <div style="flex:1; width:100%; text-align: right;">
+            <div style="flex:1; width:100%; text-align: {{ $isLogoAbove ? 'center' : 'right' }};">
                 <div class="section-title">{{ __('invoice.title', ['number' => $invoice->reference]) }}</div>
                 <div class="muted">{{ $date_invoice }}</div>
             </div>
@@ -193,22 +193,47 @@ if (!empty($logoPath)) {
         <table style="margin-top: 8px;">
             <thead>
                 <tr>
-                    <td> 
-                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.billing_address') }}</div>
-                        <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
-                        @if(!empty($design['show_customer_number']) && !empty($invoice->customer->reference))
-                            <div class="muted">{{ __('invoice.customer_number', ['number' => $invoice->customer->reference]) }}</div>
+                    @if(!empty($design['billing_address_right']))
+                        {{-- shipping left, billing right --}}
+                        @if(!empty($design['show_shipping_address']))
+                        <td>
+                            <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.shipping_address') }}</div>
+                            <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer?->name ?? '' }}</div>
+                            <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer?->address_delivery ?? $invoice->customer?->address_billing ?? '')) !!}</div>
+                        </td>
                         @endif
-                        <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_billing ?? '')) !!}</div>
-                        @if(!empty($design['show_customer_phone']) && !empty($invoice->customer->phone))
-                            <div class="muted">{{ __('invoice.phone', ['phone' => $invoice->customer->phone]) }}</div>
+                        <td>
+                            <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.billing_address') }}</div>
+                            <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer?->name ?? '' }}</div>
+                            @if(!empty($design['show_customer_number']) && !empty($invoice->customer?->reference))
+                                <div class="muted">{{ __('invoice.customer_number', ['number' => $invoice->customer->reference]) }}</div>
+                            @endif
+                            <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer?->address_billing ?? '')) !!}</div>
+                            @if(!empty($design['show_customer_phone']) && !empty($invoice->customer?->phone))
+                                <div class="muted">{{ __('invoice.phone', ['phone' => $invoice->customer->phone]) }}</div>
+                            @endif
+                        </td>
+                    @else
+                        {{-- billing left, shipping right (default) --}}
+                        <td>
+                            <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.billing_address') }}</div>
+                            <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer?->name ?? '' }}</div>
+                            @if(!empty($design['show_customer_number']) && !empty($invoice->customer?->reference))
+                                <div class="muted">{{ __('invoice.customer_number', ['number' => $invoice->customer->reference]) }}</div>
+                            @endif
+                            <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer?->address_billing ?? '')) !!}</div>
+                            @if(!empty($design['show_customer_phone']) && !empty($invoice->customer?->phone))
+                                <div class="muted">{{ __('invoice.phone', ['phone' => $invoice->customer->phone]) }}</div>
+                            @endif
+                        </td>
+                        @if(!empty($design['show_shipping_address']))
+                        <td>
+                            <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.shipping_address') }}</div>
+                            <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer?->name ?? '' }}</div>
+                            <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer?->address_delivery ?? $invoice->customer?->address_billing ?? '')) !!}</div>
+                        </td>
                         @endif
-                    </td>
-                    <td>
-                        <div class="muted" style="font-size: {{ $fontSize + 2 }}px;">{{ __('invoice.shipping_address') }}</div>
-                        <div class="subheading" style="font-size: {{ $fontSize + 2 }}px;">{{ $invoice->customer->name ?? '' }}</div>
-                        <div class="muted" style="white-space: pre-line;">{!! nl2br(e($invoice->customer->address_delivery ?? $invoice->customer->address_billing ?? '')) !!}</div>
-                    </td>
+                    @endif
                 </tr>
             </thead>
         </table>
@@ -312,6 +337,24 @@ if (!empty($logoPath)) {
             <div class="mt-2">
                 <div style="font-weight:700;">{{ __('invoice.payment_info') }}</div>
                 <div class="muted" style="white-space: pre-line;">{!! nl2br(e($design['payment_note'])) !!}</div>
+            </div>
+        @endif
+
+        @php
+            $pdfPaymentUrl = null;
+            if (!$invoice->isPaid() && !$invoice->isCancelled() && !empty(config('services.stripe.secret'))) {
+                $pdfPaymentUrl = request()->getSchemeAndHttpHost() . '/pay/' . $invoice->uuid;
+            }
+        @endphp
+        @if($pdfPaymentUrl)
+            <hr class="hr-light" style="margin-top: 20px;">
+            <div style="text-align: center; padding: 14px 0;">
+                <div class="muted" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; font-weight: 700;">Paiement en ligne sécurisé</div>
+                <a href="{{ $pdfPaymentUrl }}"
+                   style="display: inline-block; background: {{ $design['primary'] }}; color: #ffffff; font-weight: 700; font-size: 13px; padding: 9px 22px; text-decoration: none;">
+                    Payer cette facture en ligne →
+                </a>
+                <div class="muted" style="font-size: 10px; margin-top: 8px; word-break: break-all;">{{ $pdfPaymentUrl }}</div>
             </div>
         @endif
 </body>

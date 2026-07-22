@@ -18,4 +18,7 @@ return [
     'payment_terms' => 'Payment terms',
     'payment_info' => 'Payment information',
     'per_day' => '/day',
+    'date'    => 'Invoice Date',
+    'status'  => 'Status',
+    'notes'   => 'Notes',
 ];

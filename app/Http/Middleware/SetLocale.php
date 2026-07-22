@@ -12,8 +12,16 @@ class SetLocale
     public function handle(Request $request, Closure $next)
     {
         $supported = config('app.supported_locales', ['es', 'fr', 'en']);
-        $locale = $request->session()->get('locale');
 
+        // Authenticated user's saved preference takes highest priority
+        $locale = $request->user()?->locale;
+
+        // Fall back to session (used by the public site switcher)
+        if (! $locale || ! in_array($locale, $supported, true)) {
+            $locale = $request->session()->get('locale');
+        }
+
+        // Final fallback to app default
         if (! $locale || ! in_array($locale, $supported, true)) {
             $locale = config('app.locale', 'es');
         }

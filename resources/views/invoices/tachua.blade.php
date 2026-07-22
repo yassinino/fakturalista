@@ -211,13 +211,13 @@ $date_invoice = Carbon::parse($invoice->date)->format('d-m-Y');
                             <td style="width: 50%;">
                                 <span style="color : black; font-weight: bold;">Cliente</span>
                                 <div style="color: gray; font-size: 14px;">
-                                    {{$invoice->customer->type == 1 ? $invoice->customer->name : $invoice->customer->first_name }} <br>
-                                    <span>{!! nl2br(e($invoice->customer->address_billing)) !!}</span>
+                                    {{$invoice->customer?->type == 1 ? ($invoice->customer->name ?? '—') : ($invoice->customer?->first_name ?? '—')}} <br>
+                                    <span>{!! nl2br(e($invoice->customer?->address_billing ?? '')) !!}</span>
                                 </div>
                             </td>
                             <td style="width: 20%;">
                                 <span style="color : black; font-weight: bold;">NIF</span>
-                                <div style="color: gray ;font-size: 14px;">{{$invoice->customer->ice}}</div>
+                                <div style="color: gray ;font-size: 14px;">{{$invoice->customer?->ice ?? ''}}</div>
                             </td>
                         </tr>
                     </table>

@@ -1,41 +1,30 @@
 <template>
-    
-  <CreateDocument 
-  title="New Quote"
-  @saveDocument = "saveQuote"
-  >
-
-  </CreateDocument>
-
+  <CreateQuoteForm @saveDocument="saveQuote" />
 </template>
 
 <script setup>
-//   import { reactive, ref, computed, onMounted } from "vue";
-import axios from 'axios'
-import { createToaster } from '@meforma/vue-toaster';
-const toaster = createToaster({ /* options */ });
-import { useRouter } from 'vue-router'
-const route = useRouter()
+import axios from "axios";
+import { createToaster } from "@meforma/vue-toaster";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import CreateQuoteForm from "./CreateQuoteForm.vue";
 
-// On form submission
+const toaster = createToaster();
+const router  = useRouter();
+const { t } = useI18n();
+
 async function saveQuote(state) {
-
-  axios.post('/quotes', state).then(res => {
-                              
+  try {
+    const res = await axios.post("/quotes", state);
     toaster.success(res.data.message);
-    route.push('/admin/quotes')
-
-  })
+    router.push("/admin/quotes");
+  } catch (e) {
+    toaster.error(e.response?.data?.message ?? t('quotes.errorGeneric'));
+  }
 }
 </script>
 
-
 <style lang="scss">
-// Flatpickr + Custom overrides
 @import "flatpickr/dist/flatpickr.css";
 @import "@/assets/scss/vendor/flatpickr";
-
-// Dropzone + Custom overrides
-@import "dropzone/dist/dropzone.css";
-@import "@/assets/scss/vendor/dropzone";
 </style>

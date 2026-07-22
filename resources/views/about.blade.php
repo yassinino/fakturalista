@@ -1,6 +1,14 @@
 @extends('layouts.master')
 
-@section('title', 'Sobre Fakturalista')
+@section('title', __('site.about.page_title'))
+
+@section('meta')
+<meta name="description" content="{{ __('site.about.meta_desc') }}" />
+<meta property="og:title" content="{{ __('site.about.banner_title') }} — Fakturalista" />
+<meta property="og:description" content="{{ __('site.about.meta_desc') }}" />
+<meta property="og:type" content="website" />
+<link rel="canonical" href="{{ url('/about') }}" />
+@endsection
 
 @section('content')
 
@@ -16,15 +24,10 @@
         <section class="page-banner">
             <div class="container">
                 <div class="page-title-wrapper">
-                    <h1 class="page-title">Sobre Fakturalista</h1>
-                    <p>
-                        Fakturalista es una plataforma web de facturacion y gestion pensada para aut&oacute;nomos y pymes.
-                        Crea, env&iacute;a y controla tus facturas en minutos, con clientes, productos e informes en un solo lugar.
-                    </p>
-                    <p>
-                        Te damos 1 mes de prueba gratis para que pruebes todo sin presi&oacute;n.
-                    </p>
-                    <a href="{{ url('/free-trial') }}" class="pix-btn">Prueba gratis 1 mes</a>
+                    <h1 class="page-title">{{ __('site.about.banner_title') }}</h1>
+                    <p>{{ __('site.about.banner_p1') }}</p>
+                    <p>{{ __('site.about.banner_p2') }}</p>
+                    <a href="{{ url('/free-trial') }}" class="pix-btn">{{ __('site.about.banner_cta') }}</a>
                 </div>
                 <!-- /.page-title-wrapper -->
             </div>
@@ -50,7 +53,7 @@
         <section class="featured">
             <div class="container">
                 <div class="section-title text-center wow pixFade">
-                    <h2 class="title">Todo lo que necesitas para facturar mejor</h2>
+                    <h2 class="title">{{ __('site.about.feat_title') }}</h2>
                 </div>
                 <!-- /.section-title -->
 
@@ -61,11 +64,10 @@
                                 <img src="{{ url('assets/icon_1.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Facturas profesionales en segundos</a></h3>
-                                <p>Plantillas claras, c&aacute;lculos autom&aacute;ticos y env&iacute;o r&aacute;pido.</p>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.about.feat_1_title') }}</a></h3>
+                                <p>{{ __('site.about.feat_1_text') }}</p>
                             </div>
                         </div>
-                        <!-- /.pixsass-box style-one -->
                     </div>
                     <!-- /.col-md-4 -->
 
@@ -75,11 +77,10 @@
                                 <img src="{{ url('assets/icon_2.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Clientes y productos siempre ordenados</a></h3>
-                                <p>Accede a tu base de datos, reutiliza datos y ahorra tiempo.</p>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.about.feat_2_title') }}</a></h3>
+                                <p>{{ __('site.about.feat_2_text') }}</p>
                             </div>
                         </div>
-                        <!-- /.pixsass-box style-one -->
                     </div>
                     <!-- /.col-md-4 -->
 
@@ -89,11 +90,10 @@
                                 <img src="{{ url('assets/icon_3.png') }}" alt="">
                             </div>
                             <div class="pixsass-icon-box-content">
-                                <h3 class="pixsass-icon-box-title"><a href="#">Informes claros para decidir mejor</a></h3>
-                                <p>Control de ingresos, gastos y rendimiento en tiempo real.</p>
+                                <h3 class="pixsass-icon-box-title"><a href="#">{{ __('site.about.feat_3_title') }}</a></h3>
+                                <p>{{ __('site.about.feat_3_text') }}</p>
                             </div>
                         </div>
-                        <!-- /.pixsass-box style-one -->
                     </div>
                     <!-- /.col-md-4 -->
                 </div>
@@ -119,17 +119,14 @@
                         <div class="editor-content">
                             <div class="section-title style-two">
                                 <h2 class="title wow pixFadeUp" data-wow-delay="0.3s">
-                                    Facturacion simple, resultados grandes
+                                    {{ __('site.about.editor_title') }}
                                 </h2>
                             </div>
 
                             <div class="description wow pixFadeUp" data-wow-delay="0.7s">
-                                <p>
-                                    Centraliza tu facturacion, pagos y reportes. Con Fakturalista reduces errores,
-                                    ganas tiempo y puedes dedicarte a hacer crecer tu negocio.
-                                </p>
+                                <p>{{ __('site.about.editor_p') }}</p>
                                 <a href="{{ url('/free-trial') }}" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">
-                                    Quiero mi prueba gratis
+                                    {{ __('site.about.editor_cta') }}
                                 </a>
                             </div>
                         </div>
@@ -147,7 +144,7 @@
         <!-- /.editor-design -->
 
         <!--===================================-->
-        <!--=         Genera Informes         =-->
+        <!--=         Reports Section         =-->
         <!--===================================-->
         <section class="genera-informes">
             <div class="container">
@@ -155,20 +152,19 @@
                     <div class="col-lg-6 pix-order-one">
                         <div class="section-title style-two">
                             <h2 class="title wow pixFadeUp">
-                                Transparencia total en cada movimiento
+                                {{ __('site.about.informes_title') }}
                             </h2>
 
                             <p class="wow pixFadeUp" data-wow-delay="0.3s">
-                                Consulta tus ventas, controla impuestos y crea reportes con un clic.
-                                Todo queda organizado y listo para compartir con tu gestor&iacute;a.
+                                {{ __('site.about.informes_p') }}
                             </p>
                         </div>
                         <!-- /.section-title style-two -->
 
                         <ul class="list-items wow pixFadeUp" data-wow-delay="0.4s">
-                            <li>Acceso inmediato a tus datos</li>
-                            <li>Historial de facturas y clientes</li>
-                            <li>Exportaci&oacute;n en PDF</li>
+                            <li>{{ __('site.about.informes_li_1') }}</li>
+                            <li>{{ __('site.about.informes_li_2') }}</li>
+                            <li>{{ __('site.about.informes_li_3') }}</li>
                         </ul>
                     </div>
                     <!-- /.col-lg-6 -->
@@ -196,15 +192,11 @@
             <div class="overlay-bg"><img src="media/background/ellipse.png" alt="bg"></div>
             <div class="container">
                 <div class="action-content text-center wow pixFadeUp">
-                    <h2 class="title">
-                        Prueba Fakturalista gratis durante 1 mes
-                    </h2>
+                    <h2 class="title">{{ __('site.about.cta_title') }}</h2>
 
-                    <p>
-                        Empieza hoy, crea tu primera factura y decide con calma. La prueba es r&aacute;pida de activar.
-                    </p>
+                    <p>{{ __('site.about.cta_p') }}</p>
 
-                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">Solicitar prueba</a>
+                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">{{ __('site.about.cta_btn') }}</a>
                 </div>
                 <!-- /.action-content -->
             </div>
