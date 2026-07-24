@@ -174,7 +174,7 @@
     </section>
 
     <!-- ============================
-         SOCIAL PROOF — testimonials
+         SOCIAL PROOF - testimonials
          ============================ -->
     <section class="ft-proof">
         <div class="container">

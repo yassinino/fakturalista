@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TenantResource\Pages;
+use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\Tenant;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -106,6 +108,27 @@ class TenantResource extends Resource
                         ->seconds(false),
                 ])->columns(3),
 
+            Forms\Components\Section::make('Plan tarifario')
+                ->description('Asigna o cambia el plan del tenant. El cambio se aplica de inmediato.')
+                ->schema([
+                    Forms\Components\Select::make('plan_id')
+                        ->label('Plan activo')
+                        ->options(
+                            Plan::on('mysql')
+                                ->where('active', true)
+                                ->orderBy('sort_order')
+                                ->orderBy('monthly_price')
+                                ->get()
+                                ->mapWithKeys(fn (Plan $p) => [
+                                    $p->id => $p->translate('name', 'fr') . ' - ' . $p->formattedPrice() . '€/mois',
+                                ])
+                                ->toArray()
+                        )
+                        ->searchable()
+                        ->placeholder('- Aucun plan -')
+                        ->helperText('Sélectionner un plan crée ou met à jour la souscription active.'),
+                ])->columns(1),
+
         ]);
     }
 
@@ -124,7 +147,7 @@ class TenantResource extends Resource
 
                 Tables\Columns\TextColumn::make('domain')
                     ->label('Dominio')
-                    ->getStateUsing(fn (Tenant $record) => $record->domains->first()?->domain ?? '—')
+                    ->getStateUsing(fn (Tenant $record) => $record->domains->first()?->domain ?? '-')
                     ->searchable(query: fn ($query, string $search) =>
                         $query->whereHas('domains', fn ($q) => $q->where('domain', 'like', "%{$search}%"))
                     )
@@ -170,7 +193,7 @@ class TenantResource extends Resource
                         'active'   => 'Activo',
                         'expired'  => 'Expirado',
                         'canceled' => 'Cancelado',
-                        default    => $state ?? '—',
+                        default    => $state ?? '-',
                     }),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -222,7 +245,7 @@ class TenantResource extends Resource
                     ->modalSubmitActionLabel('Sí, eliminar todo')
                     ->action(function (Tenant $record) {
                         // TenancyServiceProvider fires Jobs\DeleteDatabase automatically
-                        // on the TenantDeleted event — no need to call deleteDatabase() here.
+                        // on the TenantDeleted event - no need to call deleteDatabase() here.
                         $record->delete();
 
                         Notification::make()
@@ -245,7 +268,7 @@ class TenantResource extends Resource
                 ->schema([
                     Infolists\Components\TextEntry::make('company_name')->label('Nombre'),
                     Infolists\Components\TextEntry::make('company_email')->label('Email corporativo'),
-                    Infolists\Components\TextEntry::make('company_phone')->label('Teléfono')->placeholder('—'),
+                    Infolists\Components\TextEntry::make('company_phone')->label('Teléfono')->placeholder('-'),
                     Infolists\Components\TextEntry::make('country')->label('País'),
                     Infolists\Components\TextEntry::make('timezone')->label('Zona horaria'),
                     Infolists\Components\TextEntry::make('currency')->label('Moneda'),
@@ -262,7 +285,7 @@ class TenantResource extends Resource
                 ->schema([
                     Infolists\Components\TextEntry::make('domain')
                         ->label('URL del tenant')
-                        ->getStateUsing(fn (Tenant $record) => $record->domains->first()?->domain ?? '—')
+                        ->getStateUsing(fn (Tenant $record) => $record->domains->first()?->domain ?? '-')
                         ->fontFamily('mono')
                         ->copyable(),
                     Infolists\Components\TextEntry::make('id')
@@ -303,14 +326,14 @@ class TenantResource extends Resource
                             'active'   => 'Activo',
                             'expired'  => 'Expirado',
                             'canceled' => 'Cancelado',
-                            default    => $state ?? '—',
+                            default    => $state ?? '-',
                         }),
 
                     Infolists\Components\TextEntry::make('trial_ends_at')
                         ->label('Trial hasta')
                         ->getStateUsing(fn (Tenant $record) => $record->trial_ends_at)
                         ->dateTime('d/m/Y H:i')
-                        ->placeholder('—'),
+                        ->placeholder('-'),
                 ])->columns(3),
 
             Infolists\Components\Section::make('Registro')
@@ -386,17 +409,17 @@ class TenantResource extends Resource
     public static function currencyOptions(): array
     {
         return [
-            'EUR' => 'EUR — Euro',
-            'USD' => 'USD — Dólar americano',
-            'GBP' => 'GBP — Libra esterlina',
-            'CHF' => 'CHF — Franco suizo',
-            'MXN' => 'MXN — Peso mexicano',
-            'ARS' => 'ARS — Peso argentino',
-            'COP' => 'COP — Peso colombiano',
-            'CLP' => 'CLP — Peso chileno',
-            'PEN' => 'PEN — Sol peruano',
-            'MAD' => 'MAD — Dírham marroquí',
-            'DZD' => 'DZD — Dinar argelino',
+            'EUR' => 'EUR - Euro',
+            'USD' => 'USD - Dólar americano',
+            'GBP' => 'GBP - Libra esterlina',
+            'CHF' => 'CHF - Franco suizo',
+            'MXN' => 'MXN - Peso mexicano',
+            'ARS' => 'ARS - Peso argentino',
+            'COP' => 'COP - Peso colombiano',
+            'CLP' => 'CLP - Peso chileno',
+            'PEN' => 'PEN - Sol peruano',
+            'MAD' => 'MAD - Dírham marroquí',
+            'DZD' => 'DZD - Dinar argelino',
         ];
     }
 }

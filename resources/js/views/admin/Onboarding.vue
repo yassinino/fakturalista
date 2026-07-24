@@ -1,7 +1,7 @@
 <template>
   <div class="ob-root" :class="{ 'ob-dark': isDark }">
 
-    <!-- ══ LEFT — Setup Hero ══════════════════════════════════ -->
+    <!-- ══ LEFT - Setup Hero ══════════════════════════════════ -->
     <div class="ob-hero" aria-hidden="true">
       <div class="ob-blob ob-blob-1"></div>
       <div class="ob-blob ob-blob-2"></div>
@@ -61,12 +61,12 @@
 
         <div class="ob-trial-badge">
           <i class="fa fa-gift me-2"></i>
-          <span><strong>3-month free trial</strong> — no credit card required</span>
+          <span><strong>3-month free trial</strong> - no credit card required</span>
         </div>
       </div>
     </div>
 
-    <!-- ══ RIGHT — Form Panel ═════════════════════════════════ -->
+    <!-- ══ RIGHT - Form Panel ═════════════════════════════════ -->
     <div class="ob-panel">
       <div class="ob-card-wrap">
 
@@ -235,21 +235,21 @@
                   @blur="v$.currency.$touch"
                 >
                   <option value="" disabled>Select…</option>
-                  <option value="EUR">EUR — Euro</option>
-                  <option value="USD">USD — US Dollar</option>
-                  <option value="GBP">GBP — British Pound</option>
-                  <option value="CHF">CHF — Swiss Franc</option>
-                  <option value="CAD">CAD — Canadian Dollar</option>
-                  <option value="AUD">AUD — Australian Dollar</option>
-                  <option value="JPY">JPY — Japanese Yen</option>
-                  <option value="MAD">MAD — Moroccan Dirham</option>
-                  <option value="TND">TND — Tunisian Dinar</option>
-                  <option value="DZD">DZD — Algerian Dinar</option>
-                  <option value="XOF">XOF — West African CFA Franc</option>
-                  <option value="MXN">MXN — Mexican Peso</option>
-                  <option value="BRL">BRL — Brazilian Real</option>
-                  <option value="ARS">ARS — Argentine Peso</option>
-                  <option value="COP">COP — Colombian Peso</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="CHF">CHF - Swiss Franc</option>
+                  <option value="CAD">CAD - Canadian Dollar</option>
+                  <option value="AUD">AUD - Australian Dollar</option>
+                  <option value="JPY">JPY - Japanese Yen</option>
+                  <option value="MAD">MAD - Moroccan Dirham</option>
+                  <option value="TND">TND - Tunisian Dinar</option>
+                  <option value="DZD">DZD - Algerian Dinar</option>
+                  <option value="XOF">XOF - West African CFA Franc</option>
+                  <option value="MXN">MXN - Mexican Peso</option>
+                  <option value="BRL">BRL - Brazilian Real</option>
+                  <option value="ARS">ARS - Argentine Peso</option>
+                  <option value="COP">COP - Colombian Peso</option>
                 </select>
                 <div v-if="v$.currency.$errors.length" class="ob-field-error">
                   <i class="fa fa-circle-xmark me-1"></i>Required
@@ -266,7 +266,7 @@
                 <div v-else class="ob-logo-placeholder">
                   <i class="fa fa-image"></i>
                   <span>Click to upload logo</span>
-                  <small>PNG, JPG or SVG — max 2 MB</small>
+                  <small>PNG, JPG or SVG - max 2 MB</small>
                 </div>
                 <button v-if="logoPreview" type="button" class="ob-logo-remove" @click.stop="removeLogo">
                   <i class="fa fa-times"></i>
@@ -349,7 +349,7 @@ onMounted(async () => {
     const res = await axios.get('countries');
     countries.value = res.data.countries ?? res.data;
   } catch {
-    // Fallback: empty list — user can still type
+    // Fallback: empty list - user can still type
   }
 });
 

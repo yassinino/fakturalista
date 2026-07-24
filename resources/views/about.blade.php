@@ -4,7 +4,7 @@
 
 @section('meta')
 <meta name="description" content="{{ __('site.about.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.about.banner_title') }} — Fakturalista" />
+<meta property="og:title" content="{{ __('site.about.banner_title') }} - Fakturalista" />
 <meta property="og:description" content="{{ __('site.about.meta_desc') }}" />
 <meta property="og:type" content="website" />
 <link rel="canonical" href="{{ url('/about') }}" />

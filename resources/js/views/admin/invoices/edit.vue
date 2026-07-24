@@ -25,7 +25,7 @@
 
         <!-- Left: reference + status badges -->
         <div class="ib-identity">
-          <h3 class="ib-ref">{{ state.reference || '—' }}</h3>
+          <h3 class="ib-ref">{{ state.reference || '-' }}</h3>
           <div class="ib-badges">
             <span class="ib-badge" :class="`ib-badge--${state.status}`">
               {{ statusLabel(state.status) }}
@@ -134,7 +134,7 @@
         <div class="row g-3 mb-4">
           <div class="col-md-6">
             <label class="form-label fw-semibold">{{ $t('invoices.table.number') }}</label>
-            <p class="form-control-plaintext">{{ state.reference || '—' }}</p>
+            <p class="form-control-plaintext">{{ state.reference || '-' }}</p>
           </div>
           <div class="col-md-6">
             <label class="form-label fw-semibold">{{ $t('invoices.table.date') }}</label>
@@ -157,7 +157,7 @@
           </thead>
           <tbody>
             <tr v-for="(line, i) in state.carts" :key="i">
-              <td>{{ line.description || '—' }}</td>
+              <td>{{ line.description || '-' }}</td>
               <td class="text-center">{{ line.qty }}</td>
               <td class="text-end">{{ $toComma(line.price) }}</td>
               <td class="text-end">{{ $toComma(line.total) }}</td>
@@ -230,7 +230,7 @@ onMounted(async () => {
   loaded.value = true;
 });
 
-// Called by EditInvoiceForm via @saveDocument — receives the reactive state object directly.
+// Called by EditInvoiceForm via @saveDocument - receives the reactive state object directly.
 async function saveInvoice(s) {
   axios.post('/invoices/' + s.uuid, s, { params: { _method: 'put' } })
     .then(res => {
@@ -348,7 +348,7 @@ async function printInvoice() {
 </script>
 
 <style lang="scss">
-// External library CSS — imported here once so both the locked view
+// External library CSS - imported here once so both the locked view
 // and EditInvoiceForm's FlatPickr have the styles they need.
 @import "flatpickr/dist/flatpickr.css";
 @import "@/assets/scss/vendor/flatpickr";
@@ -403,7 +403,7 @@ async function printInvoice() {
   border: 1px solid transparent;
 }
 
-/* Status-specific badge colors — soft, muted */
+/* Status-specific badge colors - soft, muted */
 .ib-badge--draft     { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
 .ib-badge--issued    { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
 .ib-badge--paid      { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
@@ -429,7 +429,7 @@ async function printInvoice() {
   flex-shrink: 0;
 }
 
-/* Button base — all buttons share identical sizing and radius */
+/* Button base - all buttons share identical sizing and radius */
 .ib-btn {
   display: inline-flex;
   align-items: center;

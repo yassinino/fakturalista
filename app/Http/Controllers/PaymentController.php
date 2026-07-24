@@ -35,7 +35,7 @@ class PaymentController extends Controller
      *
      * If the tenant has a fully connected and enabled Stripe account (via Connect),
      * the payment goes directly to that account.
-     * If not, fall back to the platform key (funds go to platform — legacy behaviour).
+     * If not, fall back to the platform key (funds go to platform - legacy behaviour).
      *
      * @throws ApiErrorException
      */
@@ -72,7 +72,7 @@ class PaymentController extends Controller
         ];
 
         // Route to the connected account if available and able to charge.
-        // This is the core of Stripe Connect — the `stripe_account` option
+        // This is the core of Stripe Connect - the `stripe_account` option
         // tells Stripe to execute this API call on behalf of the connected account,
         // so the payment goes directly into their balance.
         $requestOptions = [];

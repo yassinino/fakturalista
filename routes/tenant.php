@@ -42,7 +42,7 @@ Route::middleware([
         ->name('invoice.payment.webhook')
         ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
-    // Stripe Connect — OAuth redirect and callback (no auth guard; state param provides CSRF protection)
+    // Stripe Connect - OAuth redirect and callback (no auth guard; state param provides CSRF protection)
     Route::get('/settings/payments/stripe/connect',  [StripeConnectController::class, 'redirect'])
         ->name('stripe.connect');
     Route::get('/settings/payments/stripe/callback', [StripeConnectController::class, 'callback'])

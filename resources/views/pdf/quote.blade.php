@@ -18,8 +18,8 @@ $formatMoney = fn($v) => number_format((float) $v, 2, $decimalSep, $thousandsSep
 $formatQty   = fn($v) => number_format((float) $v, 2, $decimalSep, $thousandsSep);
 
 // ── Dates ─────────────────────────────────────────────────────────────────
-$quoteDate  = $quote->date            ? Carbon::parse($quote->date)->format($dateFmt)            : '—';
-$expiryDate = $quote->expiration_date ? Carbon::parse($quote->expiration_date)->format($dateFmt) : '—';
+$quoteDate  = $quote->date            ? Carbon::parse($quote->date)->format($dateFmt)            : '-';
+$expiryDate = $quote->expiration_date ? Carbon::parse($quote->expiration_date)->format($dateFmt) : '-';
 
 // ── Brand color ────────────────────────────────────────────────────────────
 $primary = !empty($company?->brand_color) ? $company->brand_color : '#E91E63';
@@ -282,7 +282,7 @@ $grandTotal     = (float) ($quote->total ?? 0);
          CLIENT SECTION
          ══════════════════════════════════════ --}}
     <div class="bill-to-label">{{ __('quote.bill_to') }}</div>
-    <div class="client-name">{{ $quote->customer?->name ?? '—' }}</div>
+    <div class="client-name">{{ $quote->customer?->name ?? '-' }}</div>
     @if($quote->customer?->company_name)
         <div class="client-sub" style="font-weight: 600;">{{ $quote->customer->company_name }}</div>
     @endif
@@ -320,7 +320,7 @@ $grandTotal     = (float) ($quote->total ?? 0);
                             <div class="item-desc">{!! nl2br(e($cart->description)) !!}</div>
                         @endif
                         @if(empty($cart->product?->name) && empty($cart->description))
-                            <div class="item-name" style="color:#9ca3af;">—</div>
+                            <div class="item-name" style="color:#9ca3af;">-</div>
                         @endif
                     </td>
                     <td class="text-center">{{ $formatQty($cart->qty) }}</td>

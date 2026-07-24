@@ -553,7 +553,7 @@ function onPerPageChange(val) {
   padding-right: 12px;
 }
 
-/* ── Checkboxes — remove pink border at rest ── */
+/* ── Checkboxes - remove pink border at rest ── */
 :deep(.dt-table .form-check-input[type="checkbox"]) {
   border-color: #d1d5db;
   cursor: pointer;
@@ -737,7 +737,7 @@ function onPerPageChange(val) {
    Matches the 3px solid pink treatment used on settings .sc-head.
    Applied directly to .block (not .block-header) so it works on
    both titled blocks (invoices, quotes, customers, items) AND
-   untitled blocks (payments — which renders no .block-header).
+   untitled blocks (payments - which renders no .block-header).
    The .block already has border-radius, so border-top follows
    the curve; overflow:hidden clips any child overflow cleanly.  */
 :global(.block:has(.dt-shell)) {

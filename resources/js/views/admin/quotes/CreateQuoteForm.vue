@@ -17,7 +17,7 @@
       <form @submit.prevent="handleSave" novalidate>
 
         <!-- ═══════════════════════════════════════
-             CARD 1 — Client + Dates
+             CARD 1 - Client + Dates
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <div class="inv-two-col">
@@ -89,7 +89,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 2 — Line Items
+             CARD 2 - Line Items
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <p class="inv-section-label">{{ $t('quotes.form.linesLabel') }}</p>
@@ -193,7 +193,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 3 — Note + Totals
+             CARD 3 - Note + Totals
              ═══════════════════════════════════════ -->
         <section class="inv-card inv-bottom-card">
 
@@ -413,7 +413,7 @@ const handleSave = async () => {
 
 <style scoped>
 /* =========================================================
-   CreateQuoteForm — ALL styles scoped to this component
+   CreateQuoteForm - ALL styles scoped to this component
    Uses inv-* prefix. Mirrors CreateInvoiceForm.vue.
    ========================================================= */
 

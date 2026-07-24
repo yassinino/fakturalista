@@ -104,7 +104,7 @@ class StripeConnectService
                 ]);
 
             if ($response->failed()) {
-                // Log but don't abort — account may already be deauthorized
+                // Log but don't abort - account may already be deauthorized
                 Log::warning('Stripe Connect deauthorize failed (may already be disconnected)', [
                     'account_id' => $profile->stripe_account_id,
                     'status'     => $response->status(),
@@ -204,7 +204,7 @@ class StripeConnectService
                 'cancel_url'  => $cancelUrl,
                 'expires_at'  => now()->addHours(23)->timestamp,
             ],
-            // Route this API call to the connected account — funds go directly there
+            // Route this API call to the connected account - funds go directly there
             ['stripe_account' => $profile->stripe_account_id]
         );
     }

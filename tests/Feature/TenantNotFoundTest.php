@@ -98,7 +98,7 @@ class TenantNotFoundTest extends TestCase
         $tenant->domains()->create(['domain' => $domain]);
 
         try {
-            // The middleware WILL find this tenant — no redirect should occur.
+            // The middleware WILL find this tenant - no redirect should occur.
             // We check that it does NOT redirect to /tenant-not-found.
             $response = $this->get("http://{$domain}/");
 
@@ -136,7 +136,7 @@ class TenantNotFoundTest extends TestCase
         // is never triggered for these requests, so $onFail must not fire.
         $response = $this->get('http://fakturalista.test/backoffice/login');
 
-        // 200 (login form) or 302 (already authenticated) — anything but our redirect
+        // 200 (login form) or 302 (already authenticated) - anything but our redirect
         $this->assertNotEquals(404, $response->status());
         if ($response->isRedirect()) {
             $this->assertStringNotContainsString(

@@ -14,7 +14,7 @@ export const useTemplateStore = defineStore({
       copyright: new Date().getFullYear(),
     },
 
-    // Billing / onboarding state — refreshed on login and /user, persisted to localStorage
+    // Billing / onboarding state - refreshed on login and /user, persisted to localStorage
     billing: {
       onboardingCompleted: localStorage.getItem('billing_onboarding') === 'true',
       subscriptionStatus:  localStorage.getItem('billing_status') || null,
@@ -22,6 +22,14 @@ export const useTemplateStore = defineStore({
       trialDaysLeft:       null,
       isReadOnly:          localStorage.getItem('billing_readonly') === 'true',
       showTrialBanner:     localStorage.getItem('billing_show_banner') === 'true',
+    },
+
+    // Plan limits + current usage - refreshed from GET /api/usage on dashboard mount
+    usage: {
+      plan:      null,   // { name, slug, amount } or null
+      invoices:  { used: 0, limit: null, remaining: null, resets_at: null },
+      customers: { used: 0, limit: null, remaining: null },
+      users:     { used: 0, limit: null, remaining: null },
     },
 
     // Default layout options
@@ -81,6 +89,12 @@ export const useTemplateStore = defineStore({
       localStorage.removeItem('billing_trial_ends_at');
       localStorage.removeItem('billing_readonly');
       localStorage.removeItem('billing_show_banner');
+    },
+    setUsage (data) {
+      this.usage.plan      = data.plan      ?? null;
+      this.usage.invoices  = data.invoices  ?? this.usage.invoices;
+      this.usage.customers = data.customers ?? this.usage.customers;
+      this.usage.users     = data.users     ?? this.usage.users;
     },
     setBillingStatus (data) {
       this.billing.onboardingCompleted = data.onboarding_completed ?? false;

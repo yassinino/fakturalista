@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
   outline: none;
 }
 
-/* Danger items — must beat Bootstrap's !important on .text-danger */
+/* Danger items - must beat Bootstrap's !important on .text-danger */
 :deep(.dropdown-item.text-danger) {
   color: #dc2626 !important;
 }

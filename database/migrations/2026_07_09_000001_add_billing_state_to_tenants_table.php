@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Runs on the central (default) connection — NOT a tenant migration.
+    // Runs on the central (default) connection - NOT a tenant migration.
     // These two columns are the source of truth for paywall enforcement.
     // Checked BEFORE any tenant-DB query so the middleware never causes
     // a chicken-and-egg problem.

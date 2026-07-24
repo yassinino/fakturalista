@@ -188,6 +188,107 @@
       <!-- ── RIGHT COLUMN ─────────────────────────────────────── -->
       <div class="db-col-right">
 
+        <!-- ── PLAN USAGE WIDGET ──────────────────────────────── -->
+        <div class="db-card db-usage-card">
+          <div class="db-card-head">
+            <h3 class="db-card-title">{{ $t('limits.usage.title') }}</h3>
+            <span v-if="usage.plan" class="db-usage-plan-badge">{{ usage.plan.name }}</span>
+            <span v-else-if="!isLoadingUsage" class="db-usage-plan-badge db-usage-plan-badge--muted">
+              {{ $t('limits.usage.noPlan') }}
+            </span>
+          </div>
+
+          <div class="db-usage-body" v-if="!isLoadingUsage">
+
+            <!-- Invoices -->
+            <div class="db-usage-row">
+              <div class="db-usage-labels">
+                <span class="db-usage-name">{{ $t('limits.usage.invoices') }}</span>
+                <span class="db-usage-count" :class="'db-usage-count--' + usageColor(usage.invoices.remaining, usage.invoices.limit)">
+                  <template v-if="usage.invoices.limit === null">
+                    {{ usage.invoices.used }} / {{ $t('limits.usage.unlimited') }}
+                  </template>
+                  <template v-else>
+                    {{ usage.invoices.used }} / {{ usage.invoices.limit }}
+                  </template>
+                </span>
+              </div>
+              <div class="db-usage-track">
+                <div
+                  class="db-usage-fill"
+                  :class="'db-usage-fill--' + usageColor(usage.invoices.remaining, usage.invoices.limit)"
+                  :style="{ width: usagePct(usage.invoices.used, usage.invoices.limit) + '%' }"
+                ></div>
+              </div>
+              <p class="db-usage-reset" v-if="usage.invoices.limit !== null && usage.invoices.resets_at">
+                {{ $t('limits.usage.resetsOn') }} {{ formatDate(usage.invoices.resets_at) }}
+              </p>
+            </div>
+
+            <!-- Customers -->
+            <div class="db-usage-row">
+              <div class="db-usage-labels">
+                <span class="db-usage-name">{{ $t('limits.usage.customers') }}</span>
+                <span class="db-usage-count" :class="'db-usage-count--' + usageColor(usage.customers.remaining, usage.customers.limit)">
+                  <template v-if="usage.customers.limit === null">
+                    {{ usage.customers.used }} / {{ $t('limits.usage.unlimited') }}
+                  </template>
+                  <template v-else>
+                    {{ usage.customers.used }} / {{ usage.customers.limit }}
+                  </template>
+                </span>
+              </div>
+              <div class="db-usage-track">
+                <div
+                  class="db-usage-fill"
+                  :class="'db-usage-fill--' + usageColor(usage.customers.remaining, usage.customers.limit)"
+                  :style="{ width: usagePct(usage.customers.used, usage.customers.limit) + '%' }"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Users -->
+            <div class="db-usage-row">
+              <div class="db-usage-labels">
+                <span class="db-usage-name">{{ $t('limits.usage.users') }}</span>
+                <span class="db-usage-count" :class="'db-usage-count--' + usageColor(usage.users.remaining, usage.users.limit)">
+                  <template v-if="usage.users.limit === null">
+                    {{ usage.users.used }} / {{ $t('limits.usage.unlimited') }}
+                  </template>
+                  <template v-else>
+                    {{ usage.users.used }} / {{ usage.users.limit }}
+                  </template>
+                </span>
+              </div>
+              <div class="db-usage-track">
+                <div
+                  class="db-usage-fill"
+                  :class="'db-usage-fill--' + usageColor(usage.users.remaining, usage.users.limit)"
+                  :style="{ width: usagePct(usage.users.used, usage.users.limit) + '%' }"
+                ></div>
+              </div>
+            </div>
+
+            <router-link
+              v-if="usage.plan"
+              :to="{ name: 'backend-subscription' }"
+              class="db-usage-upgrade"
+            >
+              <i class="fa fa-arrow-up db-btn-icon"></i>
+              {{ $t('limits.usage.upgrade') }}
+            </router-link>
+
+          </div>
+
+          <!-- Skeleton -->
+          <div class="db-usage-body" v-else>
+            <div class="db-usage-row" v-for="n in 3" :key="n">
+              <div class="db-sk-cash-label" style="width:40%"></div>
+              <div class="db-sk-cash-track"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Cash Overview -->
         <div class="db-card">
           <div class="db-card-head">
@@ -256,10 +357,6 @@
             <router-link :to="{ name: 'backend-create-customer' }" class="db-qa">
               <div class="db-qa-icon db-qa-icon--green"><i class="fa fa-user-plus"></i></div>
               <span class="db-qa-label">{{ $t('customers.newTitle') }}</span>
-            </router-link>
-            <router-link :to="{ name: 'backend-create-item' }" class="db-qa">
-              <div class="db-qa-icon db-qa-icon--purple"><i class="fa fa-box"></i></div>
-              <span class="db-qa-label">{{ $t('items.newTitle') }}</span>
             </router-link>
           </div>
         </div>
@@ -426,12 +523,47 @@ const loadCashOverview = async () => {
   }
 };
 
+// ── Usage ─────────────────────────────────────────────────────
+const isLoadingUsage = ref(true);
+const usage = reactive({
+  plan:      null,
+  invoices:  { used: 0, limit: null, remaining: null, resets_at: null },
+  customers: { used: 0, limit: null, remaining: null },
+  users:     { used: 0, limit: null, remaining: null },
+});
+
+const loadUsage = async () => {
+  isLoadingUsage.value = true;
+  try {
+    const { data } = await axios.get("/usage");
+    usage.plan      = data.plan      ?? null;
+    usage.invoices  = data.invoices  ?? usage.invoices;
+    usage.customers = data.customers ?? usage.customers;
+    usage.users     = data.users     ?? usage.users;
+  } catch { /* non-critical - widget stays hidden */ }
+  finally {
+    isLoadingUsage.value = false;
+  }
+};
+
+function usagePct(used, limit) {
+  if (limit === null || limit === 0) return used > 0 ? 100 : 0;
+  return Math.min(100, Math.round((used / limit) * 100));
+}
+
+function usageColor(remaining, limit) {
+  if (limit === null) return 'green';        // unlimited
+  if (remaining === 0) return 'red';
+  if (limit > 0 && remaining / limit < 0.2) return 'orange';
+  return 'green';
+}
+
 // ── User (for personalised greeting) ─────────────────────────
 const loadUser = async () => {
   try {
     const { data } = await axios.get("/user");
     userName.value = data?.user?.name ?? data?.name ?? "";
-  } catch { /* silent — greeting works without name */ }
+  } catch { /* silent - greeting works without name */ }
 };
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -479,7 +611,7 @@ function tlColor(status) { return TL_COLOR[status] ?? "gray"; }
 function tlIcon(status)  { return TL_ICON[status]  ?? "fa-file"; }
 
 function tlText(inv) {
-  const client = inv.customer || "—";
+  const client = inv.customer || "-";
   const amt    = formatCurrency(inv.total);
   if (inv.status === "paid")      return t('reports.timeline.paymentReceived', { client, amount: amt });
   if (inv.status === "issued")    return t('reports.timeline.invoiceSent', { ref: inv.reference, client });
@@ -493,13 +625,14 @@ onMounted(() => {
   loadLastInvoices();
   loadCashOverview();
   loadUser();
+  loadUsage();
 });
 </script>
 
 
 <style scoped>
 /* ═══════════════════════════════════════════════════════════════
-   Dashboard — scoped styles only. Do NOT add globals here.
+   Dashboard - scoped styles only. Do NOT add globals here.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Tokens: Light ─────────────────────────────────────────── */
@@ -1383,6 +1516,104 @@ onMounted(() => {
   animation: db-shimmer 1.6s ease infinite;
 }
 
+/* ── Plan Usage Widget ───────────────────────────────────────── */
+.db-usage-card { border-top-color: var(--db-pink); }
+
+.db-usage-plan-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--db-pink-bg);
+  color: var(--db-pink);
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+.db-usage-plan-badge--muted {
+  background: var(--db-surface-2);
+  color: var(--db-text-3);
+}
+
+.db-usage-body {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.db-usage-row { display: flex; flex-direction: column; gap: 6px; }
+
+.db-usage-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.db-usage-name {
+  font-size: 12px;
+  color: var(--db-text-2);
+  font-weight: 500;
+}
+
+.db-usage-count {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.db-usage-count--green  { color: var(--db-green); }
+.db-usage-count--orange { color: var(--db-orange); }
+.db-usage-count--red    { color: var(--db-red); }
+
+.db-usage-track {
+  height: 6px;
+  background: var(--db-surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--db-border);
+}
+
+.db-usage-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.85s var(--db-ease);
+  min-width: 0;
+}
+.db-usage-fill--green  { background: var(--db-green); }
+.db-usage-fill--orange { background: var(--db-orange); }
+.db-usage-fill--red    { background: var(--db-red); }
+
+.db-usage-reset {
+  font-size: 10px;
+  color: var(--db-text-3);
+  margin: 0;
+}
+
+.db-usage-upgrade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 9px 14px;
+  background: var(--db-pink-bg);
+  color: var(--db-pink);
+  border: 1px dashed rgba(233, 30, 99, 0.3);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.14s;
+}
+.db-usage-upgrade:hover {
+  background: var(--db-pink);
+  color: #fff;
+  border-color: var(--db-pink);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
 /* ── Reduced motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .db-kpi,
@@ -1390,7 +1621,8 @@ onMounted(() => {
   .db-btn,
   .db-qa,
   .db-qa-icon,
-  .db-progress-fill { transition: none; }
+  .db-progress-fill,
+  .db-usage-fill { transition: none; }
   .db-sk-cell,
   .db-sk-text,
   .db-sk-cash-label,

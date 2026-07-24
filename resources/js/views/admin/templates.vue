@@ -339,7 +339,7 @@
 
                   <!-- Logo size -->
                   <div class="tb-setting-block">
-                    <div class="tb-setting-label">{{ $t('templates.logo.widthLabel') }} — <strong>{{ design.logo_width_mm }} mm</strong></div>
+                    <div class="tb-setting-label">{{ $t('templates.logo.widthLabel') }} - <strong>{{ design.logo_width_mm }} mm</strong></div>
                     <input type="range" class="tb-range" min="20" max="120" step="2" v-model.number="design.logo_width_mm" />
                     <div class="tb-range-ends"><span>20 mm</span><span>120 mm</span></div>
                   </div>
@@ -562,7 +562,7 @@ function toggleSection(key) {
 function detectPreset(primaryColor) {
   const match = PRESETS.find((p) => p.design.primary === primaryColor);
   if (match) activePresetId.value = match.id;
-  // If no match, leave it as "custom" — activePresetName returns "Custom"
+  // If no match, leave it as "custom" - activePresetName returns "Custom"
 }
 
 // ── Template presets ───────────────────────────────────────
@@ -797,7 +797,7 @@ const paperBaseStyle = computed(() => ({
   color:      design.text,
 }));
 
-// Header — left column (company info)
+// Header - left column (company info)
 const companyNameStyle = computed(() => ({
   fontFamily:   design.font_family,
   fontSize:     `${fontSizePx(design.font_size) + 2}px`,
@@ -812,7 +812,7 @@ const companyDetailStyle = computed(() => ({
   lineHeight: "1.65",
 }));
 
-// Header — right column (doc type, reference, meta rows)
+// Header - right column (doc type, reference, meta rows)
 const docLabelStyle = computed(() => ({
   fontFamily:    design.font_family,
   fontSize:      "26px",
@@ -918,7 +918,7 @@ const itemDescStyle = computed(() => ({
   marginTop:  "2px",
 }));
 
-// Totals — mirrors .totals-table td:first-child / td:last-child / .total-final in PDF CSS
+// Totals - mirrors .totals-table td:first-child / td:last-child / .total-final in PDF CSS
 const totalLabelStyle = computed(() => ({
   fontFamily:  design.font_family,
   fontSize:    `${fontSizePx(design.font_size) - 2}px`,
@@ -1010,7 +1010,7 @@ async function loadTemplate() {
   try {
     const { data } = await axios.get("/invoice-templates");
     const tpl = data.templates?.[0];
-    if (!tpl) return; // No template yet — stay in gallery
+    if (!tpl) return; // No template yet - stay in gallery
 
     existingTemplateId.value = tpl.id;
 
@@ -1030,7 +1030,7 @@ async function loadTemplate() {
     // Highlight the matching preset in the sidebar
     detectPreset(design.primary);
 
-    // Skip gallery — user has a saved template, go straight to editor
+    // Skip gallery - user has a saved template, go straight to editor
     phase.value = "editor";
   } catch (error) {
     console.error("No se pudo cargar plantilla", error);
@@ -1040,7 +1040,7 @@ async function loadTemplate() {
 // ── Upload logo ────────────────────────────────────────────
 // Uploads the pending file to the server, updates design.logo_path & previewLogo with the URL
 async function uploadLogoIfNeeded() {
-  if (!logoPendingFile.value) return; // No new file selected — nothing to do
+  if (!logoPendingFile.value) return; // No new file selected - nothing to do
 
   const formData = new FormData();
   formData.append("logo", logoPendingFile.value);
@@ -1098,7 +1098,7 @@ onMounted(() => { loadTemplate(); });
 
 <style scoped>
 /* ══════════════════════════════════════════════════════════
-   Template Builder — tb-* prefix. All scoped. No global leak.
+   Template Builder - tb-* prefix. All scoped. No global leak.
    ══════════════════════════════════════════════════════════ */
 
 .tb-root {
@@ -1544,7 +1544,7 @@ onMounted(() => { loadTemplate(); });
   min-height: 520px;
 }
 
-/* ── Invoice preview elements — table-based layout matching pdf/document.blade.php ── */
+/* ── Invoice preview elements - table-based layout matching pdf/document.blade.php ── */
 
 /* Header */
 .tb-header-table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
@@ -1557,7 +1557,7 @@ onMounted(() => { loadTemplate(); });
 /* Divider */
 .tb-inv-divider { border: none; margin: 18px 0; }
 
-/* Meta rows (right column) — display:table matches DomPDF rendering model */
+/* Meta rows (right column) - display:table matches DomPDF rendering model */
 .tb-meta-row { display: table; width: 100%; margin-bottom: 3px; }
 .tb-meta-key { display: table-cell; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; width: 50%; text-align: left; }
 .tb-meta-val { display: table-cell; text-align: right; }
@@ -1575,7 +1575,7 @@ onMounted(() => { loadTemplate(); });
 .tb-td-center { text-align: center; }
 .tb-td-right  { text-align: right; }
 
-/* Totals — 50% spacer + 50% table (matches PDF's DomPDF-safe approach in _totals.blade.php) */
+/* Totals - 50% spacer + 50% table (matches PDF's DomPDF-safe approach in _totals.blade.php) */
 .tb-totals-outer  { width: 100%; border-collapse: collapse; margin-top: 8px; }
 .tb-totals-spacer { width: 50%; }
 .tb-totals-data   { width: 50%; vertical-align: top; }

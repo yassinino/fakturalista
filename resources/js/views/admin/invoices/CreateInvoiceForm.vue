@@ -66,7 +66,7 @@
       <form @submit.prevent="handleSave" novalidate>
 
         <!-- ═══════════════════════════════════════
-             CARD 1 — Client + Dates
+             CARD 1 - Client + Dates
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <div class="inv-two-col">
@@ -138,7 +138,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 2 — Line Items
+             CARD 2 - Line Items
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <p class="inv-section-label">{{ $t('invoices.form.linesLabel') }}</p>
@@ -249,7 +249,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 3 — Note + Totals
+             CARD 3 - Note + Totals
              ═══════════════════════════════════════ -->
         <section class="inv-card inv-bottom-card">
 
@@ -539,7 +539,7 @@ async function generateInvoice() {
 
     const parsed = data.data;
 
-    // Populate client — fuzzy match against loaded customers
+    // Populate client - fuzzy match against loaded customers
     if (parsed.client) {
       const match = findCustomerByName(parsed.client);
       if (match) {
@@ -637,7 +637,7 @@ const handleSave = async () => {
 
 <style scoped>
 /* =========================================================
-   CreateInvoiceForm — ALL styles scoped to this component
+   CreateInvoiceForm - ALL styles scoped to this component
    Uses inv-* prefix. Zero global rule changes.
    ========================================================= */
 

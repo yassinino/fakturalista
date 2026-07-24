@@ -22,8 +22,15 @@ class ItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'family_id' => 'required'
+            'name' => 'required|string|max:255',
+            'family_id' => 'required',
+            'type' => 'required|in:1,2',
+            'sales_price' => 'nullable|numeric|min:0',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'vta' => 'nullable|numeric|min:0|max:100',
+            'currency' => 'nullable|string|size:3',
+            'reference' => 'nullable|string|max:255',
+            'active' => 'nullable|boolean',
         ];
     }
 }

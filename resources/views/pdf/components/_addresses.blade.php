@@ -14,7 +14,7 @@
                 <div class="addr-label">
                     {{ $docType === 'quote' ? __('quote.bill_to') : __('invoice.billing_address') }}
                 </div>
-                <div class="addr-name">{{ $document->customer?->name ?? '—' }}</div>
+                <div class="addr-name">{{ $document->customer?->name ?? '-' }}</div>
                 @if(!empty($design['show_customer_number']) && !empty($document->customer?->reference))
                     <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $document->customer->reference]) }}</div>
                 @endif
@@ -34,7 +34,7 @@
                 <div class="addr-label">
                     {{ $docType === 'quote' ? __('quote.bill_to') : __('invoice.billing_address') }}
                 </div>
-                <div class="addr-name">{{ $document->customer?->name ?? '—' }}</div>
+                <div class="addr-name">{{ $document->customer?->name ?? '-' }}</div>
                 @if(!empty($design['show_customer_number']) && !empty($document->customer?->reference))
                     <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $document->customer->reference]) }}</div>
                 @endif

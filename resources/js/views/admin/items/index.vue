@@ -5,6 +5,7 @@
       <template #options>
         <div class="block-options-item">
           <router-link to="items/new" class="btn btn-primary">
+            <i class="fa fa-plus me-1"></i>
             {{ $t("items.newTitle") }}
           </router-link>
         </div>
@@ -23,7 +24,7 @@
         :status-options="[]"
         :show-date-filter="false"
         :search-fields="['name', 'reference', 'description']"
-        search-placeholder="Search products…"
+        :search-placeholder="$t('items.searchPlaceholder')"
       >
         <template #head="{ sortField, sortDir, setSort }">
           <tr>

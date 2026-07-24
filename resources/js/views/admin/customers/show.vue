@@ -258,11 +258,11 @@
 </script>
 
 <style scoped>
-/* Top accent stripe — matches settings page .sc-head treatment.
+/* Top accent stripe - matches settings page .sc-head treatment.
    Scoped to .sh-inv-table-block only so the customer detail card
    above is not affected. Same pattern as DataTableShell.vue:
    border-top on the .block itself (has border-radius), overflow:hidden
-   clips to rounded corners. :global() is safe — class is unique. */
+   clips to rounded corners. :global() is safe - class is unique. */
 :global(.sh-inv-table-block) {
   overflow: hidden;
   border-top: 3px solid #E91E63 !important;

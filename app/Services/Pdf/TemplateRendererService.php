@@ -119,7 +119,7 @@ class TemplateRendererService
         ]);
         $companyAddress = implode("\n", $addressParts);
 
-        // Stripe payment link — invoices only, when not paid/cancelled and Stripe is configured
+        // Stripe payment link - invoices only, when not paid/cancelled and Stripe is configured
         $pdfPaymentUrl = null;
         if (
             $docType === 'invoice'

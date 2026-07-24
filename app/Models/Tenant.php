@@ -34,7 +34,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     ];
 
     // Tell VirtualColumn these are real DB columns, not JSON-encoded in `data`.
-    // subscription_status and trial_ends_at are intentionally left out —
+    // subscription_status and trial_ends_at are intentionally left out -
     // they were added before this override existed and live in the JSON column.
     public static function getCustomColumns(): array
     {

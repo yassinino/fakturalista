@@ -24,7 +24,7 @@ class EnforceSubscription
         'api/settings/payments/stripe/disconnect',
     ];
 
-    // HTTP methods that mutate data — blocked in read-only mode.
+    // HTTP methods that mutate data - blocked in read-only mode.
     private const WRITE_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     public function handle(Request $request, Closure $next): Response

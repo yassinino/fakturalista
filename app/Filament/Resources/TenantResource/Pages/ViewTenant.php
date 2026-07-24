@@ -69,7 +69,7 @@ class ViewTenant extends ViewRecord
                     $record = $this->record;
 
                     // TenancyServiceProvider fires Jobs\DeleteDatabase automatically
-                    // on the TenantDeleted event — no need to call deleteDatabase() here.
+                    // on the TenantDeleted event - no need to call deleteDatabase() here.
                     $record->delete();
 
                     Notification::make()

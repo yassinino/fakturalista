@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class InvoicePaymentsController extends Controller
 {
-    // GET /api/payments — paginated list with filters & sorting
+    // GET /api/payments - paginated list with filters & sorting
     public function index(Request $request): JsonResponse
     {
         $today = now()->toDateString();
@@ -87,7 +87,7 @@ class InvoicePaymentsController extends Controller
         ]);
     }
 
-    // GET /api/payments/summary — 4 KPI card values
+    // GET /api/payments/summary - 4 KPI card values
     public function summary(): JsonResponse
     {
         $today = now()->toDateString();
@@ -104,7 +104,7 @@ class InvoicePaymentsController extends Controller
             ->where('expiration_date', '<', $today)
             ->sum('total');
 
-        // Paid this month — prefer paid_at, fall back to updated_at for legacy records
+        // Paid this month - prefer paid_at, fall back to updated_at for legacy records
         $thisMonth = (float) Invoice::where('status', Invoice::STATUS_PAID)
             ->where(function ($q) use ($start, $end) {
                 $q->whereBetween('paid_at', [$start, $end])
@@ -117,7 +117,7 @@ class InvoicePaymentsController extends Controller
         return response()->json(compact('totalReceived', 'pending', 'overdue', 'thisMonth'));
     }
 
-    // GET /api/payments/clients — clients who have invoices (for filter dropdown)
+    // GET /api/payments/clients - clients who have invoices (for filter dropdown)
     public function clients(): JsonResponse
     {
         $customerIds = Invoice::whereIn('status', [
@@ -137,7 +137,7 @@ class InvoicePaymentsController extends Controller
         return response()->json(['clients' => $clients]);
     }
 
-    // GET /api/payments/payable — issued invoices available to be marked paid
+    // GET /api/payments/payable - issued invoices available to be marked paid
     public function payable(): JsonResponse
     {
         $today = now()->toDateString();
@@ -149,7 +149,7 @@ class InvoicePaymentsController extends Controller
             ->map(fn($inv) => [
                 'uuid'      => $inv->uuid,
                 'reference' => $inv->reference,
-                'customer'  => $inv->customer?->name ?? '—',
+                'customer'  => $inv->customer?->name ?? '-',
                 'total'     => (float) ($inv->total ?? 0),
                 'date'      => $inv->date,
                 'due_date'  => $inv->expiration_date,
@@ -159,7 +159,7 @@ class InvoicePaymentsController extends Controller
         return response()->json(['invoices' => $invoices]);
     }
 
-    // POST /api/payments/record — manually mark an issued invoice as paid
+    // POST /api/payments/record - manually mark an issued invoice as paid
     public function record(Request $request): JsonResponse
     {
         $request->validate([
@@ -210,7 +210,7 @@ class InvoicePaymentsController extends Controller
         ]);
     }
 
-    // PUT /api/payments/{invoice} — edit payment metadata (method / date / notes)
+    // PUT /api/payments/{invoice} - edit payment metadata (method / date / notes)
     public function update(Request $request, Invoice $invoice): JsonResponse
     {
         $request->validate([
@@ -247,7 +247,7 @@ class InvoicePaymentsController extends Controller
         ]);
     }
 
-    // GET /api/payments/{invoice} — single payment detail
+    // GET /api/payments/{invoice} - single payment detail
     public function show(Invoice $invoice): JsonResponse
     {
         $invoice->loadMissing('customer');
@@ -264,7 +264,7 @@ class InvoicePaymentsController extends Controller
             'payment_number'        => 'PAY-' . str_pad($invoice->id, 4, '0', STR_PAD_LEFT),
             'invoice_uuid'          => $invoice->uuid,
             'invoice_reference'     => $invoice->reference,
-            'client_name'           => $invoice->customer?->name ?? '—',
+            'client_name'           => $invoice->customer?->name ?? '-',
             'client_email'          => $invoice->customer?->email ?? '',
             'client_uuid'           => $invoice->customer?->uuid ?? '',
             'amount'                => (float) ($invoice->total ?? 0),

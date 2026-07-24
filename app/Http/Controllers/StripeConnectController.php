@@ -26,7 +26,7 @@ class StripeConnectController extends Controller
         $state = Str::random(40);
         $request->session()->put('stripe_connect_state', $state);
 
-        // Use url() instead of route() — in domain-based multi-tenant routing, url() correctly
+        // Use url() instead of route() - in domain-based multi-tenant routing, url() correctly
         // uses the current request host (e.g., tenant.fakturalista.com), while route() can fail
         // to resolve named routes when the tenant context hasn't fully bootstrapped.
         $callbackUrl = url('/settings/payments/stripe/callback');
@@ -261,7 +261,7 @@ class StripeConnectController extends Controller
         $profile = CompanyProfile::where('stripe_account_id', $account->id)->first();
 
         if (!$profile) {
-            Log::info('Stripe Connect: account.updated — no matching profile', [
+            Log::info('Stripe Connect: account.updated - no matching profile', [
                 'account_id' => $account->id,
             ]);
             return;
@@ -274,7 +274,7 @@ class StripeConnectController extends Controller
             'payouts_enabled'          => (bool) $account->payouts_enabled,
         ]);
 
-        Log::info('Stripe Connect: account.updated — profile synced', [
+        Log::info('Stripe Connect: account.updated - profile synced', [
             'account_id'           => $account->id,
             'charges_enabled'      => $account->charges_enabled,
             'onboarding_completed' => $account->details_submitted,

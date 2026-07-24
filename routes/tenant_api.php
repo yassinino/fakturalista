@@ -19,6 +19,7 @@ use App\Http\Controllers\InvoicePaymentsController;
 use App\Http\Controllers\InvoiceAiController;
 use App\Http\Controllers\StripeConnectController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\UsageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,7 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
     Route::get('/onboarding',  [OnboardingController::class, 'show']);
     Route::post('/onboarding', [OnboardingController::class, 'store']);
 
-    // Subscription (bypasses both guards — needed to subscribe from expired state)
+    // Subscription (bypasses both guards - needed to subscribe from expired state)
     Route::get('/subscription',              [SubscriptionController::class, 'index']);
     Route::post('/subscription/checkout',    [SubscriptionController::class, 'createCheckoutSession']);
     Route::post('/subscription/cancel',      [SubscriptionController::class, 'cancel']);
@@ -55,16 +56,19 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
 
         Route::get('/stats/counts',       [StatsController::class, 'counts']);
         Route::get('/stats/cash-overview',[StatsController::class, 'cashOverview']);
+        Route::get('/usage',              [UsageController::class, 'index']);
 
-        // Settings (reads always work; writes allowed even in read-only — profile management)
+        // Settings (reads always work; writes allowed even in read-only - profile management)
         Route::get('/settings',                            [CompanyProfileController::class, 'show']);
         Route::match(['post', 'put'], '/settings',         [CompanyProfileController::class, 'update']);
         Route::get('/settings/payments/stripe/status',     [StripeConnectController::class, 'status']);
         Route::post('/settings/payments/stripe/disconnect', [StripeConnectController::class, 'disconnect']);
 
         // Items
+        // Product/service creation has been disabled from the admin - only
+        // browsing, editing and deleting existing items remains available.
         Route::post('/items/bulk-delete', [ItemController::class, 'bulkDelete']);
-        Route::resource('/items', ItemController::class);
+        Route::resource('/items', ItemController::class)->except(['create', 'store']);
         Route::resource('/families', FamilyController::class);
 
         // Customers

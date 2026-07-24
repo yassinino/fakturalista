@@ -37,7 +37,7 @@
                         <div class="item-desc">{!! nl2br(e($cart->description)) !!}</div>
                     @endif
                     @if(empty($cart->product?->name) && empty($cart->description))
-                        <div class="item-name muted">—</div>
+                        <div class="item-name muted">-</div>
                     @endif
                 </td>
                 @if(!empty($design['show_tax_column']))

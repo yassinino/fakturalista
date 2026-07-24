@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Stancl's IdentificationMiddleware catches TenantCouldNotBeIdentifiedException
         // and calls this closure instead of re-throwing, giving us a clean response.
-        // This fires BEFORE the Exception Handler — no error page ever reaches the user.
+        // This fires BEFORE the Exception Handler - no error page ever reaches the user.
         InitializeTenancyByDomain::$onFail = function ($exception, $request, $next) {
             $domain    = $request->getHost();
             $parts     = explode('.', $domain);

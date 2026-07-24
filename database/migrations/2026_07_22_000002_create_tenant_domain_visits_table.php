@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // This table lives in the CENTRAL database — never in tenant databases.
+    // This table lives in the CENTRAL database - never in tenant databases.
     // It records every request to an unknown tenant subdomain for conversion
     // tracking and link-rot analysis.
 

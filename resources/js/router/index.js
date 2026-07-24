@@ -39,9 +39,9 @@ const CreateInvoice = () => import("@/views/admin/invoices/create.vue");
 const EditInvoice = () => import("@/views/admin/invoices/edit.vue");
 
 // Backend: items
-const Items = () => import("@/views/admin/items/index.vue");
+const Items      = () => import("@/views/admin/items/index.vue");
 const CreateItem = () => import("@/views/admin/items/create.vue");
-const EditItem = () => import("@/views/admin/items/edit.vue");
+const EditItem   = () => import("@/views/admin/items/edit.vue");
 const Profile = () => import("@/views/admin/profile.vue");
 const Settings = () => import("@/views/admin/settings.vue");
 const Templates = () => import("@/views/admin/templates.vue");

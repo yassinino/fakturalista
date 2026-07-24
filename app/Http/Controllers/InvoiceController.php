@@ -10,6 +10,7 @@ use App\Models\CompanyProfile;
 use App\Http\Requests\InvoiceRequest;
 use App\Mail\InvoiceEmail;
 use App\Services\Pdf\TemplateRendererService;
+use App\Services\PlanService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,10 @@ use Storage;
 
 class InvoiceController extends Controller
 {
-    public function __construct(private TemplateRendererService $renderer) {}
+    public function __construct(
+        private TemplateRendererService $renderer,
+        private PlanService $planLimits,
+    ) {}
 
     // ── Listing ────────────────────────────────────────────
 
@@ -102,6 +106,21 @@ class InvoiceController extends Controller
 
     public function store(InvoiceRequest $request): JsonResponse
     {
+        if (!$this->planLimits->canCreateInvoice()) {
+            $plan  = $this->planLimits->currentPlan();
+            $limit = $this->planLimits->getLimit('invoices_per_month');
+
+            return response()->json([
+                'error'      => 'plan_limit_reached',
+                'resource'   => 'invoice',
+                'limit'      => $limit,
+                'used'       => $this->planLimits->invoicesThisMonth(),
+                'resets_at'  => $this->planLimits->invoiceQuotaResetsAt(),
+                'plan_name'  => $plan ? $plan->translate('name') : 'Starter',
+                'plan_slug'  => $plan?->slug ?? 'starter',
+            ], 402);
+        }
+
         $customer = Customer::where('uuid', $request->customer_id)->firstOrFail();
 
         $invoice = DB::transaction(function () use ($request, $customer) {
@@ -413,7 +432,7 @@ class InvoiceController extends Controller
      * Phone normalization: strips +, 00-prefix, and all non-digits.
      * Numbers stored in full international format (e.g. +34 600 123 456)
      * normalize correctly to 34600123456.  Numbers stored without a country
-     * code (e.g. 600 123 456) will be missing the prefix — wa.me may open
+     * code (e.g. 600 123 456) will be missing the prefix - wa.me may open
      * but target the wrong number.  Recommend storing phones as +<country><number>.
      */
     public function whatsapp(Invoice $invoice): JsonResponse
@@ -527,7 +546,7 @@ class InvoiceController extends Controller
     {
         $host = request()->getHost();
 
-        // Tenant-specific legacy views — kept for backward compatibility
+        // Tenant-specific legacy views - kept for backward compatibility
         if ($host === 'client1s.fakturalista.test') {
             return Pdf::loadView('invoices.yassine', ['invoice' => $invoice])->setPaper('a4')->output();
         }
@@ -541,9 +560,9 @@ class InvoiceController extends Controller
     /**
      * Normalize a phone number to the digits-only international format wa.me expects.
      *
-     * +34 600 123 456  →  34600123456   (full international — correct)
-     * 0034600123456    →  34600123456   (old 00-prefix — correct)
-     * 600 123 456      →  600123456     (no country code — will likely mis-route on wa.me)
+     * +34 600 123 456  →  34600123456   (full international - correct)
+     * 0034600123456    →  34600123456   (old 00-prefix - correct)
+     * 600 123 456      →  600123456     (no country code - will likely mis-route on wa.me)
      *
      * This method never adds a country code; it only strips non-digits and common prefixes.
      * Store phone numbers in +<country><subscriber> format (e.g. +34600123456) for

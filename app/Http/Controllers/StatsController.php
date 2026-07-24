@@ -62,7 +62,7 @@ class StatsController extends Controller
                 'uuid'        => $inv->uuid,
                 'reference'   => $inv->reference,
                 'total'       => (float) ($inv->total ?? 0),
-                'customer'    => $inv->customer?->name ?? '—',
+                'customer'    => $inv->customer?->name ?? '-',
                 'days_overdue'=> (int) now()->diffInDays($inv->expiration_date),
             ]);
 

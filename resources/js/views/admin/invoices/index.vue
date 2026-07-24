@@ -22,7 +22,7 @@
         :server-side="true"
         :meta="meta"
         :status-options="statusOptions"
-        search-placeholder="Search invoices…"
+        :search-placeholder="$t('invoices.searchPlaceholder')"
         @filter="onFilter"
         @page="onPage"
         @per-page="onPerPage"
@@ -89,7 +89,7 @@
                   :title="!invoice.customer_email ? $t('invoices.noClientEmail') : ''"
                 >
                   <i class="fa fa-envelope fa-fw me-1"></i>{{ $t("invoices.actionSend") }}
-                  <small v-if="!invoice.customer_email" class="text-muted ms-1">(sin email)</small>
+                  <small v-if="!invoice.customer_email" class="text-muted ms-1">{{ $t('invoices.noClientEmailShort') }}</small>
                 </a>
                 <a
                   v-if="invoice.status !== 'cancelled'"
@@ -100,7 +100,7 @@
                   :title="!invoice.customer_phone ? $t('invoices.noClientPhone') : ''"
                 >
                   <i class="fab fa-whatsapp fa-fw me-1" style="color:#25D366"></i>{{ $t("invoices.actionWhatsApp") }}
-                  <small v-if="!invoice.customer_phone" class="text-muted ms-1">(sin teléfono)</small>
+                  <small v-if="!invoice.customer_phone" class="text-muted ms-1">{{ $t('invoices.noClientPhoneShort') }}</small>
                 </a>
                 <a class="dropdown-item" href="javascript:void(0)" @click.prevent="duplicateInvoice(invoice)">
                   <i class="fa fa-copy fa-fw me-1"></i>{{ $t("invoices.actionDuplicate") }}

@@ -138,7 +138,7 @@ class InvoiceTemplateController extends Controller
             'payment_note' => 'nullable|string',
             'show_payment_note' => 'sometimes|boolean',
             // logo_path, signature_path, background_path, settings, placeholders:
-            // columns not yet in the DB — migration pending user approval.
+            // columns not yet in the DB - migration pending user approval.
             // Remove this comment and restore these rules once the migration is run.
         ];
 

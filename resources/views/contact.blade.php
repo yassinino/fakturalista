@@ -4,7 +4,7 @@
 
 @section('meta')
 <meta name="description" content="{{ __('site.contact.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.contact.page_title') }} — Fakturalista" />
+<meta property="og:title" content="{{ __('site.contact.page_title') }} - Fakturalista" />
 <meta property="og:description" content="{{ __('site.contact.meta_desc') }}" />
 <meta property="og:type" content="website" />
 <link rel="canonical" href="{{ url('/contact') }}" />
@@ -33,7 +33,7 @@
     </section>
 
     <!-- ============================
-         MAIN — INFO PANEL + FORM
+         MAIN - INFO PANEL + FORM
          ============================ -->
     <section class="ct-main">
         <div class="container">
@@ -131,7 +131,7 @@
                             </div>
                         @endif
 
-                        {{-- ★ Form — field names, action, data-* and JS hooks preserved ★ --}}
+                        {{-- ★ Form - field names, action, data-* and JS hooks preserved ★ --}}
                         <form method="POST"
                               action="{{ route('contact.send') }}"
                               class="contact-form"

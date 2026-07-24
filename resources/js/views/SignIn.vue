@@ -1,7 +1,7 @@
 <template>
   <div class="fl-root" :class="{ 'fl-dark': isDark }">
 
-    <!-- ══ LEFT — Hero Panel ══════════════════════════════════ -->
+    <!-- ══ LEFT - Hero Panel ══════════════════════════════════ -->
     <div class="fl-hero" aria-hidden="true">
 
       <!-- Decorative blobs -->
@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <!-- ══ RIGHT — Auth Panel ═════════════════════════════════ -->
+    <!-- ══ RIGHT - Auth Panel ═════════════════════════════════ -->
     <div class="fl-panel">
       <div class="fl-card-wrap">
 
@@ -722,7 +722,7 @@ async function onSubmit() {
 .fl-pw-toggle:focus  { outline: 2px solid rgba(233,30,99,0.3); }
 
 /* ══════════════════════════════════════════════════════════════
-   ROW — REMEMBER ME + FORGOT PASSWORD
+   ROW - REMEMBER ME + FORGOT PASSWORD
 ══════════════════════════════════════════════════════════════ */
 .fl-row-opts {
   display: flex;

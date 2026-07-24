@@ -27,7 +27,7 @@ class SeedTenantCountries implements ShouldQueue
     public function handle(): void
     {
         // tenancy()->runForMultiple() switches to the tenant DB, runs the callback,
-        // then reverts to the central context — exactly what MigrateDatabase does
+        // then reverts to the central context - exactly what MigrateDatabase does
         // via `tenants:migrate`. We do the same by seeding inside the tenant context.
         try {
             tenancy()->runForMultiple(

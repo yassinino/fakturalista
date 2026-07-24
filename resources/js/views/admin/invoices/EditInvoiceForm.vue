@@ -53,7 +53,7 @@
       <form @submit.prevent="handleSave" novalidate>
 
         <!-- ═══════════════════════════════════════
-             CARD 1 — Client + Dates
+             CARD 1 - Client + Dates
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <div class="inv-two-col">
@@ -122,7 +122,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 2 — Line Items
+             CARD 2 - Line Items
              ═══════════════════════════════════════ -->
         <section class="inv-card">
           <p class="inv-section-label">Líneas de factura</p>
@@ -233,7 +233,7 @@
         </section>
 
         <!-- ═══════════════════════════════════════
-             CARD 3 — Note + Totals
+             CARD 3 - Note + Totals
              ═══════════════════════════════════════ -->
         <section class="inv-card inv-bottom-card">
 
@@ -362,7 +362,7 @@ const normalizeCart = (c) => ({
   total:       Number(c.total)       || 0,
 });
 
-// ── Form state — pre-filled from the invoice prop ─────────
+// ── Form state - pre-filled from the invoice prop ─────────
 const state = reactive({
   uuid:             props.invoice.uuid,
   customer_id:      props.invoice.customer_id      ?? "",
@@ -604,7 +604,7 @@ const handleModalSend = async (message) => {
 
 <style scoped>
 /* =========================================================
-   EditInvoiceForm — ALL styles scoped to this component.
+   EditInvoiceForm - ALL styles scoped to this component.
    Uses inv-* prefix. Zero global rule changes.
    Mirrors CreateInvoiceForm.vue intentionally; kept
    separate so edits never bleed into the create flow.

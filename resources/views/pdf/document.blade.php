@@ -1,4 +1,4 @@
-{{-- All variables are pre-computed by TemplateRendererService::render() — no DB queries here. --}}
+{{-- All variables are pre-computed by TemplateRendererService::render() - no DB queries here. --}}
 <!doctype html>
 <html lang="{{ $locale }}">
 <head>
@@ -72,7 +72,7 @@
         .item-name { font-weight: 700; }
         .item-desc { font-size: {{ $fontSize - 3 }}px; color: {{ $design['muted'] }}; margin-top: 2px; }
 
-        /* Totals — table-based right-alignment (DomPDF has no flexbox support) */
+        /* Totals - table-based right-alignment (DomPDF has no flexbox support) */
         .totals-table { border-collapse: collapse; width: 100%; }
         .totals-table td { padding: 5px 10px; font-size: {{ $fontSize - 2 }}px; }
         .totals-table td:first-child { text-align: right; color: {{ $design['muted'] }}; font-weight: 600; padding-right: 24px; }

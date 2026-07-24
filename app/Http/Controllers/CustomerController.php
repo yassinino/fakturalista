@@ -6,11 +6,14 @@ use App\Models\Customer;
 use App\Models\Contact;
 use App\Models\Invoice;
 use App\Http\Requests\CustomerRequest;
+use App\Services\PlanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
+    public function __construct(private PlanService $planLimits) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -46,6 +49,20 @@ class CustomerController extends Controller
      */
     public function store(CustomerRequest $request)
     {
+        if (!$this->planLimits->canCreateCustomer()) {
+            $plan  = $this->planLimits->currentPlan();
+            $limit = $this->planLimits->getLimit('customers');
+
+            return response()->json([
+                'error'     => 'plan_limit_reached',
+                'resource'  => 'customer',
+                'limit'     => $limit,
+                'used'      => $this->planLimits->totalCustomers(),
+                'plan_name' => $plan ? $plan->translate('name') : 'Starter',
+                'plan_slug' => $plan?->slug ?? 'starter',
+            ], 402);
+        }
+
         $customer = Customer::orderBy('created_at', 'desc')->first();
 
         $reference = isset($customer) ? $customer->id + 1 : 1;

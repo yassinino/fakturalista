@@ -57,6 +57,18 @@ class SubscriptionController extends Controller
             }
         }
 
+        if ($subscription?->plan) {
+            $locale  = app()->getLocale();
+            $sub     = $subscription->toArray();
+            $rawName = $subscription->plan->getRawOriginal('name') ?? '';
+            $nameArr = json_decode($rawName, true);
+            $sub['plan']['name'] = is_array($nameArr)
+                ? ($nameArr[$locale] ?? $nameArr['fr'] ?? $nameArr['en'] ?? $subscription->plan->slug ?? '')
+                : $rawName;
+
+            return response()->json(['subscription' => $sub]);
+        }
+
         return response()->json([
             'subscription' => $subscription,
         ]);

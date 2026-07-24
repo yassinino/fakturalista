@@ -8,6 +8,7 @@ use App\Models\CompanyProfile;
 use App\Models\Customer;
 use App\Models\Quote;
 use App\Http\Requests\QuoteRequest;
+use App\Services\PlanService;
 use App\Services\QuotePdfService;
 use App\Services\QuoteToInvoiceService;
 use Illuminate\Http\JsonResponse;
@@ -21,6 +22,8 @@ use Illuminate\Support\Str;
 
 class QuoteController extends Controller
 {
+    public function __construct(private PlanService $planService) {}
+
     public function index(): JsonResponse
     {
         $quotes = Quote::with('customer', 'carts')->orderBy('created_at', 'desc')->get();
@@ -54,6 +57,20 @@ class QuoteController extends Controller
 
     public function store(QuoteRequest $request): JsonResponse
     {
+        if (!$this->planService->canCreateQuote()) {
+            $plan  = $this->planService->currentPlan();
+            $limit = $this->planService->getLimit('quotes');
+
+            return response()->json([
+                'error'     => 'plan_limit_reached',
+                'resource'  => 'quote',
+                'limit'     => $limit,
+                'used'      => $this->planService->totalQuotes(),
+                'plan_name' => $plan ? $plan->translate('name') : 'Starter',
+                'plan_slug' => $plan?->slug ?? 'starter',
+            ], 402);
+        }
+
         $customer  = Customer::where('uuid', $request->customer_id)->firstOrFail();
         $last      = Quote::orderBy('id', 'desc')->lockForUpdate()->first();
         $n         = isset($last) ? $last->id + 1 : 1;

@@ -512,7 +512,7 @@
                 </div>
               </template>
 
-              <!-- PayPal — coming soon -->
+              <!-- PayPal - coming soon -->
               <div class="int-row int-row--divider">
                 <div class="int-icon int-paypal"><i class="fa fa-paypal"></i></div>
                 <div class="flex-grow-1">
@@ -978,7 +978,7 @@ async function loadStripeStatus() {
     const { data } = await axios.get('/settings/payments/stripe/status');
     fillStripeStatus(data);
   } catch {
-    // Status endpoint failed — non-critical
+    // Status endpoint failed - non-critical
   } finally {
     stripeLoading.value = false;
   }

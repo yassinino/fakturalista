@@ -18,7 +18,7 @@
       <i class="fa fa-lock bb-icon"></i>
       <div class="bb-body">
         <strong>Your trial has ended.</strong>
-        The app is in read-only mode — you can view data but cannot create or modify records.
+        The app is in read-only mode - you can view data but cannot create or modify records.
       </div>
       <router-link :to="{ name: 'backend-subscription' }" class="bb-cta bb-cta--white">
         Subscribe to unlock <i class="fa fa-arrow-right ms-1"></i>

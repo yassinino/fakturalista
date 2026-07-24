@@ -11,15 +11,22 @@ class Item extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'family_id', 
-        'uuid', 
+        'family_id',
+        'uuid',
         'name',
         'unite',
         'type',
         'sales_price',
         'purchase_price',
+        'vta',
+        'currency',
+        'active',
         'reference',
         'description',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean',
     ];
 
     public function getRouteKeyName()

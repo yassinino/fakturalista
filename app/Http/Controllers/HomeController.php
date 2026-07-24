@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Country;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -29,7 +30,15 @@ class HomeController extends Controller
 
     public function pricing()
     {
-        return view('pricing');
+        $locale = app()->getLocale();
+
+        $plans = Plan::on('mysql')
+            ->where('active', true)
+            ->with(['limits', 'marketingItems' => fn ($q) => $q->orderBy('sort_order')])
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('pricing', compact('plans', 'locale'));
     }
 
     public function sendContact(Request $request)

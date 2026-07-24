@@ -11,7 +11,7 @@
 // For example you can create _component1.scss and include it as follows:
 // @import 'component1';
 
-// ── Form controls & dropdowns — subtle radius ──────────────────────────
+// ── Form controls & dropdowns - subtle radius ──────────────────────────
 .form-control, .form-select, .dropdown-menu.show {
   border-radius: 8px;
 }
@@ -134,7 +134,7 @@
 }
 
 // ── Page background: subtle dot grid + soft corner glow ──────────────
-// Applies to the root admin wrapper — covers every page automatically.
+// Applies to the root admin wrapper - covers every page automatically.
 // Only background-image/size is set here so the inherited background-color
 // ($body-bg: #ebeef2) still acts as the base, keeping cards visible.
 #page-container {

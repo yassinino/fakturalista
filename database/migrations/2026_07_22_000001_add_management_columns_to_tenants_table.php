@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Runs on the central (default) connection — NOT a tenant migration.
+    // Runs on the central (default) connection - NOT a tenant migration.
     // These columns are managed by the Filament admin panel when provisioning
     // or editing a tenant. They are in getCustomColumns() so VirtualColumn
     // stores them as real DB columns (queryable / sortable) rather than JSON.
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->char('currency', 3)->nullable()->default('EUR')->after('timezone');
             $table->char('language', 5)->nullable()->default('es')->after('currency');
 
-            // Operational status — independent from billing subscription_status.
+            // Operational status - independent from billing subscription_status.
             // 'active'    = tenant can access the app normally.
             // 'suspended' = admin-blocked, regardless of billing state.
             $table->enum('status', ['active', 'suspended'])->default('active')->after('language');

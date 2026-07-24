@@ -1,13 +1,13 @@
 {{-- Footer: validity bar (quotes) · payment terms (invoices) · notes · payment note · Stripe link --}}
 
-{{-- Validity bar — quotes only --}}
+{{-- Validity bar - quotes only --}}
 @if($docType === 'quote' && !empty($document->expiration_date) && $expiryDate)
     <div class="validity-bar">
         {{ __('quote.valid_through', ['date' => $expiryDate]) }}
     </div>
 @endif
 
-{{-- Payment terms — invoices only --}}
+{{-- Payment terms - invoices only --}}
 @if($docType === 'invoice' && !empty($design['show_payment_terms']) && !empty($document->payment_terms))
     <div class="payment-terms">
         <div>{{ __('invoice.payment_terms') }}</div>
@@ -34,7 +34,7 @@
     </div>
 @endif
 
-{{-- Stripe payment link — invoices only --}}
+{{-- Stripe payment link - invoices only --}}
 @if($pdfPaymentUrl)
     <hr class="divider-light" style="margin-top: 20px;">
     <div class="stripe-section">

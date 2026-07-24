@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Mail\WelcomeTenantMail;
+use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +19,7 @@ class TenantProvisioningService
      *   1. Create the Tenant record (central DB).
      *      Stancl's TenancyServiceProvider listens to TenantCreated and runs
      *      Jobs\CreateDatabase + Jobs\MigrateDatabase synchronously.
-     *      Jobs\CreateDatabase issues "CREATE DATABASE …" — a MySQL DDL statement
+     *      Jobs\CreateDatabase issues "CREATE DATABASE …" - a MySQL DDL statement
      *      that causes an implicit commit of any open transaction. Wrapping this
      *      in DB::transaction() therefore always throws "There is no active
      *      transaction" when the transaction layer tries to commit afterwards.
@@ -39,7 +41,7 @@ class TenantProvisioningService
         try {
             // ── Step 1: Tenant record ─────────────────────────────────────────
             // Stancl's JobPipeline listener (CreateDatabase + MigrateDatabase)
-            // fires synchronously here. CREATE DATABASE is DDL — it implicitly
+            // fires synchronously here. CREATE DATABASE is DDL - it implicitly
             // commits any open MySQL transaction, so no DB::transaction() wrapper.
             $tenant = Tenant::create([
                 'company_name'        => $data['company_name'],
@@ -81,10 +83,27 @@ class TenantProvisioningService
                 }
             }
 
-            // ── Step 4: Welcome email ─────────────────────────────────────────
+            // ── Step 4: Trial subscription row ───────────────────────────────
+            // PlanService queries the subscriptions table (not tenant.subscription_status)
+            // to resolve plan limits. Without this row, every limit check returns 0
+            // (blocked) even during an active trial.
+            $trialPlan = Plan::on('mysql')->where('slug', $data['plan_slug'] ?? 'starter')->first()
+                      ?? Plan::on('mysql')->orderBy('sort_order')->first();
+
+            if ($trialPlan) {
+                Subscription::create([
+                    'tenant_id'              => $tenant->getTenantKey(),
+                    'plan_id'                => $trialPlan->id,
+                    'status'                 => 'trialing',
+                    'trial_ends_at'          => $tenant->trial_ends_at,
+                    'current_period_ends_at' => $tenant->trial_ends_at,
+                ]);
+            }
+
+            // ── Step 5: Welcome email ─────────────────────────────────────────
             // Isolated: a mail failure must never roll back a successfully
             // provisioned tenant. Plain password lives only in memory here
-            // ($data['admin_password']) — it was never persisted to the DB.
+            // ($data['admin_password']) - it was never persisted to the DB.
             try {
                 $loginUrl = 'https://' . $data['subdomain'] . '.fakturalista.com/login';
 

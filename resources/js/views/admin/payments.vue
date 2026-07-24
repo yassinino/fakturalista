@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <!-- Overdue — only accented when > 0 -->
+      <!-- Overdue - only accented when > 0 -->
       <div class="pay-kpi" :class="{ 'pay-kpi--alert': !loadingSummary && summary.overdue > 0 }">
         <div class="pay-kpi-icon-wrap"
           :class="!loadingSummary && summary.overdue > 0 ? 'pay-kpi-icon-wrap--orange' : 'pay-kpi-icon-wrap--muted'">
@@ -93,7 +93,7 @@
       <template #options>
         <div class="d-flex flex-wrap gap-2 align-items-center py-1">
 
-          <!-- Client filter (payment-specific — not in DataTableShell toolbar) -->
+          <!-- Client filter (payment-specific - not in DataTableShell toolbar) -->
           <select v-model="filters.client_id" class="form-select form-select-sm" style="width:auto;" @change="fetchPayments(1)">
             <option value="">{{ $t('payments.allClients') }}</option>
             <option v-for="c in clients" :key="c.uuid" :value="c.uuid">{{ c.label }}</option>
@@ -162,7 +162,7 @@
 
             <td>
               <span class="fs-sm text-muted">
-                {{ p.payment_date || p.invoice_date || '—' }}
+                {{ p.payment_date || p.invoice_date || '-' }}
               </span>
             </td>
 
@@ -266,10 +266,10 @@
                 </dd>
 
                 <dt>{{ $t('payments.detailDate') }}</dt>
-                <dd>{{ selectedPayment.payment_date || '—' }}</dd>
+                <dd>{{ selectedPayment.payment_date || '-' }}</dd>
 
                 <dt>{{ $t('payments.detailDue') }}</dt>
-                <dd>{{ selectedPayment.due_date || '—' }}</dd>
+                <dd>{{ selectedPayment.due_date || '-' }}</dd>
 
                 <dt>{{ $t('payments.detailMethod') }}</dt>
                 <dd>{{ methodLabel(selectedPayment.payment_method) }}</dd>
@@ -324,7 +324,7 @@
                 <select v-model="recordForm.invoice_uuid" class="form-select" @change="onInvoiceSelected">
                   <option value="">{{ $t('payments.recordSelectInvoice') }}</option>
                   <option v-for="inv in payableInvoices" :key="inv.uuid" :value="inv.uuid">
-                    {{ inv.reference }} — {{ inv.customer }} — {{ $toComma(inv.total) }} €
+                    {{ inv.reference }} - {{ inv.customer }} - {{ $toComma(inv.total) }} €
                     <template v-if="inv.overdue"> ⚠️</template>
                   </option>
                 </select>
@@ -344,7 +344,7 @@
               <div class="mb-3">
                 <label class="form-label fw-semibold">{{ $t('payments.recordMethod') }}</label>
                 <select v-model="recordForm.payment_method" class="form-select">
-                  <option value="">— {{ $t('payments.methodNone') }} —</option>
+                  <option value="">- {{ $t('payments.methodNone') }} -</option>
                   <option value="cash">{{ $t('payments.methodCash') }}</option>
                   <option value="bank_transfer">{{ $t('payments.methodBankTransfer') }}</option>
                   <option value="card">{{ $t('payments.methodCard') }}</option>
@@ -395,7 +395,7 @@
               <div class="mb-3">
                 <label class="form-label fw-semibold">{{ $t('payments.recordMethod') }}</label>
                 <select v-model="editForm.payment_method" class="form-select">
-                  <option value="">— {{ $t('payments.methodNone') }} —</option>
+                  <option value="">- {{ $t('payments.methodNone') }} -</option>
                   <option value="cash">{{ $t('payments.methodCash') }}</option>
                   <option value="bank_transfer">{{ $t('payments.methodBankTransfer') }}</option>
                   <option value="card">{{ $t('payments.methodCard') }}</option>
@@ -502,7 +502,7 @@ const editForm = reactive({
 
 const recordAmountDisplay = computed(() => {
   const inv = payableInvoices.value.find(i => i.uuid === recordForm.invoice_uuid);
-  return inv ? inv.total.toFixed(2).replace('.', ',') : '—';
+  return inv ? inv.total.toFixed(2).replace('.', ',') : '-';
 });
 
 const statusOptions = computed(() => [
@@ -755,7 +755,7 @@ function methodLabel(method) {
     stripe:        'Stripe',
     check:         t('payments.methodCheck'),
     other:         t('payments.methodOther'),
-  }[method] ?? (method ? method : '—');
+  }[method] ?? (method ? method : '-');
 }
 </script>
 

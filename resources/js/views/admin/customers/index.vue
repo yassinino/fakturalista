@@ -23,7 +23,7 @@
         :status-options="[]"
         :show-date-filter="false"
         :search-fields="['name', 'email', 'phone', 'reference']"
-        search-placeholder="Search clients…"
+        :search-placeholder="$t('customers.searchPlaceholder')"
       >
         <template #head="{ sortField, sortDir, setSort }">
           <tr>

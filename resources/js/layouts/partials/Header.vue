@@ -123,7 +123,7 @@ async function runSearch(q) {
 
     searchResults.value = { invoices, quotes, customers };
   } catch {
-    /* silently fail — empty state stays */
+    /* silently fail - empty state stays */
   } finally {
     searchLoading.value = false;
   }
@@ -215,7 +215,6 @@ const pageMeta = computed(() => {
     "backend-show-customer":   { crumb: [bc, cust],      title: t('header.pageTitle.customer') },
     "backend-edit-customer":   { crumb: [bc, cust],      title: t('header.pageTitle.editCustomer') },
     "backend-items":           { crumb: [bc],            title: t('header.pageTitle.products') },
-    "backend-create-item":     { crumb: [bc, prod],      title: t('header.pageTitle.newProduct') },
     "backend-edit-item":       { crumb: [bc, prod],      title: t('header.pageTitle.editProduct') },
     "backend-payments":        { crumb: [bc],            title: t('header.pageTitle.payments') },
     "backend-profile":         { crumb: [bc],            title: t('header.pageTitle.myProfile') },
@@ -513,7 +512,7 @@ onUnmounted(() => {
                 </div>
                 <div class="hdr-dd-user-info">
                   <p class="hdr-dd-name">{{ userDisplayName }}</p>
-                  <p class="hdr-dd-email">{{ userEmail || '—' }}</p>
+                  <p class="hdr-dd-email">{{ userEmail || '-' }}</p>
                   <span class="hdr-badge" :class="planBadge.cls">
                     {{ planBadge.label }}
                   </span>
@@ -631,7 +630,7 @@ onUnmounted(() => {
 
 <style scoped>
 /* ═══════════════════════════════════════════════════════════════
-   Header — all styles scoped; uses :global(.dark-mode) for dark
+   Header - all styles scoped; uses :global(.dark-mode) for dark
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Tokens: light ─────────────────────────────────────────── */

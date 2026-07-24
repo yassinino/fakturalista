@@ -26,7 +26,7 @@
     </template>
     <!-- END Sidebar Content -->
 
-    <!-- Header slots intentionally empty — Header.vue handles all content directly -->
+    <!-- Header slots intentionally empty - Header.vue handles all content directly -->
 
   </BaseLayout>
 </template>

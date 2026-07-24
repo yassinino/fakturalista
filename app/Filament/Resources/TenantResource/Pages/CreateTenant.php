@@ -181,24 +181,24 @@ class CreateTenant extends CreateRecord
                         ->schema([
                             Forms\Components\Placeholder::make('r_company_name')
                                 ->label('Empresa')
-                                ->content(fn (Forms\Get $get) => $get('company_name') ?: '—'),
+                                ->content(fn (Forms\Get $get) => $get('company_name') ?: '-'),
                             Forms\Components\Placeholder::make('r_company_email')
                                 ->label('Email corporativo')
-                                ->content(fn (Forms\Get $get) => $get('company_email') ?: '—'),
+                                ->content(fn (Forms\Get $get) => $get('company_email') ?: '-'),
                             Forms\Components\Placeholder::make('r_country')
                                 ->label('País')
-                                ->content(fn (Forms\Get $get) => TenantResource::countryOptions()[$get('country')] ?? $get('country') ?: '—'),
+                                ->content(fn (Forms\Get $get) => TenantResource::countryOptions()[$get('country')] ?? $get('country') ?: '-'),
                             Forms\Components\Placeholder::make('r_currency')
                                 ->label('Moneda')
-                                ->content(fn (Forms\Get $get) => $get('currency') ?: '—'),
+                                ->content(fn (Forms\Get $get) => $get('currency') ?: '-'),
                             Forms\Components\Placeholder::make('r_language')
                                 ->label('Idioma')
                                 ->content(fn (Forms\Get $get) => match ($get('language')) {
-                                    'es' => 'Español', 'fr' => 'Français', 'en' => 'English', default => '—',
+                                    'es' => 'Español', 'fr' => 'Français', 'en' => 'English', default => '-',
                                 }),
                             Forms\Components\Placeholder::make('r_timezone')
                                 ->label('Zona horaria')
-                                ->content(fn (Forms\Get $get) => $get('timezone') ?: '—'),
+                                ->content(fn (Forms\Get $get) => $get('timezone') ?: '-'),
                         ])->columns(3),
 
                     Forms\Components\Section::make('Dominio y acceso')
@@ -207,10 +207,10 @@ class CreateTenant extends CreateRecord
                                 ->label('URL del tenant')
                                 ->content(fn (Forms\Get $get) => $get('subdomain')
                                     ? 'https://' . $get('subdomain') . '.fakturalista.com'
-                                    : '—'),
+                                    : '-'),
                             Forms\Components\Placeholder::make('r_owner')
                                 ->label('Administrador')
-                                ->content(fn (Forms\Get $get) => trim(($get('owner_name') ?? '') . ' <' . ($get('owner_email') ?? '') . '>') ?: '—'),
+                                ->content(fn (Forms\Get $get) => trim(($get('owner_name') ?? '') . ' <' . ($get('owner_email') ?? '') . '>') ?: '-'),
                         ])->columns(2),
 
                     Forms\Components\Placeholder::make('provisioning_note')

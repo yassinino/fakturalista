@@ -22,7 +22,7 @@
         :server-side="false"
         :status-options="statusOptions"
         :search-fields="['reference', 'customer']"
-        search-placeholder="Search quotes…"
+        :search-placeholder="$t('quotes.searchPlaceholder')"
       >
         <template #head="{ sortField, sortDir, setSort }">
           <tr>
@@ -102,7 +102,7 @@
                   :title="!quote.customer_email ? $t('quotes.noClientEmail') : ''"
                 >
                   <i class="fa fa-envelope fa-fw me-1"></i>{{ $t("quotes.actionSend") }}
-                  <small v-if="!quote.customer_email" class="text-muted ms-1">(sin email)</small>
+                  <small v-if="!quote.customer_email" class="text-muted ms-1">{{ $t('quotes.noClientEmailShort') }}</small>
                 </a>
 
                 <a
@@ -114,7 +114,7 @@
                   :title="!quote.customer_phone ? $t('quotes.noClientPhone') : ''"
                 >
                   <i class="fab fa-whatsapp fa-fw me-1" style="color:#25D366"></i>{{ $t("quotes.actionWhatsApp") }}
-                  <small v-if="!quote.customer_phone" class="text-muted ms-1">(sin teléfono)</small>
+                  <small v-if="!quote.customer_phone" class="text-muted ms-1">{{ $t('quotes.noClientPhoneShort') }}</small>
                 </a>
 
                 <a

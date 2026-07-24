@@ -39,7 +39,7 @@ class InvoiceAiService
         $today   = now()->toDateString();
         $payload = $this->buildPayload($text, $today);
 
-        // Try primary model, then fallback — each with up to MAX_RETRIES on 429
+        // Try primary model, then fallback - each with up to MAX_RETRIES on 429
         $models = array_values(array_unique([$this->model, self::FALLBACK_MODEL]));
 
         foreach ($models as $model) {
@@ -56,14 +56,14 @@ class InvoiceAiService
                 }
 
                 if (isset($result['error'])) {
-                    // Non-rate-limit errors are terminal — don't retry
+                    // Non-rate-limit errors are terminal - don't retry
                     throw new \RuntimeException($result['error']);
                 }
 
                 return $this->normalize($result['data'], $today);
             }
 
-            // All retries exhausted on this model — try next
+            // All retries exhausted on this model - try next
             Log::warning("[InvoiceAiService] Exhausted retries on {$model}, switching to fallback.");
         }
 
@@ -104,7 +104,7 @@ class InvoiceAiService
 
             $message = match (true) {
                 $status === 400             => 'Invalid request sent to Gemini.',
-                in_array($status, [401, 403]) => 'Invalid GEMINI_API_KEY — check your .env.',
+                in_array($status, [401, 403]) => 'Invalid GEMINI_API_KEY - check your .env.',
                 $status >= 500              => 'Gemini service error. Try again later.',
                 default                     => "Gemini API returned HTTP {$status}.",
             };
@@ -142,7 +142,7 @@ Extract invoice information from the user's text and return ONLY a valid JSON ob
 - "client": the customer or company name to invoice (string, empty if not mentioned)
 - "description": the service, product, or work performed (string, empty if not mentioned)
 - "amount": the invoice amount as a plain number with no currency symbols or commas (number, 0 if not mentioned)
-- "vat": the VAT/tax percentage as a plain number (number, default {$this->defaultVat} if not mentioned — common values: 0, 4, 10, 20, 21)
+- "vat": the VAT/tax percentage as a plain number (number, default {$this->defaultVat} if not mentioned - common values: 0, 4, 10, 20, 21)
 - "date": the invoice date in YYYY-MM-DD format (string, use today {$today} if not mentioned)
 
 Critical rules:

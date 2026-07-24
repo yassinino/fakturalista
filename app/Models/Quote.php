@@ -40,7 +40,7 @@ class Quote extends Model
 
     public function isPaid(): bool
     {
-        return false; // quotes are never "paid" — method required by shared blade template
+        return false; // quotes are never "paid" - method required by shared blade template
     }
 
     public function isCancelled(): bool

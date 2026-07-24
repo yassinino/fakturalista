@@ -55,7 +55,7 @@
     </script>
 
     <style>
-    /* ── Language switcher — fully custom, position:fixed panel ── */
+    /* ── Language switcher - fully custom, position:fixed panel ── */
     .fk-lang-switcher { display: inline-flex; align-items: center; }
 
     .fk-lang-btn {
@@ -90,7 +90,7 @@
     }
     .fk-lang-btn[aria-expanded="true"] .fk-lang-chevron { transform: rotate(180deg); }
 
-    /* Panel — always position:fixed so it escapes any overflow:hidden ancestor */
+    /* Panel - always position:fixed so it escapes any overflow:hidden ancestor */
     .fk-lang-panel {
         position: fixed;
         min-width: 164px;
@@ -347,7 +347,7 @@
         .fk-prefooter-sub { font-size: 15px; }
     }
 
-        /* Page Banner — mobile responsive override (About Us, Blog index, Blog detail) */
+        /* Page Banner - mobile responsive override (About Us, Blog index, Blog detail) */
     @media (max-width: 767px) {
         .page-banner {
             height: auto;

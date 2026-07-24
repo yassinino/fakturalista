@@ -112,7 +112,7 @@ class StripeWebhookController extends Controller
             }
 
             if ($invoice->isPaid()) {
-                return; // idempotent — already handled
+                return; // idempotent - already handled
             }
 
             $invoice->update([

@@ -16,7 +16,7 @@ class WelcomeTenantMail extends Mailable implements ShouldQueue
 
     /**
      * @param string $plainPassword  Plain-text password for the welcome email only.
-     *                               It is never stored in the database — the user
+     *                               It is never stored in the database - the user
      *                               record is always created with Hash::make().
      *                               With QUEUE_CONNECTION=sync this never touches a
      *                               queue store. If you switch to database/redis queues,
