@@ -34,13 +34,10 @@
         <!-- Main headline -->
         <div class="fl-hero-copy">
           <h1 class="fl-headline">
-            Create invoices<br>
-            <span class="fl-headline-accent">in 15 seconds</span>
+            {{ $t('auth.hero.headline') }}<br>
+            <span class="fl-headline-accent">{{ $t('auth.hero.headlineAccent') }}</span>
           </h1>
-          <p class="fl-subheadline">
-            Send invoices, manage quotes, receive payments<br class="d-none d-xl-block">
-            and grow your business.
-          </p>
+          <p class="fl-subheadline">{{ $t('auth.hero.subheadline') }}</p>
         </div>
 
         <!-- Feature cards -->
@@ -48,22 +45,22 @@
           <div class="fl-feat fl-feat--delay-0">
             <span class="fl-feat-icon">⚡</span>
             <div>
-              <div class="fl-feat-title">AI invoice generation</div>
-              <div class="fl-feat-desc">Generate in seconds, not minutes</div>
+              <div class="fl-feat-title">{{ $t('auth.hero.feat1Title') }}</div>
+              <div class="fl-feat-desc">{{ $t('auth.hero.feat1Desc') }}</div>
             </div>
           </div>
           <div class="fl-feat fl-feat--delay-1">
             <span class="fl-feat-icon">💰</span>
             <div>
-              <div class="fl-feat-title">Get paid faster</div>
-              <div class="fl-feat-desc">Online payments & payment links</div>
+              <div class="fl-feat-title">{{ $t('auth.hero.feat2Title') }}</div>
+              <div class="fl-feat-desc">{{ $t('auth.hero.feat2Desc') }}</div>
             </div>
           </div>
           <div class="fl-feat fl-feat--delay-2">
             <span class="fl-feat-icon">📊</span>
             <div>
-              <div class="fl-feat-title">Track your business</div>
-              <div class="fl-feat-desc">Real-time revenue insights</div>
+              <div class="fl-feat-title">{{ $t('auth.hero.feat3Title') }}</div>
+              <div class="fl-feat-desc">{{ $t('auth.hero.feat3Desc') }}</div>
             </div>
           </div>
         </div>
@@ -76,7 +73,9 @@
             <div class="fl-av fl-av-3">S</div>
             <div class="fl-av fl-av-4">A</div>
           </div>
-          <span class="fl-proof-text">Trusted by <strong>Many</strong> freelancers &amp; businesses</span>
+          <i18n-t keypath="auth.hero.proof" tag="span" class="fl-proof-text">
+            <template #count><strong>{{ $t('auth.hero.proofCount') }}</strong></template>
+          </i18n-t>
         </div>
 
       </div>
@@ -106,7 +105,7 @@
 
           <div class="fl-card-header">
             <h2 class="fl-card-title">{{ $t('auth.signInTitle') }}</h2>
-            <p class="fl-card-subtitle">Enter your credentials to access your workspace</p>
+            <p class="fl-card-subtitle">{{ $t('auth.subtitle') }}</p>
           </div>
 
           <!-- Error alert -->
@@ -158,7 +157,7 @@
                   type="button"
                   class="fl-pw-toggle"
                   @click="showPassword = !showPassword"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  :aria-label="showPassword ? $t('auth.hidePassword') : $t('auth.showPassword')"
                   tabindex="-1"
                 >
                   <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
@@ -173,7 +172,7 @@
             <div class="fl-row-opts">
               <label class="fl-remember">
                 <input type="checkbox" v-model="rememberMe" class="fl-checkbox">
-                <span class="fl-remember-label">Remember me</span>
+                <span class="fl-remember-label">{{ $t('auth.rememberMe') }}</span>
               </label>
               <router-link to="/admin/forgot-password" class="fl-forgot">{{ $t('auth.forgotPassword') }}</router-link>
             </div>
@@ -189,7 +188,7 @@
                 <i class="fa fa-sign-in-alt me-2"></i>{{ $t('auth.submit') }}
               </span>
               <span v-else class="fl-btn-text">
-                <i class="fa fa-spinner fa-spin me-2"></i>Signing in…
+                <i class="fa fa-spinner fa-spin me-2"></i>{{ $t('auth.signingIn') }}
               </span>
             </button>
 
