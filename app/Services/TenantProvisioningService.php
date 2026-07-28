@@ -94,6 +94,7 @@ class TenantProvisioningService
                 Subscription::create([
                     'tenant_id'              => $tenant->getTenantKey(),
                     'plan_id'                => $trialPlan->id,
+                    'provider'               => 'stripe',
                     'status'                 => 'trialing',
                     'trial_ends_at'          => $tenant->trial_ends_at,
                     'current_period_ends_at' => $tenant->trial_ends_at,
