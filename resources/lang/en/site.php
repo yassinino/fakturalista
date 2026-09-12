@@ -63,6 +63,9 @@ return [
         'rep_li_1'       => 'Quick access',
         'rep_li_2'       => 'Easy management',
         'rep_li_3'       => '24/7 support',
+        'cta_title'      => 'Start now, it\'s free',
+        'cta_sub'        => 'Send your first invoice today, completely free.',
+        'cta_btn'        => 'Get started',
     ],
 
     'freeTrial' => [
@@ -253,5 +256,54 @@ return [
         'try_cta'      => 'Try Fakturalista free',
     ],
 
+    'faq' => [
+        'page_title'  => 'Frequently asked questions',
+        'meta_desc'   => 'Answers to the most common questions about Fakturalista: plans, invoices, payments, security and more.',
+        'hero_title'  => 'Frequently asked questions',
+        'hero_sub'    => 'Everything you need to know about Fakturalista. If you don\'t find your answer, just get in touch.',
+
+        'cat_start'    => 'Getting started',
+        'cat_billing'  => 'Billing & subscription',
+        'cat_invoices' => 'Invoices & payments',
+        'cat_security' => 'Security & data',
+
+        'start_1_q' => 'What is Fakturalista?',
+        'start_1_a' => 'Fakturalista is a cloud-based invoicing and business management platform for freelancers and small businesses. Create professional invoices, manage clients, track expenses and accept online payments — all from one dashboard.',
+        'start_2_q' => 'How do I create my first invoice?',
+        'start_2_a' => 'After logging in, click "New Invoice" from the dashboard, select a client (or add one on the fly), add your products or services, and click Send. Your first invoice takes under 2 minutes.',
+        'start_3_q' => 'Can I try Fakturalista before paying?',
+        'start_3_a' => 'Yes. Every new account comes with a 14-day free trial — no credit card required. You get full access to all features so you can evaluate the platform with no risk.',
+        'start_4_q' => 'How do I add my logo and branding?',
+        'start_4_a' => 'Go to Settings → Company profile and upload your logo. It will appear automatically on all your invoices and PDF documents from that point on.',
+
+        'billing_1_q' => 'Can I change my plan at any time?',
+        'billing_1_a' => 'Yes. You can upgrade or downgrade from your dashboard at any time, with no penalties or lock-in periods.',
+        'billing_2_q' => 'Do I need a credit card to start the free trial?',
+        'billing_2_a' => 'No. The 14-day free trial is activated instantly, without entering any payment details.',
+        'billing_3_q' => 'What happens when my trial ends?',
+        'billing_3_a' => 'If you don\'t choose a paid plan, your account switches to read-only mode. All your data is preserved — subscribe at any time to regain full access.',
+        'billing_4_q' => 'Can I get an invoice for my subscription?',
+        'billing_4_a' => 'Yes. A tax-compliant invoice is generated automatically for every payment and is available as a PDF in your client area.',
+
+        'invoices_1_q' => 'Can I send invoices by email directly from Fakturalista?',
+        'invoices_1_a' => 'Yes. Write a personalised message and send your invoice as a PDF attachment with one click. Your client will receive a professional-looking email.',
+        'invoices_2_q' => 'Can I accept online payments?',
+        'invoices_2_a' => 'Yes, on the Pro and Business plans. Fakturalista integrates with Stripe so your clients can pay directly from the invoice by card or bank transfer.',
+        'invoices_3_q' => 'Can I create recurring invoices?',
+        'invoices_3_a' => 'Yes. Set up a recurring schedule (weekly, monthly, quarterly) and Fakturalista will generate and send the invoice automatically at each cycle.',
+        'invoices_4_q' => 'How do I convert a quote to an invoice?',
+        'invoices_4_a' => 'Open any accepted quote and click "Convert to invoice". All the lines, prices and client details are carried over automatically — no re-typing needed.',
+
+        'security_1_q' => 'Is my data safe?',
+        'security_1_a' => 'Yes. All data is stored on encrypted servers with automatic daily backups. Connections use TLS/SSL and access is protected by secure authentication.',
+        'security_2_q' => 'Can I export my data?',
+        'security_2_a' => 'Yes. You can export invoices as PDFs, client lists as CSV, and financial reports as Excel files from the export menu in your dashboard.',
+        'security_3_q' => 'Are invoices compliant with local tax regulations?',
+        'security_3_a' => 'Fakturalista generates invoices that meet the requirements of Spanish tax law (AEAT): correct numbering, required fields and VAT breakdown. Always confirm with your accountant for your specific situation.',
+
+        'still_title' => 'Still have questions?',
+        'still_sub'   => 'Our support team is here to help. Send us a message and we\'ll get back to you within 24 hours.',
+        'still_btn'   => 'Contact us',
+    ],
 
 ];

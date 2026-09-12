@@ -11,6 +11,12 @@
 @endsection
 
 @section('content')
+
+@include('partials.page-hero', [
+    'title'      => __('site.pricing.title'),
+    'paragraphs' => [__('site.pricing.sub')],
+])
+
 <style>
     .site-header .site-main-menu li > a { color: #000000; }
 
@@ -30,25 +36,6 @@
         background: var(--pr-page-bg);
         color: var(--pr-text);
         font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-
-    /* ── Header ────────────────────────────────────────────── */
-    .pr-header {
-        padding: 80px 0 56px;
-        text-align: center;
-    }
-    .pr-header h1 {
-        font-size: clamp(2rem, 4vw, 3rem);
-        font-weight: 800;
-        margin: 0 0 16px;
-        color: var(--pr-text);
-    }
-    .pr-header p {
-        font-size: 1.125rem;
-        color: var(--pr-muted);
-        max-width: 560px;
-        margin: 0 auto;
-        line-height: 1.6;
     }
 
     /* ── Grid ──────────────────────────────────────────────── */
@@ -285,12 +272,6 @@
 </style>
 
 <div class="pr-page">
-
-    {{-- ── Header ─────────────────────────────────────────── --}}
-    <div class="pr-header">
-        <h1>{{ __('site.pricing.title') }}</h1>
-        <p>{{ __('site.pricing.subtitle') }}</p>
-    </div>
 
     {{-- ── Plans grid ──────────────────────────────────────── --}}
     <div class="pr-grid">

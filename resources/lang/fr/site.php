@@ -63,6 +63,9 @@ return [
         'rep_li_1'       => 'Accès rapide',
         'rep_li_2'       => 'Gestion simplifiée',
         'rep_li_3'       => 'Assistance 24/7',
+        'cta_title'      => 'Commencez maintenant, c\'est gratuit',
+        'cta_sub'        => 'Envoyez votre première facture aujourd\'hui, totalement gratuit.',
+        'cta_btn'        => 'Commencer',
     ],
 
     'freeTrial' => [
@@ -253,5 +256,54 @@ return [
         'try_cta'      => 'Essayez Fakturalista gratuitement',
     ],
 
+    'faq' => [
+        'page_title'  => 'Questions fréquentes',
+        'meta_desc'   => 'Réponses aux questions les plus fréquentes sur Fakturalista : formules, factures, paiements, sécurité et plus.',
+        'hero_title'  => 'Questions fréquentes',
+        'hero_sub'    => 'Tout ce que vous devez savoir sur Fakturalista. Si vous ne trouvez pas votre réponse, contactez-nous.',
+
+        'cat_start'    => 'Premiers pas',
+        'cat_billing'  => 'Facturation et abonnement',
+        'cat_invoices' => 'Factures et paiements',
+        'cat_security' => 'Sécurité et données',
+
+        'start_1_q' => 'Qu\'est-ce que Fakturalista ?',
+        'start_1_a' => 'Fakturalista est une plateforme de facturation et de gestion d\'entreprise en ligne pour les indépendants et les petites entreprises. Créez des factures professionnelles, gérez vos clients, suivez vos dépenses et acceptez des paiements en ligne, le tout depuis un seul tableau de bord.',
+        'start_2_q' => 'Comment créer ma première facture ?',
+        'start_2_a' => 'Après connexion, cliquez sur « Nouvelle facture » depuis le tableau de bord, sélectionnez un client (ou ajoutez-en un à la volée), ajoutez vos produits ou services, puis cliquez sur Envoyer. Votre première facture prend moins de 2 minutes.',
+        'start_3_q' => 'Puis-je essayer Fakturalista avant de payer ?',
+        'start_3_a' => 'Oui. Chaque nouveau compte bénéficie de 14 jours d\'essai gratuit, sans carte de crédit requise. Vous avez accès complet à toutes les fonctionnalités pour évaluer la plateforme sans risque.',
+        'start_4_q' => 'Comment ajouter mon logo et mon image de marque ?',
+        'start_4_a' => 'Accédez à Paramètres → Profil d\'entreprise et importez votre logo. Il apparaîtra automatiquement sur toutes vos factures et documents PDF.',
+
+        'billing_1_q' => 'Puis-je changer de formule à tout moment ?',
+        'billing_1_a' => 'Oui. Vous pouvez passer à une formule supérieure ou inférieure depuis votre tableau de bord à tout moment, sans pénalités ni engagement.',
+        'billing_2_q' => 'Ai-je besoin d\'une carte de crédit pour commencer l\'essai gratuit ?',
+        'billing_2_a' => 'Non. Les 14 jours d\'essai s\'activent instantanément, sans saisir de données de paiement.',
+        'billing_3_q' => 'Que se passe-t-il à la fin de mon essai ?',
+        'billing_3_a' => 'Si vous ne choisissez pas de formule payante, votre compte passe en mode lecture seule. Toutes vos données sont conservées — abonnez-vous à tout moment pour retrouver un accès complet.',
+        'billing_4_q' => 'Puis-je obtenir une facture pour mon abonnement ?',
+        'billing_4_a' => 'Oui. Une facture fiscalement valide est générée automatiquement pour chaque paiement et disponible au format PDF dans votre espace client.',
+
+        'invoices_1_q' => 'Puis-je envoyer des factures par e-mail directement depuis Fakturalista ?',
+        'invoices_1_a' => 'Oui. Rédigez un message personnalisé et envoyez votre facture en pièce jointe PDF en un clic. Votre client recevra un e-mail d\'aspect professionnel.',
+        'invoices_2_q' => 'Puis-je accepter des paiements en ligne ?',
+        'invoices_2_a' => 'Oui, avec les formules Pro et Business. Fakturalista s\'intègre à Stripe pour que vos clients puissent payer directement depuis la facture par carte ou virement.',
+        'invoices_3_q' => 'Puis-je créer des factures récurrentes ?',
+        'invoices_3_a' => 'Oui. Configurez une périodicité (hebdomadaire, mensuelle, trimestrielle) et Fakturalista générera et enverra automatiquement la facture à chaque cycle.',
+        'invoices_4_q' => 'Comment convertir un devis en facture ?',
+        'invoices_4_a' => 'Ouvrez n\'importe quel devis accepté et cliquez sur « Convertir en facture ». Toutes les lignes, prix et coordonnées du client sont repris automatiquement, sans avoir à tout resaisir.',
+
+        'security_1_q' => 'Mes données sont-elles sécurisées ?',
+        'security_1_a' => 'Oui. Toutes les données sont stockées sur des serveurs chiffrés avec des sauvegardes automatiques quotidiennes. Les connexions utilisent TLS/SSL et l\'accès est protégé par une authentification sécurisée.',
+        'security_2_q' => 'Puis-je exporter mes données ?',
+        'security_2_a' => 'Oui. Vous pouvez exporter les factures en PDF, les listes de clients en CSV et les rapports financiers en Excel depuis le menu d\'export de votre tableau de bord.',
+        'security_3_q' => 'Les factures sont-elles conformes à la réglementation fiscale ?',
+        'security_3_a' => 'Fakturalista génère des factures conformes aux exigences légales en vigueur (numérotation, champs obligatoires, ventilation de la TVA). Consultez toujours votre comptable pour votre situation spécifique.',
+
+        'still_title' => 'Vous avez d\'autres questions ?',
+        'still_sub'   => 'Notre équipe de support est là pour vous aider. Envoyez-nous un message et nous vous répondrons dans les 24 heures.',
+        'still_btn'   => 'Nous contacter',
+    ],
 
 ];

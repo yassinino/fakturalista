@@ -359,7 +359,7 @@ export default {
     trial: {
       active: "Actualmente est\u00e1s disfrutando de tu prueba gratuita.",
       daysLeft: "d\u00edas restantes",
-      subnote: "La suscripci\u00f3n estar\u00e1 disponible cuando termine tu prueba.",
+      subnote: "Explora los planes disponibles \u2014 podr\u00e1s suscribirte cuando termine tu prueba.",
       endsOn: "La prueba termina el {date}",
     },
 

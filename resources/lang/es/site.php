@@ -63,6 +63,9 @@ return [
         'rep_li_1'       => 'Acceso rápido',
         'rep_li_2'       => 'Gestión sencilla',
         'rep_li_3'       => 'Soporte 24/7',
+        'cta_title'      => 'Empieza ahora, es gratis',
+        'cta_sub'        => 'Envía tu primera factura hoy mismo, totalmente gratis.',
+        'cta_btn'        => 'Empezar',
     ],
 
     'freeTrial' => [
@@ -253,5 +256,54 @@ return [
         'try_cta'      => 'Prueba Fakturalista gratis',
     ],
 
+    'faq' => [
+        'page_title'  => 'Preguntas frecuentes',
+        'meta_desc'   => 'Respuestas a las preguntas más comunes sobre Fakturalista: planes, facturas, pagos, seguridad y más.',
+        'hero_title'  => 'Preguntas frecuentes',
+        'hero_sub'    => 'Todo lo que necesitas saber sobre Fakturalista. Si no encuentras tu respuesta, escríbenos.',
+
+        'cat_start'    => 'Primeros pasos',
+        'cat_billing'  => 'Facturación y suscripción',
+        'cat_invoices' => 'Facturas y pagos',
+        'cat_security' => 'Seguridad y datos',
+
+        'start_1_q' => '¿Qué es Fakturalista?',
+        'start_1_a' => 'Fakturalista es una plataforma de facturación y gestión empresarial en la nube para autónomos y pequeñas empresas. Crea facturas profesionales, gestiona clientes, controla gastos y acepta pagos online, todo desde un único panel.',
+        'start_2_q' => '¿Cómo creo mi primera factura?',
+        'start_2_a' => 'Después de iniciar sesión, haz clic en "Nueva factura" desde el panel, selecciona un cliente (o añade uno al momento), agrega tus productos o servicios y pulsa Enviar. Tu primera factura tarda menos de 2 minutos.',
+        'start_3_q' => '¿Puedo probar Fakturalista antes de pagar?',
+        'start_3_a' => 'Sí. Cada cuenta nueva incluye 14 días de prueba gratuita, sin necesidad de tarjeta de crédito. Tienes acceso completo a todas las funciones para evaluar la plataforma sin riesgo.',
+        'start_4_q' => '¿Cómo añado mi logo y mi imagen corporativa?',
+        'start_4_a' => 'Ve a Configuración → Perfil de empresa y sube tu logo. Aparecerá automáticamente en todas tus facturas y documentos PDF a partir de ese momento.',
+
+        'billing_1_q' => '¿Puedo cambiar de plan en cualquier momento?',
+        'billing_1_a' => 'Sí. Puedes subir o bajar de plan desde tu panel en cualquier momento, sin penalizaciones ni períodos de permanencia.',
+        'billing_2_q' => '¿Necesito tarjeta de crédito para empezar la prueba gratuita?',
+        'billing_2_a' => 'No. Los 14 días de prueba se activan al instante, sin introducir ningún dato de pago.',
+        'billing_3_q' => '¿Qué ocurre cuando termina mi prueba?',
+        'billing_3_a' => 'Si no eliges un plan de pago, tu cuenta pasa a modo de solo lectura. Todos tus datos se conservan — suscríbete en cualquier momento para recuperar el acceso completo.',
+        'billing_4_q' => '¿Puedo obtener una factura de mi suscripción?',
+        'billing_4_a' => 'Sí. Se genera automáticamente una factura fiscalmente válida por cada pago y está disponible en formato PDF en tu área de cliente.',
+
+        'invoices_1_q' => '¿Puedo enviar facturas por correo electrónico directamente desde Fakturalista?',
+        'invoices_1_a' => 'Sí. Escribe un mensaje personalizado y envía tu factura como archivo PDF adjunto con un solo clic. Tu cliente recibirá un correo de aspecto profesional.',
+        'invoices_2_q' => '¿Puedo aceptar pagos online?',
+        'invoices_2_a' => 'Sí, en los planes Pro y Business. Fakturalista se integra con Stripe para que tus clientes puedan pagar directamente desde la factura con tarjeta o transferencia bancaria.',
+        'invoices_3_q' => '¿Puedo crear facturas recurrentes?',
+        'invoices_3_a' => 'Sí. Configura una periodicidad (semanal, mensual, trimestral) y Fakturalista generará y enviará la factura automáticamente en cada ciclo.',
+        'invoices_4_q' => '¿Cómo convierto un presupuesto en factura?',
+        'invoices_4_a' => 'Abre cualquier presupuesto aceptado y haz clic en "Convertir en factura". Todas las líneas, precios y datos del cliente se trasladan automáticamente, sin volver a escribir nada.',
+
+        'security_1_q' => '¿Están seguros mis datos?',
+        'security_1_a' => 'Sí. Todos los datos se almacenan en servidores cifrados con copias de seguridad automáticas diarias. Las conexiones usan TLS/SSL y el acceso está protegido por autenticación segura.',
+        'security_2_q' => '¿Puedo exportar mis datos?',
+        'security_2_a' => 'Sí. Puedes exportar facturas en PDF, listas de clientes en CSV e informes financieros en Excel desde el menú de exportación de tu panel.',
+        'security_3_q' => '¿Las facturas cumplen con la normativa fiscal española?',
+        'security_3_a' => 'Fakturalista genera facturas que cumplen con los requisitos de la Agencia Tributaria (AEAT): numeración correcta, campos obligatorios y desglose del IVA. Consulta siempre con tu gestor para tu situación específica.',
+
+        'still_title' => '¿Tienes más preguntas?',
+        'still_sub'   => 'Nuestro equipo de soporte está aquí para ayudarte. Envíanos un mensaje y te responderemos en menos de 24 horas.',
+        'still_btn'   => 'Contactar con nosotros',
+    ],
 
 ];

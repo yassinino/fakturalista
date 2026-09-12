@@ -27,6 +27,7 @@ $siteRoutes = function () {
     Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.send');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
+    Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
     Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');

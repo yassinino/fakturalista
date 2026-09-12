@@ -635,14 +635,14 @@
             <div class="container">
                 <div class="action-content text-center wow pixFadeUp">
                     <h2 class="title">
-                        Empieza ahora, es gratis
+                        {{ __('site.home.cta_title') }}
                     </h2>
 
                     <p>
-                        Envía tu primera factura hoy mismo, totalmente gratis.
+                        {{ __('site.home.cta_sub') }}
                     </p>
 
-                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">Empezar</a>
+                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">{{ __('site.home.cta_btn') }}</a>
                 </div>
                 <!-- /.action-content -->
             </div>

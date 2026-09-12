@@ -12,25 +12,33 @@
 
 @section('content')
 <style>
-    .site-header .site-main-menu li > a{
-        color: #000000;
+    .site-header .site-main-menu li > a { color: #000000; }
+
+    /* Eyebrow badge — scoped to this page via page-banner context */
+    .page-banner .page-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(250, 112, 112, 0.13);
+        color: #fa7070;
+        border-radius: 100px;
+        padding: 5px 14px 5px 10px;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
     }
 </style>
-<div class="ct-page">
 
-    <!-- ============================
-         HEADER BAND
-         ============================ -->
-    <section class="ct-header">
-        <div class="container">
-            <span class="ct-header-tag">
-                <i class="fas fa-headset"></i>
-                {{ __('site.contact.header_tag') }}
-            </span>
-            <h1 class="ct-header-title">{{ __('site.contact.header_title') }}</h1>
-            <p class="ct-header-sub">{!! __('site.contact.header_sub') !!}</p>
-        </div>
-    </section>
+@include('partials.page-hero', [
+    'eyebrow'        => __('site.contact.header_tag'),
+    'eyebrow_icon'   => 'fas fa-headset',
+    'title'          => __('site.contact.header_title'),
+    'paragraphs_html'=> [__('site.contact.header_sub')],
+])
+
+<div class="ct-page">
 
     <!-- ============================
          MAIN - INFO PANEL + FORM
