@@ -20,6 +20,11 @@ export default {
     bulkDeleteConfirm: "¿Eliminar <strong>{count}</strong> elemento(s)? Esta acción no se puede deshacer.",
     bulkDeleteSuccess: "{count} elemento(s) eliminado(s).",
     back: "Volver",
+    all: "Todos",
+    clear: "Limpiar",
+    noRecordsFound: "Sin resultados",
+    showing: "Mostrando",
+    of: "de",
   },
   validation: {
     required: "Requerido",

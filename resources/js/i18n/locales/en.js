@@ -20,6 +20,11 @@ export default {
     bulkDeleteConfirm: "Delete <strong>{count}</strong> item(s)? This action cannot be undone.",
     bulkDeleteSuccess: "{count} item(s) deleted.",
     back: "Back",
+    all: "All",
+    clear: "Clear",
+    noRecordsFound: "No records found",
+    showing: "Showing",
+    of: "of",
   },
   validation: {
     required: "Required",

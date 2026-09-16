@@ -150,11 +150,128 @@
 // Override background-color here too (deep navy) since the dot grid
 // needs a dark base to render correctly.
 #page-container.dark-mode {
-  background-color: #0f172a;
+  background-color: #0d1117;
   background-image:
-    radial-gradient(circle, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
-    radial-gradient(ellipse 65% 45% at 0% 0%, rgba(30, 58, 138, 0.20) 0%, transparent 55%);
+    radial-gradient(circle, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    radial-gradient(ellipse 65% 45% at 0% 0%, rgba(30, 58, 138, 0.15) 0%, transparent 55%);
   background-size: 22px 22px, 100% 100%;
   background-repeat: repeat, no-repeat;
   background-position: 0 0, 0 0;
+}
+
+// Dark mode: layered surface system
+// Overrides OneUI's flat #1f2937 base with three distinct levels:
+//   page (#0d1117) → block (#161b25) → block-header (#1c2333)
+// This file is imported after oneui/dark-mode so these rules win
+// without !important on the ones where specificity matches.
+.dark-mode {
+
+  // ── Surface layers ──────────────────────────────────────────
+  .block {
+    background-color: #161b25;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.06) !important;
+
+    .block-header-default {
+      background-color: #1c2333 !important;
+    }
+
+    .block-title {
+      color: #e6edf3 !important;
+    }
+  }
+
+  // ── Text hierarchy ───────────────────────────────────────────
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6,
+  .content-heading {
+    color: #e6edf3 !important;
+  }
+
+  .content-heading small {
+    color: #8b949e !important;
+  }
+
+  .text-muted {
+    color: #6e7681 !important;
+  }
+
+  // ── Forms ────────────────────────────────────────────────────
+  .form-control,
+  .form-select {
+    background-color: #161b25 !important;
+    border-color: #30363d !important;
+    color: #c9d1d9 !important;
+
+    &:focus {
+      background-color: #1e2536 !important;
+      border-color: #E91E63 !important;
+      color: #e6edf3 !important;
+      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15) !important;
+    }
+
+    &::placeholder {
+      color: #464f5c !important;
+    }
+  }
+
+  .input-group-text {
+    background-color: #1c2333 !important;
+    border-color: #30363d !important;
+    color: #8b949e !important;
+  }
+
+  // ── Modals ───────────────────────────────────────────────────
+  .modal-content {
+    background-color: #161b25 !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .modal-header,
+  .modal-footer {
+    background-color: #1c2333 !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+  }
+
+  .modal-title {
+    color: #e6edf3 !important;
+  }
+
+  // ── Dropdowns ────────────────────────────────────────────────
+  .dropdown-menu {
+    background-color: #1c2333 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+
+    .dropdown-item {
+      color: #c9d1d9 !important;
+
+      &:hover,
+      &:focus {
+        background-color: rgba(255, 255, 255, 0.06) !important;
+        color: #e6edf3 !important;
+      }
+    }
+
+    .dropdown-divider {
+      border-color: rgba(255, 255, 255, 0.07) !important;
+    }
+
+    .dropdown-header {
+      color: #6e7681 !important;
+    }
+  }
+
+  // ── Outline-secondary button ─────────────────────────────────
+  .btn-outline-secondary {
+    --bs-btn-color:              #c9d1d9;
+    --bs-btn-border-color:       #30363d;
+    --bs-btn-hover-bg:           rgba(255, 255, 255, 0.06);
+    --bs-btn-hover-border-color: #484f58;
+    --bs-btn-hover-color:        #e6edf3;
+    --bs-btn-active-bg:          rgba(255, 255, 255, 0.09);
+    --bs-btn-active-border-color: #484f58;
+    --bs-btn-active-color:       #e6edf3;
+  }
 }

@@ -19,7 +19,7 @@
             class="dt-pill"
             :class="{ 'dt-pill--active': activeStatus === '' }"
             @click="setStatus('')"
-          >All</button>
+          >{{ $t('common.all') }}</button>
           <button
             v-for="opt in statusOptions"
             :key="opt.value"
@@ -37,7 +37,7 @@
           <input class="dt-date" type="date" v-model="dateTo" @change="onDateChange" title="To date" />
         </template>
         <button v-if="hasActiveFilters" class="dt-clear-btn" @click="clearFilters">
-          <i class="fa fa-times me-1"></i>Clear
+          <i class="fa fa-times me-1"></i>{{ $t('common.clear') }}
         </button>
       </div>
     </div>
@@ -53,7 +53,7 @@
           <tr v-if="!displayRows.length" class="dt-empty-row">
             <td colspan="20" class="dt-empty-cell">
               <i class="fa fa-inbox"></i>
-              <span>No records found</span>
+              <span>{{ $t('common.noRecordsFound') }}</span>
             </td>
           </tr>
         </tbody>
@@ -63,7 +63,7 @@
     <!-- ── Footer: showing + pages + per-page ────────────────── -->
     <div v-if="totalCount > 0" class="dt-footer">
       <div class="dt-showing">
-        Showing <strong>{{ from }}</strong>–<strong>{{ to }}</strong> of <strong>{{ totalCount }}</strong>
+        {{ $t('common.showing') }} <strong>{{ from }}</strong>–<strong>{{ to }}</strong> {{ $t('common.of') }} <strong>{{ totalCount }}</strong>
       </div>
 
       <div class="dt-pages">
@@ -86,9 +86,9 @@
 
       <div class="dt-perpage-wrap">
         <select class="dt-perpage" :value="currentPerPage" @change="onPerPageChange(+$event.target.value)">
-          <option :value="10">10 / page</option>
-          <option :value="25">25 / page</option>
-          <option :value="50">50 / page</option>
+          <option :value="10">10 {{ $t('common.perPage') }}</option>
+          <option :value="25">25 {{ $t('common.perPage') }}</option>
+          <option :value="50">50 {{ $t('common.perPage') }}</option>
         </select>
       </div>
     </div>
@@ -311,17 +311,44 @@ function onPerPageChange(val) {
    SHELL ROOT
 ══════════════════════════════════════════════════════════════ */
 .dt-shell {
-  --dt-brand:        #E91E63;
-  --dt-brand-light:  rgba(233, 30, 99, 0.08);
-  --dt-border:       rgba(0, 0, 0, 0.06);
-  --dt-thead-bg:     #f8f9fb;
-  --dt-row-hover:    #f8fafc;
-  --dt-cell-color:   #374151;
-  --dt-muted:        #9ca3af;
-  --dt-text:         #1f2937;
-  --dt-input-border: #e5e7eb;
-  --dt-input-bg:     #f9fafb;
-  --dt-radius:       9px;
+  --dt-brand:              #E91E63;
+  --dt-brand-light:        rgba(233, 30, 99, 0.08);
+  --dt-border:             rgba(0, 0, 0, 0.06);
+  --dt-thead-bg:           #f8f9fb;
+  --dt-row-hover:          #f8fafc;
+  --dt-cell-color:         #374151;
+  --dt-muted:              #9ca3af;
+  --dt-text:               #1f2937;
+  --dt-input-border:       #e5e7eb;
+  --dt-input-bg:           #f9fafb;
+  --dt-input-focus-bg:     #ffffff;
+  --dt-pg-bg:              #ffffff;
+  --dt-pg-color:           #374151;
+  --dt-action-hover-bg:    #f1f5f9;
+  --dt-action-hover-color: #374151;
+  --dt-pill-active-bg:     #1e293b;
+  --dt-pill-active-border: #1e293b;
+  --dt-sortable-hover:     #6b7280;
+  --dt-radius:             9px;
+}
+
+:global(.dark-mode) .dt-shell {
+  --dt-border:             rgba(255, 255, 255, 0.07);
+  --dt-thead-bg:           #1c2333;
+  --dt-row-hover:          rgba(255, 255, 255, 0.04);
+  --dt-cell-color:         #c9d1d9;
+  --dt-muted:              #6e7681;
+  --dt-text:               #e6edf3;
+  --dt-input-border:       #30363d;
+  --dt-input-bg:           #161b25;
+  --dt-input-focus-bg:     #1e2536;
+  --dt-pg-bg:              #1a1f2e;
+  --dt-pg-color:           #c9d1d9;
+  --dt-action-hover-bg:    rgba(255, 255, 255, 0.07);
+  --dt-action-hover-color: #e6edf3;
+  --dt-pill-active-bg:     rgba(233, 30, 99, 0.15);
+  --dt-pill-active-border: rgba(233, 30, 99, 0.4);
+  --dt-sortable-hover:     #c9d1d9;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -377,7 +404,7 @@ function onPerPageChange(val) {
 .dt-search:focus {
   border-color: var(--dt-brand);
   box-shadow: 0 0 0 3px var(--dt-brand-light);
-  background: #fff;
+  background: var(--dt-input-focus-bg);
 }
 
 .dt-search::placeholder {
@@ -414,8 +441,8 @@ function onPerPageChange(val) {
 }
 
 .dt-pill--active {
-  background: #1e293b;
-  border-color: #1e293b;
+  background: var(--dt-pill-active-bg);
+  border-color: var(--dt-pill-active-border);
   color: #ffffff;
 }
 
@@ -437,7 +464,7 @@ function onPerPageChange(val) {
 .dt-date:focus {
   border-color: var(--dt-brand);
   box-shadow: 0 0 0 3px var(--dt-brand-light);
-  background: #fff;
+  background: var(--dt-input-focus-bg);
 }
 
 .dt-date-sep {
@@ -511,7 +538,7 @@ function onPerPageChange(val) {
 }
 
 :deep(.dt-table th.dt-sortable:hover) {
-  color: #6b7280;
+  color: var(--dt-sortable-hover);
 }
 
 /* ── Tbody ── */
@@ -593,8 +620,8 @@ function onPerPageChange(val) {
 }
 
 :deep(.dt-table .dt-action-btn:hover) {
-  background: #f1f5f9;
-  color: #374151;
+  background: var(--dt-action-hover-bg);
+  color: var(--dt-action-hover-color);
 }
 
 /* Hide Bootstrap's dropdown caret on the action button */
@@ -663,8 +690,8 @@ function onPerPageChange(val) {
   padding: 0 8px;
   border: 1.5px solid var(--dt-input-border);
   border-radius: 8px;
-  background: #fff;
-  color: #374151;
+  background: var(--dt-pg-bg);
+  color: var(--dt-pg-color);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;

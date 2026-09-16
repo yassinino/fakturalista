@@ -658,33 +658,33 @@ onUnmounted(() => {
 /* ── Tokens: dark (OneUI's .dark-mode on #page-container) ─── */
 :global(.dark-mode) .hdr-root,
 :global(.page-header-dark) .hdr-root {
-  --hdr-bg:         rgba(18, 22, 30, 0.92);
+  --hdr-bg:         rgba(13, 17, 23, 0.92);
   --hdr-border:     rgba(255, 255, 255, 0.07);
-  --hdr-shadow:     0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.2);
+  --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
   --hdr-text:       #e6edf3;
   --hdr-text-2:     #8b949e;
-  --hdr-text-3:     #606b79;
-  --hdr-surface:    #1c2230;
-  --hdr-surface-2:  #252d3d;
-  --hdr-border-2:   #2e3a4e;
+  --hdr-text-3:     #484f58;
+  --hdr-surface:    #161b25;
+  --hdr-surface-2:  #1c2333;
+  --hdr-border-2:   #30363d;
   --hdr-pink-bg:    rgba(233, 30, 99, 0.14);
   --hdr-hover:      rgba(255, 255, 255, 0.06);
   --hdr-icon-btn-bg:rgba(255, 255, 255, 0.0);
-  --hdr-shadow-dd:  0 8px 30px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25);
+  --hdr-shadow-dd:  0 8px 30px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.25);
 }
 
 /* System dark preference */
 @media (prefers-color-scheme: dark) {
   .hdr-root {
-    --hdr-bg:         rgba(18, 22, 30, 0.92);
+    --hdr-bg:         rgba(13, 17, 23, 0.92);
     --hdr-border:     rgba(255, 255, 255, 0.07);
-    --hdr-shadow:     0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.2);
+    --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
     --hdr-text:       #e6edf3;
     --hdr-text-2:     #8b949e;
-    --hdr-text-3:     #606b79;
-    --hdr-surface:    #1c2230;
-    --hdr-surface-2:  #252d3d;
-    --hdr-border-2:   #2e3a4e;
+    --hdr-text-3:     #484f58;
+    --hdr-surface:    #161b25;
+    --hdr-surface-2:  #1c2333;
+    --hdr-border-2:   #30363d;
     --hdr-pink-bg:    rgba(233, 30, 99, 0.14);
     --hdr-hover:      rgba(255, 255, 255, 0.06);
     --hdr-icon-btn-bg:rgba(255, 255, 255, 0.0);

@@ -20,6 +20,11 @@ export default {
     bulkDeleteConfirm: "Supprimer <strong>{count}</strong> élément(s) ? Cette action est irréversible.",
     bulkDeleteSuccess: "{count} élément(s) supprimé(s).",
     back: "Retour",
+    all: "Tous",
+    clear: "Effacer",
+    noRecordsFound: "Aucun résultat",
+    showing: "Résultats",
+    of: "sur",
   },
   validation: {
     required: "Requis",
