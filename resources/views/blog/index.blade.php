@@ -71,7 +71,7 @@
                 @foreach ($posts as $post)
                 <div class="col-lg-4 col-md-6">
                     <article class="blog-post">
-                        <a href="{{ route('blog.show', $post->slug) }}" class="blog-card-link d-block">
+                        <a href="{{ url('/blog/' . $post->slug) }}" class="blog-card-link d-block">
                             <div class="blog-card-img-wrapper">
                                 @if ($post->featured_image)
                                     <img
@@ -97,7 +97,7 @@
                             </ul>
 
                             <h2 class="entry-title h5">
-                                <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a>
+                                <a href="{{ url('/blog/' . $post->slug) }}">{{ $post->title }}</a>
                             </h2>
 
                             @if ($post->excerpt)
@@ -106,7 +106,7 @@
                                 </p>
                             @endif
 
-                            <a href="{{ route('blog.show', $post->slug) }}" class="read-more-link">
+                            <a href="{{ url('/blog/' . $post->slug) }}" class="read-more-link">
                                 {{ __('site.blog.read_more') }} &rarr;
                             </a>
                         </div>

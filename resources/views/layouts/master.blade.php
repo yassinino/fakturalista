@@ -533,10 +533,10 @@
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.resources') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="#">{{ __('site.footer.resources_docs') }}</a></li>
-                                <li><a href="#">{{ __('site.footer.resources_help') }}</a></li>
-                                <li><a href="#">API</a></li>
-                                <li><a href="#">{{ __('site.footer.resources_changelog') }}</a></li>
+                                <li><a href="{{ url('/documentation') }}">{{ __('site.footer.resources_docs') }}</a></li>
+                                <li><a href="{{ url('/help-center') }}">{{ __('site.footer.resources_help') }}</a></li>
+                                <li><a href="{{ url('/api-docs') }}">{{ __('site.footer.resources_api') }}</a></li>
+                                <li><a href="{{ url('/changelog') }}">{{ __('site.footer.resources_changelog') }}</a></li>
                             </ul>
                         </div>
 
@@ -544,9 +544,10 @@
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.legal_title') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="#">{{ __('site.footer.privacy') }}</a></li>
-                                <li><a href="#">{{ __('site.footer.terms') }}</a></li>
-                                <li><a href="#">{{ __('site.footer.legal') }}</a></li>
+                                <li><a href="{{ url('/privacy-policy') }}">{{ __('site.footer.privacy') }}</a></li>
+                                <li><a href="{{ url('/terms') }}">{{ __('site.footer.terms') }}</a></li>
+                                <li><a href="{{ url('/legal-notice') }}">{{ __('site.footer.legal') }}</a></li>
+                                <li><a href="{{ url('/cookie-policy') }}">{{ __('site.footer.cookies') }}</a></li>
                             </ul>
                         </div>
 

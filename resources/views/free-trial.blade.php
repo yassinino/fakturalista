@@ -110,7 +110,7 @@
                         @endif
 
                         <form method="POST"
-                              action="{{ route('free-trial.send') }}"
+                              action="{{ url('/free-trial') }}"
                               class="contact-form"
                               data-pixsaas="contact-froms">
                             @csrf

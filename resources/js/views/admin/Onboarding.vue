@@ -54,14 +54,14 @@
             <div class="ob-step-dot">3</div>
             <div>
               <div class="ob-step-title">Free trial starts</div>
-              <div class="ob-step-desc">3 months, no credit card needed</div>
+              <div class="ob-step-desc">14 days, no credit card needed</div>
             </div>
           </div>
         </div>
 
         <div class="ob-trial-badge">
           <i class="fa fa-gift me-2"></i>
-          <span><strong>3-month free trial</strong> - no credit card required</span>
+          <span><strong>14-day free trial</strong> - no credit card required</span>
         </div>
       </div>
     </div>

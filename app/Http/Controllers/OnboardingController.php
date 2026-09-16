@@ -26,7 +26,7 @@ class OnboardingController extends Controller
 
     /**
      * Submit the onboarding wizard.
-     * Saves company fields, marks onboarding complete, and starts the 3-month trial
+     * Saves company fields, marks onboarding complete, and starts the free trial
      * on the central Tenant record.
      */
     public function store(Request $request): JsonResponse
@@ -86,11 +86,11 @@ class OnboardingController extends Controller
             $request->user()?->update(['name' => $validated['owner_name']]);
         }
 
-        // Start the 3-month free trial on the central Tenant record.
+        // Start the free trial on the central Tenant record.
         $tenant = tenancy()->tenant;
         $tenant->update([
             'subscription_status' => 'trialing',
-            'trial_ends_at'       => now()->addMonths(3),
+            'trial_ends_at'       => now()->addDays(config('billing.trial_days')),
         ]);
 
         Log::info('Onboarding completed', [
@@ -99,7 +99,7 @@ class OnboardingController extends Controller
         ]);
 
         return response()->json([
-            'message'              => 'Setup complete. Your 3-month free trial has started.',
+            'message'              => 'Setup complete. Your free trial has started.',
             'onboarding_completed' => true,
             'trial_ends_at'        => $tenant->trial_ends_at,
         ]);

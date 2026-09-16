@@ -407,7 +407,9 @@ class SubscriptionController extends Controller
             return null;
         }
 
-        $trialEndsAt = Carbon::parse($tenant->created_at)->addDays(30);
+        $trialEndsAt = $tenant->trial_ends_at
+            ? Carbon::parse($tenant->trial_ends_at)
+            : Carbon::parse($tenant->created_at)->addDays(config('billing.trial_days'));
 
         return $trialEndsAt->isFuture() ? $trialEndsAt : null;
     }

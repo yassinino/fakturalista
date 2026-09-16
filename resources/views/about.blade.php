@@ -23,8 +23,8 @@
         <!--==========================-->
         @include('partials.page-hero', [
             'title'      => __('site.about.banner_title'),
-            'paragraphs' => [__('site.about.banner_p1'), __('site.about.banner_p2')],
-            'cta_text'   => __('site.about.banner_cta'),
+            'paragraphs' => [__('site.about.banner_p1'), __('site.about.banner_p2', ['days' => config('billing.trial_days')])],
+            'cta_text'   => __('site.about.banner_cta', ['days' => config('billing.trial_days')]),
             'cta_url'    => url('/free-trial'),
         ])
 
@@ -173,7 +173,7 @@
             <div class="overlay-bg"><img src="media/background/ellipse.png" alt="bg"></div>
             <div class="container">
                 <div class="action-content text-center wow pixFadeUp">
-                    <h2 class="title">{{ __('site.about.cta_title') }}</h2>
+                    <h2 class="title">{{ __('site.about.cta_title', ['days' => config('billing.trial_days')]) }}</h2>
 
                     <p>{{ __('site.about.cta_p') }}</p>
 

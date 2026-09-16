@@ -174,6 +174,46 @@ class HomeController extends Controller
         return view('faq');
     }
 
+    public function documentation()
+    {
+        return view('documentation');
+    }
+
+    public function helpCenter()
+    {
+        return view('help-center');
+    }
+
+    public function apiDocs()
+    {
+        return view('api');
+    }
+
+    public function changelog()
+    {
+        return view('changelog');
+    }
+
+    public function legalNotice()
+    {
+        return view('legal-notice');
+    }
+
+    public function privacyPolicy()
+    {
+        return view('privacy-policy');
+    }
+
+    public function terms()
+    {
+        return view('terms');
+    }
+
+    public function cookiePolicy()
+    {
+        return view('cookie-policy');
+    }
+
     public function setLocale(Request $request)
     {
         $supported = config('app.supported_locales', ['es', 'fr', 'en']);

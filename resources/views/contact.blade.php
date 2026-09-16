@@ -141,7 +141,7 @@
 
                         {{-- ★ Form - field names, action, data-* and JS hooks preserved ★ --}}
                         <form method="POST"
-                              action="{{ route('contact.send') }}"
+                              action="{{ url('/contact') }}"
                               class="contact-form"
                               data-pixsaas="contact-froms">
                             @csrf

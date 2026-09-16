@@ -29,6 +29,14 @@ $siteRoutes = function () {
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
     Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
+    Route::get('/documentation', [HomeController::class, 'documentation'])->name('documentation');
+    Route::get('/help-center', [HomeController::class, 'helpCenter'])->name('help-center');
+    Route::get('/api-docs', [HomeController::class, 'apiDocs'])->name('api-docs');
+    Route::get('/changelog', [HomeController::class, 'changelog'])->name('changelog');
+    Route::get('/legal-notice', [HomeController::class, 'legalNotice'])->name('legal-notice');
+    Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
+    Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
+    Route::get('/cookie-policy', [HomeController::class, 'cookiePolicy'])->name('cookie-policy');
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
     Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
@@ -37,14 +45,15 @@ $siteRoutes = function () {
     Route::get('/tenant-not-found', [TenantNotFoundController::class, 'show'])->name('tenant.not-found');
 };
 
-Route::domain('fakturalista.com')
-    ->middleware('set.locale')
-    ->group($siteRoutes);
-    
-Route::domain('www.fakturalista.com')
+// Development domain registered first so production domains win route() name resolution.
+Route::domain('fakturalista.test')
     ->middleware('set.locale')
     ->group($siteRoutes);
 
-Route::domain('fakturalista.test')
+Route::domain('fakturalista.com')
+    ->middleware('set.locale')
+    ->group($siteRoutes);
+
+Route::domain('www.fakturalista.com')
     ->middleware('set.locale')
     ->group($siteRoutes);

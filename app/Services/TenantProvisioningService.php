@@ -55,7 +55,7 @@ class TenantProvisioningService
                 'owner_name'          => $data['owner_name'],
                 'owner_email'         => $data['owner_email'],
                 'subscription_status' => 'trialing',
-                'trial_ends_at'       => now()->addMonths(3),
+                'trial_ends_at'       => now()->addDays(config('billing.trial_days')),
             ]);
 
             // ── Step 2: Domain record ─────────────────────────────────────────

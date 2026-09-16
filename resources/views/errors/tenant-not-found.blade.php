@@ -211,7 +211,7 @@
         <p class="tnf-cta-title">¿Quieres tu propio espacio en Fakturalista?</p>
         <p class="tnf-cta-sub">Crea tu cuenta gratis en menos de 2 minutos. Sin tarjeta de crédito.</p>
 
-        <a href="{{ route('free-trial') }}" class="tnf-btn">
+        <a href="{{ url('/free-trial') }}" class="tnf-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 5v14M5 12l7 7 7-7"/>
