@@ -5,7 +5,7 @@ import es from "./locales/es";
 import fr from "./locales/fr";
 
 const supportedLocales = ["es", "en", "fr"];
-const defaultLocale = "en";
+const defaultLocale = "es";
 
 const normalizeLocale = (locale) =>
   supportedLocales.includes(locale) ? locale : defaultLocale;
