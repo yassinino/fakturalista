@@ -29,6 +29,8 @@ $siteRoutes = function () {
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
     Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
+    Route::get('/security', [HomeController::class, 'security'])->name('security');
+    Route::get('/integrations', [HomeController::class, 'integrations'])->name('integrations');
     Route::get('/documentation', [HomeController::class, 'documentation'])->name('documentation');
     Route::get('/help-center', [HomeController::class, 'helpCenter'])->name('help-center');
     Route::get('/api-docs', [HomeController::class, 'apiDocs'])->name('api-docs');

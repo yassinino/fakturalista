@@ -513,8 +513,8 @@
                             <h4 class="fk-footer-col-title">{{ __('site.footer.product') }}</h4>
                             <ul class="fk-footer-links">
                                 <li><a href="{{ url('/pricing') }}">{{ __('site.footer.product_pricing') }}</a></li>
-                                <li><a href="#">{{ __('site.footer.product_security') }}</a></li>
-                                <li><a href="#">{{ __('site.footer.product_integrations') }}</a></li>
+                                <li><a href="{{ url('/security') }}">{{ __('site.footer.product_security') }}</a></li>
+                                <li><a href="{{ url('/integrations') }}">{{ __('site.footer.product_integrations') }}</a></li>
                                 <li><a href="{{ url('/faq') }}">{{ __('site.footer.product_faq') }}</a></li>
                             </ul>
                         </div>

@@ -308,6 +308,49 @@ return [
         'still_btn'   => 'Contact us',
     ],
 
+    // ── Product pages ────────────────────────────────────────────────────────
+
+    'security' => [
+        'page_title'         => 'Security — Fakturalista',
+        'meta_desc'          => 'How Fakturalista keeps your data safe: TLS encryption, DigitalOcean infrastructure, daily backups, Stripe PCI compliance, and GDPR commitment.',
+        'hero_title'         => 'Security',
+        'hero_sub'           => 'Your data, protected at every level.',
+        'intro'              => 'Protecting your data is a core part of how we build and operate Fakturalista. Here is an honest overview of the measures in place.',
+        'tls_title'          => 'Encrypted connections',
+        'tls_body'           => 'All data exchanged between your browser and Fakturalista is encrypted with TLS. Your invoices, client details, and account information are never transmitted in plain text.',
+        'infra_title'        => 'Secure cloud infrastructure',
+        'infra_body'         => 'Fakturalista runs on DigitalOcean\'s cloud infrastructure. Servers operate within physically secured data centres and data is stored on encrypted volumes.',
+        'backups_title'      => 'Automatic daily backups',
+        'backups_body'       => 'Your data is backed up automatically every day. Backups allow us to recover quickly from any incident and minimise data loss.',
+        'auth_title'         => 'Secure authentication',
+        'auth_body'          => 'Passwords are hashed with bcrypt and never stored in plain text. All forms are protected against CSRF attacks and session tokens are regenerated on each login.',
+        'payments_title'     => 'Payment security',
+        'payments_body'      => 'Card payments are handled entirely by Stripe, a PCI DSS Level 1-certified processor. Fakturalista never stores, sees, or has access to your full card number.',
+        'gdpr_title'         => 'GDPR & data protection',
+        'gdpr_body'          => 'We collect only the data needed to provide the service and process it in line with GDPR. Read exactly what we collect and why in our Privacy Policy.',
+        'gdpr_link'          => 'Read the Privacy Policy',
+        'disclosure_title'   => 'Report a security issue',
+        'disclosure_body'    => 'If you find a security vulnerability, please disclose it responsibly at contact@fakturalista.com. We will investigate and respond promptly.',
+    ],
+
+    'integrations' => [
+        'page_title'     => 'Integrations — Fakturalista',
+        'meta_desc'      => 'Fakturalista integrates with Stripe for payment processing. More integrations are on the way.',
+        'hero_title'     => 'Integrations',
+        'hero_sub'       => 'Connect Fakturalista with the tools you already use.',
+        'live_title'     => 'Live integrations',
+        'stripe_name'    => 'Stripe',
+        'stripe_cat'     => 'Payments',
+        'stripe_desc'    => 'Accept card payments and bank transfers directly from invoices. Stripe handles secure payment processing so you get paid faster, without leaving Fakturalista.',
+        'stripe_badge'   => 'Live',
+        'stripe_feat_1'  => 'Card and bank transfer payments',
+        'stripe_feat_2'  => 'Automatic subscription billing',
+        'stripe_feat_3'  => 'PCI DSS Level 1 certified',
+        'coming_title'   => 'More coming soon',
+        'coming_body'    => 'We are working on additional integrations. If there is a specific tool you would like to see connected to Fakturalista, let us know.',
+        'request_btn'    => 'Request an integration',
+    ],
+
     // ── Resources pages ──────────────────────────────────────────────────────
 
     'docs' => [

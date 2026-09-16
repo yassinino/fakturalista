@@ -308,6 +308,49 @@ return [
         'still_btn'   => 'Contactar con nosotros',
     ],
 
+    // ── Páginas de producto ───────────────────────────────────────────────────
+
+    'security' => [
+        'page_title'         => 'Seguridad — Fakturalista',
+        'meta_desc'          => 'Cómo Fakturalista protege tus datos: cifrado TLS, infraestructura DigitalOcean, copias de seguridad diarias, conformidad PCI de Stripe y compromiso RGPD.',
+        'hero_title'         => 'Seguridad',
+        'hero_sub'           => 'Tus datos, protegidos en cada nivel.',
+        'intro'              => 'Proteger tus datos es una parte fundamental de cómo construimos y operamos Fakturalista. Aquí tienes una visión honesta de las medidas implementadas.',
+        'tls_title'          => 'Conexiones cifradas',
+        'tls_body'           => 'Todos los datos intercambiados entre tu navegador y Fakturalista están cifrados con TLS. Tus facturas, datos de clientes e información de cuenta nunca se transmiten en texto plano.',
+        'infra_title'        => 'Infraestructura cloud segura',
+        'infra_body'         => 'Fakturalista funciona en la infraestructura cloud de DigitalOcean. Los servidores operan en centros de datos físicamente seguros y los datos se almacenan en volúmenes cifrados.',
+        'backups_title'      => 'Copias de seguridad automáticas diarias',
+        'backups_body'       => 'Tus datos se respaldan automáticamente cada día. Las copias de seguridad nos permiten recuperarnos rápidamente ante un incidente y minimizar cualquier pérdida de datos.',
+        'auth_title'         => 'Autenticación segura',
+        'auth_body'          => 'Las contraseñas se cifran con bcrypt y nunca se almacenan en texto plano. Todos los formularios están protegidos contra ataques CSRF y los tokens de sesión se regeneran en cada inicio de sesión.',
+        'payments_title'     => 'Seguridad de los pagos',
+        'payments_body'      => 'Los pagos con tarjeta son gestionados íntegramente por Stripe, un procesador certificado PCI DSS nivel 1. Fakturalista nunca almacena, ve ni tiene acceso a tu número de tarjeta completo.',
+        'gdpr_title'         => 'RGPD y protección de datos',
+        'gdpr_body'          => 'Solo recopilamos los datos necesarios para prestar el servicio y los tratamos conforme al RGPD. Consulta exactamente qué recopilamos y por qué en nuestra Política de privacidad.',
+        'gdpr_link'          => 'Leer la Política de privacidad',
+        'disclosure_title'   => 'Comunicar una vulnerabilidad',
+        'disclosure_body'    => 'Si descubres una vulnerabilidad de seguridad, comunícanosla de forma responsable en contact@fakturalista.com. La investigaremos y responderemos con prontitud.',
+    ],
+
+    'integrations' => [
+        'page_title'     => 'Integraciones — Fakturalista',
+        'meta_desc'      => 'Fakturalista se integra con Stripe para el procesamiento de pagos. Más integraciones están en camino.',
+        'hero_title'     => 'Integraciones',
+        'hero_sub'       => 'Conecta Fakturalista con las herramientas que ya utilizas.',
+        'live_title'     => 'Integraciones disponibles',
+        'stripe_name'    => 'Stripe',
+        'stripe_cat'     => 'Pagos',
+        'stripe_desc'    => 'Acepta pagos con tarjeta y transferencias directamente desde tus facturas. Stripe gestiona el procesamiento seguro de pagos para que cobres más rápido, sin salir de Fakturalista.',
+        'stripe_badge'   => 'Disponible',
+        'stripe_feat_1'  => 'Pagos con tarjeta y transferencia',
+        'stripe_feat_2'  => 'Facturación recurrente automática',
+        'stripe_feat_3'  => 'Certificado PCI DSS nivel 1',
+        'coming_title'   => 'Próximamente',
+        'coming_body'    => 'Estamos trabajando en nuevas integraciones. Si hay alguna herramienta específica que te gustaría ver conectada a Fakturalista, háznoslo saber.',
+        'request_btn'    => 'Solicitar una integración',
+    ],
+
     // ── Páginas de recursos ───────────────────────────────────────────────────
 
     'docs' => [

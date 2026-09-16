@@ -174,6 +174,16 @@ class HomeController extends Controller
         return view('faq');
     }
 
+    public function security()
+    {
+        return view('security');
+    }
+
+    public function integrations()
+    {
+        return view('integrations');
+    }
+
     public function documentation()
     {
         return view('documentation');

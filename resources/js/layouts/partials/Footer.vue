@@ -17,8 +17,8 @@ const store = useTemplateStore();
       <nav class="fk-nav" aria-label="Footer links">
         <a class="fk-link" href="#">{{ $t('footer.privacy') }}</a>
         <a class="fk-link" href="#">{{ $t('footer.terms') }}</a>
-        <a class="fk-link" href="#">{{ $t('footer.help') }}</a>
-        <a class="fk-link" href="#">{{ $t('footer.changelog') }}</a>
+        <!-- <a class="fk-link" href="#">{{ $t('footer.help') }}</a>
+        <a class="fk-link" href="#">{{ $t('footer.changelog') }}</a> -->
       </nav>
 
       <!-- Right: status -->

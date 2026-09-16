@@ -308,6 +308,49 @@ return [
         'still_btn'   => 'Nous contacter',
     ],
 
+    // ── Pages produit ────────────────────────────────────────────────────────
+
+    'security' => [
+        'page_title'         => 'Sécurité — Fakturalista',
+        'meta_desc'          => 'Comment Fakturalista protège vos données : chiffrement TLS, infrastructure DigitalOcean, sauvegardes quotidiennes, conformité PCI Stripe et engagement RGPD.',
+        'hero_title'         => 'Sécurité',
+        'hero_sub'           => 'Vos données, protégées à chaque niveau.',
+        'intro'              => 'La protection de vos données est au cœur de la façon dont nous concevons et exploitons Fakturalista. Voici un aperçu honnête des mesures en place.',
+        'tls_title'          => 'Connexions chiffrées',
+        'tls_body'           => 'Toutes les données échangées entre votre navigateur et Fakturalista sont chiffrées avec TLS. Vos factures, coordonnées clients et informations de compte ne transitent jamais en clair.',
+        'infra_title'        => 'Infrastructure cloud sécurisée',
+        'infra_body'         => 'Fakturalista fonctionne sur l\'infrastructure cloud de DigitalOcean. Les serveurs opèrent dans des centres de données physiquement sécurisés et les données sont stockées sur des volumes chiffrés.',
+        'backups_title'      => 'Sauvegardes automatiques quotidiennes',
+        'backups_body'       => 'Vos données sont sauvegardées automatiquement chaque jour. Ces sauvegardes nous permettent de récupérer rapidement en cas d\'incident et de minimiser toute perte de données.',
+        'auth_title'         => 'Authentification sécurisée',
+        'auth_body'          => 'Les mots de passe sont hachés avec bcrypt et ne sont jamais stockés en clair. Tous les formulaires sont protégés contre les attaques CSRF et les jetons de session sont régénérés à chaque connexion.',
+        'payments_title'     => 'Sécurité des paiements',
+        'payments_body'      => 'Les paiements par carte sont gérés exclusivement par Stripe, un prestataire certifié PCI DSS niveau 1. Fakturalista ne stocke jamais, ne voit jamais et n\'a aucun accès à votre numéro de carte complet.',
+        'gdpr_title'         => 'RGPD & protection des données',
+        'gdpr_body'          => 'Nous collectons uniquement les données nécessaires au fonctionnement du service et les traitons conformément au RGPD. Consultez exactement ce que nous collectons et pourquoi dans notre Politique de confidentialité.',
+        'gdpr_link'          => 'Lire la Politique de confidentialité',
+        'disclosure_title'   => 'Signaler une vulnérabilité',
+        'disclosure_body'    => 'Si vous découvrez une faille de sécurité, veuillez nous la signaler de manière responsable à contact@fakturalista.com. Nous enquêterons et répondrons dans les meilleurs délais.',
+    ],
+
+    'integrations' => [
+        'page_title'     => 'Intégrations — Fakturalista',
+        'meta_desc'      => 'Fakturalista s\'intègre à Stripe pour le traitement des paiements. D\'autres intégrations sont en cours de développement.',
+        'hero_title'     => 'Intégrations',
+        'hero_sub'       => 'Connectez Fakturalista aux outils que vous utilisez déjà.',
+        'live_title'     => 'Intégrations disponibles',
+        'stripe_name'    => 'Stripe',
+        'stripe_cat'     => 'Paiements',
+        'stripe_desc'    => 'Acceptez les paiements par carte et virements directement depuis vos factures. Stripe gère la sécurité des transactions pour que vous soyez payé plus rapidement, sans quitter Fakturalista.',
+        'stripe_badge'   => 'Disponible',
+        'stripe_feat_1'  => 'Paiements par carte et virement',
+        'stripe_feat_2'  => 'Facturation récurrente automatique',
+        'stripe_feat_3'  => 'Certifié PCI DSS niveau 1',
+        'coming_title'   => 'Bientôt disponible',
+        'coming_body'    => 'Nous travaillons sur de nouvelles intégrations. Si vous souhaitez voir un outil spécifique connecté à Fakturalista, faites-le nous savoir.',
+        'request_btn'    => 'Demander une intégration',
+    ],
+
     // ── Pages ressources ─────────────────────────────────────────────────────
 
     'docs' => [
