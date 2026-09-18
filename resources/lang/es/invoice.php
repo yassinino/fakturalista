@@ -20,5 +20,7 @@ return [
     'per_day' => '/día',
     'date'    => 'Fecha de factura',
     'status'  => 'Estado',
-    'notes'   => 'Notas',
+    'notes'           => 'Notas',
+    'pay_online_label'=> 'Pago en línea seguro',
+    'pay_online_btn'  => 'Pagar esta factura en línea',
 ];

@@ -14,9 +14,9 @@
         <!-- Header -->
         <div class="sim-header">
           <h3 class="sim-title" id="sim-title">
-            <i class="fa fa-paper-plane me-2" style="color:#E91E63"></i>{{ isQuote ? 'Envoyer le devis' : 'Envoyer la facture' }}
+            <i class="fa fa-paper-plane me-2" style="color:#E91E63"></i>{{ isQuote ? $t('sendModal.titleQuote') : $t('sendModal.titleInvoice') }}
           </h3>
-          <button class="sim-close" @click="$emit('close')" aria-label="Fermer">&times;</button>
+          <button class="sim-close" @click="$emit('close')" :aria-label="$t('common.close')">&times;</button>
         </div>
 
         <!-- Body -->
@@ -24,29 +24,29 @@
 
           <!-- To field -->
           <div class="sim-field">
-            <label class="sim-label">Destinataire</label>
+            <label class="sim-label">{{ $t('sendModal.recipient') }}</label>
             <div v-if="customerEmail" class="sim-email-display">
               <i class="fa fa-envelope sim-email-icon"></i>
               <span>{{ customerEmail }}</span>
             </div>
             <div v-else class="sim-no-email">
               <i class="fa fa-exclamation-triangle me-2"></i>
-              Ce client n'a pas d'adresse e-mail. Ajoutez-en une sur sa fiche avant d'envoyer.
+              {{ $t('sendModal.noEmail') }}
             </div>
           </div>
 
           <!-- Message field -->
           <div class="sim-field">
-            <label class="sim-label">Message</label>
+            <label class="sim-label">{{ $t('sendModal.message') }}</label>
             <textarea
               class="sim-textarea"
               v-model="message"
               rows="9"
               :disabled="!customerEmail"
-              placeholder="Votre message personnalisé..."
+              :placeholder="$t('sendModal.customMsg')"
             ></textarea>
             <p class="sim-hint">
-              <i class="fa fa-paperclip me-1"></i>{{ isQuote ? 'Le devis PDF sera joint automatiquement.' : 'La facture PDF sera jointe automatiquement.' }}
+              <i class="fa fa-paperclip me-1"></i>{{ isQuote ? $t('sendModal.attachedQuote') : $t('sendModal.attachedInvoice') }}
             </p>
           </div>
 
@@ -55,7 +55,7 @@
         <!-- Footer -->
         <div class="sim-footer">
           <button class="sim-btn sim-btn-cancel" @click="$emit('close')" :disabled="sending">
-            Annuler
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="sim-btn sim-btn-send"
@@ -64,7 +64,7 @@
           >
             <i v-if="sending" class="fa fa-spinner fa-spin me-1"></i>
             <i v-else class="fa fa-paper-plane me-1"></i>
-            Envoyer
+            {{ $t('sendModal.send') }}
           </button>
         </div>
 
@@ -75,6 +75,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   customerEmail: { type: String,  default: '' },
@@ -90,11 +93,17 @@ const emit = defineEmits(['close', 'send']);
 const modalEl = ref(null);
 
 const buildDefault = () => {
-  const salut   = props.customerName ? `Bonjour ${props.customerName},` : 'Bonjour,';
-  const docWord = props.isQuote ? 'devis' : 'facture';
-  const ref     = props.invoiceRef ? `votre ${docWord} ${props.invoiceRef}` : `votre ${docWord}`;
-  const sign    = props.companyName  ? `Cordialement,\n${props.companyName}` : 'Cordialement,';
-  return `${salut}\n\nVeuillez trouver ci-joint ${ref}.\n\nPour toute question, n'hésitez pas à nous contacter.\n\n${sign}`;
+  const salut   = props.customerName
+    ? t('sendModal.greetingName', { name: props.customerName })
+    : t('sendModal.greeting');
+  const docWord = t(props.isQuote ? 'sendModal.docWordQuote' : 'sendModal.docWordInvoice');
+  const ref     = props.invoiceRef
+    ? t('sendModal.refPhrase', { docWord, ref: props.invoiceRef })
+    : t('sendModal.refPhraseNoRef', { docWord });
+  const sign    = props.companyName
+    ? t('sendModal.signatureWithName', { name: props.companyName })
+    : t('sendModal.signature');
+  return `${salut}\n\n${t('sendModal.bodyAttach', { ref })}\n\n${t('sendModal.bodyQuestion')}\n\n${sign}`;
 };
 
 const message = ref(buildDefault());

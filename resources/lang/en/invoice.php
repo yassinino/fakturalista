@@ -20,5 +20,7 @@ return [
     'per_day' => '/day',
     'date'    => 'Invoice Date',
     'status'  => 'Status',
-    'notes'   => 'Notes',
+    'notes'           => 'Notes',
+    'pay_online_label'=> 'Secure online payment',
+    'pay_online_btn'  => 'Pay this invoice online',
 ];

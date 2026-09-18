@@ -13,14 +13,6 @@ const store = useTemplateStore();
         <span class="fk-version">v{{ store.app.version }}</span>
       </div>
 
-      <!-- Center: links -->
-      <nav class="fk-nav" aria-label="Footer links">
-        <a class="fk-link" href="#">{{ $t('footer.privacy') }}</a>
-        <a class="fk-link" href="#">{{ $t('footer.terms') }}</a>
-        <!-- <a class="fk-link" href="#">{{ $t('footer.help') }}</a>
-        <a class="fk-link" href="#">{{ $t('footer.changelog') }}</a> -->
-      </nav>
-
       <!-- Right: status -->
       <span class="fk-status" role="status" aria-live="polite">
         <span class="fk-dot" aria-hidden="true"></span>
@@ -35,27 +27,25 @@ const store = useTemplateStore();
 /* ── Light theme ────────────────────────────────────────────── */
 .fk-footer {
   --fk-border:   #eaecf0;
-  --fk-copy:     #9da6ba;
-  --fk-link:     #8590a6;
-  --fk-link-h:   #1a2036;
+  --fk-copy:     #a8b0c0;
   --fk-ver-bg:   #f4f6fa;
   --fk-ver-bd:   #e4e8f0;
-  --fk-ver-tx:   #8590a6;
+  --fk-ver-tx:   #a8b0c0;
   --fk-dot:      #22c55e;
   --fk-dot-glow: rgba(34, 197, 94, 0.2);
+  --fk-status:   #a8b0c0;
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 :global(.dark-mode) .fk-footer {
   --fk-border:   rgba(255, 255, 255, 0.07);
-  --fk-copy:     #3d4762;
-  --fk-link:     #3d4762;
-  --fk-link-h:   #8fa3c8;
+  --fk-copy:     #4e5b72;
   --fk-ver-bg:   rgba(255, 255, 255, 0.04);
   --fk-ver-bd:   rgba(255, 255, 255, 0.08);
-  --fk-ver-tx:   #3d4762;
+  --fk-ver-tx:   #4e5b72;
   --fk-dot:      #22c55e;
-  --fk-dot-glow: rgba(34, 197, 94, 0.15);
+  --fk-dot-glow: rgba(34, 197, 94, 0.12);
+  --fk-status:   #4e5b72;
 }
 
 /* ── Shell ──────────────────────────────────────────────────── */
@@ -69,7 +59,7 @@ const store = useTemplateStore();
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  height: 46px;
+  height: 36px;
   padding: 0 1.5rem;
 }
 
@@ -82,51 +72,32 @@ const store = useTemplateStore();
 }
 
 .fk-copy {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--fk-copy);
   white-space: nowrap;
   line-height: 1;
 }
 
 .fk-version {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--fk-ver-tx);
   background: var(--fk-ver-bg);
   border: 1px solid var(--fk-ver-bd);
   border-radius: 100px;
-  padding: 2px 7px;
+  padding: 2px 6px;
   line-height: 1.5;
   white-space: nowrap;
-}
-
-/* ── Center nav ─────────────────────────────────────────────── */
-.fk-nav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.fk-link {
-  font-size: 12px;
-  color: var(--fk-link);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.15s ease;
-}
-.fk-link:hover {
-  color: var(--fk-link-h);
-  text-decoration: none;
 }
 
 /* ── Status ─────────────────────────────────────────────────── */
 .fk-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--fk-link);
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--fk-status);
   white-space: nowrap;
   flex-shrink: 0;
   user-select: none;
@@ -142,25 +113,8 @@ const store = useTemplateStore();
 }
 
 /* ── Responsive ─────────────────────────────────────────────── */
-@media (max-width: 991px) {
-  .fk-inner {
-    height: auto;
-    padding: 12px 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 16px;
-  }
-  .fk-left,
-  .fk-status {
-    flex-basis: 100%;
-    justify-content: center;
-  }
-  .fk-left { display: flex; }
-  .fk-nav  { gap: 14px; flex-wrap: wrap; justify-content: center; }
-}
-
-@media (max-width: 479px) {
+@media (max-width: 575px) {
   .fk-status { display: none; }
-  .fk-nav    { gap: 10px; }
+  .fk-inner  { justify-content: center; }
 }
 </style>

@@ -349,10 +349,10 @@ if (!empty($logoPath)) {
         @if($pdfPaymentUrl)
             <hr class="hr-light" style="margin-top: 20px;">
             <div style="text-align: center; padding: 14px 0;">
-                <div class="muted" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; font-weight: 700;">Paiement en ligne sécurisé</div>
+                <div class="muted" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; font-weight: 700;">{{ __('invoice.pay_online_label') }}</div>
                 <a href="{{ $pdfPaymentUrl }}"
                    style="display: inline-block; background: {{ $design['primary'] }}; color: #ffffff; font-weight: 700; font-size: 13px; padding: 9px 22px; text-decoration: none;">
-                    Payer cette facture en ligne →
+                    {{ __('invoice.pay_online_btn') }} →
                 </a>
                 <div class="muted" style="font-size: 10px; margin-top: 8px; word-break: break-all;">{{ $pdfPaymentUrl }}</div>
             </div>

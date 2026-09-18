@@ -38,10 +38,10 @@
 @if($pdfPaymentUrl)
     <hr class="divider-light" style="margin-top: 20px;">
     <div class="stripe-section">
-        <div class="stripe-label">Paiement en ligne sécurisé</div>
+        <div class="stripe-label">{{ __('invoice.pay_online_label') }}</div>
         <a href="{{ $pdfPaymentUrl }}"
            style="display:inline-block; background:{{ $design['primary'] }}; color:#ffffff; font-weight:700; font-size:13px; padding:9px 22px; text-decoration:none;">
-            Payer cette facture en ligne →
+            {{ __('invoice.pay_online_btn') }} →
         </a>
         <div class="stripe-url">{{ $pdfPaymentUrl }}</div>
     </div>
