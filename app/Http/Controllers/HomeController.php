@@ -67,7 +67,7 @@ class HomeController extends Controller
         $subject = $validated['subject'] ?: 'Nuevo mensaje de contacto';
 
         try {
-            Mail::to('contact@aittouijardev.com')->send(new ContactMessage([
+            Mail::to('contact@fakturalista.com')->send(new ContactMessage([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'subject' => $subject,
@@ -128,7 +128,7 @@ class HomeController extends Controller
         $validated = $validator->validated();
 
         try {
-            Mail::to('contact@aittouijardev.com')->send(new FreeTrialRequest([
+            Mail::to('contact@fakturalista.com')->send(new FreeTrialRequest([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'company' => $validated['company'],
