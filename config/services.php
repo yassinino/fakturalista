@@ -40,9 +40,7 @@ return [
         'connect_webhook_secret' => env('STRIPE_CONNECT_WEBHOOK_SECRET'),  // whsec_xxx (Connect webhook)
     ],
 
-    'gemini' => [
-        'key'     => env('GEMINI_API_KEY'),
-        'model'   => env('GEMINI_MODEL', 'gemini-2.0-flash'),
-        'default_vat' => env('INVOICE_DEFAULT_VAT', 0),
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
     ],
 ];

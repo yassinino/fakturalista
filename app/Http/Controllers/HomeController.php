@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Validator;
 use App\Mail\ContactMessage;
 use App\Mail\FreeTrialRequest;
+use App\Services\MathCaptchaService;
 
 class HomeController extends Controller
 {
@@ -20,12 +21,12 @@ class HomeController extends Controller
 
     public function contact()
     {
-        return view('contact');
+        return view('contact', ['captcha' => MathCaptchaService::generate()]);
     }
 
     public function freeTrial()
     {
-        return view('free-trial');
+        return view('free-trial', ['captcha' => MathCaptchaService::generate()]);
     }
 
     public function pricing()
@@ -49,7 +50,14 @@ class HomeController extends Controller
             'subject' => 'nullable|string|max:150',
             'content' => 'required|string|max:2000',
             'recaptcha_response' => 'nullable|string|max:2000',
+            'captcha_answer' => 'required',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if (!MathCaptchaService::verify($request->input('captcha_answer'))) {
+                $validator->errors()->add('captcha_answer', __('site.captcha.error'));
+            }
+        });
 
         if ($validator->fails()) {
             if ($request->ajax()) {
@@ -57,6 +65,7 @@ class HomeController extends Controller
                     'error' => 1,
                     'message' => 'Por favor revisa los campos e intenta de nuevo.',
                     'errors' => $validator->errors(),
+                    'captcha' => MathCaptchaService::generate(),
                 ], 422);
             }
 
@@ -86,6 +95,7 @@ class HomeController extends Controller
                 return response()->json([
                     'error' => 1,
                     'message' => 'No se pudo enviar el mensaje. Intenta de nuevo.',
+                    'captcha' => MathCaptchaService::generate(),
                 ], 500);
             }
 
@@ -98,6 +108,7 @@ class HomeController extends Controller
             return response()->json([
                 'error' => 0,
                 'message' => 'Mensaje enviado correctamente.',
+                'captcha' => MathCaptchaService::generate(),
             ]);
         }
 
@@ -111,7 +122,14 @@ class HomeController extends Controller
             'email' => 'required|email|max:255',
             'company' => 'required|string|max:150',
             'recaptcha_response' => 'nullable|string|max:2000',
+            'captcha_answer' => 'required',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            if (!MathCaptchaService::verify($request->input('captcha_answer'))) {
+                $validator->errors()->add('captcha_answer', __('site.captcha.error'));
+            }
+        });
 
         if ($validator->fails()) {
             if ($request->ajax()) {
@@ -119,6 +137,7 @@ class HomeController extends Controller
                     'error' => 1,
                     'message' => 'Por favor revisa los campos e intenta de nuevo.',
                     'errors' => $validator->errors(),
+                    'captcha' => MathCaptchaService::generate(),
                 ], 422);
             }
 
@@ -146,6 +165,7 @@ class HomeController extends Controller
                 return response()->json([
                     'error' => 1,
                     'message' => 'No se pudo enviar la solicitud. Intenta de nuevo.',
+                    'captcha' => MathCaptchaService::generate(),
                 ], 500);
             }
 
@@ -158,6 +178,7 @@ class HomeController extends Controller
             return response()->json([
                 'error' => 0,
                 'message' => 'Solicitud enviada correctamente.',
+                'captcha' => MathCaptchaService::generate(),
             ]);
         }
 

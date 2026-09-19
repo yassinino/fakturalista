@@ -188,6 +188,13 @@
                                           required>{{ old('content') }}</textarea>
                             </div>
 
+                            @include('partials.captcha', [
+                                'captcha' => $captcha,
+                                'captchaFieldClass' => 'ct-field',
+                                'captchaLabelClass' => 'ct-label',
+                                'captchaInputClass' => 'ct-input',
+                            ])
+
                             <button type="submit" class="ct-submit-btn submit-btn">
                                 <span class="btn-text">{{ __('site.contact.btn_submit') }} &rarr;</span>
                                 <i class="fas fa-spinner fa-spin"></i>

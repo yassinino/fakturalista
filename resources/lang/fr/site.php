@@ -562,4 +562,11 @@ return [
         'contact_body'            => 'Questions sur notre utilisation des cookies : contact@fakturalista.com.',
     ],
 
+    'captcha' => [
+        'label'      => 'Résolvez ceci pour continuer',
+        'placeholder' => 'Réponse',
+        'error'      => 'Réponse incorrecte, veuillez réessayer.',
+        'aria_label' => 'Vérification de sécurité : résolvez ce calcul',
+    ],
+
 ];

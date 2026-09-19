@@ -43,7 +43,13 @@
             <span v-else>{{ $t('invoices.form.aiGenerateBtn') }}</span>
           </button>
         </div>
-        <p v-if="aiError" class="ai-bar-error">
+        <p v-if="aiNoClients" class="ai-bar-error">
+          <i class="fa fa-exclamation-triangle me-1"></i>{{ $t('invoices.form.aiNoClientsError') }}
+          <router-link :to="{ name: 'backend-create-customer' }" class="ai-bar-link">
+            {{ $t('invoices.form.aiAddClientLink') }}
+          </router-link>
+        </p>
+        <p v-else-if="aiError" class="ai-bar-error">
           <i class="fa fa-exclamation-triangle me-1"></i>{{ aiError }}
         </p>
         <p v-if="aiSuccess" class="ai-bar-success">
@@ -178,6 +184,9 @@
                       :placeholder="$t('invoices.form.descSubPlaceholder')"
                       @keydown.enter.prevent="addNewItem"
                     />
+                    <span v-if="aiCustomLineIndex === index" class="inv-ai-custom-badge">
+                      <i class="fa fa-magic"></i> {{ $t('invoices.form.aiCustomItemBadge') }}
+                    </span>
                   </td>
 
                   <!-- Qty -->
@@ -405,6 +414,7 @@ const selectProduct = (index, value) => {
     vta: 0,
     total: value.sales_price,
   };
+  if (aiCustomLineIndex.value === index) aiCustomLineIndex.value = null;
 };
 
 const addNewItem = () => {
@@ -419,12 +429,14 @@ const addNewItem = () => {
     vta: 0,
     total: 0,
   });
+  aiCustomLineIndex.value = null;
 };
 
 const removeCart = (cart) => {
   if (state.carts.length === 1) return;
   if (confirm(t("documents.removeConfirm")))
     state.carts = state.carts.filter((c) => c !== cart);
+  aiCustomLineIndex.value = null;
 };
 
 // ── Computed totals (same logic as CreateDocument) ────────
@@ -494,22 +506,15 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, state);
 
 // ── AI invoice generation ─────────────────────────────────
-const aiPrompt    = ref('');
-const aiLoading   = ref(false);
-const aiError     = ref('');
-const aiSuccess   = ref('');
-const aiInputRef  = ref(null);
-const aiListening = ref(false);
+const aiPrompt          = ref('');
+const aiLoading         = ref(false);
+const aiError           = ref('');
+const aiSuccess         = ref('');
+const aiNoClients       = ref(false);
+const aiCustomLineIndex = ref(null); // index of the cart line AI filled with a non-catalog item
+const aiInputRef        = ref(null);
+const aiListening       = ref(false);
 let   speechRecognition = null;
-
-const VALID_VATS = [0, 4, 10, 21];
-
-function nearestVat(raw) {
-  const n = parseFloat(raw) || 0;
-  return VALID_VATS.reduce((prev, curr) =>
-    Math.abs(curr - n) < Math.abs(prev - n) ? curr : prev
-  );
-}
 
 function findCustomerByName(name) {
   if (!name) return null;
@@ -521,12 +526,31 @@ function findCustomerByName(name) {
   );
 }
 
+function findItemByDescription(description) {
+  if (!description) return null;
+  const lower = description.toLowerCase().trim();
+  return (
+    items.value.find(i => i.name.toLowerCase() === lower) ||
+    items.value.find(i => i.name.toLowerCase().includes(lower)) ||
+    items.value.find(i => lower.includes(i.name.toLowerCase()))
+  );
+}
+
 async function generateInvoice() {
   const text = aiPrompt.value.trim();
   if (!text || aiLoading.value) return;
 
-  aiError.value   = '';
-  aiSuccess.value = '';
+  aiError.value           = '';
+  aiSuccess.value         = '';
+  aiNoClients.value       = false;
+  aiCustomLineIndex.value = null;
+
+  // Nothing to attach the invoice to - stop before calling the AI at all.
+  if (customers.value.length === 0) {
+    aiNoClients.value = true;
+    return;
+  }
+
   aiLoading.value = true;
 
   try {
@@ -539,36 +563,41 @@ async function generateInvoice() {
 
     const parsed = data.data;
 
-    // Populate client - fuzzy match against loaded customers
+    // Populate client - fuzzy match against loaded customers.
+    // Never auto-create a client: if there's no match, tell the user instead.
     if (parsed.client) {
       const match = findCustomerByName(parsed.client);
       if (match) {
         state.customer_id = match.uuid;
         state.address     = match.address_billing || '';
+      } else {
+        aiError.value = t('invoices.form.aiClientNotFound', { name: parsed.client });
       }
     }
 
-    // Populate first line item
+    // Populate first line item. If the description doesn't match anything
+    // in the catalog, keep it as a free-text line but flag it as custom.
     if (parsed.description) {
       state.carts[0].description = parsed.description;
+      const productMatch = findItemByDescription(parsed.description);
+      if (productMatch) {
+        state.carts[0].item_id = productMatch.id;
+      } else {
+        state.carts[0].item_id  = '';
+        aiCustomLineIndex.value = 0;
+      }
     }
-    if (parsed.amount) {
-      state.carts[0].price = parseFloat(parsed.amount) || 0;
-      state.carts[0].qty   = 1;
+    if (parsed.unit_price) {
+      state.carts[0].price = parseFloat(parsed.unit_price) || 0;
     }
-    if (parsed.vat !== undefined) {
-      state.carts[0].vta = nearestVat(parsed.vat);
-    }
+    state.carts[0].qty = parsed.quantity ? (parseFloat(parsed.quantity) || 1) : 1;
 
-    // Populate date
-    if (parsed.date) {
-      state.date = parsed.date;
+    if (!aiError.value) {
+      const filled = [parsed.client, parsed.description, parsed.unit_price].filter(Boolean).length;
+      aiSuccess.value = filled > 0
+        ? t('invoices.form.aiSuccessPartial')
+        : t('invoices.form.aiSuccessEmpty');
     }
-
-    const filled = [parsed.client, parsed.description, parsed.amount].filter(Boolean).length;
-    aiSuccess.value = filled > 0
-      ? t('invoices.form.aiSuccessPartial')
-      : t('invoices.form.aiSuccessEmpty');
 
     aiPrompt.value = '';
   } catch (err) {
@@ -1244,6 +1273,27 @@ const handleSave = async () => {
   margin: 7px 0 0 4px;
   font-size: 0.78rem;
   color: #ef4444;
+}
+
+.ai-bar-link {
+  color: #E91E63;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+/* ── AI custom-item badge (line item not matched to catalog) ── */
+.inv-ai-custom-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #E91E63;
+  background: #fdf2f8;
+  border-radius: 6px;
+  padding: 2px 7px;
 }
 
 .ai-bar-success {

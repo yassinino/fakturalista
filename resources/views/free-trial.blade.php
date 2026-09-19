@@ -149,6 +149,13 @@
                                        required>
                             </div>
 
+                            @include('partials.captcha', [
+                                'captcha' => $captcha,
+                                'captchaFieldClass' => 'ft-field',
+                                'captchaLabelClass' => 'ft-label',
+                                'captchaInputClass' => 'ft-input',
+                            ])
+
                             <button type="submit" class="ft-submit-btn submit-btn">
                                 <span class="btn-text">{{ __('site.freeTrial.submit') }} &rarr;</span>
                                 <i class="fas fa-spinner fa-spin"></i>
