@@ -3,11 +3,14 @@
 return [
 
     'nav' => [
-        'pricing'  => 'Tarifs',
-        'about'    => 'À propos',
-        'blog'     => 'Blog',
-        'contact'  => 'Contact',
-        'cta'      => 'Essai gratuit',
+        'pricing'       => 'Tarifs',
+        'about'         => 'À propos',
+        'blog'          => 'Blog',
+        'contact'       => 'Contact',
+        'features'      => 'Fonctionnalités',
+        'how_it_works'  => 'Comment ça marche',
+        'resources'     => 'Ressources',
+        'cta'           => 'Commencer gratuitement',
     ],
 
     'footer' => [
@@ -33,10 +36,11 @@ return [
         'resources_help'       => 'Centre d\'aide',
         'resources_changelog'  => 'Nouveautés',
         'resources_api'        => 'API',
-        'cta_badge'            => 'Plébiscité par les indépendants & entreprises',
-        'cta_title'            => 'Prêt à simplifier votre facturation ?',
-        'cta_sub'              => 'Créez des factures et devis professionnels en quelques secondes. Sans carte de crédit.',
-        'cta_btn'              => 'Commencer l\'essai gratuit',
+        'cta_badge'            => 'Commencez aujourd\'hui',
+        'cta_title'            => 'Passez moins de temps à facturer. Plus de temps à développer votre activité.',
+        'cta_sub'              => 'Créez votre compte gratuit et commencez à facturer en quelques minutes.',
+        'cta_btn'              => 'Commencer gratuitement',
+        'cta_note'             => 'Sans carte de crédit',
     ],
 
     'lang' => [
@@ -47,27 +51,120 @@ return [
     ],
 
     'home' => [
-        'page_title'     => 'Plateforme de facturation et de gestion',
-        'banner_pre'     => 'Créez une facture en 15',
-        'banner_accent1' => 'secondes',
-        'banner_mid'     => 'et encaissez',
-        'banner_accent2' => 'plus vite.',
-        'banner_desc'    => 'La façon la plus simple et conviviale de gérer et facturer votre activité !',
-        'feat_title'     => 'Le logiciel de facturation le plus simple que vous ayez jamais utilisé.',
-        'feat_1'         => 'Factures professionnelles en quelques secondes',
-        'feat_2'         => 'Gestion intelligente des clients',
-        'feat_3'         => 'Contrôlez vos dépenses',
-        'gen_title'      => 'Générateur de factures en ligne',
-        'gen_desc'       => 'Gérez votre facturation à tout moment et en tout lieu avec notre générateur de factures sécurisé et toujours connecté !',
-        'gen_cta'        => 'Utiliser le générateur de factures maintenant',
-        'rep_title'      => 'Générez des rapports complets en un seul clic',
-        'rep_desc'       => 'Simplifiez votre travail et obtenez des rapports clairs, visuels et en temps réel. Analysez vos ventes, contrôlez vos revenus et prenez des décisions intelligentes pour développer votre activité.',
-        'rep_li_1'       => 'Accès rapide',
-        'rep_li_2'       => 'Gestion simplifiée',
-        'rep_li_3'       => 'Assistance 24/7',
-        'cta_title'      => 'Commencez maintenant, c\'est gratuit',
-        'cta_sub'        => 'Envoyez votre première facture aujourd\'hui, totalement gratuit.',
-        'cta_btn'        => 'Commencer',
+        'meta_title'       => 'Logiciel de facturation pour indépendants et petites entreprises',
+        'meta_description' => 'Créez des factures et devis professionnels, gérez vos clients et suivez vos paiements depuis un seul endroit. Commencez gratuitement, sans carte de crédit.',
+
+        // Hero
+        'hero_badge'        => 'Facturation simple pour indépendants et petites entreprises',
+        'hero_title_l1'     => 'Facturez facilement.',
+        'hero_title_l2'     => 'Gérez mieux.',
+        'hero_title_l3'     => 'Grandissez sans complications.',
+        'hero_sub'          => 'Factures, devis, clients et paiements au même endroit. Tout ce qu\'il vous faut pour gérer votre activité sans perdre des heures en administration.',
+        'hero_cta_secondary'=> 'Voir comment ça marche',
+        'hero_microcopy'    => 'Sans carte de crédit · Configuration en quelques minutes',
+        'hero_image_alt'    => 'Écran de création de facture dans Fakturalista',
+        'hero_float_paid'   => 'Facture payée',
+        'hero_float_amount' => '1 250,00 €',
+
+        // Problème → solution
+        'solution_kicker'  => 'Tout ce qu\'il vous faut pour facturer sans vous compliquer la vie',
+        'solution_title_l1'=> 'Moins de temps sur l\'administratif.',
+        'solution_title_l2'=> 'Plus de temps pour votre activité.',
+        'solution_text'    => 'Créer des factures, suivre les paiements, gérer vos clients et organiser l\'administratif de votre activité ne devrait pas vous prendre des heures chaque semaine.',
+        'benefit_1_title'  => 'Facturez en quelques secondes',
+        'benefit_1_text'   => 'Créez des factures professionnelles avec vos clients et produits enregistrés, sans modèles compliqués.',
+        'benefit_2_title'  => 'Clients organisés',
+        'benefit_2_text'   => 'Toutes les informations de vos clients, devis et factures au même endroit.',
+        'benefit_3_title'  => 'Votre activité sous contrôle',
+        'benefit_3_text'   => 'Consultez en un coup d\'œil les factures en attente, payées ou en retard.',
+
+        // Showcase - Factures
+        'show1_title'    => 'Des factures professionnelles en quelques secondes',
+        'show1_text'     => 'Sélectionnez le client, ajoutez des lignes de produit ou service et appliquez la TVA correspondante. Fakturalista calcule les totaux automatiquement et prépare votre facture à l\'envoi.',
+        'show1_bullet_1' => 'Clients et produits enregistrés',
+        'show1_bullet_2' => 'Calcul automatique de la TVA et des totaux',
+        'show1_bullet_3' => 'Export PDF',
+        'show1_image_alt'=> 'Formulaire de création d\'une nouvelle facture dans Fakturalista',
+
+        // Showcase - Devis
+        'show2_title'    => 'Du devis à la facture en un clic',
+        'show2_text'     => 'Créez des devis professionnels pour vos clients et, dès qu\'ils les acceptent, transformez-les en facture sans rien ressaisir.',
+        'show2_bullet_1' => 'Même design que vos factures',
+        'show2_bullet_2' => 'Conversion en facture en un clic',
+        'show2_bullet_3' => 'Suivi du statut de chaque devis',
+        'show2_image_alt'=> 'Un devis en cours de conversion en facture',
+
+        // Showcase - Clients / paiements / services
+        'show3_title'    => 'Clients, paiements et services. Tout organisé.',
+        'show3_text'     => 'Enregistrez vos clients et votre catalogue de produits ou services. Consultez l\'historique de chaque client et le statut de chaque paiement sans chercher partout.',
+        'show3_bullet_1' => 'Fiche client avec historique complet',
+        'show3_bullet_2' => 'Catalogue de produits et services',
+        'show3_bullet_3' => 'Paiements en ligne et suivi des encaissements',
+        'show3_image_alt'=> 'Panneau clients et catalogue de services Fakturalista',
+
+        // Showcase - Rapports
+        'show4_title'    => 'Comprenez votre activité en un coup d\'œil',
+        'show4_text'     => 'Consultez vos revenus, les factures en attente et encaissées, et l\'évolution de votre activité depuis un tableau de bord clair, sans tableur.',
+        'show4_bullet_1' => 'Revenus et encaissements en temps réel',
+        'show4_bullet_2' => 'Factures en attente, payées et en retard',
+        'show4_bullet_3' => 'Tableau de bord visuel, sans configuration',
+        'show4_image_alt'=> 'Panneau de rapports et statistiques Fakturalista',
+
+        // Comment ça marche
+        'how_title'       => 'Commencez en quelques minutes',
+        'how_step1_title' => 'Créez votre compte',
+        'how_step1_text'  => 'Inscrivez-vous gratuitement en moins de deux minutes, sans carte de crédit.',
+        'how_step2_title' => 'Ajoutez vos clients et services',
+        'how_step2_text'  => 'Créez vos clients et votre catalogue de produits ou services.',
+        'how_step3_title' => 'Créez et envoyez votre première facture',
+        'how_step3_text'  => 'Générez votre première facture professionnelle et envoyez-la directement depuis Fakturalista.',
+
+        // Fonctionnalités (grille)
+        'features_title'          => 'Tout ce dont votre activité a besoin',
+        'feature_invoices_title'  => 'Factures',
+        'feature_invoices_text'   => 'Créez et envoyez des factures professionnelles en quelques secondes.',
+        'feature_quotes_title'    => 'Devis',
+        'feature_quotes_text'     => 'Transformez vos devis en factures en un clic.',
+        'feature_clients_title'   => 'Clients',
+        'feature_clients_text'    => 'Toutes les informations de vos clients au même endroit.',
+        'feature_payments_title'  => 'Paiements',
+        'feature_payments_text'   => 'Acceptez les paiements en ligne et suivez vos encaissements.',
+        'feature_services_title'  => 'Services',
+        'feature_services_text'   => 'Gardez à jour votre catalogue de produits et services.',
+        'feature_reports_title'   => 'Rapports',
+        'feature_reports_text'    => 'Visualisez l\'état de votre activité en un coup d\'œil.',
+        'feature_templates_title' => 'Modèles',
+        'feature_templates_text'  => 'Personnalisez le design de vos factures et devis.',
+        'feature_multilang_title' => 'Multilingue',
+        'feature_multilang_text'  => 'Disponible en espagnol, français et anglais.',
+
+        // Productivité / valeur
+        'value_title'  => 'Votre activité, plus simple.',
+        'value_text'   => 'Centralisez votre facturation et arrêtez de perdre du temps entre tableurs, documents et outils différents.',
+        'value_chip_1' => 'Client ajouté',
+        'value_chip_2' => 'Facture envoyée',
+        'value_chip_3' => 'Devis accepté',
+
+        // Tarifs (aperçu)
+        'pricing_title'       => 'Un plan pour chaque étape de votre activité',
+        'pricing_text'        => 'Commencez gratuitement et évoluez quand vous en avez besoin. Sans coûts cachés.',
+        'pricing_trial_note'  => 'Essai gratuit de 14 jours',
+        'pricing_cta_secondary' => 'Voir les tarifs',
+
+        // FAQ
+        'faq_title' => 'Questions fréquentes',
+        'faq_q1'    => 'Puis-je essayer Fakturalista gratuitement ?',
+        'faq_a1'    => 'Oui. Vous pouvez essayer Fakturalista gratuitement pendant 14 jours, sans carte de crédit.',
+        'faq_q2'    => 'Dois-je installer quelque chose ?',
+        'faq_a2'    => 'Non. Fakturalista fonctionne depuis votre navigateur, rien à installer. Il vous faut simplement une connexion internet.',
+        'faq_q3'    => 'Puis-je créer des devis ?',
+        'faq_a3'    => 'Oui. Vous pouvez créer des devis professionnels et les transformer en facture en un clic dès que votre client les accepte.',
+        'faq_q4'    => 'Puis-je gérer mes clients ?',
+        'faq_a4'    => 'Oui. Fakturalista inclut une gestion des clients avec l\'historique des factures et devis de chacun.',
+        'faq_q5'    => 'Mes données sont-elles sécurisées ?',
+        'faq_a5'    => 'Oui. Chaque activité dispose de sa propre base de données indépendante, et seuls vous et les utilisateurs que vous invitez pouvez accéder à votre compte.',
+        'faq_q6'    => 'Puis-je annuler quand je veux ?',
+        'faq_a6'    => 'Oui. Vous pouvez annuler votre abonnement à tout moment depuis votre espace, sans engagement.',
     ],
 
     'freeTrial' => [

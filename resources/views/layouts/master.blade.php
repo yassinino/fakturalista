@@ -197,6 +197,11 @@
         color: #fff !important;
     }
     .fk-prefooter-btn svg { flex-shrink: 0; }
+    .fk-prefooter-note {
+        margin: 16px 0 0;
+        font-size: 13px;
+        color: #94a3b8;
+    }
 
     /* ── Footer shell ────────────────────────────────────────────────── */
     #footer.fk-footer {
@@ -450,10 +455,10 @@
 
                         <div class="menu-wrapper" data-top="992">
                             <ul class="site-main-menu">
+                                <li><a href="{{ url('/') }}#funciones">{{ __('site.nav.features') }}</a></li>
                                 <li><a href="{{ url('/pricing') }}">{{ __('site.nav.pricing') }}</a></li>
-                                <li><a href="{{ url('/about') }}">{{ __('site.nav.about') }}</a></li>
-                                <li><a href="{{ url('/blog') }}">{{ __('site.nav.blog') }}</a></li>
-                                <li><a href="{{ url('/contact') }}">{{ __('site.nav.contact') }}</a></li>
+                                <li><a href="{{ url('/') }}#como-funciona">{{ __('site.nav.how_it_works') }}</a></li>
+                                <li><a href="{{ url('/help-center') }}">{{ __('site.nav.resources') }}</a></li>
                             </ul>
 
                             <div class="nav-right">
@@ -485,6 +490,7 @@
                         {{ __('site.footer.cta_btn') }}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
+                    <p class="fk-prefooter-note">{{ __('site.footer.cta_note') }}</p>
                 </div>
             </div>
         </section>

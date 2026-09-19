@@ -3,11 +3,14 @@
 return [
 
     'nav' => [
-        'pricing'  => 'Pricing',
-        'about'    => 'About',
-        'blog'     => 'Blog',
-        'contact'  => 'Contact',
-        'cta'      => 'Free trial',
+        'pricing'       => 'Pricing',
+        'about'         => 'About',
+        'blog'          => 'Blog',
+        'contact'       => 'Contact',
+        'features'      => 'Features',
+        'how_it_works'  => 'How it works',
+        'resources'     => 'Resources',
+        'cta'           => 'Start for free',
     ],
 
     'footer' => [
@@ -33,10 +36,11 @@ return [
         'resources_help'       => 'Help Center',
         'resources_changelog'  => 'Changelog',
         'resources_api'        => 'API',
-        'cta_badge'            => 'Trusted by freelancers & businesses',
-        'cta_title'            => 'Ready to simplify your invoicing?',
-        'cta_sub'              => 'Create professional invoices and quotes in seconds. No credit card required.',
-        'cta_btn'              => 'Start free trial',
+        'cta_badge'            => 'Start today',
+        'cta_title'            => 'Spend less time invoicing. More time growing your business.',
+        'cta_sub'              => 'Create your free account and start invoicing in minutes.',
+        'cta_btn'              => 'Start for free',
+        'cta_note'             => 'No credit card required',
     ],
 
     'lang' => [
@@ -47,27 +51,120 @@ return [
     ],
 
     'home' => [
-        'page_title'     => 'Invoicing & management platform',
-        'banner_pre'     => 'Create an invoice in 15',
-        'banner_accent1' => 'seconds',
-        'banner_mid'     => 'and get paid',
-        'banner_accent2' => 'faster.',
-        'banner_desc'    => 'The easiest and friendliest way to manage and invoice your business!',
-        'feat_title'     => 'The easiest invoicing software you\'ll ever use.',
-        'feat_1'         => 'Professional invoices in seconds',
-        'feat_2'         => 'Smart client management',
-        'feat_3'         => 'Track your expenses',
-        'gen_title'      => 'Online invoice generator',
-        'gen_desc'       => 'Manage your invoicing anytime, anywhere with our secure, always-connected invoice generator!',
-        'gen_cta'        => 'Use the invoice generator now',
-        'rep_title'      => 'Generate complete reports with one click',
-        'rep_desc'       => 'Simplify your work and get clear, visual, real-time reports. Analyse your sales, track your revenue and make smart decisions to grow your business.',
-        'rep_li_1'       => 'Quick access',
-        'rep_li_2'       => 'Easy management',
-        'rep_li_3'       => '24/7 support',
-        'cta_title'      => 'Start now, it\'s free',
-        'cta_sub'        => 'Send your first invoice today, completely free.',
-        'cta_btn'        => 'Get started',
+        'meta_title'       => 'Invoicing software for freelancers and small businesses',
+        'meta_description' => 'Create professional invoices and quotes, manage your clients and track payments from one place. Start for free, no credit card required.',
+
+        // Hero
+        'hero_badge'        => 'Simple invoicing for freelancers and small businesses',
+        'hero_title_l1'     => 'Invoice easily.',
+        'hero_title_l2'     => 'Manage better.',
+        'hero_title_l3'     => 'Grow without complications.',
+        'hero_sub'          => 'Invoices, quotes, clients and payments in one place. Everything you need to run your business without losing hours on admin.',
+        'hero_cta_secondary'=> 'See how it works',
+        'hero_microcopy'    => 'No credit card required · Set up in minutes',
+        'hero_image_alt'    => 'Invoice creation screen in Fakturalista',
+        'hero_float_paid'   => 'Invoice paid',
+        'hero_float_amount' => '€1,250.00',
+
+        // Problem → solution
+        'solution_kicker'  => 'Everything you need to invoice without the hassle',
+        'solution_title_l1'=> 'Less time on admin.',
+        'solution_title_l2'=> 'More time for your business.',
+        'solution_text'    => 'Creating invoices, tracking payments, managing clients and organizing your business admin shouldn\'t take you hours every week.',
+        'benefit_1_title'  => 'Invoice in seconds',
+        'benefit_1_text'   => 'Create professional invoices with your saved clients and products, no complicated templates.',
+        'benefit_2_title'  => 'Organized clients',
+        'benefit_2_text'   => 'All your clients\' information, quotes and invoices in one place.',
+        'benefit_3_title'  => 'Your business under control',
+        'benefit_3_text'   => 'See which invoices are pending, paid or overdue at a glance.',
+
+        // Showcase - Invoices
+        'show1_title'    => 'Professional invoices in seconds',
+        'show1_text'     => 'Pick the client, add product or service lines and apply the right VAT rate. Fakturalista calculates the totals automatically and leaves your invoice ready to send.',
+        'show1_bullet_1' => 'Saved clients and products',
+        'show1_bullet_2' => 'Automatic VAT and totals',
+        'show1_bullet_3' => 'PDF export',
+        'show1_image_alt'=> 'New invoice creation form in Fakturalista',
+
+        // Showcase - Quotes
+        'show2_title'    => 'From quote to invoice in one click',
+        'show2_text'     => 'Create professional quotes for your clients and, as soon as they accept, turn them into an invoice without typing anything again.',
+        'show2_bullet_1' => 'Same design as your invoices',
+        'show2_bullet_2' => 'One-click conversion to invoice',
+        'show2_bullet_3' => 'Track the status of every quote',
+        'show2_image_alt'=> 'A quote being converted into an invoice',
+
+        // Showcase - Clients / payments / services
+        'show3_title'    => 'Clients, payments and services. All organized.',
+        'show3_text'     => 'Keep your clients and your catalog of products or services in one place. Check each client\'s history and every payment status without hunting around.',
+        'show3_bullet_1' => 'Client profile with full history',
+        'show3_bullet_2' => 'Product and service catalog',
+        'show3_bullet_3' => 'Online payments and payment tracking',
+        'show3_image_alt'=> 'Fakturalista clients and service catalog panel',
+
+        // Showcase - Reports
+        'show4_title'    => 'Understand your business at a glance',
+        'show4_text'     => 'Check your revenue, pending and collected invoices, and your business growth from a clear panel, no spreadsheets required.',
+        'show4_bullet_1' => 'Revenue and payments in real time',
+        'show4_bullet_2' => 'Pending, paid and overdue invoices',
+        'show4_bullet_3' => 'Visual dashboard, no setup',
+        'show4_image_alt'=> 'Fakturalista reports and statistics panel',
+
+        // How it works
+        'how_title'       => 'Start in minutes',
+        'how_step1_title' => 'Create your account',
+        'how_step1_text'  => 'Sign up for free in under two minutes, no credit card required.',
+        'how_step2_title' => 'Add your clients and services',
+        'how_step2_text'  => 'Create your clients and your product or service catalog.',
+        'how_step3_title' => 'Create and send your first invoice',
+        'how_step3_text'  => 'Generate your first professional invoice and send it straight from Fakturalista.',
+
+        // Features (grid)
+        'features_title'          => 'Everything your business needs',
+        'feature_invoices_title'  => 'Invoices',
+        'feature_invoices_text'   => 'Create and send professional invoices in seconds.',
+        'feature_quotes_title'    => 'Quotes',
+        'feature_quotes_text'     => 'Turn quotes into invoices with one click.',
+        'feature_clients_title'   => 'Clients',
+        'feature_clients_text'    => 'All your client information in one place.',
+        'feature_payments_title'  => 'Payments',
+        'feature_payments_text'   => 'Accept online payments and track your collections.',
+        'feature_services_title'  => 'Services',
+        'feature_services_text'   => 'Keep your product and service catalog up to date.',
+        'feature_reports_title'   => 'Reports',
+        'feature_reports_text'    => 'See the state of your business at a glance.',
+        'feature_templates_title' => 'Templates',
+        'feature_templates_text'  => 'Customize the design of your invoices and quotes.',
+        'feature_multilang_title' => 'Multilingual',
+        'feature_multilang_text'  => 'Available in Spanish, French and English.',
+
+        // Productivity / value
+        'value_title'  => 'Your business, simplified.',
+        'value_text'   => 'Centralize your invoicing and stop wasting time between spreadsheets, documents and different tools.',
+        'value_chip_1' => 'Client added',
+        'value_chip_2' => 'Invoice sent',
+        'value_chip_3' => 'Quote accepted',
+
+        // Pricing (preview)
+        'pricing_title'       => 'A plan for every stage of your business',
+        'pricing_text'        => 'Start for free and upgrade whenever you need to. No hidden costs.',
+        'pricing_trial_note'  => '14-day free trial',
+        'pricing_cta_secondary' => 'View plans',
+
+        // FAQ
+        'faq_title' => 'Frequently asked questions',
+        'faq_q1'    => 'Can I try Fakturalista for free?',
+        'faq_a1'    => 'Yes. You can try Fakturalista free for 14 days, no credit card required.',
+        'faq_q2'    => 'Do I need to install anything?',
+        'faq_a2'    => 'No. Fakturalista runs in your browser, nothing to install. You just need an internet connection.',
+        'faq_q3'    => 'Can I create quotes?',
+        'faq_a3'    => 'Yes. You can create professional quotes and turn them into an invoice with one click as soon as your client accepts.',
+        'faq_q4'    => 'Can I manage my clients?',
+        'faq_a4'    => 'Yes. Fakturalista includes client management with each client\'s invoice and quote history.',
+        'faq_q5'    => 'Is my data secure?',
+        'faq_a5'    => 'Yes. Each business has its own independent database, and only you and the users you invite can access your account.',
+        'faq_q6'    => 'Can I cancel anytime?',
+        'faq_a6'    => 'Yes. You can cancel your subscription anytime from your account settings, no commitment.',
     ],
 
     'freeTrial' => [

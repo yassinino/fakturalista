@@ -16,7 +16,15 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('index');
+        $locale = app()->getLocale();
+
+        $plans = Plan::on('mysql')
+            ->where('active', true)
+            ->with(['marketingItems' => fn ($q) => $q->orderBy('sort_order')])
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('index', compact('plans', 'locale'));
     }
 
     public function contact()

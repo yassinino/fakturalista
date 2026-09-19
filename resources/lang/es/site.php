@@ -3,11 +3,14 @@
 return [
 
     'nav' => [
-        'pricing'  => 'Precios',
-        'about'    => 'Nosotros',
-        'blog'     => 'Blog',
-        'contact'  => 'Contacto',
-        'cta'      => 'Prueba gratis',
+        'pricing'       => 'Precios',
+        'about'         => 'Nosotros',
+        'blog'          => 'Blog',
+        'contact'       => 'Contacto',
+        'features'      => 'Funciones',
+        'how_it_works'  => 'Cómo funciona',
+        'resources'     => 'Recursos',
+        'cta'           => 'Empieza gratis',
     ],
 
     'footer' => [
@@ -33,10 +36,11 @@ return [
         'resources_help'       => 'Centro de ayuda',
         'resources_changelog'  => 'Novedades',
         'resources_api'        => 'API',
-        'cta_badge'            => 'De confianza para autónomos y empresas',
-        'cta_title'            => '¿Listo para simplificar tu facturación?',
-        'cta_sub'              => 'Crea facturas y presupuestos profesionales en segundos. Sin tarjeta de crédito.',
-        'cta_btn'              => 'Empezar prueba gratis',
+        'cta_badge'            => 'Empieza hoy',
+        'cta_title'            => 'Dedica menos tiempo a facturar. Más tiempo a hacer crecer tu negocio.',
+        'cta_sub'              => 'Crea tu cuenta gratis y empieza a facturar en minutos.',
+        'cta_btn'              => 'Empieza gratis',
+        'cta_note'             => 'Sin tarjeta de crédito',
     ],
 
     'lang' => [
@@ -47,27 +51,120 @@ return [
     ],
 
     'home' => [
-        'page_title'     => 'Plataforma de facturación y gestión',
-        'banner_pre'     => 'Crea una factura en 15',
-        'banner_accent1' => 'segundos',
-        'banner_mid'     => 'y cobra más',
-        'banner_accent2' => 'rápido.',
-        'banner_desc'    => 'La forma más fácil y amigable de gestionar y facturar tu negocio!',
-        'feat_title'     => 'El software de facturación más fácil que jamás hayas usado.',
-        'feat_1'         => 'Facturas profesionales en segundos',
-        'feat_2'         => 'Gestión inteligente de clientes',
-        'feat_3'         => 'Controla tus gastos',
-        'gen_title'      => 'Generador de facturas en línea',
-        'gen_desc'       => 'Gestiona tu facturación en cualquier momento y lugar con nuestro generador de facturas seguro y siempre conectado!',
-        'gen_cta'        => 'Usa el generador de facturas ahora',
-        'rep_title'      => 'Genera informes completos con un solo clic',
-        'rep_desc'       => 'Simplifica tu trabajo y obtén reportes claros, visuales y en tiempo real. Analiza tus ventas, controla tus ingresos y toma decisiones inteligentes para hacer crecer tu negocio.',
-        'rep_li_1'       => 'Acceso rápido',
-        'rep_li_2'       => 'Gestión sencilla',
-        'rep_li_3'       => 'Soporte 24/7',
-        'cta_title'      => 'Empieza ahora, es gratis',
-        'cta_sub'        => 'Envía tu primera factura hoy mismo, totalmente gratis.',
-        'cta_btn'        => 'Empezar',
+        'meta_title'       => 'Software de facturación para autónomos y pymes',
+        'meta_description' => 'Crea facturas y presupuestos profesionales, gestiona tus clientes y controla los pagos de tu negocio desde un solo lugar. Empieza gratis, sin tarjeta de crédito.',
+
+        // Hero
+        'hero_badge'        => 'Facturación simple para autónomos y pequeños negocios',
+        'hero_title_l1'     => 'Factura fácil.',
+        'hero_title_l2'     => 'Gestiona mejor.',
+        'hero_title_l3'     => 'Crece sin complicaciones.',
+        'hero_sub'          => 'Facturas, presupuestos, clientes y pagos en un solo lugar. Todo lo que necesitas para gestionar tu negocio sin perder horas en administración.',
+        'hero_cta_secondary'=> 'Ver cómo funciona',
+        'hero_microcopy'    => 'Sin tarjeta de crédito · Configuración en minutos',
+        'hero_image_alt'    => 'Pantalla de creación de factura en Fakturalista',
+        'hero_float_paid'   => 'Factura pagada',
+        'hero_float_amount' => '1.250,00 €',
+
+        // Problema → solución
+        'solution_kicker'  => 'Todo lo que necesitas para facturar sin complicarte',
+        'solution_title_l1'=> 'Menos tiempo administrando.',
+        'solution_title_l2'=> 'Más tiempo para tu negocio.',
+        'solution_text'    => 'Crear facturas, hacer seguimiento de cobros, gestionar clientes y organizar la administración de tu negocio no debería llevarte horas cada semana.',
+        'benefit_1_title'  => 'Factura en segundos',
+        'benefit_1_text'   => 'Crea facturas profesionales con tus clientes y productos guardados, sin plantillas complicadas.',
+        'benefit_2_title'  => 'Clientes organizados',
+        'benefit_2_text'   => 'Toda la información de tus clientes, presupuestos y facturas en un mismo lugar.',
+        'benefit_3_title'  => 'Tu negocio bajo control',
+        'benefit_3_text'   => 'Consulta qué facturas están pendientes, pagadas o vencidas de un solo vistazo.',
+
+        // Showcase - Facturas
+        'show1_title'    => 'Facturas profesionales en segundos',
+        'show1_text'     => 'Selecciona el cliente, añade líneas de producto o servicio y aplica el IVA correspondiente. Fakturalista calcula los totales automáticamente y deja tu factura lista para enviar.',
+        'show1_bullet_1' => 'Clientes y productos guardados',
+        'show1_bullet_2' => 'Cálculo automático de IVA y totales',
+        'show1_bullet_3' => 'Exportación a PDF',
+        'show1_image_alt'=> 'Formulario de creación de nueva factura en Fakturalista',
+
+        // Showcase - Presupuestos
+        'show2_title'    => 'De presupuesto a factura en un clic',
+        'show2_text'     => 'Crea presupuestos profesionales para tus clientes y, en cuanto los acepten, conviértelos en factura sin volver a escribir nada.',
+        'show2_bullet_1' => 'Mismo diseño que tus facturas',
+        'show2_bullet_2' => 'Conversión a factura en un clic',
+        'show2_bullet_3' => 'Seguimiento del estado de cada presupuesto',
+        'show2_image_alt'=> 'Vista de un presupuesto convirtiéndose en factura',
+
+        // Showcase - Clientes / pagos / servicios
+        'show3_title'    => 'Clientes, pagos y servicios. Todo organizado.',
+        'show3_text'     => 'Guarda tus clientes y tu catálogo de productos o servicios. Consulta el historial de cada cliente y el estado de cada cobro sin buscar en varios sitios.',
+        'show3_bullet_1' => 'Ficha de cliente con historial completo',
+        'show3_bullet_2' => 'Catálogo de productos y servicios',
+        'show3_bullet_3' => 'Pagos online y seguimiento de cobros',
+        'show3_image_alt'=> 'Panel de clientes y catálogo de servicios de Fakturalista',
+
+        // Showcase - Informes
+        'show4_title'    => 'Entiende tu negocio de un vistazo',
+        'show4_text'     => 'Consulta tus ingresos, las facturas pendientes y cobradas, y la evolución de tu negocio desde un panel claro, sin hojas de cálculo.',
+        'show4_bullet_1' => 'Ingresos y cobros en tiempo real',
+        'show4_bullet_2' => 'Facturas pendientes, pagadas y vencidas',
+        'show4_bullet_3' => 'Panel visual, sin configuración',
+        'show4_image_alt'=> 'Panel de informes y estadísticas de Fakturalista',
+
+        // Cómo funciona
+        'how_title'       => 'Empieza en minutos',
+        'how_step1_title' => 'Crea tu cuenta',
+        'how_step1_text'  => 'Regístrate gratis en menos de dos minutos, sin tarjeta de crédito.',
+        'how_step2_title' => 'Añade tus clientes y servicios',
+        'how_step2_text'  => 'Crea tus clientes y tu catálogo de productos o servicios.',
+        'how_step3_title' => 'Crea y envía tu primera factura',
+        'how_step3_text'  => 'Genera tu primera factura profesional y envíala directamente desde Fakturalista.',
+
+        // Funciones (grid)
+        'features_title'          => 'Todo lo que necesita tu negocio',
+        'feature_invoices_title'  => 'Facturas',
+        'feature_invoices_text'   => 'Crea y envía facturas profesionales en segundos.',
+        'feature_quotes_title'    => 'Presupuestos',
+        'feature_quotes_text'     => 'Convierte presupuestos en facturas con un clic.',
+        'feature_clients_title'   => 'Clientes',
+        'feature_clients_text'    => 'Toda la información de tus clientes en un mismo lugar.',
+        'feature_payments_title'  => 'Pagos',
+        'feature_payments_text'   => 'Acepta pagos online y haz seguimiento de tus cobros.',
+        'feature_services_title'  => 'Servicios',
+        'feature_services_text'   => 'Guarda tu catálogo de productos y servicios.',
+        'feature_reports_title'   => 'Informes',
+        'feature_reports_text'    => 'Visualiza el estado de tu negocio de un vistazo.',
+        'feature_templates_title' => 'Plantillas',
+        'feature_templates_text'  => 'Personaliza el diseño de tus facturas y presupuestos.',
+        'feature_multilang_title' => 'Multiidioma',
+        'feature_multilang_text'  => 'Disponible en español, francés e inglés.',
+
+        // Productividad / valor
+        'value_title'  => 'Tu negocio, más simple.',
+        'value_text'   => 'Centraliza tu facturación y deja de perder tiempo entre hojas de cálculo, documentos y herramientas diferentes.',
+        'value_chip_1' => 'Cliente añadido',
+        'value_chip_2' => 'Factura enviada',
+        'value_chip_3' => 'Presupuesto aceptado',
+
+        // Precios (preview)
+        'pricing_title'       => 'Un plan para cada etapa de tu negocio',
+        'pricing_text'        => 'Empieza gratis y actualiza cuando lo necesites. Sin costes ocultos.',
+        'pricing_trial_note'  => 'Prueba gratuita de 14 días',
+        'pricing_cta_secondary' => 'Ver planes',
+
+        // FAQ
+        'faq_title' => 'Preguntas frecuentes',
+        'faq_q1'    => '¿Puedo probar Fakturalista gratis?',
+        'faq_a1'    => 'Sí. Puedes probar Fakturalista gratis durante 14 días, sin necesidad de tarjeta de crédito.',
+        'faq_q2'    => '¿Necesito instalar algo?',
+        'faq_a2'    => 'No. Fakturalista funciona desde el navegador, sin instalar nada. Solo necesitas conexión a internet.',
+        'faq_q3'    => '¿Puedo crear presupuestos?',
+        'faq_a3'    => 'Sí. Puedes crear presupuestos profesionales y convertirlos en factura con un clic en cuanto tu cliente los acepte.',
+        'faq_q4'    => '¿Puedo gestionar mis clientes?',
+        'faq_a4'    => 'Sí. Fakturalista incluye una gestión de clientes con el historial de facturas y presupuestos de cada uno.',
+        'faq_q5'    => '¿Mis datos están seguros?',
+        'faq_a5'    => 'Sí. Cada negocio tiene su propia base de datos independiente, y solo tú y los usuarios que invites podéis acceder a tu cuenta.',
+        'faq_q6'    => '¿Puedo cancelar cuando quiera?',
+        'faq_a6'    => 'Sí. Puedes cancelar tu suscripción cuando quieras desde el panel, sin permanencia.',
     ],
 
     'freeTrial' => [
