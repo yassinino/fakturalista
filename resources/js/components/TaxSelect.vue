@@ -2,7 +2,7 @@
   <select :value="selectedKey" :aria-label="taxName" :disabled="!presets.length" @change="selectTax">
     <option v-if="line.vta == null" value="" disabled>—</option>
     <option v-else-if="!hasPreset" :value="selectedKey" disabled>
-      {{ taxLabel(line.vta, line.tax_treatment, taxName) }} (saved)
+      {{ taxLabel(line.vta, line.tax_treatment, taxName) }} {{ $t('common.savedValueSuffix') }}
     </option>
     <option v-for="preset in presets" :key="preset.code" :value="presetKey(preset)">
       {{ preset.label }}

@@ -16,7 +16,7 @@
       <span class="sp-loading-dot"></span>
     </div>
 
-    <p v-else-if="!settingsLoaded" role="alert">Unable to load settings. <button type="button" @click="fetchSettings">Retry</button></p>
+    <p v-else-if="!settingsLoaded" role="alert">{{ $t('settings.unableToLoadSettings') }} <button type="button" @click="fetchSettings">{{ $t('common.retry') }}</button></p>
     <form v-else @submit.prevent="saveAll" novalidate>
       <div class="sp-layout">
 
@@ -255,18 +255,18 @@
 
           <!-- ═══ Tax & Legal ════════════════════════════════════ -->
           <section id="taxes" class="sc">
-            <div class="sc-head"><h3 class="sc-title">Taxes</h3></div>
+            <div class="sc-head"><h3 class="sc-title">{{ $t('settings.taxesSection') }}</h3></div>
             <div class="sr">
-              <div class="sr-lbl"><span class="sr-name">Available</span></div>
+              <div class="sr-lbl"><span class="sr-name">{{ $t('settings.availableTaxes') }}</span></div>
               <div class="sr-inp">
-                <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
+                <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">{{ $t('common.retry') }}</button></p>
                 <ul><li v-for="preset in presets" :key="preset.code">{{ preset.label }}</li></ul>
               </div>
             </div>
             <div class="sr">
               <div class="sr-lbl">
-                <label for="default-tax" class="sr-name">Default tax</label>
-                <span class="sr-hint">Applies to new lines and new items.</span>
+                <label for="default-tax" class="sr-name">{{ $t('settings.defaultTax') }}</label>
+                <span class="sr-hint">{{ $t('settings.defaultTaxHint') }}</span>
               </div>
               <div class="sr-inp">
                 <select id="default-tax" class="form-select" :value="form.default_tax_code || defaultCode"
@@ -274,7 +274,7 @@
                   @change="form.default_tax_code = $event.target.value">
                   <option v-for="preset in presets" :key="preset.code" :value="preset.code">{{ preset.label }}</option>
                 </select>
-                <p v-if="form.country_code !== taxCountry" class="sr-hint">Save the country to load its taxes.</p>
+                <p v-if="form.country_code !== taxCountry" class="sr-hint">{{ $t('settings.saveCountryToLoadTaxes') }}</p>
                 <p v-if="errors.default_tax_code" class="text-danger">{{ errors.default_tax_code[0] }}</p>
               </div>
             </div>

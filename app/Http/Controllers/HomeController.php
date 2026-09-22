@@ -78,7 +78,7 @@ class HomeController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'error' => 1,
-                    'message' => 'Por favor revisa los campos e intenta de nuevo.',
+                    'message' => __('site.contact.alert_error'),
                     'errors' => $validator->errors(),
                     'captcha' => MathCaptchaService::generate(),
                 ], 422);
@@ -109,20 +109,20 @@ class HomeController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'error' => 1,
-                    'message' => 'No se pudo enviar el mensaje. Intenta de nuevo.',
+                    'message' => __('site.contact.send_failed'),
                     'captcha' => MathCaptchaService::generate(),
                 ], 500);
             }
 
             return back()->withErrors([
-                'email' => 'No se pudo enviar el mensaje. Intenta de nuevo.',
+                'email' => __('site.contact.send_failed'),
             ])->withInput();
         }
 
         if ($request->ajax()) {
             return response()->json([
                 'error' => 0,
-                'message' => 'Mensaje enviado correctamente.',
+                'message' => __('site.contact.status_success'),
                 'captcha' => MathCaptchaService::generate(),
             ]);
         }
@@ -150,7 +150,7 @@ class HomeController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'error' => 1,
-                    'message' => 'Por favor revisa los campos e intenta de nuevo.',
+                    'message' => __('site.freeTrial.error_msg'),
                     'errors' => $validator->errors(),
                     'captcha' => MathCaptchaService::generate(),
                 ], 422);
@@ -179,25 +179,25 @@ class HomeController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'error' => 1,
-                    'message' => 'No se pudo enviar la solicitud. Intenta de nuevo.',
+                    'message' => __('site.freeTrial.send_failed'),
                     'captcha' => MathCaptchaService::generate(),
                 ], 500);
             }
 
             return back()->withErrors([
-                'email' => 'No se pudo enviar la solicitud. Intenta de nuevo.',
+                'email' => __('site.freeTrial.send_failed'),
             ])->withInput();
         }
 
         if ($request->ajax()) {
             return response()->json([
                 'error' => 0,
-                'message' => 'Solicitud enviada correctamente.',
+                'message' => __('site.freeTrial.status_success'),
                 'captcha' => MathCaptchaService::generate(),
             ]);
         }
 
-        return back()->with('status', 'Solicitud enviada correctamente.');
+        return back()->with('status', __('site.freeTrial.status_success'));
     }
 
     /**
@@ -230,7 +230,7 @@ class HomeController extends Controller
         // rate-limit it the same way a login form would be.
         $key = 'find-workspace:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 10)) {
-            return back()->withErrors(['email' => 'Demasiados intentos. Espera un minuto e inténtalo de nuevo.']);
+            return back()->withErrors(['email' => __('site.loginFinder.too_many_attempts')]);
         }
         RateLimiter::hit($key, 60);
 

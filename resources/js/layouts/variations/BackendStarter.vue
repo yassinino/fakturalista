@@ -30,13 +30,14 @@
 
   </BaseLayout>
   <div v-else class="content py-5" role="status">
-    <p v-if="contextError">{{ contextError }} <button type="button" class="btn btn-primary" @click="loadContext">Retry</button></p>
-    <span v-else class="spinner-border" aria-label="Loading"></span>
+    <p v-if="contextError">{{ contextError }} <button type="button" class="btn btn-primary" @click="loadContext">{{ $t('common.retry') }}</button></p>
+    <span v-else class="spinner-border" :aria-label="$t('common.loading')"></span>
   </div>
 </template>
 
 <script setup>
 import { useTemplateStore } from "@/stores/template";
+import { useI18n } from "vue-i18n";
 
 import BaseLayout from "@/layouts/BaseLayout.vue";
 import BaseNavigation from "@/components/BaseNavigation.vue";
@@ -46,6 +47,7 @@ import { ref, onMounted } from "vue";
 
 // Main store
 const store = useTemplateStore();
+const { t } = useI18n();
 
 import menu from "@/data/menu";
 
@@ -60,7 +62,7 @@ async function loadContext() {
     contextReady.value = true;
   } catch {
     contextReady.value = false;
-    contextError.value = 'Unable to load company settings.';
+    contextError.value = t('common.unableToLoadCompanySettings');
   }
 }
 onMounted(loadContext);

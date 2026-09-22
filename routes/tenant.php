@@ -27,7 +27,7 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
-    Route::prefix('admin/subscription/checkout')->group(function () {
+    Route::prefix('admin/subscription/checkout')->middleware('set.locale')->group(function () {
         Route::get('/success', [HomeController::class, 'success'])->name('admin.subscription.checkout.success');
         Route::get('/cancel', [HomeController::class, 'cancel'])->name('admin.subscription.checkout.cancel');
     });

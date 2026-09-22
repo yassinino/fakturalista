@@ -370,7 +370,7 @@
         <div class="modal-content">
           <BaseBlock :title="$t('items.createFamilyTitle')" transparent class="mb-0">
             <template #options>
-              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" :aria-label="$t('common.close')">
                 <i class="fa fa-fw fa-times"></i>
               </button>
             </template>

@@ -72,9 +72,12 @@ class TenantNotFoundTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('errors.tenant-not-found');
-        $response->assertSee('Este espacio de cliente no existe');
+        // Fakturalista is French-first: with no explicit locale chosen,
+        // this central-domain error page renders in French (see
+        // resources/lang/fr/site.php `tenant_not_found`).
+        $response->assertSee("Cet espace client n'existe pas");
         $response->assertSee($domain);
-        $response->assertSee('Crear cuenta gratis');
+        $response->assertSee('Créer un compte gratuit');
     }
 
     // ── 4. The /tenant-not-found page works without a domain query param ──
@@ -85,7 +88,7 @@ class TenantNotFoundTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('errors.tenant-not-found');
-        $response->assertSee('Este espacio de cliente no existe');
+        $response->assertSee("Cet espace client n'existe pas");
     }
 
     // ── 5. Existing tenant domain works normally ──────────────────────────

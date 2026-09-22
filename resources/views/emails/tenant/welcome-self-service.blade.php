@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Bienvenido a Fakturalista</title>
+    <title>{{ __('emails.welcome_self_service.subject') }}</title>
     <!--[if mso]>
     <noscript>
         <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
@@ -108,23 +108,23 @@
                 <span style="font-size:26px;line-height:56px;display:block;">🎉</span>
             </td></tr>
         </table>
-        <div class="hero-title">¡Bienvenido a Fakturalista,<br>{{ $ownerName }}!</div>
-        <div class="hero-subtitle">Tu cuenta ya está lista para usarse.</div>
+        <div class="hero-title">{{ __('emails.welcome_self_service.hero_title') }}<br>{{ $ownerName }}!</div>
+        <div class="hero-subtitle">{{ __('emails.welcome_self_service.hero_subtitle') }}</div>
     </div>
 
     <div class="body">
 
         <p class="greeting">
-            Hola <strong>{{ $ownerName }}</strong>,<br><br>
-            Tu cuenta de Fakturalista ya está lista. Tu espacio de trabajo para
-            <strong>{{ $tenant->company_name }}</strong> ha sido creado correctamente.
+            {{ __('emails.welcome_self_service.greeting_hello') }} <strong>{{ $ownerName }}</strong>,<br><br>
+            {{ __('emails.welcome_self_service.greeting_body_1') }}
+            <strong>{{ $tenant->company_name }}</strong> {{ __('emails.welcome_self_service.greeting_body_2') }}
         </p>
 
         <div class="info-block">
             <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        Empresa
+                        {{ __('emails.welcome_self_service.label_company') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;">
                         {{ $tenant->company_name }}
@@ -133,7 +133,7 @@
                 <tr><td colspan="2" style="border-top:1px solid #f1f3f5;"></td></tr>
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        URL de acceso
+                        {{ __('emails.welcome_self_service.label_login_url') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;word-break:break-all;">
                         <a href="{{ $loginUrl }}" style="color:#fa7070;text-decoration:none;">{{ $loginUrl }}</a>
@@ -142,7 +142,7 @@
                 <tr><td colspan="2" style="border-top:1px solid #f1f3f5;"></td></tr>
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        Email
+                        {{ __('emails.welcome_self_service.label_email') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;word-break:break-all;">
                         {{ $ownerEmail }}
@@ -152,42 +152,42 @@
         </div>
 
         <div class="trial-note">
-            <strong>🎁 14 días gratis, sin tarjeta de crédito.</strong>
-            Tienes dos semanas para probar Fakturalista sin ningún compromiso.
+            <strong>{{ __('emails.welcome_self_service.trial_note_strong') }}</strong>
+            {{ __('emails.welcome_self_service.trial_note_text') }}
         </div>
 
         <div class="cta-wrapper">
             <a href="{{ $loginUrl }}"
                class="cta-button"
                style="display:inline-block;background:#fa7070;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;letter-spacing:0.02em;padding:14px 36px;border-radius:10px;">
-                Acceder a Fakturalista &rarr;
+                {{ __('emails.welcome_self_service.cta_button') }}
             </a>
         </div>
 
         <hr class="divider">
 
         <p class="help-text">
-            Empieza creando tu primer cliente, servicio, presupuesto o factura.
+            {{ __('emails.welcome_self_service.help_start') }}
         </p>
         <p class="help-text">
-            ¿Tienes alguna pregunta o necesitas ayuda? Escríbenos a
+            {{ __('emails.welcome_self_service.help_question') }}
             <a href="mailto:contact@fakturalista.com">contact@fakturalista.com</a>
-            y te responderemos en menos de 24 horas.
+            {{ __('emails.welcome_self_service.help_response') }}
         </p>
 
     </div>
 
     <div class="footer">
-        <p class="footer-brand"><span>Faktura</span>lista &mdash; Facturación para autónomos y empresas</p>
+        <p class="footer-brand"><span>Faktura</span>lista &mdash; {{ __('emails.welcome_self_service.footer_tagline') }}</p>
         <p class="footer-links">
             <a href="{{ url('/') }}">fakturalista.com</a>
             &nbsp;&middot;&nbsp;
-            <a href="{{ url('/contact') }}">Soporte</a>
+            <a href="{{ url('/contact') }}">{{ __('emails.welcome_self_service.footer_support') }}</a>
             &nbsp;&middot;&nbsp;
-            <a href="{{ url('/pricing') }}">Planes</a>
+            <a href="{{ url('/pricing') }}">{{ __('emails.welcome_self_service.footer_pricing') }}</a>
         </p>
         <p style="font-size:11px;color:#d1d5db;margin-top:12px;">
-            Recibes este email porque se ha creado una cuenta vinculada a {{ $ownerEmail }}.
+            {{ __('emails.welcome_self_service.footer_note', ['email' => $ownerEmail]) }}
         </p>
     </div>
 

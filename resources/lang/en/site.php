@@ -11,6 +11,7 @@ return [
         'how_it_works'  => 'How it works',
         'resources'     => 'Resources',
         'cta'           => 'Start for free',
+        'close'         => 'Close',
     ],
 
     'footer' => [
@@ -94,6 +95,8 @@ return [
         'show2_bullet_2' => 'One-click conversion to invoice',
         'show2_bullet_3' => 'Track the status of every quote',
         'show2_image_alt'=> 'A quote being converted into an invoice',
+        'show2_mock_status_accepted' => 'Accepted',
+        'show2_mock_status_sent'     => 'Sent',
 
         // Showcase - Clients / payments / services
         'show3_title'    => 'Clients, payments and services. All organized.',
@@ -102,6 +105,7 @@ return [
         'show3_bullet_2' => 'Product and service catalog',
         'show3_bullet_3' => 'Online payments and payment tracking',
         'show3_image_alt'=> 'Fakturalista clients and service catalog panel',
+        'show3_mock_payment_received' => 'Payment received — Invoice #0041',
 
         // Showcase - Reports
         'show4_title'    => 'Understand your business at a glance',
@@ -110,6 +114,8 @@ return [
         'show4_bullet_2' => 'Pending, paid and overdue invoices',
         'show4_bullet_3' => 'Visual dashboard, no setup',
         'show4_image_alt'=> 'Fakturalista reports and statistics panel',
+        'show4_mock_collected' => 'Collected this month',
+        'show4_mock_pending'   => 'Pending',
 
         // How it works
         'how_title'       => 'Start in minutes',
@@ -145,6 +151,9 @@ return [
         'value_chip_1' => 'Client added',
         'value_chip_2' => 'Invoice sent',
         'value_chip_3' => 'Quote accepted',
+        'value_dash_invoices' => 'Invoices',
+        'value_dash_customers' => 'Customers',
+        'value_dash_quotes' => 'Quotes',
 
         // Pricing (preview)
         'pricing_title'       => 'A plan for every stage of your business',
@@ -202,6 +211,8 @@ return [
         'card_title'       => 'Start now, risk-free',
         'card_sub'         => 'Fill in the form and we\'ll activate your access within 24 h.',
         'error_msg'        => 'Please check the fields and try again.',
+        'send_failed'      => "Couldn't send the request. Please try again.",
+        'status_success'   => 'Request sent successfully.',
         'label_name'       => 'Full name',
         'label_email'      => 'Email address',
         'label_company'    => 'Company name',
@@ -226,26 +237,24 @@ return [
         'page_title'       => 'Create your free account - Fakturalista',
         'card_tag'         => 'Free trial',
         'card_title'       => 'Create your account',
-        'card_sub'         => 'Start invoicing in under a minute.',
-        'label_first_name' => 'First name',
-        'label_last_name'  => 'Last name',
-        'label_email'      => 'Email',
+        'card_sub'         => 'Start for free with Fakturalista',
+        'label_name'       => 'Full name',
+        'label_email'      => 'Email address',
+        'label_phone'      => 'Phone number (optional)',
         'label_password'   => 'Password',
-        'label_password_confirmation' => 'Confirm password',
-        'label_company'    => 'Business name',
-        'label_tax_id'     => 'Tax ID (optional)',
-        'label_country'    => 'Country (optional)',
-        'placeholder_first_name' => 'Maria',
-        'placeholder_last_name'  => 'Garcia',
-        'placeholder_email'      => 'maria@mybusiness.com',
-        'placeholder_company'    => 'My Business Ltd',
-        'submit'           => 'Create my free account',
+        'password_hint'    => '8 characters minimum',
+        'placeholder_name'  => 'Jane Doe',
+        'placeholder_email' => 'jane@mybusiness.com',
+        'placeholder_phone' => '+212 6XX XXX XXX',
+        'submit'           => 'Create my account',
         'submitting'       => 'We\'re setting up your workspace…',
         'submitting_sub'   => 'This will only take a few seconds.',
-        'trial_note'       => '14 days free · No credit card required',
+        'trial_note'       => '14-day free trial • No credit card required',
         'already_have_account' => 'Already have an account?',
         'sign_in'          => 'Sign in',
         'error_msg'        => 'Please review the fields and try again.',
+        'already_processing' => "We're already processing a request for this email. Wait a few seconds and try again.",
+        'provisioning_failed' => "We couldn't create your account right now. Please try again.",
     ],
 
     'loginFinder' => [
@@ -255,6 +264,7 @@ return [
         'label_email' => 'Email',
         'submit'      => 'Continue',
         'not_found'   => 'We could not find an account with that email.',
+        'too_many_attempts' => 'Too many attempts. Wait a minute and try again.',
         'register_cta' => 'Don\'t have an account yet?',
         'register_link' => 'Create one for free',
     ],
@@ -380,6 +390,7 @@ return [
         'form_sub'            => 'Tell us your question or suggestion and we\'ll get back to you.',
         'alert_error'         => 'Please check the fields and try again.',
         'status_success'      => 'Message sent successfully.',
+        'send_failed'         => "Couldn't send the message. Please try again.",
         'label_name'          => 'Full name *',
         'placeholder_name'    => 'John Smith',
         'label_email_f'       => 'Email address *',
@@ -509,6 +520,7 @@ return [
         'nav_title'        => 'Topics',
         // TODO: replace placeholder text with real documentation content for each section.
         'placeholder'      => 'Full documentation for this section is being written. Check back soon, or contact support if you need help now.',
+        'coming_soon'      => 'Coming soon',
         'cat_start'        => 'Getting Started',
         'cat_start_sub'    => 'Account setup, workspace configuration, and sending your first invoice.',
         'cat_invoices'     => 'Invoices',
@@ -795,6 +807,32 @@ return [
         'source_rdley15' => 'Royal Decree-Law 15/2025 (BOE)',
 
         'cta_final' => 'Start for free',
+    ],
+
+    'noscript_warning' => "We're sorry but Fakturalista doesn't work properly without JavaScript enabled. Please enable it to continue.",
+
+    'tenant_not_found' => [
+        'title'          => 'Workspace not found',
+        'meta'           => "This customer workspace doesn't exist on Fakturalista.",
+        'badge'          => 'Workspace not found',
+        'heading'        => "This customer workspace doesn't exist",
+        'subtitle_1'     => 'The link may be incorrect, or this workspace',
+        'subtitle_2'     => 'may have been deleted or never existed.',
+        'attempted_url'  => 'You tried to access:',
+        'cta_title'      => 'Want your own workspace on Fakturalista?',
+        'cta_sub'        => 'Create your free account in under 2 minutes. No credit card required.',
+        'create_account' => 'Create free account',
+        'back_home'      => '← Back to fakturalista.com',
+    ],
+
+    'subscription_checkout' => [
+        'success_title'   => '✅ Payment completed successfully',
+        'success_text'    => 'Thank you for your subscription. You can now use Fakturalista.',
+        'success_cta'     => 'Go to home',
+        'cancel_title'    => 'Invoicing and management platform',
+        'cancel_heading'  => '❌ Payment cancelled',
+        'cancel_text'     => "Your payment wasn't completed. You can try again.",
+        'cancel_cta'      => 'Back to plan',
     ],
 
 ];

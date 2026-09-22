@@ -917,7 +917,7 @@ document.addEventListener('click', function (e) {
                                     <p class="fk-mock-doc-num">Presupuesto #0032</p>
                                     <p class="fk-mock-doc-client">Estudio Creativo S.L.</p>
                                 </div>
-                                <span class="fk-badge fk-badge--accepted">Aceptado</span>
+                                <span class="fk-badge fk-badge--accepted">{{ __('site.home.show2_mock_status_accepted') }}</span>
                             </div>
                             <div class="fk-mock-arrow">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -927,7 +927,7 @@ document.addEventListener('click', function (e) {
                                     <p class="fk-mock-doc-num">Factura #0045</p>
                                     <p class="fk-mock-doc-client">Estudio Creativo S.L.</p>
                                 </div>
-                                <span class="fk-badge fk-badge--sent">Enviada</span>
+                                <span class="fk-badge fk-badge--sent">{{ __('site.home.show2_mock_status_sent') }}</span>
                             </div>
                         </div>
                     </div>
@@ -969,7 +969,7 @@ document.addEventListener('click', function (e) {
                                 <span class="fk-mock-pay-check">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </span>
-                                <p>Pago recibido — Factura #0041</p>
+                                <p>{{ __('site.home.show3_mock_payment_received') }}</p>
                             </div>
                         </div>
                     </div>
@@ -993,11 +993,11 @@ document.addEventListener('click', function (e) {
                         <div class="fk-app-body">
                             <div class="fk-mock-stats">
                                 <div class="fk-mock-stat">
-                                    <p class="fk-mock-stat-label">Cobrado este mes</p>
+                                    <p class="fk-mock-stat-label">{{ __('site.home.show4_mock_collected') }}</p>
                                     <p class="fk-mock-stat-value">3.240,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
                                 </div>
                                 <div class="fk-mock-stat">
-                                    <p class="fk-mock-stat-label">Pendiente</p>
+                                    <p class="fk-mock-stat-label">{{ __('site.home.show4_mock_pending') }}</p>
                                     <p class="fk-mock-stat-value">860,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
                                 </div>
                             </div>
@@ -1117,9 +1117,9 @@ document.addEventListener('click', function (e) {
                                 <div class="fk-mock-bar" style="height:100%"><span style="height:90%"></span></div>
                             </div>
                             <div class="fk-value-dash-list">
-                                <div class="fk-value-dash-row"><span>Facturas</span><strong>24</strong></div>
-                                <div class="fk-value-dash-row"><span>Clientes</span><strong>12</strong></div>
-                                <div class="fk-value-dash-row"><span>Presupuestos</span><strong>6</strong></div>
+                                <div class="fk-value-dash-row"><span>{{ __('site.home.value_dash_invoices') }}</span><strong>24</strong></div>
+                                <div class="fk-value-dash-row"><span>{{ __('site.home.value_dash_customers') }}</span><strong>12</strong></div>
+                                <div class="fk-value-dash-row"><span>{{ __('site.home.value_dash_quotes') }}</span><strong>6</strong></div>
                             </div>
                         </div>
                     </div>

@@ -25,7 +25,7 @@
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
             {{ loadingSummary ? '' : $toCurrency(summary.totalReceived) }}
           </p>
-          <p class="pay-kpi-meta pay-kpi-meta--neutral" v-if="!loadingSummary">All time</p>
+          <p class="pay-kpi-meta pay-kpi-meta--neutral" v-if="!loadingSummary">{{ $t('payments.allTime') }}</p>
           <p class="pay-kpi-meta" v-else>&nbsp;</p>
         </div>
       </div>
@@ -40,9 +40,9 @@
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
             {{ loadingSummary ? '' : $toCurrency(summary.pending) }}
           </p>
-          <p class="pay-kpi-meta pay-kpi-meta--blue" v-if="!loadingSummary && summary.pending > 0">En proceso</p>
+          <p class="pay-kpi-meta pay-kpi-meta--blue" v-if="!loadingSummary && summary.pending > 0">{{ $t('payments.inProgress') }}</p>
           <p class="pay-kpi-meta pay-kpi-meta--green" v-else-if="!loadingSummary">
-            <i class="fa fa-check fa-xs me-1"></i>Al día
+            <i class="fa fa-check fa-xs me-1"></i>{{ $t('payments.upToDate') }}
           </p>
           <p class="pay-kpi-meta" v-else>&nbsp;</p>
         </div>
@@ -61,10 +61,10 @@
             {{ loadingSummary ? '' : $toCurrency(summary.overdue) }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--orange" v-if="!loadingSummary && summary.overdue > 0">
-            Requiere atención
+            {{ $t('payments.needsAttention') }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--green" v-else-if="!loadingSummary">
-            <i class="fa fa-check fa-xs me-1"></i>Todo en orden
+            <i class="fa fa-check fa-xs me-1"></i>{{ $t('payments.allGood') }}
           </p>
           <p class="pay-kpi-meta" v-else>&nbsp;</p>
         </div>
@@ -80,8 +80,8 @@
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
             {{ loadingSummary ? '' : $toCurrency(summary.thisMonth) }}
           </p>
-          <p class="pay-kpi-meta pay-kpi-meta--green" v-if="!loadingSummary && summary.thisMonth > 0">Este mes</p>
-          <p class="pay-kpi-meta pay-kpi-meta--neutral" v-else-if="!loadingSummary">Sin cobros aún</p>
+          <p class="pay-kpi-meta pay-kpi-meta--green" v-if="!loadingSummary && summary.thisMonth > 0">{{ $t('payments.thisMonth') }}</p>
+          <p class="pay-kpi-meta pay-kpi-meta--neutral" v-else-if="!loadingSummary">{{ $t('payments.noPaymentsYet') }}</p>
           <p class="pay-kpi-meta" v-else>&nbsp;</p>
         </div>
       </div>
@@ -115,7 +115,7 @@
         :server-side="true"
         :meta="meta"
         :status-options="statusOptions"
-        search-placeholder="Search payments…"
+        :search-placeholder="$t('payments.searchPlaceholder')"
         @filter="onDtFilter"
         @page="onPage"
         @per-page="onPerPage"

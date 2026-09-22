@@ -12,9 +12,10 @@ use Illuminate\Validation\Validator;
  * (routes/web.php POST /register -> RegisterTrialController::store()).
  *
  * Deliberately minimal - the brief is explicit that signup should ask for
- * as little as possible. Only first/last name, email, password, and the
- * business name are required; tax_id and country are optional, matching
- * the "do not ask for unnecessary information during signup" instruction.
+ * as little as possible. Only full name, email and password are required;
+ * phone is optional. Business/fiscal details (company name, ICE, IF, RC,
+ * address, currency, etc.) are never asked here - they belong to the
+ * onboarding flow that runs after account creation.
  */
 class RegisterTrialRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class RegisterTrialRequest extends FormRequest
         if ($this->has('email')) {
             $this->merge(['email' => trim(strtolower((string) $this->input('email')))]);
         }
-        foreach (['first_name', 'last_name', 'company_name', 'tax_id'] as $field) {
+        foreach (['name', 'phone'] as $field) {
             if ($this->filled($field)) {
                 $this->merge([$field => trim((string) $this->input($field))]);
             }
@@ -46,17 +47,12 @@ class RegisterTrialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name'  => ['nullable', 'string', 'max:100'],
-            'email'      => ['required', 'string', 'email', 'max:255'],
-            'password'   => ['required', 'string', 'min:8', 'confirmed'],
-            'company_name' => ['required', 'string', 'max:150'],
-            // Optional Spain/Morocco fiscal identifier - reused as-is by
-            // TenantProvisioningService/CompanyProfile later; never
-            // required at signup (see docs/morocco-phase-1b-identity.md's
-            // own "do not force fiscal identifiers" precedent).
-            'tax_id'   => ['nullable', 'string', 'max:32'],
-            'country'  => ['nullable', 'string', 'size:2'],
+            'name'     => ['required', 'string', 'max:150'],
+            'email'    => ['required', 'string', 'email', 'max:255'],
+            // Morocco-friendly, but never required - a user must be able
+            // to create an account without entering a phone number.
+            'phone'    => ['nullable', 'string', 'max:20'],
+            'password' => ['required', 'string', 'min:8'],
             'captcha_answer' => ['required'],
         ];
     }
@@ -67,13 +63,11 @@ class RegisterTrialRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'first_name.required' => 'Indica tu nombre.',
-            'email.required'      => 'Indica tu email.',
-            'email.email'         => 'Introduce un email válido.',
-            'password.required'   => 'Elige una contraseña.',
-            'password.min'        => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.confirmed'  => 'Las contraseñas no coinciden.',
-            'company_name.required' => 'Indica el nombre de tu negocio.',
+            'name.required'      => 'Indica tu nombre completo.',
+            'email.required'     => 'Indica tu email.',
+            'email.email'        => 'Introduce un email válido.',
+            'password.required'  => 'Elige una contraseña.',
+            'password.min'       => 'La contraseña debe tener al menos 8 caracteres.',
             'captcha_answer.required' => 'Resuelve la comprobación de seguridad.',
         ];
     }

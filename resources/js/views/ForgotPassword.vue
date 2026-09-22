@@ -34,14 +34,14 @@
               <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h2 class="fp-card-title">Check your inbox</h2>
+          <h2 class="fp-card-title">{{ $t('auth.checkInbox') }}</h2>
           <p class="fp-success-text">
-            We've sent a password reset link to <strong>{{ submittedEmail }}</strong>.
-            It will expire in 60&nbsp;minutes.
+            {{ $t('auth.resetLinkSentBefore') }} <strong>{{ submittedEmail }}</strong>.
+            {{ $t('auth.resetLinkSentAfter') }}
           </p>
           <p class="fp-success-hint">
-            Didn't receive it? Check your spam folder or
-            <button type="button" class="fp-resend-btn" @click="sent = false">try again</button>.
+            {{ $t('auth.didNotReceive') }}
+            <button type="button" class="fp-resend-btn" @click="sent = false">{{ $t('auth.tryAgain') }}</button>.
           </p>
         </div>
 
@@ -51,9 +51,9 @@
             <div class="fp-lock-icon">
               <i class="fa fa-key"></i>
             </div>
-            <h2 class="fp-card-title">Forgot your password?</h2>
+            <h2 class="fp-card-title">{{ $t('auth.forgotPassword') }}</h2>
             <p class="fp-card-subtitle">
-              Enter your email and we'll send you a reset link.
+              {{ $t('auth.forgotPasswordSubtitle') }}
             </p>
           </div>
 
@@ -66,7 +66,7 @@
 
             <!-- Email -->
             <div class="fp-field" :class="{ 'fp-field--error': emailError }">
-              <label class="fp-label" for="fp-email">Email address</label>
+              <label class="fp-label" for="fp-email">{{ $t('auth.emailPlaceholder') }}</label>
               <div class="fp-input-wrap">
                 <i class="fa fa-envelope fp-input-icon"></i>
                 <input
@@ -93,7 +93,7 @@
             >
               <i v-if="isLoading" class="fa fa-spinner fa-spin me-2"></i>
               <i v-else class="fa fa-paper-plane me-2"></i>
-              {{ isLoading ? 'Sending…' : 'Send reset link' }}
+              {{ isLoading ? $t('auth.sending') : $t('auth.sendResetLink') }}
             </button>
 
           </form>
@@ -102,7 +102,7 @@
         <!-- Back to login -->
         <div class="fp-back">
           <router-link to="/admin/login" class="fp-back-link">
-            <i class="fa fa-arrow-left me-1"></i>Back to sign in
+            <i class="fa fa-arrow-left me-1"></i>{{ $t('auth.backToSignIn') }}
           </router-link>
         </div>
 
@@ -116,9 +116,11 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
 import { useTemplateStore } from "@/stores/template";
 
+const { t } = useI18n();
 const store = useTemplateStore();
 const isDark = computed(() => store.settings.darkMode);
 
@@ -132,8 +134,8 @@ const submittedEmail = ref("");
 // Simple local validation
 const emailError = computed(() => {
   if (!emailTouched.value) return "";
-  if (!email.value) return "Email is required";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) return "Please enter a valid email";
+  if (!email.value) return t("auth.emailRequired");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) return t("auth.emailInvalid");
   return "";
 });
 
@@ -154,7 +156,7 @@ async function onSubmit() {
     sent.value           = true;
   } catch (e) {
     errorMessage.value =
-      e.response?.data?.message ?? "Something went wrong. Please try again.";
+      e.response?.data?.message ?? t("auth.genericError");
   } finally {
     isLoading.value = false;
   }

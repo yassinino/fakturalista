@@ -29,18 +29,17 @@
           <div class="rp-icon-wrap rp-icon-wrap--danger">
             <i class="fa fa-triangle-exclamation"></i>
           </div>
-          <h2 class="rp-card-title">Invalid reset link</h2>
+          <h2 class="rp-card-title">{{ $t('auth.invalidResetLink') }}</h2>
           <p class="rp-card-subtitle">
-            This password reset link is missing required parameters.
-            Please request a new one.
+            {{ $t('auth.invalidResetLinkText') }}
           </p>
         </div>
         <router-link to="/admin/forgot-password" class="rp-btn-submit" style="text-decoration:none;display:flex;">
-          <i class="fa fa-arrow-rotate-left me-2"></i>Request a new link
+          <i class="fa fa-arrow-rotate-left me-2"></i>{{ $t('auth.requestNewLink') }}
         </router-link>
         <div class="rp-back">
           <router-link to="/admin/login" class="rp-back-link">
-            <i class="fa fa-arrow-left me-1"></i>Back to sign in
+            <i class="fa fa-arrow-left me-1"></i>{{ $t('auth.backToSignIn') }}
           </router-link>
         </div>
       </div>
@@ -54,13 +53,12 @@
               <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h2 class="rp-card-title">Password updated!</h2>
+          <h2 class="rp-card-title">{{ $t('auth.passwordUpdatedTitle') }}</h2>
           <p class="rp-success-text">
-            Your password has been reset successfully.
-            You can now sign in with your new password.
+            {{ $t('auth.passwordUpdatedText') }}
           </p>
           <router-link to="/admin/login" class="rp-btn-submit" style="text-decoration:none;display:flex;margin-top:8px;">
-            <i class="fa fa-sign-in-alt me-2"></i>Sign in now
+            <i class="fa fa-sign-in-alt me-2"></i>{{ $t('auth.signInNow') }}
           </router-link>
         </div>
       </div>
@@ -72,9 +70,9 @@
           <div class="rp-icon-wrap">
             <i class="fa fa-lock"></i>
           </div>
-          <h2 class="rp-card-title">Set new password</h2>
+          <h2 class="rp-card-title">{{ $t('auth.setNewPassword') }}</h2>
           <p class="rp-card-subtitle">
-            Choose a strong password for
+            {{ $t('auth.chooseStrongPasswordFor') }}
             <strong class="rp-email-hint">{{ email }}</strong>
           </p>
         </div>
@@ -84,7 +82,7 @@
           <i class="fa fa-exclamation-circle me-2"></i>{{ errorMessage }}
           <div v-if="tokenExpired" style="margin-top:8px;">
             <router-link to="/admin/forgot-password" class="rp-alert-link">
-              Request a new reset link →
+              {{ $t('auth.requestNewLinkInline') }}
             </router-link>
           </div>
         </div>
@@ -93,14 +91,14 @@
 
           <!-- New password -->
           <div class="rp-field" :class="{ 'rp-field--error': passwordError }">
-            <label class="rp-label" for="rp-password">New password</label>
+            <label class="rp-label" for="rp-password">{{ $t('auth.newPasswordLabel') }}</label>
             <div class="rp-input-wrap">
               <i class="fa fa-lock rp-input-icon"></i>
               <input
                 id="rp-password"
                 :type="showPw ? 'text' : 'password'"
                 class="rp-input rp-input--pw"
-                placeholder="Min. 8 characters"
+                :placeholder="$t('auth.newPasswordPlaceholder')"
                 v-model="password"
                 @blur="touchPassword"
                 autocomplete="new-password"
@@ -110,7 +108,7 @@
                 type="button"
                 class="rp-pw-toggle"
                 @click="showPw = !showPw"
-                :aria-label="showPw ? 'Hide password' : 'Show password'"
+                :aria-label="showPw ? $t('auth.hidePassword') : $t('auth.showPassword')"
                 tabindex="-1"
               >
                 <i :class="showPw ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
@@ -137,14 +135,14 @@
 
           <!-- Confirm password -->
           <div class="rp-field" :class="{ 'rp-field--error': confirmError }">
-            <label class="rp-label" for="rp-confirm">Confirm password</label>
+            <label class="rp-label" for="rp-confirm">{{ $t('auth.confirmPasswordLabel') }}</label>
             <div class="rp-input-wrap">
               <i class="fa fa-lock rp-input-icon"></i>
               <input
                 id="rp-confirm"
                 :type="showConfirm ? 'text' : 'password'"
                 class="rp-input rp-input--pw"
-                placeholder="Repeat your password"
+                :placeholder="$t('auth.confirmPasswordPlaceholder')"
                 v-model="passwordConfirmation"
                 @blur="touchConfirm"
                 autocomplete="new-password"
@@ -154,7 +152,7 @@
                 type="button"
                 class="rp-pw-toggle"
                 @click="showConfirm = !showConfirm"
-                :aria-label="showConfirm ? 'Hide password' : 'Show password'"
+                :aria-label="showConfirm ? $t('auth.hidePassword') : $t('auth.showPassword')"
                 tabindex="-1"
               >
                 <i :class="showConfirm ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
@@ -172,14 +170,14 @@
           >
             <i v-if="isLoading" class="fa fa-spinner fa-spin me-2"></i>
             <i v-else class="fa fa-shield-halved me-2"></i>
-            {{ isLoading ? 'Updating…' : 'Reset password' }}
+            {{ isLoading ? $t('auth.updatingPassword') : $t('auth.resetPasswordBtn') }}
           </button>
 
         </form>
 
         <div class="rp-back">
           <router-link to="/admin/login" class="rp-back-link">
-            <i class="fa fa-arrow-left me-1"></i>Back to sign in
+            <i class="fa fa-arrow-left me-1"></i>{{ $t('auth.backToSignIn') }}
           </router-link>
         </div>
 
@@ -194,9 +192,11 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import axios from "axios";
 import { useTemplateStore } from "@/stores/template";
 
+const { t }  = useI18n();
 const store  = useTemplateStore();
 const route  = useRoute();
 const isDark = computed(() => store.settings.darkMode);
@@ -230,22 +230,29 @@ const passwordStrength = computed(() => {
 });
 
 const strengthLabel = computed(() => {
-  return ["", "Weak", "Fair", "Good", "Strong"][passwordStrength.value] ?? "";
+  const labels = [
+    "",
+    t("auth.passwordStrengthWeak"),
+    t("auth.passwordStrengthFair"),
+    t("auth.passwordStrengthGood"),
+    t("auth.passwordStrengthStrong"),
+  ];
+  return labels[passwordStrength.value] ?? "";
 });
 
 // ── Validation ─────────────────────────────────────────────
 
 const passwordError = computed(() => {
   if (!passwordTouched.value) return "";
-  if (!password.value)        return "Password is required";
-  if (password.value.length < 8) return "Password must be at least 8 characters";
+  if (!password.value)        return t("auth.passwordRequired");
+  if (password.value.length < 8) return t("auth.passwordMinLength");
   return "";
 });
 
 const confirmError = computed(() => {
   if (!confirmTouched.value) return "";
-  if (!passwordConfirmation.value) return "Please confirm your password";
-  if (password.value !== passwordConfirmation.value) return "Passwords do not match";
+  if (!passwordConfirmation.value) return t("auth.confirmPasswordRequired");
+  if (password.value !== passwordConfirmation.value) return t("auth.passwordsDoNotMatch");
   return "";
 });
 
@@ -274,9 +281,9 @@ async function onSubmit() {
 
     success.value = true;
   } catch (e) {
-    const msg = e.response?.data?.message ?? "Something went wrong. Please try again.";
-    errorMessage.value = msg;
-    tokenExpired.value = msg.toLowerCase().includes("expired") || msg.toLowerCase().includes("invalid");
+    const errorCode = e.response?.data?.error ?? "";
+    errorMessage.value = e.response?.data?.message ?? t("auth.genericError");
+    tokenExpired.value = ["reset_link_expired", "reset_link_invalid"].includes(errorCode);
   } finally {
     isLoading.value = false;
   }

@@ -441,7 +441,7 @@
 
                     <nav class="site-nav">
                         <div class="close-menu">
-                            <span>Close</span>
+                            <span>{{ __('site.nav.close') }}</span>
                             <i class="ei ei-icon_close"></i>
                         </div>
 

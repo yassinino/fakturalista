@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="meta.lastPage > 1" class="d-flex align-items-center justify-content-end gap-2 mt-3" aria-label="Pagination">
+  <nav v-if="meta.lastPage > 1" class="d-flex align-items-center justify-content-end gap-2 mt-3" :aria-label="$t('common.pagination')">
     <button class="btn btn-sm btn-outline-primary"
             :disabled="meta.currentPage === 1"
             @click="$emit('update:page', meta.currentPage - 1)">

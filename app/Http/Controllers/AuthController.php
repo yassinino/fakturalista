@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         // Always respond with success to prevent user enumeration
         if (!$user) {
-            return response()->json(['message' => 'If that email exists, a reset link has been sent.']);
+            return response()->json(['message' => __('auth.reset_link_sent_generic')]);
         }
 
         $token = Str::random(64);
@@ -59,11 +59,11 @@ class AuthController extends Controller
             Mail::to($user->email, $user->name)->send(new PasswordResetEmail($user, $resetUrl));
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to send the reset email. Please try again.',
+                'message' => __('auth.reset_email_failed'),
             ], 500);
         }
 
-        return response()->json(['message' => 'Reset link sent! Check your inbox.']);
+        return response()->json(['message' => __('auth.reset_link_sent')]);
     }
 
     // ── Reset password ─────────────────────────────────────
@@ -87,20 +87,23 @@ class AuthController extends Controller
 
         if (!$record) {
             return response()->json([
-                'message' => 'Invalid or expired reset link. Please request a new one.',
+                'message' => __('auth.reset_link_invalid'),
+                'error'   => 'reset_link_invalid',
             ], 422);
         }
 
         if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
             return response()->json([
-                'message' => 'This reset link has expired. Please request a new one.',
+                'message' => __('auth.reset_link_expired'),
+                'error'   => 'reset_link_expired',
             ], 422);
         }
 
         if (!Hash::check($request->token, $record->token)) {
             return response()->json([
-                'message' => 'Invalid or expired reset link. Please request a new one.',
+                'message' => __('auth.reset_link_invalid'),
+                'error'   => 'reset_link_invalid',
             ], 422);
         }
 
@@ -108,7 +111,8 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => 'No account found with this email address.',
+                'message' => __('auth.no_account_found'),
+                'error'   => 'no_account_found',
             ], 422);
         }
 
@@ -117,7 +121,7 @@ class AuthController extends Controller
 
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
-        return response()->json(['message' => 'Password updated successfully! You can now sign in.']);
+        return response()->json(['message' => __('auth.password_updated')]);
     }
 
     // ── Login ──────────────────────────────────────────────
@@ -233,7 +237,7 @@ class AuthController extends Controller
             if (!Hash::check($request->input('current_password'), $user->password)) {
                 return response()->json([
                     'errors' => [
-                        'current_password' => ['La contraseña actual no coincide.']
+                        'current_password' => [__('auth.current_password_mismatch')]
                     ]
                 ], 422);
             }
@@ -269,7 +273,7 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Perfil actualizado correctamente.',
+            'message' => __('auth.profile_updated'),
             'user' => $user,
         ], 200);
     }

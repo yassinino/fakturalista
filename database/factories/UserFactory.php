@@ -23,15 +23,25 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-            // Matches the `locale` column's DB default ('es'). Explicit here
-            // because App\Http\Middleware\SetLocale falls back to
-            // $request->session() when the user's locale is empty/unsupported,
-            // and API routes carry no session middleware at all - an
-            // in-memory factory user used via actingAs() (never re-fetched
-            // from the DB) would otherwise have a null locale in PHP even
-            // though the column's DB default is populated, crashing every
-            // authenticated API request in tests with a 500. Pre-existing
-            // middleware fragility, flagged separately - not fixed here.
+            // Explicit here (rather than left to the `locale` column's own
+            // DB default) because App\Http\Middleware\SetLocale falls back
+            // to $request->session() when the user's locale is empty/
+            // unsupported, and API routes carry no session middleware at
+            // all - an in-memory factory user used via actingAs() (never
+            // re-fetched from the DB) would otherwise have a null locale in
+            // PHP, crashing every authenticated API request in tests with a
+            // 500. Pre-existing middleware fragility, flagged separately -
+            // not fixed here. Deliberately kept as 'es' (not 'fr', despite
+            // the DB default now being 'fr' - see
+            // 2026_09_22_100000_change_users_locale_default_to_fr.php):
+            // several existing tests render PDF/document Blade components
+            // directly and rely on an authenticated request's SetLocale
+            // middleware run having already put 'es' into the ambient
+            // App::getLocale() for their Spain-country assertions. Flipping
+            // this breaks those tests without fixing any real bug - the
+            // only production code path that creates a User
+            // (TenantProvisioningService) already sets locale explicitly,
+            // never relying on this factory or the column default.
             'locale' => 'es',
         ];
     }

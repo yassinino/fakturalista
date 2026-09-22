@@ -222,7 +222,7 @@ $sections = [
                             <i class="fas fa-pencil-ruler"></i>
                         </span>
                         <div>
-                            <span class="dc-placeholder-label">Coming soon</span>
+                            <span class="dc-placeholder-label">{{ __('site.docs.coming_soon') }}</span>
                             <p class="dc-placeholder-text">{{ __('site.docs.placeholder') }}</p>
                         </div>
                     </div>

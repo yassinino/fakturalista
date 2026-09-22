@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\AdminNewRegistrationMail;
 use App\Mail\WelcomeSelfServiceMail;
 use App\Mail\WelcomeTenantMail;
 use App\Models\Plan;
@@ -188,27 +189,45 @@ class TenantProvisioningService
             try {
                 $loginUrl = 'https://' . $data['subdomain'] . '.fakturalista.com/admin/login';
 
+                // The bug this fixes: the welcome email used to render in
+                // whatever locale happened to be globally active (often
+                // Spanish - see users.locale's schema default), completely
+                // ignoring the tenant this email is actually about. $data
+                // ['language'] is already resolved by this point (self-
+                // service: TenantContextService::defaultsForCountry() from
+                // the chosen country, e.g. 'fr' for Morocco; admin: the
+                // Filament wizard's own explicit language field) - the
+                // exact "tenant/company preference" this app's locale
+                // priority is supposed to use when no more specific
+                // explicit preference exists. ->locale() is Laravel's own
+                // mechanism for this: it sets the translator locale right
+                // before the mailable is built, for both a synchronous
+                // send and a truly queued one (the locale travels with the
+                // job), then restores it afterward - see WelcomeSelfServiceMail/
+                // WelcomeTenantMail::envelope() for the __() calls this enables.
                 if ($selfService) {
                     // No password field on this mailable at all - see its
                     // own class docblock for why.
-                    Mail::send(new WelcomeSelfServiceMail(
+                    Mail::send((new WelcomeSelfServiceMail(
                         tenant:     $tenant,
                         ownerEmail: $data['owner_email'],
                         ownerName:  $data['owner_name'],
                         loginUrl:   $loginUrl,
-                    ));
+                    ))->locale($data['language']));
                 } else {
-                    // Admin-created-tenant path, unchanged: the admin chose/
-                    // generated this password on the visitor's behalf, so it
-                    // is handed back once here. Plain password lives only in
-                    // memory ($data['admin_password']) - never persisted.
-                    Mail::send(new WelcomeTenantMail(
+                    // Admin-created-tenant path: only the locale resolution
+                    // changed, everything else is unchanged. The admin
+                    // chose/generated this password on the visitor's
+                    // behalf, so it is handed back once here. Plain
+                    // password lives only in memory ($data['admin_password'])
+                    // - never persisted.
+                    Mail::send((new WelcomeTenantMail(
                         tenant:        $tenant,
                         adminEmail:    $data['owner_email'],
                         adminName:     $data['owner_name'],
                         plainPassword: $data['admin_password'],
                         loginUrl:      $loginUrl,
-                    ));
+                    ))->locale($data['language']));
                 }
             } catch (\Throwable $mailEx) {
                 Log::error('Welcome email failed after tenant provisioning', [
@@ -216,6 +235,30 @@ class TenantProvisioningService
                     'self_service' => $selfService,
                     'error'        => $mailEx->getMessage(),
                 ]);
+            }
+
+            // ── Step 6: Admin new-registration notification ───────────────────
+            // Self-service only: an admin using the Filament wizard already
+            // knows about the tenant they just created, so this would be
+            // pure noise on that path. Isolated in its own try/catch - kept
+            // separate from the welcome-email one above - so a failure here
+            // never masks (or is masked by) a welcome-email failure, and
+            // never affects the already-provisioned $tenant this method
+            // returns below regardless of what happens in either block.
+            if ($selfService) {
+                try {
+                    Mail::send(new AdminNewRegistrationMail(
+                        tenant:     $tenant,
+                        ownerName:  $data['owner_name'],
+                        ownerEmail: $data['owner_email'],
+                        phone:      $data['company_phone'] ?? null,
+                    ));
+                } catch (\Throwable $notifyEx) {
+                    Log::error('Admin new-registration notification failed', [
+                        'tenant_id' => $tenant->getTenantKey(),
+                        'error'     => $notifyEx->getMessage(),
+                    ]);
+                }
             }
 
             return $tenant;

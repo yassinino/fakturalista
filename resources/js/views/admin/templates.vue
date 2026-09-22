@@ -1,5 +1,5 @@
 <template>
-  <p v-if="taxError" class="text-danger" role="alert">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
+  <p v-if="taxError" class="text-danger" role="alert">{{ taxError }} <button type="button" @click="loadTaxes">{{ $t('common.retry') }}</button></p>
   <div class="content">
     <div class="tb-root">
 
@@ -76,7 +76,7 @@
           <div class="tb-topbar">
             <button class="tb-topbar-back" @click="phase = 'gallery'">
               <i class="fa fa-arrow-left"></i>
-              <span>Templates</span>
+              <span>{{ $t('templates.backLink') }}</span>
             </button>
             <div class="tb-topbar-mid">
               <span class="tb-topbar-preset-dot" :style="{ background: design.primary }"></span>
@@ -109,7 +109,7 @@
 
             <!-- LEFT: compact template switcher -->
             <aside class="tb-panel-left">
-              <div class="tb-panel-left-head">Templates</div>
+              <div class="tb-panel-left-head">{{ $t('templates.panelTitle') }}</div>
               <div class="tb-template-list">
                 <button
                   v-for="preset in PRESETS"
@@ -215,7 +215,7 @@
                       <tr :style="tableHeadStyle">
                         <th :style="thStyle" class="tb-th-main">{{ $t('templates.preview.itemCol') }}</th>
                         <th v-if="design.show_tax_column" :style="thStyle" class="tb-th-center">{{ taxName }}</th>
-                        <th v-if="design.show_discount" :style="thStyle" class="tb-th-center">Dto.</th>
+                        <th v-if="design.show_discount" :style="thStyle" class="tb-th-center">{{ $t('templates.discountColumn') }}</th>
                         <th :style="thStyle" class="tb-th-center">{{ $t('templates.preview.qtyCol') }}</th>
                         <th :style="thStyle" class="tb-th-center">{{ $t('templates.preview.priceCol') }}</th>
                         <th :style="thStyle" class="tb-th-right">{{ $t('templates.preview.amountCol') }}</th>
@@ -349,7 +349,7 @@
                 <!-- ─ ADVANCED TOGGLE ─ -->
                 <button class="tb-advanced-toggle" @click="showAdvanced = !showAdvanced">
                   <i class="fa fa-sliders"></i>
-                  <span>Advanced settings</span>
+                  <span>{{ $t('templates.advancedSettings') }}</span>
                   <i class="fa tb-adv-arrow" :class="showAdvanced ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </button>
 
@@ -480,7 +480,7 @@
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_discount" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
-                          <span class="tb-toggle-lbl">{{ taxName }} column</span>
+                          <span class="tb-toggle-lbl">{{ $t('templates.taxColumnToggle', { tax: taxName }) }}</span>
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_tax_column" /><span class="tb-toggle-track"></span></span>
                         </label>
                       </div>
@@ -501,7 +501,7 @@
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_subtotal" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
-                          <span class="tb-toggle-lbl">{{ taxName }} breakdown</span>
+                          <span class="tb-toggle-lbl">{{ $t('templates.taxBreakdownToggle', { tax: taxName }) }}</span>
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_tax_breakdown" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
@@ -559,7 +559,7 @@ const showAdvanced   = ref(false);
 const openSection    = ref(null);
 
 const activePresetName = computed(
-  () => PRESETS.find((p) => p.id === activePresetId.value)?.name ?? "Custom"
+  () => PRESETS.find((p) => p.id === activePresetId.value)?.name ?? t("templates.customPresetName")
 );
 
 function toggleSection(key) {

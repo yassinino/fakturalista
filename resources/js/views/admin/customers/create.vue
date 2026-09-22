@@ -7,7 +7,7 @@
         <div class="ctc-header__left">
           <button type="button" class="ctc-back-btn" @click="route.push('/admin/customers')">
             <i class="fa fa-arrow-left"></i>
-            Clientes
+            {{ $t('customers.title') }}
           </button>
           <div class="ctc-header__title-row">
             <div class="ctc-header__icon">
@@ -33,14 +33,14 @@
       <!-- ── FORM ── -->
       <form @submit.prevent="onSubmit" novalidate>
 
-        <!-- ═══ CARD 1: Tipo de cliente ═══ -->
+        <!-- ═══ CARD 1: Customer type ═══ -->
         <section class="ctc-card ctc-card--accent-top">
           <div class="ctc-card__head">
             <span class="ctc-card__icon"><i class="fa fa-user-tag"></i></span>
-            <span class="ctc-card__label">Tipo de cliente</span>
+            <span class="ctc-card__label">{{ $t('customers.typeSection') }}</span>
           </div>
           <div class="ctc-field">
-            <div class="ctc-seg" role="radiogroup" aria-label="Tipo de cliente">
+            <div class="ctc-seg" role="radiogroup" :aria-label="$t('customers.typeSection')">
               <button
                 type="button"
                 class="ctc-seg__btn"
@@ -67,11 +67,11 @@
           </div>
         </section>
 
-        <!-- ═══ CARD 2: Información principal ═══ -->
+        <!-- ═══ CARD 2: Main information ═══ -->
         <section class="ctc-card">
           <div class="ctc-card__head">
             <span class="ctc-card__icon"><i class="fa fa-id-card"></i></span>
-            <span class="ctc-card__label">Información principal</span>
+            <span class="ctc-card__label">{{ $t('customers.mainInfoSection') }}</span>
           </div>
 
           <!-- Company (type == 1) -->
@@ -141,11 +141,11 @@
           </div>
         </section>
 
-        <!-- ═══ CARD 3: Datos de contacto ═══ -->
+        <!-- ═══ CARD 3: Contact details ═══ -->
         <section class="ctc-card">
           <div class="ctc-card__head">
             <span class="ctc-card__icon"><i class="fa fa-envelope"></i></span>
-            <span class="ctc-card__label">Datos de contacto</span>
+            <span class="ctc-card__label">{{ $t('customers.contactSection') }}</span>
           </div>
 
           <div class="ctc-field">
@@ -248,7 +248,7 @@
         <section class="ctc-card" v-if="!isMorocco || state.type == 1">
           <div class="ctc-card__head">
             <span class="ctc-card__icon"><i class="fa fa-file-invoice"></i></span>
-            <span class="ctc-card__label">Datos fiscales</span>
+            <span class="ctc-card__label">{{ $t('customers.fiscalSection') }}</span>
           </div>
 
           <!-- Morocco: ICE (primary identifier) + IF + RC. No Spain/AEAT terminology. -->
@@ -342,7 +342,7 @@
       <div class="ctc-footer__inner">
         <p class="ctc-footer__note">
           <i class="fa fa-asterisk"></i>
-          Campos obligatorios
+          {{ $t('customers.requiredFieldsNote') }}
         </p>
         <div class="ctc-footer__btns">
           <button type="button" class="ctc-btn ctc-btn--ghost" @click="route.push('/admin/customers')">

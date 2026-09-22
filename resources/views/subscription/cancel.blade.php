@@ -1,9 +1,9 @@
 @extends('layouts.master')
-@section('title', 'Plataforma de facturación y gestión')
+@section('title', __('site.subscription_checkout.cancel_title'))
 @section('content')
 <div class="container text-center py-5">
-    <h2 class="text-danger">❌ Pago cancelado</h2>
-    <p>Tu pago no se ha completado. Puedes intentarlo nuevamente.</p>
-    <a href="/" class="btn btn-secondary mt-3">Volver al plan</a>
+    <h2 class="text-danger">{{ __('site.subscription_checkout.cancel_heading') }}</h2>
+    <p>{{ __('site.subscription_checkout.cancel_text') }}</p>
+    <a href="/" class="btn btn-secondary mt-3">{{ __('site.subscription_checkout.cancel_cta') }}</a>
 </div>
 @endsection

@@ -33,9 +33,14 @@ class WelcomeSelfServiceMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
+        // Renders in whatever locale ->locale() was called with (set by
+        // TenantProvisioningService before sending) - Laravel's Mailer
+        // sets the translator locale before building the envelope/content,
+        // and restores it after, for both synchronous and truly-queued
+        // sends (the locale travels with the queued job).
         return new Envelope(
             to:      [$this->ownerEmail],
-            subject: 'Bienvenido a Fakturalista 🎉',
+            subject: __('emails.welcome_self_service.subject'),
         );
     }
 

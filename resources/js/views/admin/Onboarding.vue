@@ -26,12 +26,11 @@
 
         <div class="ob-hero-copy">
           <h1 class="ob-headline">
-            Set up your<br>
-            <span class="ob-headline-accent">workspace</span>
+            {{ $t('onboarding.headlinePrefix') }}<br>
+            <span class="ob-headline-accent">{{ $t('onboarding.headlineAccent') }}</span>
           </h1>
           <p class="ob-subheadline">
-            One-time setup to personalize your account.<br>
-            Takes less than 2 minutes.
+            {{ $t('onboarding.subheadline') }}
           </p>
         </div>
 
@@ -39,29 +38,29 @@
           <div class="ob-step ob-step--done">
             <div class="ob-step-dot"><i class="fa fa-check"></i></div>
             <div>
-              <div class="ob-step-title">Account created</div>
-              <div class="ob-step-desc">You're logged in and ready</div>
+              <div class="ob-step-title">{{ $t('onboarding.stepAccountCreatedTitle') }}</div>
+              <div class="ob-step-desc">{{ $t('onboarding.stepAccountCreatedDesc') }}</div>
             </div>
           </div>
           <div class="ob-step ob-step--active">
             <div class="ob-step-dot">2</div>
             <div>
-              <div class="ob-step-title">Company profile</div>
-              <div class="ob-step-desc">Tell us about your business</div>
+              <div class="ob-step-title">{{ $t('onboarding.stepCompanyTitle') }}</div>
+              <div class="ob-step-desc">{{ $t('onboarding.stepCompanyDesc') }}</div>
             </div>
           </div>
           <div class="ob-step">
             <div class="ob-step-dot">3</div>
             <div>
-              <div class="ob-step-title">Free trial starts</div>
-              <div class="ob-step-desc">14 days, no credit card needed</div>
+              <div class="ob-step-title">{{ $t('onboarding.stepTrialTitle') }}</div>
+              <div class="ob-step-desc">{{ $t('onboarding.stepTrialDesc') }}</div>
             </div>
           </div>
         </div>
 
         <div class="ob-trial-badge">
           <i class="fa fa-gift me-2"></i>
-          <span><strong>14-day free trial</strong> - no credit card required</span>
+          <span><strong>{{ $t('onboarding.trialBadgeStrong') }}</strong> - {{ $t('onboarding.trialBadgeText') }}</span>
         </div>
       </div>
     </div>
@@ -87,8 +86,8 @@
         <div class="ob-card">
 
           <div class="ob-card-header">
-            <h2 class="ob-card-title">Company profile</h2>
-            <p class="ob-card-subtitle">Required fields are marked with <span class="ob-req">*</span></p>
+            <h2 class="ob-card-title">{{ $t('onboarding.stepCompanyTitle') }}</h2>
+            <p class="ob-card-subtitle">{{ $t('onboarding.cardSubtitle') }} <span class="ob-req">*</span></p>
           </div>
 
           <div v-if="errorMessage" class="ob-alert" role="alert">
@@ -98,10 +97,10 @@
           <form @submit.prevent="onSubmit" novalidate>
 
             <!-- Section: Personal -->
-            <div class="ob-section-label">Your info</div>
+            <div class="ob-section-label">{{ $t('onboarding.sectionYourInfo') }}</div>
 
             <div class="ob-field" :class="{ 'ob-field--error': v$.owner_name.$errors.length }">
-              <label class="ob-label" for="ob-owner-name">Full name <span class="ob-req">*</span></label>
+              <label class="ob-label" for="ob-owner-name">{{ $t('onboarding.fieldFullName') }} <span class="ob-req">*</span></label>
               <input id="ob-owner-name" type="text" class="ob-input"
                 placeholder="Jane Doe"
                 v-model="form.owner_name"
@@ -109,15 +108,15 @@
                 autocomplete="name"
               />
               <div v-if="v$.owner_name.$errors.length" class="ob-field-error">
-                <i class="fa fa-circle-xmark me-1"></i>Required
+                <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
               </div>
             </div>
 
             <!-- Section: Company -->
-            <div class="ob-section-label">Company</div>
+            <div class="ob-section-label">{{ $t('onboarding.stepCompanyTitle') }}</div>
 
             <div class="ob-field" :class="{ 'ob-field--error': v$.trade_name.$errors.length }">
-              <label class="ob-label" for="ob-trade-name">Trade / business name <span class="ob-req">*</span></label>
+              <label class="ob-label" for="ob-trade-name">{{ $t('onboarding.fieldTradeName') }} <span class="ob-req">*</span></label>
               <input id="ob-trade-name" type="text" class="ob-input"
                 placeholder="My Business"
                 v-model="form.trade_name"
@@ -125,12 +124,12 @@
                 autocomplete="organization"
               />
               <div v-if="v$.trade_name.$errors.length" class="ob-field-error">
-                <i class="fa fa-circle-xmark me-1"></i>Required
+                <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
               </div>
             </div>
 
             <div class="ob-field">
-              <label class="ob-label" for="ob-legal-name">Legal / registered name <span class="ob-opt">(optional)</span></label>
+              <label class="ob-label" for="ob-legal-name">{{ $t('onboarding.fieldLegalName') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></label>
               <input id="ob-legal-name" type="text" class="ob-input"
                 placeholder="My Business S.L."
                 v-model="form.legal_name"
@@ -139,10 +138,10 @@
             </div>
 
             <!-- Section: Address -->
-            <div class="ob-section-label">Address</div>
+            <div class="ob-section-label">{{ $t('onboarding.sectionAddress') }}</div>
 
             <div class="ob-field" :class="{ 'ob-field--error': v$.address_line1.$errors.length }">
-              <label class="ob-label" for="ob-address">Street address <span class="ob-req">*</span></label>
+              <label class="ob-label" for="ob-address">{{ $t('onboarding.fieldStreetAddress') }} <span class="ob-req">*</span></label>
               <input id="ob-address" type="text" class="ob-input"
                 placeholder="123 Main Street"
                 v-model="form.address_line1"
@@ -150,61 +149,61 @@
                 autocomplete="street-address"
               />
               <div v-if="v$.address_line1.$errors.length" class="ob-field-error">
-                <i class="fa fa-circle-xmark me-1"></i>Required
+                <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
               </div>
             </div>
 
             <div class="ob-row-2">
               <div class="ob-field" :class="{ 'ob-field--error': v$.city.$errors.length }">
-                <label class="ob-label" for="ob-city">City <span class="ob-req">*</span></label>
+                <label class="ob-label" for="ob-city">{{ $t('onboarding.fieldCity') }} <span class="ob-req">*</span></label>
                 <input id="ob-city" type="text" class="ob-input"
-                  placeholder="Madrid"
+                  :placeholder="isMorocco ? 'Casablanca' : 'Madrid'"
                   v-model="form.city"
                   @blur="v$.city.$touch"
                   autocomplete="address-level2"
                 />
                 <div v-if="v$.city.$errors.length" class="ob-field-error">
-                  <i class="fa fa-circle-xmark me-1"></i>Required
+                  <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
                 </div>
               </div>
 
               <div class="ob-field" :class="{ 'ob-field--error': v$.postal_code.$errors.length }">
-                <label class="ob-label" for="ob-postal">Postal code <span class="ob-req">*</span></label>
+                <label class="ob-label" for="ob-postal">{{ $t('onboarding.fieldPostalCode') }} <span class="ob-req">*</span></label>
                 <input id="ob-postal" type="text" class="ob-input"
-                  placeholder="28001"
+                  :placeholder="isMorocco ? '20100' : '28001'"
                   v-model="form.postal_code"
                   @blur="v$.postal_code.$touch"
                   autocomplete="postal-code"
                 />
                 <div v-if="v$.postal_code.$errors.length" class="ob-field-error">
-                  <i class="fa fa-circle-xmark me-1"></i>Required
+                  <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
                 </div>
               </div>
             </div>
 
             <div class="ob-field" :class="{ 'ob-field--error': v$.country.$error }">
-              <label class="ob-label" for="ob-country">Country <span class="ob-req">*</span></label>
+              <label class="ob-label" for="ob-country">{{ $t('onboarding.fieldCountry') }} <span class="ob-req">*</span></label>
               <select id="ob-country" class="ob-input ob-select"
                 v-model="form.country" @change="selectCountry"
                 @blur="v$.country.$touch"
                 autocomplete="country-name"
               >
-                <option value="" disabled>Select a country…</option>
+                <option value="" disabled>{{ $t('onboarding.selectCountryPlaceholder') }}</option>
                 <option v-for="c in countries" :key="c.code" :value="c.name">{{ c.name }}</option>
               </select>
               <div v-if="v$.country.$errors.length" class="ob-field-error">
-                <i class="fa fa-circle-xmark me-1"></i>Required
+                <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
               </div>
             </div>
 
             <!-- Section: Business details -->
-            <div class="ob-section-label">Business details</div>
+            <div class="ob-section-label">{{ $t('onboarding.sectionBusinessDetails') }}</div>
 
             <!-- Morocco: ICE only (primary identifier). IF/RC are completed
                  later in Settings - Morocco Phase 1B, docs/morocco-phase-1b-identity.md §6. -->
             <div class="ob-row-2" v-if="isMorocco">
               <div class="ob-field">
-                <label class="ob-label" for="ob-ice">ICE <span class="ob-opt">(optional)</span></label>
+                <label class="ob-label" for="ob-ice">{{ $t('onboarding.fieldIce') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></label>
                 <input id="ob-ice" type="text" class="ob-input"
                   placeholder="001234567000089"
                   v-model="form.ice"
@@ -215,7 +214,7 @@
             <!-- Spain / everyone else: unchanged -->
             <div class="ob-row-2" v-else>
               <div class="ob-field">
-                <label class="ob-label" for="ob-taxid">Tax ID / NIF <span class="ob-opt">(optional)</span></label>
+                <label class="ob-label" for="ob-taxid">{{ $t('onboarding.fieldTaxId') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></label>
                 <input id="ob-taxid" type="text" class="ob-input"
                   placeholder="B12345678"
                   v-model="form.tax_id"
@@ -223,7 +222,7 @@
               </div>
 
               <div class="ob-field">
-                <label class="ob-label" for="ob-vat">VAT number <span class="ob-opt">(optional)</span></label>
+                <label class="ob-label" for="ob-vat">{{ $t('onboarding.fieldVatNumber') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></label>
                 <input id="ob-vat" type="text" class="ob-input"
                   placeholder="ES-B12345678"
                   v-model="form.vat_number"
@@ -233,7 +232,7 @@
 
             <div class="ob-row-2">
               <div class="ob-field">
-                <label class="ob-label" for="ob-phone">Phone <span class="ob-opt">(optional)</span></label>
+                <label class="ob-label" for="ob-phone">{{ $t('onboarding.fieldPhone') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></label>
                 <input id="ob-phone" type="tel" class="ob-input"
                   :placeholder="isMorocco ? '+212' : '+34'"
                   v-model="form.phone"
@@ -242,12 +241,12 @@
               </div>
 
               <div class="ob-field" :class="{ 'ob-field--error': v$.currency.$errors.length }">
-                <label class="ob-label" for="ob-currency">Currency <span class="ob-req">*</span></label>
+                <label class="ob-label" for="ob-currency">{{ $t('onboarding.fieldCurrency') }} <span class="ob-req">*</span></label>
                 <select id="ob-currency" class="ob-input ob-select"
                   v-model="form.currency"
                   @blur="v$.currency.$touch"
                 >
-                  <option value="" disabled>Select…</option>
+                  <option value="" disabled>{{ $t('onboarding.selectPlaceholder') }}</option>
                   <option value="EUR">EUR - Euro</option>
                   <option value="USD">USD - US Dollar</option>
                   <option value="GBP">GBP - British Pound</option>
@@ -265,21 +264,21 @@
                   <option value="COP">COP - Colombian Peso</option>
                 </select>
                 <div v-if="v$.currency.$errors.length" class="ob-field-error">
-                  <i class="fa fa-circle-xmark me-1"></i>Required
+                  <i class="fa fa-circle-xmark me-1"></i>{{ $t('validation.required') }}
                 </div>
               </div>
             </div>
 
             <!-- Section: Logo -->
-            <div class="ob-section-label">Logo <span class="ob-opt">(optional)</span></div>
+            <div class="ob-section-label">{{ $t('onboarding.fieldLogo') }} <span class="ob-opt">({{ $t('onboarding.optional') }})</span></div>
 
             <div class="ob-field">
               <div class="ob-logo-upload" @click="$refs.logoInput.click()" :class="{ 'ob-logo-upload--has': logoPreview }">
                 <img v-if="logoPreview" :src="logoPreview" class="ob-logo-preview" alt="Logo preview" />
                 <div v-else class="ob-logo-placeholder">
                   <i class="fa fa-image"></i>
-                  <span>Click to upload logo</span>
-                  <small>PNG, JPG or SVG - max 2 MB</small>
+                  <span>{{ $t('onboarding.logoUploadCta') }}</span>
+                  <small>{{ $t('onboarding.logoFileHint') }}</small>
                 </div>
                 <button v-if="logoPreview" type="button" class="ob-logo-remove" @click.stop="removeLogo">
                   <i class="fa fa-times"></i>
@@ -296,10 +295,10 @@
               :disabled="isLoading"
             >
               <span v-if="!isLoading" class="ob-btn-text">
-                <i class="fa fa-rocket me-2"></i>Complete setup &amp; start trial
+                <i class="fa fa-rocket me-2"></i>{{ $t('onboarding.submitBtn') }}
               </span>
               <span v-else class="ob-btn-text">
-                <i class="fa fa-spinner fa-spin me-2"></i>Setting up your workspace…
+                <i class="fa fa-spinner fa-spin me-2"></i>{{ $t('onboarding.submitBtnLoading') }}
               </span>
             </button>
 
@@ -315,6 +314,7 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useTemplateStore } from '@/stores/template';
 import axios from 'axios';
 import useVuelidate from '@vuelidate/core';
@@ -322,6 +322,7 @@ import { required } from '@vuelidate/validators';
 
 const store  = useTemplateStore();
 const router = useRouter();
+const { t }  = useI18n();
 
 const isDark       = computed(() => store.settings.darkMode);
 const isLoading    = ref(false);
@@ -387,7 +388,7 @@ onMounted(async () => {
       if (data.profile?.[field] != null) form[field] = data.profile[field];
     }
   } catch {
-    errorMessage.value = 'Unable to load company settings. Please reload.';
+    errorMessage.value = t('onboarding.loadError');
   }
 });
 
@@ -439,7 +440,7 @@ async function onSubmit() {
 
     router.push({ name: 'backend-dashboard' });
   } catch (err) {
-    const msg = err.response?.data?.message || 'Something went wrong. Please try again.';
+    const msg = err.response?.data?.message || t('onboarding.genericError');
     errorMessage.value = msg;
     isLoading.value = false;
   }

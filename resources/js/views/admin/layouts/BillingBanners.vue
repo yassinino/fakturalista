@@ -5,11 +5,11 @@
     <div v-if="store.billing.showTrialBanner && !store.billing.isReadOnly" class="bb-banner bb-banner--trial" role="status">
       <i class="fa fa-hourglass-half bb-icon"></i>
       <div class="bb-body">
-        <strong>{{ store.billing.trialDaysLeft }} day{{ store.billing.trialDaysLeft === 1 ? '' : 's' }} left in your free trial.</strong>
-        Subscribe now to keep full access.
+        <strong>{{ store.billing.trialDaysLeft }} {{ $t('billingBanner.daysLeftInTrial') }}</strong>
+        {{ $t('billingBanner.trialSubscribeNow') }}
       </div>
       <router-link :to="{ name: 'backend-subscription' }" class="bb-cta">
-        View plans <i class="fa fa-arrow-right ms-1"></i>
+        {{ $t('billingBanner.viewPlans') }} <i class="fa fa-arrow-right ms-1"></i>
       </router-link>
     </div>
 
@@ -17,11 +17,11 @@
     <div v-if="store.billing.isReadOnly" class="bb-banner bb-banner--readonly" role="alert">
       <i class="fa fa-lock bb-icon"></i>
       <div class="bb-body">
-        <strong>Your trial has ended.</strong>
-        The app is in read-only mode - you can view data but cannot create or modify records.
+        <strong>{{ $t('billingBanner.trialEnded') }}</strong>
+        {{ $t('billingBanner.readOnlyExplanation') }}
       </div>
       <router-link :to="{ name: 'backend-subscription' }" class="bb-cta bb-cta--white">
-        Subscribe to unlock <i class="fa fa-arrow-right ms-1"></i>
+        {{ $t('billingBanner.subscribeToUnlock') }} <i class="fa fa-arrow-right ms-1"></i>
       </router-link>
     </div>
 

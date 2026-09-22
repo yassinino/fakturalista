@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Bienvenido a Fakturalista</title>
+    <title>{{ __('emails.welcome_admin.subject') }}</title>
     <!--[if mso]>
     <noscript>
         <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
@@ -140,18 +140,17 @@
                 <span style="font-size:26px;line-height:56px;display:block;">🎉</span>
             </td></tr>
         </table>
-        <div class="hero-title">¡Tu cuenta está lista,<br>{{ $adminName }}!</div>
-        <div class="hero-subtitle">Bienvenido/a a Fakturalista. Ya puedes comenzar a facturar.</div>
+        <div class="hero-title">{{ __('emails.welcome_admin.hero_title') }}<br>{{ $adminName }}!</div>
+        <div class="hero-subtitle">{{ __('emails.welcome_admin.hero_subtitle') }}</div>
     </div>
 
     {{-- ── Body ─────────────────────────────────────── --}}
     <div class="body">
 
         <p class="greeting">
-            Hola <strong>{{ $adminName }}</strong>,<br><br>
-            Nos alegra tenerte en Fakturalista. Tu espacio de trabajo para
-            <strong>{{ $tenant->company_name }}</strong> ha sido creado y configurado correctamente.
-            A continuación encontrarás todos los datos que necesitas para acceder.
+            {{ __('emails.welcome_admin.greeting_hello') }} <strong>{{ $adminName }}</strong>,<br><br>
+            {{ __('emails.welcome_admin.greeting_body_1') }}
+            <strong>{{ $tenant->company_name }}</strong> {{ __('emails.welcome_admin.greeting_body_2') }}
         </p>
 
         {{-- Credentials block --}}
@@ -160,7 +159,7 @@
 
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        Empresa
+                        {{ __('emails.welcome_admin.label_company') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;">
                         {{ $tenant->company_name }}
@@ -171,7 +170,7 @@
 
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        URL de acceso
+                        {{ __('emails.welcome_admin.label_login_url') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;word-break:break-all;">
                         <a href="{{ $loginUrl }}" style="color:#fa7070;text-decoration:none;">{{ $loginUrl }}</a>
@@ -182,7 +181,7 @@
 
                 <tr>
                     <td class="info-label" style="padding:8px 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        Email
+                        {{ __('emails.welcome_admin.label_email') }}
                     </td>
                     <td class="info-value" style="padding:8px 0;color:#111827;font-size:14px;font-weight:500;word-break:break-all;">
                         {{ $adminEmail }}
@@ -193,7 +192,7 @@
 
                 <tr>
                     <td class="info-label" style="padding:8px 0 0;color:#6b7280;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;width:140px;vertical-align:top;">
-                        Contraseña temporal
+                        {{ __('emails.welcome_admin.label_temp_password') }}
                     </td>
                     <td style="padding:8px 0 0;vertical-align:top;">
                         <span class="password-badge" style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:4px 10px;font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:700;color:#c2410c;letter-spacing:0.05em;">
@@ -207,9 +206,7 @@
 
         {{-- Security note --}}
         <div class="security-note">
-            <strong>⚠️ Importante:</strong> Esta contraseña es temporal y fue generada automáticamente.
-            Te recomendamos <strong>cambiarla en tu primer inicio de sesión</strong> desde la configuración
-            de tu perfil. No compartas esta contraseña con nadie.
+            <strong>{{ __('emails.welcome_admin.security_note_title') }}</strong> {{ __('emails.welcome_admin.security_note_text') }}
         </div>
 
         {{-- CTA button --}}
@@ -217,7 +214,7 @@
             <a href="{{ $loginUrl }}"
                class="cta-button"
                style="display:inline-block;background:#fa7070;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;letter-spacing:0.02em;padding:14px 36px;border-radius:10px;">
-                Acceder a Fakturalista &rarr;
+                {{ __('emails.welcome_admin.cta_button') }}
             </a>
         </div>
 
@@ -225,27 +222,27 @@
 
         {{-- Help --}}
         <p class="help-text">
-            ¿Tienes alguna pregunta o necesitas ayuda? Nuestro equipo de soporte está disponible para ti.
+            {{ __('emails.welcome_admin.help_question') }}
         </p>
         <p class="help-text">
-            📧 Escríbenos a <a href="mailto:contact@fakturalista.com">contact@fakturalista.com</a>
-            y te responderemos en menos de 24 horas.
+            📧 {{ __('emails.welcome_admin.help_contact') }} <a href="mailto:contact@fakturalista.com">contact@fakturalista.com</a>
+            {{ __('emails.welcome_admin.help_response') }}
         </p>
 
     </div>
 
     {{-- ── Footer ───────────────────────────────────── --}}
     <div class="footer">
-        <p class="footer-brand"><span>Faktura</span>lista &mdash; Facturación para autónomos y empresas</p>
+        <p class="footer-brand"><span>Faktura</span>lista &mdash; {{ __('emails.welcome_admin.footer_tagline') }}</p>
         <p class="footer-links">
             <a href="{{ url('/') }}">fakturalista.com</a>
             &nbsp;&middot;&nbsp;
-            <a href="{{ url('/contact') }}">Soporte</a>
+            <a href="{{ url('/contact') }}">{{ __('emails.welcome_admin.footer_support') }}</a>
             &nbsp;&middot;&nbsp;
-            <a href="{{ url('/pricing') }}">Planes</a>
+            <a href="{{ url('/pricing') }}">{{ __('emails.welcome_admin.footer_pricing') }}</a>
         </p>
         <p style="font-size:11px;color:#d1d5db;margin-top:12px;">
-            Recibes este email porque se ha creado una cuenta vinculada a {{ $adminEmail }}.
+            {{ __('emails.welcome_admin.footer_note', ['email' => $adminEmail]) }}
         </p>
     </div>
 

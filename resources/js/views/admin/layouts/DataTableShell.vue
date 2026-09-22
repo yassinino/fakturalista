@@ -9,7 +9,7 @@
           <input
             class="dt-search"
             type="search"
-            :placeholder="searchPlaceholder"
+            :placeholder="searchPlaceholder || $t('common.search')"
             v-model="searchInput"
             autocomplete="off"
           />
@@ -32,9 +32,9 @@
 
       <div class="dt-toolbar-right">
         <template v-if="showDateFilter">
-          <input class="dt-date" type="date" v-model="dateFrom" @change="onDateChange" title="From date" />
+          <input class="dt-date" type="date" v-model="dateFrom" @change="onDateChange" :title="$t('common.from')" />
           <span class="dt-date-sep">–</span>
-          <input class="dt-date" type="date" v-model="dateTo" @change="onDateChange" title="To date" />
+          <input class="dt-date" type="date" v-model="dateTo" @change="onDateChange" :title="$t('common.to')" />
         </template>
         <button v-if="hasActiveFilters" class="dt-clear-btn" @click="clearFilters">
           <i class="fa fa-times me-1"></i>{{ $t('common.clear') }}
@@ -67,7 +67,7 @@
       </div>
 
       <div class="dt-pages">
-        <button class="dt-pg-btn" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)" aria-label="Previous">
+        <button class="dt-pg-btn" :disabled="currentPage <= 1" @click="goPage(currentPage - 1)" :aria-label="$t('common.previous')">
           <i class="fa fa-chevron-left"></i>
         </button>
         <template v-for="n in pageWindow" :key="n + '-' + currentPage">
@@ -79,7 +79,7 @@
             @click="goPage(n)"
           >{{ n }}</button>
         </template>
-        <button class="dt-pg-btn" :disabled="currentPage >= lastPage" @click="goPage(currentPage + 1)" aria-label="Next">
+        <button class="dt-pg-btn" :disabled="currentPage >= lastPage" @click="goPage(currentPage + 1)" :aria-label="$t('common.next')">
           <i class="fa fa-chevron-right"></i>
         </button>
       </div>
@@ -104,7 +104,7 @@ const props = defineProps({
   serverSide:        { type: Boolean, default: false },
   meta:              { type: Object,  default: () => ({ current_page: 1, last_page: 1, per_page: 10, total: 0 }) },
   statusOptions:     { type: Array,   default: () => [] },
-  searchPlaceholder: { type: String,  default: 'Search…' },
+  searchPlaceholder: { type: String,  default: '' },
   searchFields:      { type: Array,   default: () => ['reference', 'customer'] },
   showDateFilter:    { type: Boolean, default: true },
 });

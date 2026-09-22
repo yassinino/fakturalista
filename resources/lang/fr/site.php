@@ -11,6 +11,7 @@ return [
         'how_it_works'  => 'Comment ça marche',
         'resources'     => 'Ressources',
         'cta'           => 'Commencer gratuitement',
+        'close'         => 'Fermer',
     ],
 
     'footer' => [
@@ -94,6 +95,8 @@ return [
         'show2_bullet_2' => 'Conversion en facture en un clic',
         'show2_bullet_3' => 'Suivi du statut de chaque devis',
         'show2_image_alt'=> 'Un devis en cours de conversion en facture',
+        'show2_mock_status_accepted' => 'Accepté',
+        'show2_mock_status_sent'     => 'Envoyée',
 
         // Showcase - Clients / paiements / services
         'show3_title'    => 'Clients, paiements et services. Tout organisé.',
@@ -102,6 +105,7 @@ return [
         'show3_bullet_2' => 'Catalogue de produits et services',
         'show3_bullet_3' => 'Paiements en ligne et suivi des encaissements',
         'show3_image_alt'=> 'Panneau clients et catalogue de services Fakturalista',
+        'show3_mock_payment_received' => 'Paiement reçu — Facture #0041',
 
         // Showcase - Rapports
         'show4_title'    => 'Comprenez votre activité en un coup d\'œil',
@@ -110,6 +114,8 @@ return [
         'show4_bullet_2' => 'Factures en attente, payées et en retard',
         'show4_bullet_3' => 'Tableau de bord visuel, sans configuration',
         'show4_image_alt'=> 'Panneau de rapports et statistiques Fakturalista',
+        'show4_mock_collected' => 'Encaissé ce mois-ci',
+        'show4_mock_pending'   => 'En attente',
 
         // Comment ça marche
         'how_title'       => 'Commencez en quelques minutes',
@@ -145,6 +151,9 @@ return [
         'value_chip_1' => 'Client ajouté',
         'value_chip_2' => 'Facture envoyée',
         'value_chip_3' => 'Devis accepté',
+        'value_dash_invoices' => 'Factures',
+        'value_dash_customers' => 'Clients',
+        'value_dash_quotes' => 'Devis',
 
         // Tarifs (aperçu)
         'pricing_title'       => 'Un plan pour chaque étape de votre activité',
@@ -202,6 +211,8 @@ return [
         'card_title'       => 'Commencez maintenant, sans risque',
         'card_sub'         => 'Remplissez le formulaire et nous activons votre accès en moins de 24 h.',
         'error_msg'        => 'Veuillez vérifier les champs et réessayer.',
+        'send_failed'      => 'Impossible d\'envoyer la demande. Réessayez.',
+        'status_success'   => 'Demande envoyée avec succès.',
         'label_name'       => 'Nom complet',
         'label_email'      => 'Adresse e-mail',
         'label_company'    => 'Nom de l\'entreprise',
@@ -226,37 +237,36 @@ return [
         'page_title'       => 'Créez votre compte gratuit - Fakturalista',
         'card_tag'         => 'Essai gratuit',
         'card_title'       => 'Créez votre compte',
-        'card_sub'         => 'Commencez à facturer en moins d\'une minute.',
-        'label_first_name' => 'Prénom',
-        'label_last_name'  => 'Nom',
-        'label_email'      => 'Email',
+        'card_sub'         => 'Commencez gratuitement avec Fakturalista',
+        'label_name'       => 'Nom complet',
+        'label_email'      => 'Adresse e-mail',
+        'label_phone'      => 'Numéro de téléphone (facultatif)',
         'label_password'   => 'Mot de passe',
-        'label_password_confirmation' => 'Confirmer le mot de passe',
-        'label_company'    => 'Nom de l\'entreprise',
-        'label_tax_id'     => 'ICE/IF (optionnel)',
-        'label_country'    => 'Pays (optionnel)',
-        'placeholder_first_name' => 'Fatima',
-        'placeholder_last_name'  => 'El Amrani',
-        'placeholder_email'      => 'fatima@monentreprise.com',
-        'placeholder_company'    => 'Mon Entreprise SARL',
-        'submit'           => 'Créer mon compte gratuit',
+        'password_hint'    => '8 caractères minimum',
+        'placeholder_name'  => 'Fatima El Amrani',
+        'placeholder_email' => 'fatima@monentreprise.com',
+        'placeholder_phone' => '+212 6XX XXX XXX',
+        'submit'           => 'Créer mon compte',
         'submitting'       => 'Nous préparons votre espace…',
         'submitting_sub'   => 'Cela ne prendra que quelques secondes.',
-        'trial_note'       => '14 jours gratuits · Sans carte de crédit',
+        'trial_note'       => '14 jours d\'essai gratuit • Sans carte bancaire',
         'already_have_account' => 'Vous avez déjà un compte ?',
         'sign_in'          => 'Se connecter',
         'error_msg'        => 'Veuillez vérifier les champs et réessayer.',
+        'already_processing' => 'Nous traitons déjà une demande pour cet e-mail. Patientez quelques secondes et réessayez.',
+        'provisioning_failed' => 'Impossible de créer votre compte pour le moment. Veuillez réessayer.',
     ],
 
     'loginFinder' => [
         'page_title'  => 'Connexion - Fakturalista',
-        'title'       => 'Se connecter',
-        'sub'         => 'Indiquez l\'email utilisé lors de votre inscription et nous vous redirigerons vers votre espace.',
-        'label_email' => 'Email',
-        'submit'      => 'Continuer',
+        'title'       => 'Connexion',
+        'sub'         => 'Entrez votre e-mail pour retrouver votre espace',
+        'label_email' => 'Adresse e-mail',
+        'submit'      => 'Se connecter',
         'not_found'   => 'Aucun compte trouvé avec cet email.',
-        'register_cta' => 'Pas encore de compte ?',
-        'register_link' => 'Créez-en un gratuitement',
+        'too_many_attempts' => 'Trop de tentatives. Patientez une minute et réessayez.',
+        'register_cta' => 'Vous n\'avez pas encore de compte ?',
+        'register_link' => 'Créer un compte gratuitement',
     ],
 
 
@@ -380,6 +390,7 @@ return [
         'form_sub'            => 'Partagez votre question ou suggestion et nous vous recontacterons.',
         'alert_error'         => 'Veuillez vérifier les champs et réessayer.',
         'status_success'      => 'Message envoyé avec succès.',
+        'send_failed'         => "Impossible d'envoyer le message. Réessayez.",
         'label_name'          => 'Nom complet *',
         'placeholder_name'    => 'Marie Dupont',
         'label_email_f'       => 'Adresse e-mail *',
@@ -509,6 +520,7 @@ return [
         'nav_title'        => 'Rubriques',
         // TODO: remplacer le texte de remplissage par la vraie documentation pour chaque section.
         'placeholder'      => 'La documentation complète de cette rubrique est en cours de rédaction. Revenez prochainement ou contactez le support si vous avez besoin d\'aide.',
+        'coming_soon'      => 'Bientôt disponible',
         'cat_start'        => 'Démarrage',
         'cat_start_sub'    => 'Configuration du compte, espace de travail et envoi de votre première facture.',
         'cat_invoices'     => 'Factures',
@@ -795,6 +807,32 @@ return [
         'source_rdley15' => 'Real Decreto-ley 15/2025 (BOE)',
 
         'cta_final' => 'Commencer gratuitement',
+    ],
+
+    'noscript_warning' => "Nous sommes désolés, mais Fakturalista ne fonctionne pas correctement sans JavaScript activé. Veuillez l'activer pour continuer.",
+
+    'tenant_not_found' => [
+        'title'          => 'Espace introuvable',
+        'meta'           => "Cet espace client n'existe pas sur Fakturalista.",
+        'badge'          => 'Espace introuvable',
+        'heading'        => "Cet espace client n'existe pas",
+        'subtitle_1'     => "Il se peut que le lien soit incorrect ou que cet espace",
+        'subtitle_2'     => "ait été supprimé ou n'ait jamais existé.",
+        'attempted_url'  => 'Vous avez essayé d\'accéder à :',
+        'cta_title'      => 'Vous voulez votre propre espace sur Fakturalista ?',
+        'cta_sub'        => 'Créez votre compte gratuit en moins de 2 minutes. Sans carte bancaire.',
+        'create_account' => 'Créer un compte gratuit',
+        'back_home'      => '← Retour à fakturalista.com',
+    ],
+
+    'subscription_checkout' => [
+        'success_title'   => '✅ Paiement effectué avec succès',
+        'success_text'    => 'Merci pour votre abonnement. Vous pouvez maintenant utiliser Fakturalista.',
+        'success_cta'     => "Aller à l'accueil",
+        'cancel_title'    => 'Plateforme de facturation et de gestion',
+        'cancel_heading'  => '❌ Paiement annulé',
+        'cancel_text'     => "Votre paiement n'a pas abouti. Vous pouvez réessayer.",
+        'cancel_cta'      => 'Retour au plan',
     ],
 
 ];

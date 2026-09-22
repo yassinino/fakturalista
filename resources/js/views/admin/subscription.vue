@@ -247,7 +247,7 @@
 
       <div class="sub-modal-meta">
         <div class="sub-modal-meta-row">
-          <span>Payment</span>
+          <span>{{ $t('subscription.confirm.paymentLabel') }}</span>
           <span>
             <svg viewBox="0 0 32 12" height="12" fill="none" aria-label="Stripe">
               <text x="0" y="10" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#635bff">stripe</text>
@@ -255,8 +255,8 @@
           </span>
         </div>
         <div class="sub-modal-meta-row">
-          <span>Billing</span>
-          <span>{{ cycle === 'yearly' ? 'Yearly' : 'Monthly' }}</span>
+          <span>{{ $t('subscription.confirm.billingLabel') }}</span>
+          <span>{{ cycle === 'yearly' ? $t('subscription.billing.yearly') : $t('subscription.billing.monthly') }}</span>
         </div>
       </div>
 

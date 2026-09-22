@@ -16,11 +16,13 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import EditQuoteForm from "./EditQuoteForm.vue";
 
 const toaster = createToaster();
 const router  = useRouter();
 const route   = useRoute();
+const { t }   = useI18n();
 
 const uuid  = route.params.id;
 const quote = ref(null);
@@ -38,7 +40,7 @@ async function saveQuote(state) {
     toaster.success(res.data.message);
     router.push("/admin/quotes");
   } catch (e) {
-    toaster.error(e.response?.data?.message ?? "Ha ocurrido un error. Inténtalo de nuevo.");
+    toaster.error(e.response?.data?.message ?? t('quotes.errorGeneric'));
   }
 }
 </script>

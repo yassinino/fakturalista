@@ -21,8 +21,7 @@
 
 <body>
     <noscript>
-        <strong>We're sorry but Fakturalista Vue Edition doesn't work properly without JavaScript enabled. Please enable it
-        to continue.</strong>
+        <strong>{{ __('site.noscript_warning') }}</strong>
     </noscript>
 
     <div id="app"></div>

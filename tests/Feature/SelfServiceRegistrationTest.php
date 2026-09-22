@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\AdminNewRegistrationMail;
 use App\Mail\WelcomeSelfServiceMail;
 use App\Models\CompanyProfile;
 use App\Models\Country;
@@ -54,13 +55,10 @@ class SelfServiceRegistrationTest extends TestCase
         $captchaAnswer = session('math_captcha_answer');
 
         return array_merge([
-            'first_name'            => 'Maria',
-            'last_name'             => 'Garcia',
-            'email'                 => $this->uniqueEmail(),
-            'password'              => 'SecurePass123',
-            'password_confirmation' => 'SecurePass123',
-            'company_name'          => 'Acme Studio ' . uniqid(),
-            'captcha_answer'        => $captchaAnswer,
+            'name'            => 'Maria Garcia',
+            'email'           => $this->uniqueEmail(),
+            'password'        => 'SecurePass123',
+            'captcha_answer'  => $captchaAnswer,
         ], $overrides);
     }
 
@@ -79,7 +77,7 @@ class SelfServiceRegistrationTest extends TestCase
     {
         Mail::fake();
         $email   = $this->uniqueEmail();
-        $payload = $this->payloadWithFreshCaptcha(['email' => $email, 'company_name' => 'Acme Studio']);
+        $payload = $this->payloadWithFreshCaptcha(['email' => $email]);
 
         $before = now();
         $response = $this->post('http://fakturalista.test/register', $payload);
@@ -90,17 +88,48 @@ class SelfServiceRegistrationTest extends TestCase
 
         $response->assertRedirect('https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email));
 
-        $this->assertSame('Acme Studio', $tenant->company_name);
+        // No business name is collected at signup - the owner's own name
+        // is used as a placeholder until onboarding sets the real one.
+        $this->assertSame('Maria Garcia', $tenant->company_name);
         $this->assertSame('Maria Garcia', $tenant->owner_name);
         $this->assertSame($email, $tenant->owner_email);
         $this->assertSame('active', $tenant->status);
         $this->assertSame('trialing', $tenant->subscription_status);
-        $this->assertStringStartsWith('acme-studio', $domain);
+        $this->assertStringStartsWith('maria-garcia', $domain);
         $this->assertStringEndsWith('.fakturalista.com', $domain);
 
         // 10. Trial ends exactly 14 days later (config('billing.trial_days')).
         $this->assertGreaterThanOrEqual($before->copy()->addDays(14)->timestamp, $tenant->trial_ends_at->timestamp);
         $this->assertLessThanOrEqual($after->copy()->addDays(14)->timestamp, $tenant->trial_ends_at->timestamp);
+    }
+
+    // ── Phone is optional ────────────────────────────────────────────
+
+    /** @test */
+    public function registration_succeeds_without_a_phone_number(): void
+    {
+        Mail::fake();
+        $email   = $this->uniqueEmail();
+        $payload = $this->payloadWithFreshCaptcha(['email' => $email]);
+        unset($payload['phone']);
+
+        $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
+
+        $tenant = $this->registeredTenant($email);
+        $this->assertNull($tenant->company_phone);
+    }
+
+    /** @test */
+    public function a_provided_phone_number_is_stored_on_the_tenant(): void
+    {
+        Mail::fake();
+        $email   = $this->uniqueEmail();
+        $payload = $this->payloadWithFreshCaptcha(['email' => $email, 'phone' => '+212 6XX XXX XXX']);
+
+        $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
+
+        $tenant = $this->registeredTenant($email);
+        $this->assertSame('+212 6XX XXX XXX', $tenant->company_phone);
     }
 
     // ── 3/4/5. DB provisioning, migrations, domain, seeded countries ──
@@ -138,7 +167,7 @@ class SelfServiceRegistrationTest extends TestCase
         Mail::fake();
         $email   = $this->uniqueEmail();
         $payload = $this->payloadWithFreshCaptcha([
-            'email' => $email, 'password' => 'MyRealPassword1', 'password_confirmation' => 'MyRealPassword1',
+            'email' => $email, 'password' => 'MyRealPassword1',
         ]);
         $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
 
@@ -193,7 +222,7 @@ class SelfServiceRegistrationTest extends TestCase
         $this->registeredTenant($email);
 
         $second = $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha([
-            'email' => $email, 'company_name' => 'A Totally Different Company',
+            'email' => $email, 'name' => 'A Totally Different Person',
         ]));
         $second->assertSessionHasErrors('email');
 
@@ -273,7 +302,7 @@ class SelfServiceRegistrationTest extends TestCase
         Mail::fake();
         $email    = $this->uniqueEmail();
         $password = 'SuperSecretPass99';
-        $payload  = $this->payloadWithFreshCaptcha(['email' => $email, 'password' => $password, 'password_confirmation' => $password]);
+        $payload  = $this->payloadWithFreshCaptcha(['email' => $email, 'password' => $password]);
         $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
 
         // WelcomeSelfServiceMail implements ShouldQueue, so under Mail::fake()
@@ -288,6 +317,10 @@ class SelfServiceRegistrationTest extends TestCase
             $html = $mail->render();
             $this->assertStringNotContainsString($password, $html);
             $this->assertStringContainsString('/admin/login', $html);
+            // Morocco is the default market (no country field is collected
+            // at signup any more - see RegisterTrialRequest) - the welcome
+            // email must render in French, not the 'es' schema default.
+            $this->assertStringContainsString('Bienvenue sur Fakturalista', $html);
             return true;
         });
     }
@@ -297,7 +330,10 @@ class SelfServiceRegistrationTest extends TestCase
     /** @test */
     public function a_welcome_email_failure_does_not_roll_back_a_successfully_provisioned_tenant(): void
     {
-        Mail::shouldReceive('send')->once()->andThrow(new \RuntimeException('SMTP connection refused'));
+        // Both the welcome email and the admin notification go through
+        // Mail::send() (see TenantProvisioningService::provision()'s two
+        // isolated try/catch blocks) - simulate both failing.
+        Mail::shouldReceive('send')->twice()->andThrow(new \RuntimeException('SMTP connection refused'));
 
         $email   = $this->uniqueEmail();
         $payload = $this->payloadWithFreshCaptcha(['email' => $email]);
@@ -313,6 +349,104 @@ class SelfServiceRegistrationTest extends TestCase
         $tenant->run(fn () => $this->assertNotNull(User::where('email', $email)->first()));
     }
 
+    // ── Admin new-registration notification ─────────────────────────
+
+    /** @test */
+    public function admin_notification_is_sent_after_a_successful_registration_with_correct_details_and_no_password(): void
+    {
+        Mail::fake();
+        $email   = $this->uniqueEmail();
+        $payload = $this->payloadWithFreshCaptcha([
+            'email' => $email, 'phone' => '+212 6XX XXX XXX', 'password' => 'SecretPass123',
+        ]);
+
+        $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
+
+        $tenant = $this->registeredTenant($email);
+
+        Mail::assertQueued(AdminNewRegistrationMail::class, function (AdminNewRegistrationMail $mail) use ($tenant, $email) {
+            if ($mail->tenant->getTenantKey() !== $tenant->getTenantKey()) {
+                return false;
+            }
+            $this->assertSame(config('fakturalista.admin_email'), $mail->envelope()->to[0]->address);
+            $this->assertSame('Nouvelle inscription sur Fakturalista 🎉', $mail->envelope()->subject);
+            $this->assertSame('Maria Garcia', $mail->ownerName);
+            $this->assertSame($email, $mail->ownerEmail);
+            $this->assertSame('+212 6XX XXX XXX', $mail->phone);
+
+            $html = $mail->render();
+            $this->assertStringContainsString('Maria Garcia', $html);
+            $this->assertStringContainsString($email, $html);
+            $this->assertStringContainsString('+212 6XX XXX XXX', $html);
+            $this->assertStringNotContainsString('SecretPass123', $html);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function admin_notification_shows_non_renseigne_when_no_phone_was_given(): void
+    {
+        Mail::fake();
+        $email   = $this->uniqueEmail();
+        $payload = $this->payloadWithFreshCaptcha(['email' => $email]);
+        unset($payload['phone']);
+
+        $this->post('http://fakturalista.test/register', $payload)->assertRedirect();
+        $this->registeredTenant($email);
+
+        Mail::assertQueued(AdminNewRegistrationMail::class, function (AdminNewRegistrationMail $mail) use ($email) {
+            if ($mail->ownerEmail !== $email) {
+                return false;
+            }
+            $this->assertNull($mail->phone);
+            $this->assertStringContainsString('Non renseigné', $mail->render());
+            return true;
+        });
+    }
+
+    /** @test */
+    public function admin_notification_is_never_sent_for_a_failed_registration(): void
+    {
+        Mail::fake();
+        $email = $this->uniqueEmail();
+
+        // Same concurrency-lock scenario as the "already in flight" test -
+        // the request is rejected before any provisioning happens.
+        $lock = Cache::lock('register-trial:' . $email, 30);
+        $this->assertTrue($lock->get());
+
+        try {
+            $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha(['email' => $email]))
+                ->assertSessionHasErrors('email');
+        } finally {
+            $lock->release();
+        }
+
+        Mail::assertNotQueued(AdminNewRegistrationMail::class);
+    }
+
+    /** @test */
+    public function admin_notification_is_not_sent_for_admin_created_tenants(): void
+    {
+        Mail::fake();
+        $service = app(TenantProvisioningService::class);
+        $email   = $this->uniqueEmail();
+
+        $tenant = $service->provision([
+            'company_name'   => 'Filament Created Co',
+            'company_email'  => $email,
+            'owner_name'     => 'Filament Admin',
+            'owner_email'    => $email,
+            'admin_password' => 'SomePassword1',
+            'subdomain'      => 'filament-created-' . uniqid(),
+            'plan_slug'      => 'starter',
+        ], selfService: false);
+        $this->createdTenantIds[] = $tenant->getTenantKey();
+
+        Mail::assertNotQueued(AdminNewRegistrationMail::class);
+    }
+
     // ── 18. Tenant isolation is preserved ──────────────────────────
 
     /** @test */
@@ -322,10 +456,10 @@ class SelfServiceRegistrationTest extends TestCase
         $emailA = $this->uniqueEmail('a');
         $emailB = $this->uniqueEmail('b');
 
-        $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha(['email' => $emailA, 'company_name' => 'Tenant A Co']))->assertRedirect();
+        $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha(['email' => $emailA, 'name' => 'Tenant A Owner']))->assertRedirect();
         $tenantA = $this->registeredTenant($emailA);
 
-        $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha(['email' => $emailB, 'company_name' => 'Tenant B Co']))->assertRedirect();
+        $this->post('http://fakturalista.test/register', $this->payloadWithFreshCaptcha(['email' => $emailB, 'name' => 'Tenant B Owner']))->assertRedirect();
         $tenantB = $this->registeredTenant($emailB);
 
         $tenantA->run(function () {

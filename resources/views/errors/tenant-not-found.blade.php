@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
-@section('title', 'Espacio no encontrado')
+@section('title', __('site.tenant_not_found.title'))
 
 @section('meta')
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Este espacio de cliente no existe en Fakturalista.">
+<meta name="description" content="{{ __('site.tenant_not_found.meta') }}">
 @endsection
 
 @section('content')
@@ -184,22 +184,22 @@
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/>
             </svg>
-            Espacio no encontrado
+            {{ __('site.tenant_not_found.badge') }}
         </div>
 
         {{-- Heading --}}
-        <h1 class="tnf-title">Este espacio de cliente no existe</h1>
+        <h1 class="tnf-title">{{ __('site.tenant_not_found.heading') }}</h1>
 
         <p class="tnf-subtitle">
-            Puede que el enlace sea incorrecto o que este espacio<br class="d-none d-sm-block">
-            haya sido eliminado o nunca haya existido.
+            {{ __('site.tenant_not_found.subtitle_1') }}<br class="d-none d-sm-block">
+            {{ __('site.tenant_not_found.subtitle_2') }}
         </p>
 
         {{-- Attempted domain chip --}}
         @if($domain)
         <div>
             <div class="tnf-domain-chip">
-                <span class="tnf-domain-chip-label">Has intentado acceder a:</span>
+                <span class="tnf-domain-chip-label">{{ __('site.tenant_not_found.attempted_url') }}</span>
                 {{ $domain }}
             </div>
         </div>
@@ -208,19 +208,19 @@
         <hr class="tnf-divider">
 
         {{-- CTA --}}
-        <p class="tnf-cta-title">¿Quieres tu propio espacio en Fakturalista?</p>
-        <p class="tnf-cta-sub">Crea tu cuenta gratis en menos de 2 minutos. Sin tarjeta de crédito.</p>
+        <p class="tnf-cta-title">{{ __('site.tenant_not_found.cta_title') }}</p>
+        <p class="tnf-cta-sub">{{ __('site.tenant_not_found.cta_sub') }}</p>
 
         <a href="{{ url('/register') }}" class="tnf-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 5v14M5 12l7 7 7-7"/>
             </svg>
-            Crear cuenta gratis
+            {{ __('site.tenant_not_found.create_account') }}
         </a>
 
         <a href="{{ url('/') }}" class="tnf-back-link">
-            ← Volver a fakturalista.com
+            {{ __('site.tenant_not_found.back_home') }}
         </a>
 
     </div>

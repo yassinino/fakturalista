@@ -11,6 +11,7 @@ return [
         'how_it_works'  => 'Cómo funciona',
         'resources'     => 'Recursos',
         'cta'           => 'Empieza gratis',
+        'close'         => 'Cerrar',
     ],
 
     'footer' => [
@@ -94,6 +95,8 @@ return [
         'show2_bullet_2' => 'Conversión a factura en un clic',
         'show2_bullet_3' => 'Seguimiento del estado de cada presupuesto',
         'show2_image_alt'=> 'Vista de un presupuesto convirtiéndose en factura',
+        'show2_mock_status_accepted' => 'Aceptado',
+        'show2_mock_status_sent'     => 'Enviada',
 
         // Showcase - Clientes / pagos / servicios
         'show3_title'    => 'Clientes, pagos y servicios. Todo organizado.',
@@ -102,6 +105,7 @@ return [
         'show3_bullet_2' => 'Catálogo de productos y servicios',
         'show3_bullet_3' => 'Pagos online y seguimiento de cobros',
         'show3_image_alt'=> 'Panel de clientes y catálogo de servicios de Fakturalista',
+        'show3_mock_payment_received' => 'Pago recibido — Factura #0041',
 
         // Showcase - Informes
         'show4_title'    => 'Entiende tu negocio de un vistazo',
@@ -110,6 +114,8 @@ return [
         'show4_bullet_2' => 'Facturas pendientes, pagadas y vencidas',
         'show4_bullet_3' => 'Panel visual, sin configuración',
         'show4_image_alt'=> 'Panel de informes y estadísticas de Fakturalista',
+        'show4_mock_collected' => 'Cobrado este mes',
+        'show4_mock_pending'   => 'Pendiente',
 
         // Cómo funciona
         'how_title'       => 'Empieza en minutos',
@@ -145,6 +151,9 @@ return [
         'value_chip_1' => 'Cliente añadido',
         'value_chip_2' => 'Factura enviada',
         'value_chip_3' => 'Presupuesto aceptado',
+        'value_dash_invoices' => 'Facturas',
+        'value_dash_customers' => 'Clientes',
+        'value_dash_quotes' => 'Presupuestos',
 
         // Precios (preview)
         'pricing_title'       => 'Un plan para cada etapa de tu negocio',
@@ -202,6 +211,8 @@ return [
         'card_title'       => 'Empieza ahora, sin riesgos',
         'card_sub'         => 'Rellena el formulario y te activamos el acceso en menos de 24 h.',
         'error_msg'        => 'Por favor revisa los campos e intenta de nuevo.',
+        'send_failed'      => 'No se pudo enviar la solicitud. Intenta de nuevo.',
+        'status_success'   => 'Solicitud enviada correctamente.',
         'label_name'       => 'Nombre completo',
         'label_email'      => 'Correo electrónico',
         'label_company'    => 'Nombre de la empresa',
@@ -226,26 +237,24 @@ return [
         'page_title'       => 'Crea tu cuenta gratis - Fakturalista',
         'card_tag'         => 'Prueba gratuita',
         'card_title'       => 'Crea tu cuenta',
-        'card_sub'         => 'Empieza a facturar en menos de un minuto.',
-        'label_first_name' => 'Nombre',
-        'label_last_name'  => 'Apellidos',
-        'label_email'      => 'Email',
+        'card_sub'         => 'Empieza gratis con Fakturalista',
+        'label_name'       => 'Nombre completo',
+        'label_email'      => 'Correo electrónico',
+        'label_phone'      => 'Número de teléfono (opcional)',
         'label_password'   => 'Contraseña',
-        'label_password_confirmation' => 'Confirmar contraseña',
-        'label_company'    => 'Nombre del negocio',
-        'label_tax_id'     => 'NIF/CIF (opcional)',
-        'label_country'    => 'País (opcional)',
-        'placeholder_first_name' => 'María',
-        'placeholder_last_name'  => 'García',
-        'placeholder_email'      => 'maria@miempresa.com',
-        'placeholder_company'    => 'Mi Empresa S.L.',
-        'submit'           => 'Crear mi cuenta gratis',
+        'password_hint'    => '8 caracteres como mínimo',
+        'placeholder_name'  => 'María García',
+        'placeholder_email' => 'maria@miempresa.com',
+        'placeholder_phone' => '+212 6XX XXX XXX',
+        'submit'           => 'Crear mi cuenta',
         'submitting'       => 'Estamos preparando tu espacio…',
         'submitting_sub'   => 'Solo tardará unos segundos.',
-        'trial_note'       => '14 días gratis · Sin tarjeta de crédito',
+        'trial_note'       => '14 días de prueba gratis • Sin tarjeta bancaria',
         'already_have_account' => '¿Ya tienes una cuenta?',
         'sign_in'          => 'Iniciar sesión',
         'error_msg'        => 'Por favor revisa los campos e inténtalo de nuevo.',
+        'already_processing' => 'Ya estamos procesando una solicitud para este email. Espera unos segundos e inténtalo de nuevo.',
+        'provisioning_failed' => 'No hemos podido crear tu cuenta en este momento. Inténtalo de nuevo.',
     ],
 
     'loginFinder' => [
@@ -255,6 +264,7 @@ return [
         'label_email' => 'Email',
         'submit'      => 'Continuar',
         'not_found'   => 'No hemos encontrado ninguna cuenta con ese email.',
+        'too_many_attempts' => 'Demasiados intentos. Espera un minuto e inténtalo de nuevo.',
         'register_cta' => '¿Aún no tienes cuenta?',
         'register_link' => 'Crea una gratis',
     ],
@@ -380,6 +390,7 @@ return [
         'form_sub'            => 'Cuéntanos tu duda o sugerencia y nos ponemos en contacto contigo.',
         'alert_error'         => 'Por favor revisa los campos e intenta de nuevo.',
         'status_success'      => 'Mensaje enviado correctamente.',
+        'send_failed'         => 'No se pudo enviar el mensaje. Intenta de nuevo.',
         'label_name'          => 'Nombre *',
         'placeholder_name'    => 'María García',
         'label_email_f'       => 'Correo electrónico *',
@@ -509,6 +520,7 @@ return [
         'nav_title'        => 'Temas',
         // TODO: reemplazar el texto de marcador con la documentación real de cada sección.
         'placeholder'      => 'La documentación completa de esta sección está en proceso de redacción. Vuelve pronto o contacta con soporte si necesitas ayuda ahora.',
+        'coming_soon'      => 'Próximamente',
         'cat_start'        => 'Primeros pasos',
         'cat_start_sub'    => 'Configuración de la cuenta, espacio de trabajo y envío de tu primera factura.',
         'cat_invoices'     => 'Facturas',
@@ -795,6 +807,32 @@ return [
         'source_rdley15' => 'Real Decreto-ley 15/2025 (BOE)',
 
         'cta_final' => 'Empieza gratis',
+    ],
+
+    'noscript_warning' => 'Lo sentimos, pero Fakturalista no funciona correctamente sin JavaScript habilitado. Actívalo para continuar.',
+
+    'tenant_not_found' => [
+        'title'          => 'Espacio no encontrado',
+        'meta'           => 'Este espacio de cliente no existe en Fakturalista.',
+        'badge'          => 'Espacio no encontrado',
+        'heading'        => 'Este espacio de cliente no existe',
+        'subtitle_1'     => 'Puede que el enlace sea incorrecto o que este espacio',
+        'subtitle_2'     => 'haya sido eliminado o nunca haya existido.',
+        'attempted_url'  => 'Has intentado acceder a:',
+        'cta_title'      => '¿Quieres tu propio espacio en Fakturalista?',
+        'cta_sub'        => 'Crea tu cuenta gratis en menos de 2 minutos. Sin tarjeta de crédito.',
+        'create_account' => 'Crear cuenta gratis',
+        'back_home'      => '← Volver a fakturalista.com',
+    ],
+
+    'subscription_checkout' => [
+        'success_title'   => '✅ Pago completado con éxito',
+        'success_text'    => 'Gracias por tu suscripción. Ya puedes usar Fakturalista.',
+        'success_cta'     => 'Ir al inicio',
+        'cancel_title'    => 'Plataforma de facturación y gestión',
+        'cancel_heading'  => '❌ Pago cancelado',
+        'cancel_text'     => 'Tu pago no se ha completado. Puedes intentarlo nuevamente.',
+        'cancel_cta'      => 'Volver al plan',
     ],
 
 ];

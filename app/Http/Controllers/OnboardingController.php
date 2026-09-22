@@ -76,7 +76,7 @@ class OnboardingController extends Controller
         // Guard: if already completed, return success without changing anything.
         if ($profile->onboarding_completed_at !== null) {
             return response()->json([
-                'message'              => 'Onboarding already completed.',
+                'message'              => __('onboarding.already_completed'),
                 'onboarding_completed' => true,
             ]);
         }
@@ -146,7 +146,7 @@ class OnboardingController extends Controller
         ]);
 
         return response()->json([
-            'message'              => 'Setup complete. Your free trial has started.',
+            'message'              => __('onboarding.setup_complete'),
             'onboarding_completed' => true,
             'trial_ends_at'        => $tenant->trial_ends_at,
         ]);

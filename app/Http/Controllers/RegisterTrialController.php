@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Filament\Resources\TenantResource;
 use App\Http\Requests\RegisterTrialRequest;
 use App\Services\MathCaptchaService;
 use App\Services\TenantProvisioningService;
@@ -29,11 +28,7 @@ class RegisterTrialController extends Controller
     public function create(): View
     {
         return view('register', [
-            'captcha'   => MathCaptchaService::generate(),
-            // Reuses the exact same list the Filament admin wizard already
-            // offers (TenantResource::countryOptions()) - no second,
-            // possibly-diverging country list was created.
-            'countries' => TenantResource::countryOptions(),
+            'captcha' => MathCaptchaService::generate(),
         ]);
     }
 
@@ -55,22 +50,26 @@ class RegisterTrialController extends Controller
 
         if (!$lock->get()) {
             return back()
-                ->withInput($request->except(['password', 'password_confirmation', 'captcha_answer']))
-                ->withErrors(['email' => 'Ya estamos procesando una solicitud para este email. Espera unos segundos e inténtalo de nuevo.']);
+                ->withInput($request->except(['password', 'captcha_answer']))
+                ->withErrors(['email' => __('site.register.already_processing')]);
         }
 
         try {
-            $ownerName = trim($validated['first_name'] . ' ' . ($validated['last_name'] ?? ''));
-            $subdomain = $this->provisioning->generateUniqueSubdomain($validated['company_name']);
+            $ownerName = $validated['name'];
+            // No business name is collected at signup (see
+            // RegisterTrialRequest's docblock) - the owner's own name is
+            // used as a placeholder subdomain/company label until the
+            // onboarding flow (after account creation) sets the real one.
+            $subdomain = $this->provisioning->generateUniqueSubdomain($ownerName);
 
             $tenant = $this->provisioning->provision([
-                'company_name'    => $validated['company_name'],
+                'company_name'    => $ownerName,
                 'company_email'   => $email,
+                'company_phone'   => $validated['phone'] ?? null,
                 'owner_name'      => $ownerName,
                 'owner_email'     => $email,
                 'admin_password'  => $validated['password'],
                 'subdomain'       => $subdomain,
-                'country'         => $validated['country'] ?? null,
                 // Self-service always starts on the entry-level plan; an
                 // admin using the Filament wizard can still pick any plan.
                 'plan_slug'       => 'starter',
@@ -96,8 +95,8 @@ class RegisterTrialController extends Controller
             ]);
 
             return back()
-                ->withInput($request->except(['password', 'password_confirmation', 'captcha_answer']))
-                ->withErrors(['email' => 'No hemos podido crear tu cuenta en este momento. Inténtalo de nuevo.']);
+                ->withInput($request->except(['password', 'captcha_answer']))
+                ->withErrors(['email' => __('site.register.provisioning_failed')]);
         } finally {
             $lock->release();
         }

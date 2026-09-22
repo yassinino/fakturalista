@@ -237,7 +237,7 @@
                 type="button"
                 class="btn-block-option"
                 data-bs-dismiss="modal"
-                aria-label="Close"
+                :aria-label="$t('common.close')"
               >
                 <i class="fa fa-fw fa-times"></i>
               </button>

@@ -32,9 +32,13 @@ class WelcomeTenantMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
+        // Renders in whatever locale ->locale() was called with (set by
+        // TenantProvisioningService before sending) - see
+        // WelcomeSelfServiceMail::envelope() for why this is safe for both
+        // synchronous and truly-queued sends.
         return new Envelope(
             to:      [$this->adminEmail],
-            subject: '¡Bienvenido a Fakturalista! Tu cuenta está lista',
+            subject: __('emails.welcome_admin.subject'),
         );
     }
 
