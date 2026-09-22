@@ -38,6 +38,11 @@ class OnboardingController extends Controller
                 'MA' => TenantContextService::defaultsForCountry('MA'),
                 'ES' => TenantContextService::defaultsForCountry('ES'),
             ],
+            // So step 1 of the wizard can prefill the optional phone field
+            // from what was already given at self-service registration
+            // (RegisterTrialController -> tenants.company_phone) without
+            // making the user type it twice.
+            'tenant_phone'         => tenancy()->tenant?->company_phone,
         ]);
     }
 
@@ -49,25 +54,32 @@ class OnboardingController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            // Mandatory
-            'owner_name'   => 'required|string|max:255',
+            // STEP 1 - "Votre entreprise": the only fields the simplified
+            // wizard actually requires.
             'trade_name'   => 'required|string|max:255',
-            'address_line1'=> 'required|string|max:255',
-            'city'         => 'required|string|max:255',
-            'postal_code'  => 'required|string|max:20',
             'country'      => 'required|string|max:100',
             'country_code' => 'nullable|string|size:2|exists:countries,code',
             'currency'     => 'required|string|size:3',
-            // Optional
-            'legal_name'   => 'nullable|string|max:255',
-            'tax_id'       => 'nullable|string|max:100',
-            'vat_number'   => 'nullable|string|max:100',
-            // Morocco Phase 1B (docs/morocco-phase-1b-identity.md §6) -
-            // ICE is the recommended first-run field for a Moroccan
-            // tenant, but never required (IF/RC are completed later in
-            // Settings, not collected here).
-            'ice'          => 'nullable|string|max:255',
             'phone'        => 'nullable|string|max:50',
+
+            // STEP 2 - "Informations de facturation": all optional, never
+            // block finishing onboarding - the wizard tells the user these
+            // can be completed later in Settings instead.
+            'address_line1'       => 'nullable|string|max:255',
+            'city'                => 'nullable|string|max:255',
+            'tax_id'              => 'nullable|string|max:100',
+            'vat_number'          => 'nullable|string|max:100',
+            // Morocco Phase 1B (docs/morocco-phase-1b-identity.md §6).
+            'ice'                 => 'nullable|string|max:255',
+            'if_number'           => 'nullable|string|max:255',
+            'registration_number' => 'nullable|string|max:255',
+
+            // No longer collected by the wizard (logo/postal code/full name
+            // moved to Settings or dropped as redundant with registration),
+            // kept nullable only so an older client can't break by sending them.
+            'owner_name'   => 'nullable|string|max:255',
+            'legal_name'   => 'nullable|string|max:255',
+            'postal_code'  => 'nullable|string|max:20',
             'logo'         => 'nullable|image|max:2048',
         ]);
 
@@ -97,9 +109,8 @@ class OnboardingController extends Controller
         $profileData = [
             'trade_name'   => $validated['trade_name'],
             'legal_name'   => $validated['legal_name'] ?? $validated['trade_name'],
-            'address_line1'=> $validated['address_line1'],
-            'city'         => $validated['city'],
-            'postal_code'  => $validated['postal_code'],
+            'address_line1'=> $validated['address_line1'] ?? null,
+            'city'         => $validated['city'] ?? null,
             'country'      => Country::where('code', $country)->value('name') ?? $validated['country'],
             'country_code' => $country,
             'currency'     => strtoupper($validated['currency']),
@@ -111,6 +122,9 @@ class OnboardingController extends Controller
             'tax_id'       => $validated['tax_id'] ?? null,
             'vat_number'   => $validated['vat_number'] ?? null,
             'ice'          => isset($validated['ice']) ? trim($validated['ice']) : null,
+            // IF/RC - step 2 of the wizard, both optional (see docblock above).
+            'if_number'           => isset($validated['if_number']) ? trim($validated['if_number']) : null,
+            'registration_number' => isset($validated['registration_number']) ? trim($validated['registration_number']) : null,
             'phone'        => $validated['phone'] ?? null,
             'onboarding_completed_at' => now(),
         ];
@@ -124,8 +138,10 @@ class OnboardingController extends Controller
 
         $profile->update($profileData);
 
-        // Also store the owner's full name on their User record.
-        if (!empty($validated['owner_name'])) {
+        // Also store the owner's full name on their User record, if an
+        // (older) client still sends one - the wizard itself no longer
+        // asks for it, since registration already collects the full name.
+        if (!empty($validated['owner_name'] ?? null)) {
             $request->user()?->update(['name' => $validated['owner_name']]);
         }
 
