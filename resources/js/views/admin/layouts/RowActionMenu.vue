@@ -101,6 +101,32 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
+/* Trigger button - self-contained so this component looks right on any
+   table, not only ones wrapped by DataTableShell.vue (which also styles
+   `.dt-action-btn` for its own tables via :deep() - both apply safely,
+   same visual values). */
+.dt-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dt-action-btn:hover {
+  background: #f1f5f9;
+  color: #374151;
+}
+
 /* ── Menu container ─────────────────────────────────────────── */
 .ram-menu {
   background: #ffffff;
@@ -180,6 +206,11 @@ onBeforeUnmount(() => {
 
 /* ── Dark mode ──────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
+  .dt-action-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e6edf3;
+  }
+
   .ram-menu {
     background: #1e293b;
     border-color: rgba(255, 255, 255, 0.08);

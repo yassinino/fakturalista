@@ -176,41 +176,35 @@
             </td>
 
             <td class="dt-ac-col">
-              <div class="dropdown dropstart">
-                <button type="button" class="dt-action-btn dropdown-toggle"
-                  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-ellipsis-v"></i>
-                </button>
-                <div class="dropdown-menu fs-sm">
-                  <a class="dropdown-item" href="javascript:void(0)" @click.prevent="viewPayment(p)">
-                    <i class="fa fa-eye fa-fw me-1"></i>{{ $t('payments.actionViewPayment') }}
-                  </a>
-                  <router-link class="dropdown-item" :to="'/admin/invoices/edit/' + p.invoice_uuid">
-                    <i class="fa fa-file-invoice fa-fw me-1"></i>{{ $t('payments.actionViewInvoice') }}
-                  </router-link>
-                  <a class="dropdown-item" href="javascript:void(0)" @click.prevent="downloadReceipt(p)">
-                    <i class="fa fa-file-pdf fa-fw me-1"></i>{{ $t('payments.actionDownloadReceipt') }}
-                    <span v-if="processingMap[p.invoice_uuid] === 'pdf'" class="ms-1">
-                      <i class="fa fa-spinner fa-spin fa-fw"></i>
-                    </span>
-                  </a>
-                  <a
-                    v-if="p.status === 'paid'"
-                    class="dropdown-item"
-                    href="javascript:void(0)"
-                    @click.prevent="openEdit(p)"
-                  >
-                    <i class="fa fa-pen fa-fw me-1"></i>{{ $t('payments.actionEdit') }}
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item text-danger" href="javascript:void(0)" @click.prevent="deletePayment(p)">
-                    <i class="fa fa-trash fa-fw me-1"></i>{{ $t('payments.actionDelete') }}
-                    <span v-if="processingMap[p.invoice_uuid] === 'delete'" class="ms-1">
-                      <i class="fa fa-spinner fa-spin fa-fw"></i>
-                    </span>
-                  </a>
-                </div>
-              </div>
+              <RowActionMenu>
+                <a class="dropdown-item" href="javascript:void(0)" @click.prevent="viewPayment(p)">
+                  <i class="fa fa-eye fa-fw me-1"></i>{{ $t('payments.actionViewPayment') }}
+                </a>
+                <router-link class="dropdown-item" :to="'/admin/invoices/edit/' + p.invoice_uuid">
+                  <i class="fa fa-file-invoice fa-fw me-1"></i>{{ $t('payments.actionViewInvoice') }}
+                </router-link>
+                <a class="dropdown-item" href="javascript:void(0)" @click.prevent="downloadReceipt(p)">
+                  <i class="fa fa-file-pdf fa-fw me-1"></i>{{ $t('payments.actionDownloadReceipt') }}
+                  <span v-if="processingMap[p.invoice_uuid] === 'pdf'" class="ms-1">
+                    <i class="fa fa-spinner fa-spin fa-fw"></i>
+                  </span>
+                </a>
+                <a
+                  v-if="p.status === 'paid'"
+                  class="dropdown-item"
+                  href="javascript:void(0)"
+                  @click.prevent="openEdit(p)"
+                >
+                  <i class="fa fa-pen fa-fw me-1"></i>{{ $t('payments.actionEdit') }}
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-danger" href="javascript:void(0)" @click.prevent="deletePayment(p)">
+                  <i class="fa fa-trash fa-fw me-1"></i>{{ $t('payments.actionDelete') }}
+                  <span v-if="processingMap[p.invoice_uuid] === 'delete'" class="ms-1">
+                    <i class="fa fa-spinner fa-spin fa-fw"></i>
+                  </span>
+                </a>
+              </RowActionMenu>
             </td>
 
           </tr>
@@ -439,6 +433,7 @@ import axios from 'axios';
 import { createToaster } from '@meforma/vue-toaster';
 import { useI18n } from 'vue-i18n';
 import DataTableShell from '@/views/admin/layouts/DataTableShell.vue';
+import RowActionMenu  from '@/views/admin/layouts/RowActionMenu.vue';
 
 const toaster = createToaster();
 const { t }   = useI18n();

@@ -121,27 +121,12 @@
                       </span>
                     </td>
                     <td class="text-center">
-                       <div class="dropdown dropstart push">
-                        <button
-                          type="button"
-                          class="btn btn-outline-primary dropdown-toggle"
-                          id="dropdown-dropleft-dark"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i class="fa fa-fw fa-ellipsis-v"></i>
-                        </button>
-                        <div
-                          class="dropdown-menu fs-sm"
-                          aria-labelledby="dropdown-dropleft-dark"
-                        >
-                          <a class="dropdown-item"                
-                          href="javascript:void(0)" 
+                      <RowActionMenu>
+                        <a class="dropdown-item"
+                          href="javascript:void(0)"
                           @click.prevent="printInvoice(invoice)">{{ $t("invoices.document") }}</a>
-                          <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">{{ $t("common.delete") }}</a>
-                        </div>
-                      </div>
+                        <a class="dropdown-item" href="javascript:void(0)" @click.prevent="deleteInvoice(invoice)">{{ $t("common.delete") }}</a>
+                      </RowActionMenu>
                     </td>
                   </tr>
                 </tbody>
@@ -171,6 +156,7 @@
     import { ref, reactive, onMounted, computed } from "vue";
     import axios from 'axios'
     import Pagination from '@/views/admin/layouts/Pagination.vue';
+    import RowActionMenu from '@/views/admin/layouts/RowActionMenu.vue';
     import { createToaster } from '@meforma/vue-toaster';
     const toaster = createToaster({ /* options */ });
       import { useRoute } from 'vue-router'
