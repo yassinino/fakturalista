@@ -318,13 +318,6 @@ class HomeController extends Controller
         return back();
     }
 
-    public function success(Request $request)
-    {
-        return view('subscription.success', [
-            'session_id' => $request->get('session_id')
-        ]);
-    }
-
     public function cancel()
     {
         return view('subscription.cancel');

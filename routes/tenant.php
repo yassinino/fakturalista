@@ -28,7 +28,18 @@ Route::middleware([
 ])->group(function () {
 
     Route::prefix('admin/subscription/checkout')->middleware('set.locale')->group(function () {
-        Route::get('/success', [HomeController::class, 'success'])->name('admin.subscription.checkout.success');
+        // '/success' deliberately NOT registered here anymore - it used to
+        // render HomeController::success() -> resources/views/subscription/
+        // success.blade.php (@extends('layouts.master'), the full public
+        // marketing site) BEFORE the SPA catch-all route below ever got a
+        // chance to run, since this more specific route always wins. That
+        // is why the CheckoutSuccess.vue redesign appeared to have no
+        // effect: Stripe's success_url (SubscriptionController::
+        // createCheckoutSession()) always was and still is
+        // /admin/subscription/checkout/success - removing this route lets
+        // the '/admin/{any}' catch-all serve the SPA shell for it instead,
+        // so Vue Router's own 'backend-subscription-checkout-success'
+        // route (resources/js/router/index.js) actually renders.
         Route::get('/cancel', [HomeController::class, 'cancel'])->name('admin.subscription.checkout.cancel');
     });
 
