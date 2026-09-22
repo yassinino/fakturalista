@@ -3,15 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use App\Services\PlanPricingPresenter;
 use App\Services\TenantContextService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class PlanController extends Controller
 {
     /**
      * Active plans ordered by sort_order, with limits and features.
      * GET /api/plans
+     *
+     * One query set for the whole list (no per-plan request) - see
+     * formatPlan()'s own note on why $baselineFeatureSlugs is computed
+     * once here rather than per plan.
      */
     public function index(Request $request): JsonResponse
     {
@@ -22,12 +28,13 @@ class PlanController extends Controller
             ->where('active', true)
             ->with(['limits', 'features', 'marketingItems', 'prices'])
             ->orderBy('sort_order')
-            ->get()
-            ->map(fn (Plan $plan) => $this->formatPlan($plan, $locale, $country));
+            ->get();
+
+        $baselineFeatureSlugs = PlanPricingPresenter::baselineFeatureSlugs($plans);
 
         return response()->json([
             'success' => true,
-            'plans'   => $plans,
+            'plans'   => $plans->map(fn (Plan $plan) => $this->formatPlan($plan, $locale, $country, $baselineFeatureSlugs)),
         ]);
     }
 
@@ -40,14 +47,22 @@ class PlanController extends Controller
         $locale  = app()->getLocale();
         $country = app(TenantContextService::class)->country();
 
-        $plan = Plan::on('mysql')
+        // Baseline features ("on every plan") only mean something relative
+        // to every OTHER active plan too, so this still loads the full
+        // active set (a handful of rows) even though only one is returned.
+        $plans = Plan::on('mysql')
             ->where('active', true)
             ->with(['limits', 'features', 'marketingItems', 'prices'])
-            ->findOrFail($id);
+            ->get();
+
+        $plan = $plans->firstWhere('id', $id);
+        abort_if(!$plan, 404);
+
+        $baselineFeatureSlugs = PlanPricingPresenter::baselineFeatureSlugs($plans);
 
         return response()->json([
             'success' => true,
-            'plan'    => $this->formatPlan($plan, $locale, $country),
+            'plan'    => $this->formatPlan($plan, $locale, $country, $baselineFeatureSlugs),
         ]);
     }
 
@@ -59,8 +74,16 @@ class PlanController extends Controller
      * never a static column on the plan row itself. A tenant must never
      * see a currency Stripe isn't actually configured to charge for the
      * matching Checkout Session (see SubscriptionController).
+     *
+     * `benefits`/`capacity_line` are built by PlanPricingPresenter - the
+     * SAME class the public /pricing page uses (HomeController::pricing()),
+     * so the authenticated subscription page and the public pricing page
+     * can never disagree about what a plan actually includes. Everything
+     * else here is kept field-for-field identical to before so the
+     * existing subscription.vue keeps working unmodified except for
+     * swapping its old marketing_items-only list for this richer one.
      */
-    private function formatPlan(Plan $plan, string $locale, string $country): array
+    private function formatPlan(Plan $plan, string $locale, string $country, Collection $baselineFeatureSlugs): array
     {
         $name = json_decode($plan->getRawOriginal('name'), true) ?? [];
 
@@ -92,17 +115,18 @@ class PlanController extends Controller
             'button_text'           => $plan->translate('button_text', $locale),
             'button_url'            => $plan->button_url,
             'button_action'         => $plan->button_action,
-            'features'              => collect($plan->features ?? [])->map(fn ($f) => [
-                'slug' => $f->slug,
-                'name' => $f->{"name_{$locale}"} ?? $f->name_fr,
-            ])->values(),
+            // One capacity headline + up to 6 prioritized benefit lines -
+            // the exact same selection/phrasing logic /pricing uses.
+            'capacity_line'         => PlanPricingPresenter::capacityLine($plan->getLimit('invoices_per_month')),
+            'benefits'              => PlanPricingPresenter::benefits($plan, $locale, $baselineFeatureSlugs),
+            // Raw numbers kept too (never removed) for any consumer that
+            // needs the exact figures rather than the phrased benefit list.
             'limits'                => collect($plan->limits ?? [])->mapWithKeys(fn ($l) => [
                 $l->resource => $l->value,
             ]),
-            'marketing_items'       => collect($plan->marketingItems ?? [])->map(fn ($m) => [
-                'text'           => $m->{"text_{$locale}"} ?? $m->text_fr,
-                'icon'           => $m->icon,
-                'is_highlighted' => $m->is_highlighted,
+            'features'              => collect($plan->features ?? [])->map(fn ($f) => [
+                'slug' => $f->slug,
+                'name' => $f->{"name_{$locale}"} ?? $f->name_fr,
             ])->values(),
         ];
     }

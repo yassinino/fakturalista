@@ -160,21 +160,25 @@
             {{ $t('subscription.billing.billedYearly', { total: yearlyTotal(plan), currency: plan.currency }) }}
           </p>
 
+          <!-- Headline capacity - same PlanPricingPresenter facts /pricing shows -->
+          <p v-if="plan.capacity_line" class="sub-capacity">{{ plan.capacity_line }}</p>
+
           <!-- Divider -->
           <div class="sub-card-divider"></div>
 
-          <!-- Features -->
+          <!-- Benefits - built by the shared PlanPricingPresenter service,
+               same source /pricing uses, never duplicated/hardcoded here -->
           <ul class="sub-features" :aria-label="plan.name + ' features'">
             <li
-              v-for="item in (plan.marketing_items || [])"
-              :key="item.text"
+              v-for="(line, i) in (plan.benefits || [])"
+              :key="i"
               class="sub-feature"
             >
               <svg class="sub-check" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <circle cx="8" cy="8" r="8" fill="#dcfce7"/>
                 <path d="M5 8l2.5 2.5L11 5.5" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              {{ item.text }}
+              {{ line }}
             </li>
           </ul>
 
@@ -838,6 +842,17 @@ const cancelSubscription = async () => {
   margin: 0 0 8px;
 }
 
+/* ── Capacity headline ────────────────────────────────────────────────── */
+.sub-capacity {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: rgba(250,112,112,.08);
+  border-radius: 8px;
+  padding: 7px 11px;
+  margin: 10px 0 0;
+}
+
 /* ── Divider ──────────────────────────────────────────────────────────── */
 .sub-card-divider {
   height: 1px;
@@ -1195,6 +1210,7 @@ details[open] .sub-faq-q { color: #fa7070; }
   .sub-feature { color: #d1d5db; }
   .sub-price-currency, .sub-price-amount { color: #f9fafb; }
   .sub-price-period, .sub-price-billed { color: #6b7280; }
+  .sub-capacity { color: #f9fafb; background: rgba(250,112,112,.16); }
   .sub-card-divider { background: #374151; }
   .sub-toggle-wrap { background: #111827; }
   .sub-cycle-btn--active { background: #1f2937; color: #f9fafb; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
@@ -1232,6 +1248,7 @@ details[open] .sub-faq-q { color: #fa7070; }
 :root[data-theme="dark"] .sub-price-amount { color: #f9fafb; }
 :root[data-theme="dark"] .sub-price-period,
 :root[data-theme="dark"] .sub-price-billed { color: #6b7280; }
+:root[data-theme="dark"] .sub-capacity { color: #f9fafb; background: rgba(250,112,112,.16); }
 :root[data-theme="dark"] .sub-card-divider { background: #374151; }
 :root[data-theme="dark"] .sub-toggle-wrap { background: #111827; }
 :root[data-theme="dark"] .sub-cycle-btn--active { background: #1f2937; color: #f9fafb; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
