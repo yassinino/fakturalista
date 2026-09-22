@@ -23,13 +23,14 @@
     :root {
         --pr-brand:       #fa7070;
         --pr-brand-dark:  #e05050;
+        --pr-navy:        #1a1a2e;
         --pr-page-bg:     #f7f8fc;
         --pr-card-bg:     #ffffff;
         --pr-text:        #111827;
         --pr-muted:       #6b7280;
         --pr-border:      #e5e7eb;
-        --pr-shadow:      0 2px 12px rgba(0,0,0,.07);
-        --pr-radius:      16px;
+        --pr-shadow:      0 2px 12px rgba(0,0,0,.06);
+        --pr-radius:      18px;
     }
 
     .pr-page {
@@ -38,15 +39,34 @@
         font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
+    /* ── Market switch + reassurance line above cards ────────── */
+    .pr-top {
+        text-align: center;
+        max-width: 640px;
+        margin: 0 auto 36px;
+        padding: 0 24px;
+    }
+    .pr-market-switch {
+        font-size: .82rem;
+        color: var(--pr-muted);
+        text-decoration: underline;
+    }
+    .pr-reassurance-line {
+        font-size: .92rem;
+        font-weight: 600;
+        color: var(--pr-text);
+        margin-top: 10px;
+    }
+
     /* ── Grid ──────────────────────────────────────────────── */
     .pr-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 24px;
-        max-width: 1080px;
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 0 24px 80px;
-        align-items: start;
+        padding: 0 24px 56px;
+        align-items: stretch;
     }
 
     /* ── Card ──────────────────────────────────────────────── */
@@ -54,143 +74,153 @@
         background: var(--pr-card-bg);
         border: 1.5px solid var(--pr-border);
         border-radius: var(--pr-radius);
-        padding: 36px 28px 32px;
+        padding: 32px 28px;
         box-shadow: var(--pr-shadow);
         display: flex;
         flex-direction: column;
-        gap: 0;
         position: relative;
         transition: transform .2s, box-shadow .2s;
     }
     .pr-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0,0,0,.10);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 32px rgba(0,0,0,.09);
     }
     .pr-card.featured {
         border-color: var(--pr-brand);
-        box-shadow: 0 8px 32px rgba(250,112,112,.18);
-        transform: translateY(-6px);
+        box-shadow: 0 8px 28px rgba(250,112,112,.16);
     }
     .pr-card.featured:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 14px 48px rgba(250,112,112,.25);
+        transform: translateY(-5px);
+        box-shadow: 0 14px 40px rgba(250,112,112,.22);
     }
 
     /* ── Badge ─────────────────────────────────────────────── */
     .pr-plan-badge {
         position: absolute;
-        top: -13px;
+        top: -12px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--pr-brand);
         color: #fff;
-        font-size: .72rem;
+        font-size: .68rem;
         font-weight: 700;
-        letter-spacing: .06em;
+        letter-spacing: .05em;
         text-transform: uppercase;
         padding: 4px 14px;
         border-radius: 99px;
         white-space: nowrap;
     }
 
-    /* ── Plan name ─────────────────────────────────────────── */
+    /* ── Plan name + description ───────────────────────────── */
     .pr-plan-name {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        margin: 0 0 8px;
+        margin: 4px 0 6px;
         color: var(--pr-text);
+    }
+    .pr-short-desc {
+        font-size: .84rem;
+        color: var(--pr-muted);
+        margin: 0 0 20px;
+        line-height: 1.5;
+        min-height: 38px;
     }
 
     /* ── Price ─────────────────────────────────────────────── */
-    .pr-price-block {
-        margin: 16px 0 8px;
-    }
-    .pr-price {
-        font-size: 2.6rem;
+    .pr-price-block { margin-bottom: 4px; }
+    .pr-price { display: flex; align-items: baseline; gap: 6px; }
+    .pr-price-num {
+        font-size: 2.4rem;
         font-weight: 800;
         color: var(--pr-text);
         line-height: 1;
     }
-    .pr-price sup {
-        font-size: 1.2rem;
+    .pr-price-currency {
+        font-size: .95rem;
         font-weight: 700;
-        vertical-align: super;
-        margin-right: 2px;
+        color: var(--pr-muted);
     }
     .pr-price-period {
-        font-size: .85rem;
-        color: var(--pr-muted);
-        margin-left: 4px;
-    }
-    .pr-commitment {
         font-size: .78rem;
         color: var(--pr-muted);
-        margin-top: 4px;
+        margin-bottom: 14px;
     }
 
-    /* ── Short description ──────────────────────────────────── */
-    .pr-short-desc {
-        font-size: .875rem;
-        color: var(--pr-muted);
-        margin: 12px 0 20px;
-        line-height: 1.5;
-        min-height: 40px;
+    /* ── Capacity line (the one headline benefit) ─────────────── */
+    .pr-capacity {
+        font-size: .88rem;
+        font-weight: 600;
+        color: var(--pr-navy);
+        background: rgba(250,112,112,.08);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 0 0 20px;
     }
 
     /* ── Divider ───────────────────────────────────────────── */
     .pr-divider {
         border: none;
         border-top: 1px solid var(--pr-border);
-        margin: 0 0 20px;
+        margin: 0 0 18px;
     }
 
-    /* ── Feature list ──────────────────────────────────────── */
+    /* ── Benefit list ──────────────────────────────────────── */
     .pr-features {
         list-style: none;
         padding: 0;
-        margin: 0 0 28px;
+        margin: 0 0 24px;
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
     }
     .pr-features li {
         display: flex;
         align-items: flex-start;
         gap: 10px;
-        font-size: .9rem;
-        line-height: 1.45;
+        font-size: .88rem;
+        line-height: 1.4;
         color: var(--pr-text);
-    }
-    .pr-features li.highlighted {
-        font-weight: 600;
     }
     .pr-feat-icon {
         flex-shrink: 0;
-        font-size: 1rem;
-        line-height: 1.4;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(16,185,129,.12);
+        color: #10b981;
+        font-size: .68rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1px;
     }
 
-    /* ── CTA button ────────────────────────────────────────── */
+    /* ── CTA buttons ───────────────────────────────────────── */
     .pr-btn {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 100%;
-        padding: 14px 20px;
+        height: 48px;
         border-radius: 10px;
         text-align: center;
         font-weight: 700;
-        font-size: .95rem;
+        font-size: .92rem;
         text-decoration: none;
-        transition: background .2s, color .2s, transform .15s;
+        transition: background .2s, color .2s, transform .15s, border-color .2s;
         cursor: pointer;
-        border: none;
+        box-sizing: border-box;
     }
     .pr-btn-primary {
         background: var(--pr-brand);
         color: #fff;
+        border: 2px solid var(--pr-brand);
     }
     .pr-btn-primary:hover {
         background: var(--pr-brand-dark);
+        border-color: var(--pr-brand-dark);
         color: #fff;
         transform: translateY(-1px);
     }
@@ -203,25 +233,38 @@
         background: #fff5f5;
         transform: translateY(-1px);
     }
+    .pr-btn-dark {
+        background: var(--pr-navy);
+        color: #fff;
+        border: 2px solid var(--pr-navy);
+    }
+    .pr-btn-dark:hover {
+        background: #000;
+        border-color: #000;
+        transform: translateY(-1px);
+    }
 
-    /* ── Trust strip ───────────────────────────────────────── */
+    /* ── Reassurance row below the cards ──────────────────────── */
     .pr-trust {
         text-align: center;
         padding: 0 24px 64px;
         color: var(--pr-muted);
-        font-size: .875rem;
+        font-size: .85rem;
     }
     .pr-trust-items {
         display: flex;
         justify-content: center;
-        gap: 32px;
+        gap: 28px;
         flex-wrap: wrap;
-        margin-top: 12px;
     }
     .pr-trust-item {
         display: flex;
         align-items: center;
         gap: 6px;
+    }
+    .pr-trust-item .pr-trust-check {
+        color: #10b981;
+        font-weight: 800;
     }
 
     /* ── FAQ ───────────────────────────────────────────────── */
@@ -264,125 +307,68 @@
         line-height: 1.65;
     }
 
-    @media (max-width: 640px) {
-        .pr-card.featured { transform: none; }
-        .pr-grid { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+        .pr-grid { grid-template-columns: 1fr; max-width: 420px; }
+        .pr-card.featured { order: -1; }
         .pr-trust-items { gap: 16px; }
     }
 </style>
 
 <div class="pr-page">
 
-    {{-- ── Market switch (independent of language - French does not
-         imply EUR) - default public market is Morocco/MAD ─────────── --}}
-    <div style="text-align:center;margin-bottom:24px;">
+    {{-- ── Market switch + single reassurance line (never repeated
+         per-card) - market is independent of language; default is
+         Morocco/MAD ───────────────────────────────────────────── --}}
+    <div class="pr-top">
         @if ($market === 'ES')
-            <a href="{{ url('/pricing?market=MA') }}" style="font-size:.85rem;color:var(--pr-muted);text-decoration:underline;">{{ __('site.pricing.switch_to_morocco') }}</a>
+            <a href="{{ url('/pricing?market=MA') }}" class="pr-market-switch">{{ __('site.pricing.switch_to_morocco') }}</a>
         @else
-            <a href="{{ url('/pricing?market=ES') }}" style="font-size:.85rem;color:var(--pr-muted);text-decoration:underline;">{{ __('site.pricing.switch_to_spain') }}</a>
+            <a href="{{ url('/pricing?market=ES') }}" class="pr-market-switch">{{ __('site.pricing.switch_to_spain') }}</a>
         @endif
+        <p class="pr-reassurance-line">{{ __('site.pricing.reassurance_line') }}</p>
     </div>
 
-    {{-- ── Plans grid ──────────────────────────────────────── --}}
+    {{-- ── Plans grid - each $card is fully pre-computed by
+         PlanPricingPresenter from Plan/PlanLimit/PlanPrice/Feature, so
+         this template only renders, never decides what a plan includes ── --}}
     <div class="pr-grid">
-        @forelse ($plans as $plan)
-            @php
-                $planName   = $plan->translate('name', $locale);
-                $badge      = $plan->translate('badge', $locale);
-                $shortDesc  = $plan->translate('short_description', $locale);
-                $btnText    = $plan->translate('button_text', $locale) ?: __('site.pricing.default_cta');
-                $btnUrl     = $plan->button_url ? url(parse_url($plan->button_url, PHP_URL_PATH) ?: '/register') : url('/register');
+        @forelse ($cards as $card)
+            <div class="pr-card {{ $card['is_featured'] ? 'featured' : '' }}">
 
-                // Price/currency - resolved for the current public market
-                // via the SAME plan_prices/priceFor() architecture the
-                // authenticated app uses (PlanController, SubscriptionController).
-                // Never a static column, never hardcoded, never converted.
-                $planPrice    = $plan->priceFor($market, 'monthly');
-                $price        = $planPrice ? number_format($planPrice->amount / 100, 2, ',', '') : null;
-                $currencyCode = $planPrice->currency ?? 'MAD';
-                $currency     = $currencyCode === 'EUR' ? '€' : $currencyCode;
-
-                // Limits - fresh from plan_limits on every render. Changing
-                // a value in Filament ("Limites du plan") changes this
-                // immediately, no code/deploy needed.
-                $limitLines = [];
-
-                $invoices = $plan->getLimit('invoices_per_month');
-                $limitLines[] = $invoices === null
-                    ? __('site.pricing.limit_invoices_unlimited')
-                    : __('site.pricing.limit_invoices', ['count' => $invoices]);
-
-                $customers = $plan->getLimit('customers');
-                $limitLines[] = $customers === null
-                    ? __('site.pricing.limit_customers_unlimited')
-                    : __('site.pricing.limit_customers', ['count' => $customers]);
-
-                $users = $plan->getLimit('users');
-                if ($users === null) {
-                    $limitLines[] = __('site.pricing.limit_users_unlimited');
-                } else {
-                    $limitLines[] = __($users == 1 ? 'site.pricing.limit_users_one' : 'site.pricing.limit_users_other', ['count' => $users]);
-                }
-
-                $quotes = $plan->getLimit('quotes');
-                $limitLines[] = $quotes === null
-                    ? __('site.pricing.limit_quotes_unlimited')
-                    : __('site.pricing.limit_quotes', ['count' => $quotes]);
-
-                $products = $plan->getLimit('products');
-                $limitLines[] = $products === null
-                    ? __('site.pricing.limit_products_unlimited')
-                    : __('site.pricing.limit_products', ['count' => $products]);
-
-                // Features - real plan_features pivot (Filament
-                // "Fonctionnalités incluses" checklist) - toggling one
-                // there changes this immediately too.
-                $featureLines = $plan->features->map(
-                    fn ($f) => $f->{"name_{$locale}"} ?? $f->name_fr
-                )->all();
-            @endphp
-            <div class="pr-card {{ $plan->is_featured ? 'featured' : '' }}">
-
-                @if ($badge)
-                    <div class="pr-plan-badge">{{ $badge }}</div>
+                @if ($card['badge'])
+                    <div class="pr-plan-badge">{{ $card['badge'] }}</div>
                 @endif
 
-                <div class="pr-plan-name">{{ $planName }}</div>
+                <div class="pr-plan-name">{{ $card['name'] }}</div>
+
+                @if ($card['description'])
+                    <p class="pr-short-desc">{{ $card['description'] }}</p>
+                @endif
 
                 <div class="pr-price-block">
-                    <div class="pr-price">
-                        @if ($price !== null)
-                            <sup>{{ $currency }}</sup>{{ $price }}<span class="pr-price-period">/ {{ __('site.pricing.per_month') }}</span>
-                        @else
-                            <span style="font-size:1.1rem;">{{ __('site.pricing.price_unavailable') }}</span>
-                        @endif
-                    </div>
-                    <div class="pr-commitment">{{ __('site.pricing.no_commitment') }}</div>
+                    @if ($card['price'] !== null)
+                        <div class="pr-price">
+                            <span class="pr-price-num">{{ $card['price'] }}</span>
+                            <span class="pr-price-currency">{{ $card['currency'] }}</span>
+                        </div>
+                        <div class="pr-price-period">{{ __('site.pricing.per_month') }}</div>
+                    @else
+                        <div class="pr-price"><span class="pr-price-currency">{{ __('site.pricing.price_unavailable') }}</span></div>
+                    @endif
                 </div>
 
-                @if ($shortDesc)
-                    <p class="pr-short-desc">{{ $shortDesc }}</p>
-                @endif
+                <p class="pr-capacity">{{ $card['capacity_line'] }}</p>
 
                 <hr class="pr-divider">
 
                 <ul class="pr-features">
-                    @foreach ($limitLines as $line)
+                    @foreach ($card['benefits'] as $line)
                         <li><span class="pr-feat-icon">✓</span><span>{{ $line }}</span></li>
-                    @endforeach
-                    @foreach ($featureLines as $line)
-                        <li><span class="pr-feat-icon">✓</span><span>{{ $line }}</span></li>
-                    @endforeach
-                    @foreach ($plan->marketingItems as $item)
-                        <li class="{{ $item->is_highlighted ? 'highlighted' : '' }}">
-                            <span class="pr-feat-icon">{{ $item->icon }}</span>
-                            <span>{{ $item->{"text_{$locale}"} ?? $item->text_fr }}</span>
-                        </li>
                     @endforeach
                 </ul>
 
-                <a href="{{ $btnUrl }}" class="pr-btn {{ $plan->is_featured ? 'pr-btn-primary' : 'pr-btn-secondary' }}">
-                    {{ $btnText }}
+                <a href="{{ $card['button_url'] }}" class="pr-btn {{ $card['is_featured'] ? 'pr-btn-primary' : ($card['slug'] === 'business' ? 'pr-btn-dark' : 'pr-btn-secondary') }}">
+                    {{ $card['button_text'] }}
                 </a>
             </div>
         @empty
@@ -390,13 +376,13 @@
         @endforelse
     </div>
 
-    {{-- ── Trust strip ──────────────────────────────────────── --}}
+    {{-- ── Small reassurance row below the cards - true claims only ── --}}
     <div class="pr-trust">
-        <div>{{ __('site.pricing.trust_intro') }}</div>
         <div class="pr-trust-items">
-            <div class="pr-trust-item">🔒 {{ __('site.pricing.trust_ssl') }}</div>
-            <div class="pr-trust-item">🚫 {{ __('site.pricing.trust_no_card') }}</div>
-            <div class="pr-trust-item">❌ {{ __('site.pricing.trust_cancel') }}</div>
+            <div class="pr-trust-item"><span class="pr-trust-check">✓</span> {{ __('site.pricing.reassurance_trial') }}</div>
+            <div class="pr-trust-item"><span class="pr-trust-check">✓</span> {{ __('site.pricing.reassurance_no_card') }}</div>
+            <div class="pr-trust-item"><span class="pr-trust-check">✓</span> {{ __('site.pricing.reassurance_pdf') }}</div>
+            <div class="pr-trust-item"><span class="pr-trust-check">✓</span> {{ __('site.pricing.reassurance_data') }}</div>
         </div>
     </div>
 

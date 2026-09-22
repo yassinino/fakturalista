@@ -12,6 +12,7 @@ use Validator;
 use App\Mail\ContactMessage;
 use App\Mail\FreeTrialRequest;
 use App\Services\MathCaptchaService;
+use App\Services\PlanPricingPresenter;
 
 class HomeController extends Controller
 {
@@ -73,7 +74,15 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('pricing', compact('plans', 'locale', 'market'));
+        // Presentation only - decides HOW to phrase/prioritize the up to
+        // 5 benefit lines per card, never invents a value. See
+        // PlanPricingPresenter's own docblock.
+        $baselineFeatureSlugs = PlanPricingPresenter::baselineFeatureSlugs($plans);
+        $cards = $plans->map(
+            fn (Plan $plan) => PlanPricingPresenter::present($plan, $locale, $market, $baselineFeatureSlugs)
+        );
+
+        return view('pricing', compact('cards', 'locale', 'market'));
     }
 
     public function sendContact(Request $request)

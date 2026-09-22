@@ -278,31 +278,31 @@ return [
         'sub'                     => 'Start free. Upgrade when you\'re ready.',
         'period'                  => '/ month',
         'popular_badge'           => 'Most popular',
-        'commitment'              => 'No commitment · 14-day free trial',
         'subtitle'                => 'Start for free. Scale up when you are ready.',
-        'per_month'               => 'month',
-        'no_commitment'           => 'No commitment · 14-day free trial',
+        'per_month'               => '/ month',
         'default_cta'             => 'Get started',
         'no_plans'                => 'No plans available at the moment.',
-        'trust_intro'             => 'Security and transparency in every plan',
-        'trust_ssl'               => 'SSL & encryption',
-        'trust_no_card'           => 'No credit card required',
-        'trust_cancel'            => 'Cancel anytime',
 
-        // Limits/features are computed fresh from plan_limits/plan_features
-        // on every render (see HomeController::pricing() / pricing.blade.php)
-        // - these are display-format strings only, never plan data itself.
-        'limit_invoices'           => ':count invoices / month',
-        'limit_invoices_unlimited' => 'Unlimited invoices',
-        'limit_customers'          => ':count clients',
-        'limit_customers_unlimited'=> 'Unlimited clients',
-        'limit_users_one'          => ':count user',
-        'limit_users_other'        => ':count users',
-        'limit_users_unlimited'    => 'Unlimited users',
-        'limit_products'           => ':count products',
-        'limit_products_unlimited' => 'Unlimited products',
-        'limit_quotes'             => ':count quotes',
-        'limit_quotes_unlimited'   => 'Unlimited quotes',
+        'reassurance_line'        => '14-day free trial · No credit card · Cancel anytime',
+
+        'reassurance_trial'       => '14-day free trial',
+        'reassurance_no_card'     => 'No credit card required',
+        'reassurance_pdf'         => 'Professional PDF invoices',
+        'reassurance_data'        => 'Your data stays accessible',
+
+        // Capacity/benefit lines are computed fresh from plan_limits/
+        // plan_features on every render (see PlanPricingPresenter) -
+        // these are display-format strings only, never plan data itself.
+        'capacity_invoices'                => 'Up to :count invoices per month',
+        'capacity_invoices_unlimited'       => 'Unlimited invoicing',
+        'benefit_customers'                => 'Up to :count clients',
+        'benefit_customers_unlimited'       => 'Unlimited clients',
+        'benefit_quotes'                   => 'Up to :count quotes',
+        'benefit_quotes_unlimited'          => 'Unlimited quotes',
+        'benefit_products'                 => 'Up to :count products',
+        'benefit_products_unlimited'        => 'Unlimited products',
+        'benefit_quotes_products_unlimited' => 'Unlimited quotes and products',
+        'benefit_unlimited_management'      => 'Unlimited clients, quotes and products',
         'price_unavailable'        => 'Unavailable right now',
         'switch_to_spain'          => 'In Spain? See prices in EUR',
         'switch_to_morocco'        => 'See prices for Morocco (MAD)',

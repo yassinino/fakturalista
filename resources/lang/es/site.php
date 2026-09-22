@@ -278,31 +278,31 @@ return [
         'sub'                     => 'Empieza gratis. Actualiza cuando estés listo.',
         'period'                  => '/ mes',
         'popular_badge'           => 'El más popular',
-        'commitment'              => 'Sin compromiso · Prueba gratuita de 14 días',
         'subtitle'                => 'Empieza gratis. Escala cuando estés listo.',
-        'per_month'               => 'mes',
-        'no_commitment'           => 'Sin compromiso · Prueba gratuita 14 días',
+        'per_month'               => '/ mes',
         'default_cta'             => 'Empezar',
         'no_plans'                => 'No hay planes disponibles por el momento.',
-        'trust_intro'             => 'Seguridad y transparencia en cada plan',
-        'trust_ssl'               => 'SSL y cifrado',
-        'trust_no_card'           => 'Sin tarjeta de crédito',
-        'trust_cancel'            => 'Cancela cuando quieras',
 
-        // Limits/features are computed fresh from plan_limits/plan_features
-        // on every render (see HomeController::pricing() / pricing.blade.php)
-        // - these are display-format strings only, never plan data itself.
-        'limit_invoices'           => ':count facturas / mes',
-        'limit_invoices_unlimited' => 'Facturas ilimitadas',
-        'limit_customers'          => ':count clientes',
-        'limit_customers_unlimited'=> 'Clientes ilimitados',
-        'limit_users_one'          => ':count usuario',
-        'limit_users_other'        => ':count usuarios',
-        'limit_users_unlimited'    => 'Usuarios ilimitados',
-        'limit_products'           => ':count productos',
-        'limit_products_unlimited' => 'Productos ilimitados',
-        'limit_quotes'             => ':count presupuestos',
-        'limit_quotes_unlimited'   => 'Presupuestos ilimitados',
+        'reassurance_line'        => '14 días gratis · Sin tarjeta bancaria · Cancela cuando quieras',
+
+        'reassurance_trial'       => '14 días gratis',
+        'reassurance_no_card'     => 'Sin tarjeta bancaria',
+        'reassurance_pdf'         => 'Facturas PDF profesionales',
+        'reassurance_data'        => 'Tus datos siguen accesibles',
+
+        // Capacity/benefit lines are computed fresh from plan_limits/
+        // plan_features on every render (see PlanPricingPresenter) -
+        // these are display-format strings only, never plan data itself.
+        'capacity_invoices'                => 'Hasta :count facturas al mes',
+        'capacity_invoices_unlimited'       => 'Facturación ilimitada',
+        'benefit_customers'                => 'Hasta :count clientes',
+        'benefit_customers_unlimited'       => 'Clientes ilimitados',
+        'benefit_quotes'                   => 'Hasta :count presupuestos',
+        'benefit_quotes_unlimited'          => 'Presupuestos ilimitados',
+        'benefit_products'                 => 'Hasta :count productos',
+        'benefit_products_unlimited'        => 'Productos ilimitados',
+        'benefit_quotes_products_unlimited' => 'Presupuestos y productos ilimitados',
+        'benefit_unlimited_management'      => 'Clientes, presupuestos y productos ilimitados',
         'price_unavailable'        => 'No disponible por el momento',
         'switch_to_spain'          => '¿Estás en España? Ver precios en EUR',
         'switch_to_morocco'        => 'Ver precios para Marruecos (MAD)',
