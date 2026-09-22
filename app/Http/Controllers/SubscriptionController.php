@@ -20,8 +20,6 @@ use Illuminate\Validation\Rule;
 use Stripe\Stripe;
 use Stripe\Customer as StripeCustomer;
 use Stripe\Checkout\Session as StripeCheckoutSession;
-use Stripe\Exception\InvalidRequestException;
-use Stripe\Subscription as StripeSubscription;
 
 class SubscriptionController extends Controller
 {
@@ -36,9 +34,10 @@ class SubscriptionController extends Controller
             return response()->json(['message' => 'Tenant introuvable'], 400);
         }
 
-        $subscription = AppSubscription::with('plan')
+        $subscription = AppSubscription::with('plan.prices', 'planPrice')
             ->where('tenant_id', $tenantId)
             ->latest()
+            ->orderByDesc('id')
             ->first();
 
         if (! $subscription) {
@@ -67,6 +66,20 @@ class SubscriptionController extends Controller
             $sub['plan']['name'] = is_array($nameArr)
                 ? ($nameArr[$locale] ?? $nameArr['fr'] ?? $nameArr['en'] ?? $subscription->plan->slug ?? '')
                 : $rawName;
+
+            // What was actually charged - the plan_price this subscription
+            // was created against (ground truth for anything from
+            // checkout.session.completed), falling back to the tenant's
+            // current market only for older rows with no plan_price_id
+            // yet (e.g. the free-trial subscription created at
+            // registration, which never went through Checkout).
+            $country = app(TenantContextService::class)->country();
+            $price   = $subscription->planPrice ?? $subscription->plan->priceFor($country, 'monthly');
+            $sub['price'] = $price ? [
+                'amount'   => $price->amount,
+                'currency' => $price->currency,
+                'interval' => $price->interval,
+            ] : null;
 
             return response()->json(['subscription' => $sub]);
         }
@@ -169,12 +182,32 @@ class SubscriptionController extends Controller
                 $stripeCustomer = StripeCustomer::retrieve($billingProfile->provider_customer_id);
             }
 
-            // 2.bis) Si un abonnement Stripe est déjà actif, on le désactive avant de créer un nouveau plan
-            $this->cancelExistingStripeSubscription($tenantId, $stripeCustomer->id);
+            // 2.bis) Upgrade/downgrade of an existing paid subscriber: do NOT
+            // cancel the current Stripe subscription here. This used to run
+            // before the new Checkout Session even existed, so if the user
+            // abandoned Checkout or the new subscription's webhook was ever
+            // delayed/lost, the tenant was left with the old plan canceled
+            // and no new one - PlanService::currentPlan() then found no
+            // active/trialing subscription at all and silently fell back to
+            // the hardcoded "starter" plan, which looked exactly like
+            // "the upgrade didn't happen" (root cause of the Starter->Pro
+            // bug). The old subscription is now cancelled only from inside
+            // the webhook handler, AFTER the new one is confirmed - see
+            // StripeWebhookController::handleCheckoutSessionCompleted().
+            $previousSubscription = AppSubscription::where('tenant_id', $tenantId)
+                ->where('provider', 'stripe')
+                ->whereNotIn('status', ['canceled'])
+                ->whereNotNull('provider_subscription_id')
+                ->latest()
+                ->orderByDesc('id')
+                ->first();
 
             // 3) Créer la Checkout Session Stripe (mode: subscription)
+            // Both are real Vue Router pages (LayoutSimple, no sidebar/header
+            // - see resources/js/router/index.js), never a backend JSON
+            // response - Stripe redirects the browser here directly.
             $successUrl = URL('/admin/subscription/checkout/success') . '?session_id={CHECKOUT_SESSION_ID}';
-            $cancelUrl  = URL('/admin/subscription/checkout/cancel');
+            $cancelUrl  = URL('/admin/subscription') . '?checkout=cancelled';
 
             $hasPreviousSubscription = AppSubscription::where('tenant_id', $tenantId)->exists();
             $trialEndsAt = null;
@@ -193,13 +226,19 @@ class SubscriptionController extends Controller
                 ]],
                 'success_url' => $successUrl,
                 'cancel_url'  => $cancelUrl,
-                'metadata' => [
+                'metadata' => array_filter([
                     'tenant_id'    => tenant() ? tenant()->id : null,
                     'plan_id'      => $plan->id,
                     'plan_price_id'=> $planPrice->id,
                     'interval'     => $interval,
                     'country_code' => $country,
-                ],
+                    // Read back by the webhook once the NEW subscription is
+                    // confirmed - only then is this old one safe to cancel.
+                    // array_filter() below drops this key entirely when
+                    // there is no previous subscription (Stripe metadata
+                    // values must be strings, never null).
+                    'previous_subscription_id' => $previousSubscription?->provider_subscription_id,
+                ], fn ($v) => $v !== null),
             ];
 
             if ($trialEndsAt) {
@@ -231,121 +270,6 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Désactive l'abonnement Stripe existant du tenant avant de souscrire à un nouveau plan.
-     */
-    protected function cancelExistingStripeSubscription(string $tenantId, ?string $stripeCustomerId = null): void
-    {
-        $existingList = AppSubscription::where('tenant_id', $tenantId)
-            ->where('provider', 'stripe')
-            ->whereNotIn('status', ['canceled'])
-            ->latest()
-            ->get();
-
-        try {
-            foreach ($existingList as $existing) {
-                if (! $existing->provider_subscription_id) {
-                    continue;
-                }
-
-                $stripeSub = StripeSubscription::retrieve($existing->provider_subscription_id);
-                $canceledSub = $stripeSub->cancel();
-
-                $periodEnd = StripeSubscriptionHelper::currentPeriodEnd($canceledSub);
-
-                $existing->update([
-                    'status'                 => $canceledSub->status,
-                    'current_period_ends_at' => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
-                    'raw'                    => $canceledSub,
-                ]);
-            }
-
-            // Filet de sécurité : si des abonnements sont actifs côté Stripe pour ce customer, on les annule aussi
-            if ($stripeCustomerId) {
-                $activeStripeSubs = StripeSubscription::all([
-                    'customer' => $stripeCustomerId,
-                    'status'   => 'active',
-                    'limit'    => 100,
-                ]);
-
-                foreach ($activeStripeSubs->data ?? [] as $stripeSub) {
-                    $canceledSub = $stripeSub->cancel();
-                    $periodEnd   = StripeSubscriptionHelper::currentPeriodEnd($canceledSub);
-
-                    AppSubscription::where('provider_subscription_id', $stripeSub->id)
-                        ->update([
-                            'status'                 => $canceledSub->status,
-                            'current_period_ends_at' => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
-                            'raw'                    => $canceledSub,
-                        ]);
-                }
-            }
-        } catch (InvalidRequestException $e) {
-            // Si la subscription Stripe n'existe plus côté Stripe, on marque l'ancienne comme annulée pour continuer.
-            if (str_contains($e->getMessage(), 'No such subscription')) {
-                foreach ($existingList as $existing) {
-                    $existing->update([
-                        'status'                 => 'canceled',
-                        'current_period_ends_at' => null,
-                        'raw'                    => ['error' => $e->getMessage()],
-                    ]);
-                }
-
-                Log::warning('Stripe subscription already missing when canceling before new plan', [
-                    'tenant_id' => $tenantId,
-                    'subscription_ids' => $existingList->pluck('provider_subscription_id'),
-                    'message' => $e->getMessage(),
-                ]);
-
-                return;
-            }
-
-            Log::error('Stripe cancel existing subscription before new plan', [
-                'error'     => $e->getMessage(),
-                'tenant_id' => $tenantId,
-            ]);
-
-            throw $e;
-        } catch (\Exception $e) {
-            Log::error('Stripe cancel existing subscription before new plan', [
-                'error'     => $e->getMessage(),
-                'tenant_id' => $tenantId,
-            ]);
-
-            // On relance l'erreur pour arrêter le checkout si l'annulation échoue
-            throw $e;
-        }
-    }
-
-    /**
-     * Page de retour après succès Stripe Checkout.
-     * (la vraie mise à jour de l'abonnement doit être faite via webhook)
-     */
-    public function checkoutSuccess(Request $request)
-    {
-        // Tu peux récupérer la session si tu veux afficher un message personnalisé
-        $sessionId = $request->query('session_id');
-
-        // Ici tu peux afficher une vue tenant :
-        // return view('tenant.billing.success');
-        return response()->json([
-            'message'    => 'Payment en cours de traitement. Votre abonnement sera activé sous peu.',
-            'session_id' => $sessionId,
-        ]);
-    }
-
-    /**
-     * Page de retour si l'utilisateur annule sur Stripe.
-     */
-    public function checkoutCancel(Request $request)
-    {
-        // Ici tu peux afficher une vue tenant :
-        // return view('tenant.billing.cancel');
-        return response()->json([
-            'message' => 'Paiement annulé par l’utilisateur.',
-        ]);
-    }
-
-    /**
      * Annuler l'abonnement (coté Stripe + DB)
      * (si tu veux, optionnel, ça passe par l'API Stripe Subscription)
      */
@@ -361,6 +285,7 @@ class SubscriptionController extends Controller
             ->where('provider', 'stripe')
             ->whereNotIn('status', ['canceled'])
             ->latest()
+            ->orderByDesc('id')
             ->first();
 
         if (! $subscription) {

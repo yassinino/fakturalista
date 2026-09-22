@@ -242,8 +242,13 @@ class SubscriptionBillingTest extends TestCase
         ], $payload);
     }
 
-    private function checkoutCompletedEvent(string $tenantId, int $planId, string $stripeSubscriptionId): array
+    private function checkoutCompletedEvent(string $tenantId, int $planId, string $stripeSubscriptionId, ?int $planPriceId = null): array
     {
+        $metadata = ['tenant_id' => $tenantId, 'plan_id' => (string) $planId];
+        if ($planPriceId) {
+            $metadata['plan_price_id'] = (string) $planPriceId;
+        }
+
         return [
             'id'   => 'evt_' . uniqid(),
             'type' => 'checkout.session.completed',
@@ -252,7 +257,7 @@ class SubscriptionBillingTest extends TestCase
                 'customer'        => 'cus_test_' . uniqid(),
                 'subscription'    => $stripeSubscriptionId,
                 'customer_details'=> ['email' => 'webhook-test@example.com'],
-                'metadata'        => ['tenant_id' => $tenantId, 'plan_id' => (string) $planId],
+                'metadata'        => $metadata,
             ]],
         ];
     }
@@ -305,6 +310,39 @@ class SubscriptionBillingTest extends TestCase
 
         $tenant->refresh();
         $this->assertSame('trialing', $tenant->subscription_status);
+
+        $stripeSub->cancel();
+    }
+
+    /** @test */
+    public function subscription_endpoint_shows_the_real_charged_amount_after_checkout_confirms(): void
+    {
+        [$tenant, $domain, $user] = $this->makeTenant('MA', 'MAD');
+        $plan      = Plan::on('mysql')->where('slug', 'pro')->first();
+        $planPrice = $plan->priceFor('MA', 'monthly');
+
+        $customer = StripeCustomer::create(['email' => 'webhook-price@example.com']);
+        $stripeSub = StripeSubscription::create([
+            'customer' => $customer->id,
+            'items'    => [['price' => $planPrice->stripe_price_id]],
+            'trial_period_days' => 14,
+        ]);
+
+        $event = $this->checkoutCompletedEvent($tenant->getTenantKey(), $plan->id, $stripeSub->id, $planPrice->id);
+        $this->postSignedWebhook($event)->assertOk();
+
+        $sub = AppSubscription::where('provider_subscription_id', $stripeSub->id)->first();
+        $this->assertSame($planPrice->id, $sub->plan_price_id, 'The exact plan_price used at checkout must be recorded on the subscription.');
+
+        $response = $this->actingAs($user, 'api')->getJson('http://' . $domain . '/api/subscription');
+        $response->assertOk();
+
+        // This is exactly what the checkout success page (CheckoutSuccess.vue)
+        // reads to show "Montant: 209 MAD/mois" - it must be the real
+        // charged price, never re-derived from a static plan column.
+        $this->assertSame('MAD', $response->json('subscription.price.currency'));
+        $this->assertSame(20900, $response->json('subscription.price.amount'));
+        $this->assertSame('monthly', $response->json('subscription.price.interval'));
 
         $stripeSub->cancel();
     }

@@ -299,11 +299,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { useTemplateStore } from '@/stores/template';
 
 const { t } = useI18n();
 const store = useTemplateStore();
+const route  = useRoute();
+const router = useRouter();
 
 // ── State ─────────────────────────────────────────────────────────────────
 const plans       = ref([]);
@@ -436,6 +439,13 @@ const loadCurrentSubscription = async () => {
 onMounted(() => {
   loadPlans();
   loadCurrentSubscription();
+
+  if (route.query.checkout === 'cancelled') {
+    cancelMessage.value = t('checkoutSuccess.cancelledNotice');
+    cancelError.value   = false;
+    // Drop the query param so a page refresh doesn't re-show the notice.
+    router.replace({ query: {} });
+  }
 });
 
 // ── Plan click → open modal ────────────────────────────────────────────────

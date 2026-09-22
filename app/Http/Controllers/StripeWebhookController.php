@@ -157,6 +157,8 @@ class StripeWebhookController extends Controller
         try {
             $tenantId       = $session->metadata->tenant_id ?? null;
             $planId         = $session->metadata->plan_id ?? null;
+            $planPriceId    = $session->metadata->plan_price_id ?? null;
+            $previousSubscriptionId = $session->metadata->previous_subscription_id ?? null;
             $subscriptionId = $session->subscription ?? null; // id Stripe
             $customerId     = $session->customer ?? null;
 
@@ -208,6 +210,7 @@ class StripeWebhookController extends Controller
                 ],
                 [
                     'plan_id'               => $plan->id,
+                    'plan_price_id'         => $planPriceId,
                     'status'                => $stripeSub->status,
                     'trial_ends_at'         => $stripeSub->trial_end
                         ? Carbon::createFromTimestamp($stripeSub->trial_end)
@@ -228,11 +231,68 @@ class StripeWebhookController extends Controller
                 'tenant_id'       => $tenantId,
             ]);
 
+            // Upgrade/downgrade of an existing paid subscriber: the OLD
+            // Stripe subscription is only cancelled now, having just
+            // confirmed the NEW one is actually active/trialing and
+            // persisted above - never before (see
+            // SubscriptionController::createCheckoutSession()'s own
+            // docblock for why cancelling it earlier was the root cause of
+            // "upgrade doesn't stick" - a lost/delayed webhook used to
+            // leave the tenant with the old plan already cancelled and no
+            // new one, so PlanService::currentPlan() fell back to Starter).
+            if ($previousSubscriptionId && $previousSubscriptionId !== $stripeSub->id) {
+                $this->cancelPreviousSubscription($previousSubscriptionId);
+            }
+
         } catch (\Throwable $e) {
             Log::error('💥 Error in handleCheckoutSessionCompleted', [
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine(),
+            ]);
+        }
+    }
+
+    /**
+     * Cancels the subscriber's previous Stripe subscription after an
+     * upgrade/downgrade's new one is already confirmed active. Idempotent:
+     * a redelivered checkout.session.completed event calls this again with
+     * the same id - cancelling an already-cancelled Stripe subscription is
+     * a documented no-op-ish error on Stripe's side, so it's swallowed here
+     * rather than failing the whole webhook (the new subscription above is
+     * already saved by that point regardless).
+     */
+    private function cancelPreviousSubscription(string $previousSubscriptionId): void
+    {
+        try {
+            $previous = Subscription::where('provider', 'stripe')
+                ->where('provider_subscription_id', $previousSubscriptionId)
+                ->first();
+
+            if ($previous && $previous->status === 'canceled') {
+                return; // already handled by an earlier delivery of this same event
+            }
+
+            $canceledSub = StripeSubscription::retrieve($previousSubscriptionId)->cancel();
+            $periodEnd   = StripeSubscriptionHelper::currentPeriodEnd($canceledSub);
+
+            $previous?->update([
+                'status'                 => $canceledSub->status,
+                'current_period_ends_at' => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
+                'raw'                    => $canceledSub,
+            ]);
+
+            Log::info('Previous subscription cancelled after upgrade/downgrade', [
+                'previous_subscription_id' => $previousSubscriptionId,
+            ]);
+        } catch (\Throwable $e) {
+            // Never let a failure here undo the new subscription that was
+            // already confirmed and saved above - just log it. Worst case,
+            // the old subscription needs a manual/next-webhook cleanup;
+            // the tenant already has correct (new) plan access either way.
+            Log::warning('Could not cancel previous subscription after upgrade/downgrade', [
+                'previous_subscription_id' => $previousSubscriptionId,
+                'error' => $e->getMessage(),
             ]);
         }
     }

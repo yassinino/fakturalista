@@ -39,7 +39,14 @@ class PlanService
                 ->where('tenant_id', tenant('id'))
                 ->whereIn('status', ['active', 'trialing'])
                 ->with(['plan.features', 'plan.limits'])
+                // `id desc` as an explicit tiebreaker alongside created_at:
+                // an upgrade's new subscription row and the just-cancelled
+                // old one can otherwise land in the same second, and
+                // MySQL's `created_at` timestamp column has no microsecond
+                // precision here - id, being auto-increment, is the only
+                // value guaranteed to reflect true insertion order.
                 ->latest()
+                ->orderByDesc('id')
                 ->first()?->plan;
 
             // Fallback for tenants provisioned before the subscription row was

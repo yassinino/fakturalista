@@ -18,6 +18,7 @@ const AuthSignOut    = () => import("@/views/SignOut.vue");
 const ForgotPassword = () => import("@/views/ForgotPassword.vue");
 const ResetPassword  = () => import("@/views/ResetPassword.vue");
 const Onboarding     = () => import("@/views/admin/Onboarding.vue");
+const CheckoutSuccess = () => import("@/views/admin/subscription/CheckoutSuccess.vue");
 
 // Backend: Dashboard
 
@@ -276,6 +277,16 @@ const routes = [
         name: "onboarding",
         component: Onboarding,
       },
+      {
+        // Stripe redirects the browser here directly after Checkout - see
+        // SubscriptionController::createCheckoutSession()'s success_url.
+        path: "subscription/checkout/success",
+        name: "backend-subscription-checkout-success",
+        component: CheckoutSuccess,
+        meta: {
+          requiresAuth: true
+        }
+      },
     ],
   },
 ];
@@ -308,7 +319,7 @@ router.afterEach((to, from) => {
 
 // Auth + billing navigation guard
 const AUTH_ROUTES  = ['auth-signin', 'auth-signout', 'auth-forgot-password', 'auth-reset-password'];
-const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'landing'];
+const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'backend-subscription-checkout-success', 'landing'];
 
 router.beforeEach(async (to, from, next) => {
   const store = useTemplateStore();

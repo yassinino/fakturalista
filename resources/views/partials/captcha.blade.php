@@ -54,7 +54,7 @@
         color: #1a1a2e;
     }
     .mc-captcha-input {
-        width: 90px;
+        width: 60%;
         flex: 0 0 auto;
     }
     .mc-captcha-error {
