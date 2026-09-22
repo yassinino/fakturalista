@@ -42,6 +42,25 @@
             </div>
           </template>
         </div>
+
+        <div v-if="hasActiveSub && currentSub?.status !== 'canceled'" class="sub-status-cancel">
+          <span v-if="currentSub?.raw?.cancel_at_period_end" class="sub-cancel-scheduled">
+            {{ $t('subscription.cancel.scheduled', { date: formatDate(currentSub.current_period_ends_at) }) }}
+          </span>
+          <button
+            v-else
+            type="button"
+            class="sub-cancel-link"
+            :disabled="cancelLoading"
+            @click="cancelSubscription"
+          >
+            {{ cancelLoading ? $t('subscription.buttons.cancelling') : $t('subscription.buttons.cancelSubscription') }}
+          </button>
+        </div>
+      </div>
+
+      <div v-if="cancelMessage" class="sub-cancel-notice" :class="{ 'sub-cancel-notice--error': cancelError }">
+        {{ cancelMessage }}
       </div>
 
       <!-- ═══════════════════════════════════════════════════
@@ -66,7 +85,7 @@
       <!-- ═══════════════════════════════════════════════════
            BILLING CYCLE TOGGLE
            ═══════════════════════════════════════════════════ -->
-      <div class="sub-toggle-wrap" role="group" :aria-label="$t('subscription.billing.monthly') + ' / ' + $t('subscription.billing.yearly')">
+      <div v-if="anyYearlyAvailable" class="sub-toggle-wrap" role="group" :aria-label="$t('subscription.billing.monthly') + ' / ' + $t('subscription.billing.yearly')">
         <button
           class="sub-cycle-btn"
           :class="{ 'sub-cycle-btn--active': cycle === 'monthly' }"
@@ -137,8 +156,8 @@
             <span class="sub-price-amount">{{ displayPrice(plan) }}</span>
             <span class="sub-price-period">{{ $t('subscription.billing.perMonth') }}</span>
           </div>
-          <p v-if="cycle === 'yearly'" class="sub-price-billed">
-            {{ yearlyTotal(plan) }} {{ plan.currency }} / year
+          <p v-if="cycle === 'yearly' && plan.yearly_available" class="sub-price-billed">
+            {{ $t('subscription.billing.billedYearly', { total: yearlyTotal(plan), currency: plan.currency }) }}
           </p>
 
           <!-- Divider -->
@@ -300,6 +319,11 @@ const pendingPlanIdx   = ref(null);
 const payLoading       = ref(false);
 const payError         = ref('');
 
+// Cancellation
+const cancelLoading = ref(false);
+const cancelMessage = ref('');
+const cancelError   = ref(false);
+
 // ── Derived billing state ─────────────────────────────────────────────────
 const trialActive  = computed(() =>
   store.billing.subscriptionStatus === 'trialing' && !store.billing.isReadOnly
@@ -327,15 +351,24 @@ const isCurrentPlan = (plan) => {
   return subPlanId && Number(subPlanId) === Number(plan.id);
 };
 
-// ── Price helpers ─────────────────────────────────────────────────────────
+// ── Price helpers ───────────────────────────────────────────────────────
+// Real prices only - never an invented discount. `yearly_price`/
+// `yearly_available` come from plan_prices (see PlanController), which
+// only exists once a real Stripe Price has been created for that market
+// (Morocco is monthly-only for now - see SyncPlanPrices).
+const anyYearlyAvailable = computed(() => plans.value.some(p => p.yearly_available));
+
 const displayPrice = (plan) => {
-  const monthly = parseFloat(plan.price);
-  if (cycle.value === 'yearly') return (monthly * 0.8).toFixed(0);
+  if (cycle.value === 'yearly' && plan.yearly_price != null) {
+    return (plan.yearly_price / 100 / 12).toFixed(0);
+  }
+  const monthly = plan.monthly_price != null ? plan.monthly_price / 100 : parseFloat(plan.price || 0);
   return monthly.toFixed(0);
 };
 
 const yearlyTotal = (plan) => {
-  return (parseFloat(plan.price) * 0.8 * 12).toFixed(0);
+  if (plan.yearly_price == null) return '';
+  return (plan.yearly_price / 100).toFixed(0);
 };
 
 // ── CTA helpers ───────────────────────────────────────────────────────────
@@ -383,6 +416,7 @@ const loadPlans = async () => {
   try {
     const { data } = await axios.get('/plans');
     plans.value = (data?.plans ?? []).slice(0, 3); // only the first 3
+    if (!anyYearlyAvailable.value) cycle.value = 'monthly';
   } catch {
     planError.value = t('subscription.errors.loadPlans');
   } finally {
@@ -429,7 +463,8 @@ const proceedPayment = async () => {
 
   try {
     const { data } = await axios.post('/subscription/checkout', {
-      plan_id: pendingPlan.value.id,
+      plan_id:  pendingPlan.value.id,
+      interval: cycle.value,
     });
 
     const url = data?.checkout_url;
@@ -439,6 +474,30 @@ const proceedPayment = async () => {
     payError.value =
       err.response?.data?.message ?? t('subscription.errors.stripeStart');
     payLoading.value = false;
+  }
+};
+
+// ── Cancellation ──────────────────────────────────────────────────────────
+// Wires the existing POST /subscription/cancel endpoint (already
+// Stripe-backed: cancel_at_period_end=true, confirmed by that call's own
+// response) - there was previously no UI control that ever called it.
+const cancelSubscription = async () => {
+  if (cancelLoading.value) return;
+  if (!window.confirm(t('subscription.cancel.confirm'))) return;
+
+  cancelLoading.value = true;
+  cancelError.value   = false;
+  cancelMessage.value = '';
+
+  try {
+    await axios.post('/subscription/cancel');
+    cancelMessage.value = t('subscription.cancel.success');
+    await loadCurrentSubscription();
+  } catch (err) {
+    cancelError.value   = true;
+    cancelMessage.value = err.response?.data?.message ?? t('subscription.cancel.error');
+  } finally {
+    cancelLoading.value = false;
   }
 };
 </script>
@@ -487,6 +546,7 @@ const proceedPayment = async () => {
 /* ── Current plan / trial status card ────────────────────────────────── */
 .sub-status-card {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -497,6 +557,34 @@ const proceedPayment = async () => {
   margin-bottom: 28px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
+.sub-status-cancel {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f2;
+}
+.sub-cancel-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #9ca3af;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.sub-cancel-link:hover:not(:disabled) { color: #ef4444; }
+.sub-cancel-link:disabled { opacity: 0.6; cursor: not-allowed; }
+.sub-cancel-scheduled { font-size: 0.82rem; color: #d97706; font-weight: 600; }
+.sub-cancel-notice {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #16a34a;
+  margin: -8px 0 20px;
+}
+.sub-cancel-notice--error { color: #ef4444; }
 .sub-status-left { display: flex; flex-direction: column; gap: 4px; }
 .sub-status-eyebrow {
   font-size: 0.7rem;

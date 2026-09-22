@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plan;
+use App\Services\TenantContextService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,14 +15,15 @@ class PlanController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $locale = app()->getLocale();
+        $locale  = app()->getLocale();
+        $country = app(TenantContextService::class)->country();
 
         $plans = Plan::on('mysql')
             ->where('active', true)
-            ->with(['limits', 'features', 'marketingItems'])
+            ->with(['limits', 'features', 'marketingItems', 'prices'])
             ->orderBy('sort_order')
             ->get()
-            ->map(fn (Plan $plan) => $this->formatPlan($plan, $locale));
+            ->map(fn (Plan $plan) => $this->formatPlan($plan, $locale, $country));
 
         return response()->json([
             'success' => true,
@@ -35,22 +37,35 @@ class PlanController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $locale = app()->getLocale();
+        $locale  = app()->getLocale();
+        $country = app(TenantContextService::class)->country();
 
         $plan = Plan::on('mysql')
             ->where('active', true)
-            ->with(['limits', 'features', 'marketingItems'])
+            ->with(['limits', 'features', 'marketingItems', 'prices'])
             ->findOrFail($id);
 
         return response()->json([
             'success' => true,
-            'plan'    => $this->formatPlan($plan, $locale),
+            'plan'    => $this->formatPlan($plan, $locale, $country),
         ]);
     }
 
-    private function formatPlan(Plan $plan, string $locale): array
+    /**
+     * Price/currency come from `plan_prices` (per-market: Morocco MAD,
+     * Spain EUR - see the SyncPlanPrices command and the "no duplicated
+     * plan rows per country" architecture note on the plan_prices
+     * migration), resolved for the REQUESTING tenant's own country -
+     * never a static column on the plan row itself. A tenant must never
+     * see a currency Stripe isn't actually configured to charge for the
+     * matching Checkout Session (see SubscriptionController).
+     */
+    private function formatPlan(Plan $plan, string $locale, string $country): array
     {
         $name = json_decode($plan->getRawOriginal('name'), true) ?? [];
+
+        $monthly = $plan->priceFor($country, 'monthly');
+        $yearly  = $plan->priceFor($country, 'yearly');
 
         return [
             'id'                    => $plan->id,
@@ -62,13 +77,17 @@ class PlanController extends Controller
             'color'                 => $plan->color,
             'is_featured'           => $plan->is_featured,
             'sort_order'            => $plan->sort_order,
-            'price'                 => number_format($plan->monthly_price / 100, 2, '.', ''),
-            'monthly_price'         => $plan->monthly_price,
-            'yearly_price'          => $plan->yearly_price,
-            'currency'              => strtoupper($plan->currency ?? 'EUR'),
+            'price'                 => $monthly ? number_format($monthly->amount / 100, 2, '.', '') : null,
+            'monthly_price'         => $monthly?->amount,
+            'yearly_price'          => $yearly?->amount,
+            // Only true once a real Stripe Price exists for this market's
+            // yearly interval (Morocco: monthly only for now) - drives the
+            // frontend's yearly toggle instead of it inventing a discount.
+            'yearly_available'      => $yearly !== null,
+            'currency'              => $monthly?->currency ?? 'EUR',
             'trial_days'            => $plan->trial_days,
-            'stripe_price_id'       => $plan->stripe_price_id_monthly ?? $plan->stripe_price_id,
-            'stripe_price_id_yearly'=> $plan->stripe_price_id_yearly,
+            'stripe_price_id'       => $monthly?->stripe_price_id,
+            'stripe_price_id_yearly'=> $yearly?->stripe_price_id,
             'paypal_plan_id'        => $plan->paypal_plan_id,
             'button_text'           => $plan->translate('button_text', $locale),
             'button_url'            => $plan->button_url,

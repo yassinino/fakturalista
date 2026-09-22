@@ -454,7 +454,7 @@ export default {
       yearly: "Annuel",
       savePercent: "\u00c9conomisez 20%",
       perMonth: "/mois",
-      billedYearly: "Factur\u00e9 {total} \u20ac/an",
+      billedYearly: "Factur\u00e9 {total} {currency}/an",
     },
 
     buttons: {
@@ -463,6 +463,15 @@ export default {
       downgrade:    "R\u00e9trograder",
       subscribe:    "Commencer",
       trialPending: "Disponible apr\u00e8s l'essai",
+      cancelSubscription: "Annuler mon abonnement",
+      cancelling: "Annulation...",
+    },
+
+    cancel: {
+      confirm: "Annuler votre abonnement ? Vous garderez l'acc\u00e8s jusqu'\u00e0 la fin de la p\u00e9riode en cours.",
+      success: "Abonnement annul\u00e9. Vous garderez l'acc\u00e8s jusqu'\u00e0 la fin de la p\u00e9riode en cours.",
+      error: "Impossible d'annuler l'abonnement. Veuillez r\u00e9essayer.",
+      scheduled: "R\u00e9siliation pr\u00e9vue le {date}",
     },
 
     confirm: {
@@ -484,7 +493,7 @@ export default {
       q3: "Proposez-vous des remboursements ?",
       a3: "Nous offrons un remboursement complet dans les 7 jours suivant votre premier paiement.",
       q4: "Que se passe-t-il apr\u00e8s l'essai gratuit ?",
-      a4: "Apr\u00e8s 30 jours, l'application passe en mode lecture seule. Toutes vos donn\u00e9es sont conserv\u00e9es \u2014 abonnez-vous pour retrouver l'acc\u00e8s complet.",
+      a4: "Apr\u00e8s 14 jours, l'application passe en mode lecture seule. Toutes vos donn\u00e9es sont conserv\u00e9es \u2014 abonnez-vous pour retrouver l'acc\u00e8s complet.",
     },
 
     errors: {

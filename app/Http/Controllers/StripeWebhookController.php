@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use App\Models\InvoiceHistory;
 use App\Models\Plan;
+use App\Models\PlanPrice;
+use App\Services\StripeSubscriptionHelper;
 use App\Models\BillingProfile;
 use App\Models\Subscription;
 use App\Models\Payment;
@@ -210,8 +212,8 @@ class StripeWebhookController extends Controller
                     'trial_ends_at'         => $stripeSub->trial_end
                         ? Carbon::createFromTimestamp($stripeSub->trial_end)
                         : null,
-                    'current_period_ends_at' => $stripeSub->current_period_end
-                        ? Carbon::createFromTimestamp($stripeSub->current_period_end)
+                    'current_period_ends_at' => ($periodEnd = StripeSubscriptionHelper::currentPeriodEnd($stripeSub))
+                        ? Carbon::createFromTimestamp($periodEnd)
                         : null,
                 ]
             );
@@ -245,13 +247,13 @@ class StripeWebhookController extends Controller
             return;
         }
 
+        $periodEnd = StripeSubscriptionHelper::currentPeriodEnd($stripeSub);
+
         Subscription::where('provider', 'stripe')
             ->where('provider_subscription_id', $stripeSub->id)
             ->update([
                 'status'                 => $stripeSub->status,
-                'current_period_ends_at' => $stripeSub->current_period_end
-                    ? Carbon::createFromTimestamp($stripeSub->current_period_end)
-                    : null,
+                'current_period_ends_at' => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
             ]);
 
         $tenant = Tenant::find($tenantId);
@@ -348,10 +350,14 @@ class StripeWebhookController extends Controller
             }
 
             if (! $planId && $priceId) {
-                $plan = Plan::where('stripe_price_id', $priceId)->first();
-                if ($plan) {
-                    $planId = $plan->id;
-                    Log::info('ℹ️ Plan found via stripe_price_id', [
+                // stripe_price_id now lives on plan_prices (one per
+                // market/interval, see the plan_prices migration) rather
+                // than a single stale column on plans - see PlanController/
+                // SubscriptionController for the same resolution.
+                $planPrice = PlanPrice::where('stripe_price_id', $priceId)->first();
+                if ($planPrice) {
+                    $planId = $planPrice->plan_id;
+                    Log::info('ℹ️ Plan found via plan_prices.stripe_price_id', [
                         'plan_id'        => $planId,
                         'stripe_price_id'=> $priceId,
                     ]);
@@ -390,8 +396,8 @@ class StripeWebhookController extends Controller
                         'trial_ends_at'         => $stripeSub->trial_end
                             ? Carbon::createFromTimestamp($stripeSub->trial_end)
                             : null,
-                        'current_period_ends_at' => $stripeSub->current_period_end
-                            ? Carbon::createFromTimestamp($stripeSub->current_period_end)
+                        'current_period_ends_at' => ($periodEnd = StripeSubscriptionHelper::currentPeriodEnd($stripeSub))
+                            ? Carbon::createFromTimestamp($periodEnd)
                             : null,
                     ]
                 );
@@ -420,19 +426,28 @@ class StripeWebhookController extends Controller
                 $paidAt = Carbon::createFromTimestamp($invoice->created);
             }
 
-            // 7) Créer le Payment
-            Payment::create([
-                'tenant_id'           => $subscription->tenant_id,
-                'subscription_id'     => $subscription->id,
-                'provider'            => 'stripe',
-                'provider_payment_id' => $invoice->id,
-                'amount'              => $invoice->amount_paid / 100,
-                'currency'            => strtoupper($invoice->currency),
-                'status'              => $invoice->status ?? 'paid',
-                'paid_at'             => $paidAt,
-                'billing_period_start'=> $periodStart,
-                'billing_period_end'  => $periodEnd,
-            ]);
+            // 7) Créer le Payment - idempotent: Stripe redelivers webhooks
+            // (retries + occasional duplicate deliveries of the same
+            // event), and this same handler already re-runs in full for a
+            // redelivery of the same invoice.payment_succeeded event. Keyed
+            // on (provider, provider_payment_id) - also a DB-level unique
+            // constraint, see the add_unique_index_to_payments_table migration.
+            Payment::updateOrCreate(
+                [
+                    'provider'            => 'stripe',
+                    'provider_payment_id' => $invoice->id,
+                ],
+                [
+                    'tenant_id'           => $subscription->tenant_id,
+                    'subscription_id'     => $subscription->id,
+                    'amount'              => $invoice->amount_paid / 100,
+                    'currency'            => strtoupper($invoice->currency),
+                    'status'              => $invoice->status ?? 'paid',
+                    'paid_at'             => $paidAt,
+                    'billing_period_start'=> $periodStart,
+                    'billing_period_end'  => $periodEnd,
+                ]
+            );
 
             Log::info('💶 Payment created from invoice.payment_succeeded', [
                 'invoice_id'      => $invoice->id,

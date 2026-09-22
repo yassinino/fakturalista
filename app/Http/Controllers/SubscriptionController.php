@@ -13,6 +13,8 @@ use App\Models\BillingProfile;
 use App\Models\Subscription as AppSubscription;
 use App\Models\Tenant;
 use App\Models\Payment;
+use App\Services\TenantContextService;
+use App\Services\StripeSubscriptionHelper;
 use Illuminate\Validation\Rule;
 // Stripe
 use Stripe\Stripe;
@@ -103,6 +105,7 @@ class SubscriptionController extends Controller
                 // 👇 IMPORTANT : on force la connexion 'mysql' (centrale)
                 Rule::exists('mysql.plans', 'id')->where('active', true),
             ],
+            'interval' => ['sometimes', 'string', Rule::in(['monthly', 'yearly'])],
         ]);
 
         if ($validator->fails()) {
@@ -112,16 +115,27 @@ class SubscriptionController extends Controller
             ], 422);
         }
 
+        $interval = $request->input('interval', 'monthly');
+
         $plan = Plan::where('id', $request->plan_id)
             ->where('active', true)
+            ->with('prices')
             ->first();
 
-        $priceId = $plan->stripe_price_id ?? null;
+        // The Stripe Price to charge is resolved for THIS tenant's own
+        // market (plan_prices, see PlanController's identical resolution
+        // and the plan_prices migration's docblock) - never a single
+        // plan-wide column. If this market/interval has no real Stripe
+        // Price configured yet, refuse rather than silently charging a
+        // different currency than what the pricing page just showed.
+        $country   = app(TenantContextService::class)->country();
+        $planPrice = $plan->priceFor($country, $interval);
+        $priceId   = $planPrice?->stripe_price_id;
 
         if (! $priceId) {
             return response()->json([
-                'message' => 'Ce plan n\'a pas d\'ID de prix Stripe configuré (stripe_price_id est vide).',
-            ], 500);
+                'message' => "Ce plan n'est pas encore disponible dans votre devise pour cette périodicité.",
+            ], 422);
         }
 
         Stripe::setApiKey(config('services.stripe.secret'));
@@ -180,8 +194,11 @@ class SubscriptionController extends Controller
                 'success_url' => $successUrl,
                 'cancel_url'  => $cancelUrl,
                 'metadata' => [
-                    'tenant_id' => tenant() ? tenant()->id : null,
-                    'plan_id'   => $plan->id,
+                    'tenant_id'    => tenant() ? tenant()->id : null,
+                    'plan_id'      => $plan->id,
+                    'plan_price_id'=> $planPrice->id,
+                    'interval'     => $interval,
+                    'country_code' => $country,
                 ],
             ];
 
@@ -233,7 +250,7 @@ class SubscriptionController extends Controller
                 $stripeSub = StripeSubscription::retrieve($existing->provider_subscription_id);
                 $canceledSub = $stripeSub->cancel();
 
-                $periodEnd = $canceledSub->current_period_end ?? null;
+                $periodEnd = StripeSubscriptionHelper::currentPeriodEnd($canceledSub);
 
                 $existing->update([
                     'status'                 => $canceledSub->status,
@@ -252,7 +269,7 @@ class SubscriptionController extends Controller
 
                 foreach ($activeStripeSubs->data ?? [] as $stripeSub) {
                     $canceledSub = $stripeSub->cancel();
-                    $periodEnd   = $canceledSub->current_period_end ?? null;
+                    $periodEnd   = StripeSubscriptionHelper::currentPeriodEnd($canceledSub);
 
                     AppSubscription::where('provider_subscription_id', $stripeSub->id)
                         ->update([
@@ -357,9 +374,11 @@ class SubscriptionController extends Controller
                 'cancel_at_period_end' => true,
             ]);
 
+            $periodEnd = StripeSubscriptionHelper::currentPeriodEnd($stripeSub);
+
             $subscription->update([
                 'status'                 => $stripeSub->status,
-                'current_period_ends_at' => Carbon::createFromTimestamp($stripeSub->current_period_end),
+                'current_period_ends_at' => $periodEnd ? Carbon::createFromTimestamp($periodEnd) : null,
                 'raw'                    => $stripeSub,
             ]);
 

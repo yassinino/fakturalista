@@ -454,7 +454,7 @@ export default {
       yearly: "Yearly",
       savePercent: "Save 20%",
       perMonth: "/mo",
-      billedYearly: "Billed as €{total}/year",
+      billedYearly: "Billed as {currency} {total}/year",
     },
 
     buttons: {
@@ -463,6 +463,15 @@ export default {
       downgrade:    "Downgrade",
       subscribe:    "Get started",
       trialPending: "Available after trial",
+      cancelSubscription: "Cancel my subscription",
+      cancelling: "Cancelling...",
+    },
+
+    cancel: {
+      confirm: "Cancel your subscription? You'll keep access until the end of the current billing period.",
+      success: "Subscription cancelled. You'll keep access until the end of the current billing period.",
+      error: "Couldn't cancel the subscription. Please try again.",
+      scheduled: "Cancellation scheduled for {date}",
     },
 
     confirm: {
@@ -484,7 +493,7 @@ export default {
       q3: "Do you offer refunds?",
       a3: "We offer a full refund within 7 days of your first payment if you're not satisfied with Fakturalista.",
       q4: "What happens after the free trial?",
-      a4: "After your 30-day trial ends, the app enters read-only mode. All your data is preserved - subscribe to regain full access.",
+      a4: "After your 14-day trial ends, the app enters read-only mode. All your data is preserved - subscribe to regain full access.",
     },
 
     errors: {

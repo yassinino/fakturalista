@@ -454,7 +454,7 @@ export default {
       yearly: "Anual",
       savePercent: "Ahorra 20%",
       perMonth: "/mes",
-      billedYearly: "Facturado como \u20ac{total}/a\u00f1o",
+      billedYearly: "Facturado como {currency} {total}/a\u00f1o",
     },
 
     buttons: {
@@ -463,6 +463,15 @@ export default {
       downgrade:    "Bajar de plan",
       subscribe:    "Comenzar",
       trialPending: "Disponible tras la prueba",
+      cancelSubscription: "Cancelar mi suscripción",
+      cancelling: "Cancelando...",
+    },
+
+    cancel: {
+      confirm: "¿Cancelar tu suscripción? Mantendrás el acceso hasta el final del periodo actual.",
+      success: "Suscripción cancelada. Mantendrás el acceso hasta el final del periodo actual.",
+      error: "No se pudo cancelar la suscripción. Inténtalo de nuevo.",
+      scheduled: "Cancelación programada para el {date}",
     },
 
     confirm: {
@@ -484,7 +493,7 @@ export default {
       q3: "\u00bfOfrecen reembolsos?",
       a3: "Ofrecemos reembolso completo dentro de los 7 d\u00edas posteriores a tu primer pago.",
       q4: "\u00bfQu\u00e9 pasa despu\u00e9s de la prueba gratuita?",
-      a4: "Tras 30 d\u00edas, la aplicaci\u00f3n pasa a modo de solo lectura. Todos tus datos se conservan \u2014 suscr\u00edbete para recuperar el acceso completo.",
+      a4: "Tras 14 d\u00edas, la aplicaci\u00f3n pasa a modo de solo lectura. Todos tus datos se conservan \u2014 suscr\u00edbete para recuperar el acceso completo.",
     },
 
     errors: {

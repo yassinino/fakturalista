@@ -40,6 +40,11 @@ class Plan extends Model
         return $this->hasMany(PlanLimit::class);
     }
 
+    public function prices(): HasMany
+    {
+        return $this->hasMany(PlanPrice::class);
+    }
+
     public function marketingItems(): HasMany
     {
         return $this->hasMany(PlanMarketingItem::class)->orderBy('sort_order');
@@ -59,6 +64,20 @@ class Plan extends Model
     public function hasFeature(string $slug): bool
     {
         return $this->features->contains('slug', $slug);
+    }
+
+    /**
+     * Resolve the price row for a given market, falling back to Morocco
+     * (the primary market - see TenantContextService::DEFAULT_COUNTRY) if
+     * the tenant's own country has no price configured for this plan/
+     * interval yet. Requires the 'prices' relation to be eager-loaded.
+     */
+    public function priceFor(string $countryCode, string $interval = 'monthly'): ?PlanPrice
+    {
+        $countryCode = strtoupper($countryCode);
+
+        return $this->prices->first(fn (PlanPrice $p) => $p->country_code === $countryCode && $p->interval === $interval)
+            ?? $this->prices->first(fn (PlanPrice $p) => $p->country_code === 'MA' && $p->interval === $interval);
     }
 
     /**
