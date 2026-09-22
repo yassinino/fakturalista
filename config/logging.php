@@ -70,6 +70,16 @@ return [
             'days' => 14,
         ],
 
+        // VERI*FACTU/AEAT connectivity - certificate and submission
+        // events only. Never write certificate/key/passphrase content
+        // here - see docs/verifactu-aeat-connectivity.md §15.
+        'verifactu' => [
+            'driver' => 'daily',
+            'path'   => storage_path('logs/verifactu.log'),
+            'level'  => env('LOG_LEVEL', 'debug'),
+            'days'   => 90,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

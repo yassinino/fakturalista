@@ -41,7 +41,7 @@
                 <td style="background:#fdf2f8;border-left:4px solid #E91E63;border-radius:4px;padding:16px 20px;">
                   <p style="margin:0 0 4px;font-size:12px;color:#9ca3af;letter-spacing:0.05em;text-transform:uppercase;font-weight:600;">Montant total dû</p>
                   <p style="margin:0;font-size:30px;font-weight:800;color:#E91E63;">
-                    {{ number_format((float)$invoice->total, 2, ',', ' ') }}&nbsp;€
+                    {{ $formattedTotal }}
                   </p>
                 </td>
               </tr>
@@ -67,7 +67,7 @@
               <tr>
                 <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#6b7280;">Sous-total HT</td>
                 <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:13px;font-weight:600;color:#1a1a1a;text-align:right;">
-                  {{ number_format((float)$invoice->sub_total, 2, ',', ' ') }}&nbsp;€
+                  {{ $formattedSubTotal }}
                 </td>
               </tr>
               @endif

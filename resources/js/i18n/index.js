@@ -5,7 +5,10 @@ import es from "./locales/es";
 import fr from "./locales/fr";
 
 const supportedLocales = ["es", "en", "fr"];
-const defaultLocale = "es";
+// Morocco Phase 1A: French is the default for a fresh browser with no
+// stored preference yet (e.g. first visit to /login). Once a user logs
+// in, SignIn.vue/profile.vue set this from their own saved users.locale.
+const defaultLocale = "fr";
 
 const normalizeLocale = (locale) =>
   supportedLocales.includes(locale) ? locale : defaultLocale;

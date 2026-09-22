@@ -3,6 +3,8 @@
 namespace App\Mail;
 
 use App\Models\Invoice;
+use App\Services\CurrencyFormatter;
+use App\Services\TenantContextService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -45,9 +47,22 @@ class InvoiceEmail extends Mailable
     {
         $filename = 'facture-' . $this->invoice->reference . '.pdf';
 
+        // Currency (only) is tenant-driven here - Morocco Phase 1A. The
+        // email copy itself stays French for every tenant, matching its
+        // pre-existing behavior (it never varied by locale before this
+        // phase); see docs/morocco-phase-1a-implementation.md §4 for why
+        // that's a separate, deliberately-deferred concern from currency.
+        $context   = app(TenantContextService::class);
+        $formatter = app(CurrencyFormatter::class);
+        $currency  = $context->currency();
+
         return $this
             ->subject("Facture {$this->invoice->reference} · {$this->companyName}")
             ->view('emails.invoice')
+            ->with([
+                'formattedTotal'    => $formatter->format((float) $this->invoice->total, $currency, 'fr'),
+                'formattedSubTotal' => $formatter->format((float) $this->invoice->sub_total, $currency, 'fr'),
+            ])
             ->attachData($this->pdfContent, $filename, ['mime' => 'application/pdf']);
     }
 }

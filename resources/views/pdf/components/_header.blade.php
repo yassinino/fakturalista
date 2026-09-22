@@ -17,11 +17,29 @@
             @if($companyAddress)
                 <div class="company-detail" style="white-space: pre-line;">{{ $companyAddress }}</div>
             @endif
-            @if($company?->phone)
-                <div class="company-detail">{{ __('invoice.phone', ['phone' => $company->phone]) }}</div>
+            {{-- Country-aware identity block (Morocco Phase 1B, docs/morocco-phase-1b-identity.md §8).
+                 Source is $companyIdentity (snapshot-first for an issued invoice), never a
+                 direct $company read - see TemplateRendererService::render(). --}}
+            @if(strtoupper($companyIdentity['country_code'] ?? '') === 'MA')
+                @if(!empty($companyIdentity['ice']))
+                    <div class="company-detail">{{ __('invoice.ice', ['id' => $companyIdentity['ice']]) }}</div>
+                @endif
+                @if(!empty($companyIdentity['if_number']))
+                    <div class="company-detail">{{ __('invoice.if_number', ['id' => $companyIdentity['if_number']]) }}</div>
+                @endif
+                @if(!empty($companyIdentity['registration_number']))
+                    <div class="company-detail">{{ __('invoice.rc', ['id' => $companyIdentity['registration_number']]) }}</div>
+                @endif
+            @else
+                @if(!empty($companyIdentity['tax_id']))
+                    <div class="company-detail">{{ __('invoice.tax_id', ['id' => $companyIdentity['tax_id']]) }}</div>
+                @endif
             @endif
-            @if($company?->email)
-                <div class="company-detail">{{ $company->email }}</div>
+            @if(!empty($companyIdentity['phone']))
+                <div class="company-detail">{{ __('invoice.phone', ['phone' => $companyIdentity['phone']]) }}</div>
+            @endif
+            @if(!empty($companyIdentity['email']))
+                <div class="company-detail">{{ $companyIdentity['email'] }}</div>
             @endif
         </td>
 

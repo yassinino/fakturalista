@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useTemplateStore } from "@/stores/template.js";
 
+import { isSpain, requestsVerifactu } from '@/utils/countryExperience.mjs';
+
 import NProgress from "nprogress/nprogress.js";
 
 // Main layouts
@@ -201,6 +203,10 @@ const routes = [
         }
       },
       {
+        path: "settings/verifactu",
+        redirect: { name: 'backend-settings', hash: '#verifactu' },
+      },
+      {
         path: "settings",
         name: "backend-settings",
         component: Settings,
@@ -304,7 +310,7 @@ router.afterEach((to, from) => {
 const AUTH_ROUTES  = ['auth-signin', 'auth-signout', 'auth-forgot-password', 'auth-reset-password'];
 const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'landing'];
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const store = useTemplateStore();
   const isLoggedIn = !!store.app.accessToken;
 
@@ -332,6 +338,15 @@ router.beforeEach((to, from, next) => {
       !BYPASS_NAMES.includes(to.name)
     ) {
       return next({ name: 'backend-subscription' });
+    }
+  }
+
+  if (isLoggedIn && requestsVerifactu(to)) {
+    try {
+      await store.refreshSession();
+      if (!isSpain(store.company)) return next({ name: 'backend-settings', replace: true });
+    } catch {
+      return next({ name: 'backend-settings', replace: true });
     }
   }
 

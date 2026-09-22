@@ -23,7 +23,7 @@
         <div class="pay-kpi-body">
           <p class="pay-kpi-label">{{ $t('payments.totalReceived') }}</p>
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
-            {{ loadingSummary ? '' : $toComma(summary.totalReceived) + ' €' }}
+            {{ loadingSummary ? '' : $toCurrency(summary.totalReceived) }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--neutral" v-if="!loadingSummary">All time</p>
           <p class="pay-kpi-meta" v-else>&nbsp;</p>
@@ -38,7 +38,7 @@
         <div class="pay-kpi-body">
           <p class="pay-kpi-label">{{ $t('payments.pendingPayments') }}</p>
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
-            {{ loadingSummary ? '' : $toComma(summary.pending) + ' €' }}
+            {{ loadingSummary ? '' : $toCurrency(summary.pending) }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--blue" v-if="!loadingSummary && summary.pending > 0">En proceso</p>
           <p class="pay-kpi-meta pay-kpi-meta--green" v-else-if="!loadingSummary">
@@ -58,7 +58,7 @@
           <p class="pay-kpi-label">{{ $t('payments.overdue') }}</p>
           <p class="pay-kpi-value"
             :class="[{ 'pay-kpi-sk': loadingSummary }, !loadingSummary && summary.overdue > 0 ? 'pay-kpi-value--warn' : '']">
-            {{ loadingSummary ? '' : $toComma(summary.overdue) + ' €' }}
+            {{ loadingSummary ? '' : $toCurrency(summary.overdue) }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--orange" v-if="!loadingSummary && summary.overdue > 0">
             Requiere atención
@@ -78,7 +78,7 @@
         <div class="pay-kpi-body">
           <p class="pay-kpi-label">{{ $t('payments.thisMonth') }}</p>
           <p class="pay-kpi-value" :class="{ 'pay-kpi-sk': loadingSummary }">
-            {{ loadingSummary ? '' : $toComma(summary.thisMonth) + ' €' }}
+            {{ loadingSummary ? '' : $toCurrency(summary.thisMonth) }}
           </p>
           <p class="pay-kpi-meta pay-kpi-meta--green" v-if="!loadingSummary && summary.thisMonth > 0">Este mes</p>
           <p class="pay-kpi-meta pay-kpi-meta--neutral" v-else-if="!loadingSummary">Sin cobros aún</p>
@@ -154,7 +154,7 @@
               </router-link>
             </td>
 
-            <td class="text-end fw-bold">{{ $toComma(p.amount) }} €</td>
+            <td class="text-end fw-bold">{{ $toCurrency(p.amount) }}</td>
 
             <td>
               <span class="fs-sm">{{ methodLabel(p.payment_method) }}</span>
@@ -241,7 +241,7 @@
                 >
                   {{ statusLabel(selectedPayment.status) }}
                 </span>
-                <div class="fw-bold fs-3 mt-2">{{ $toComma(selectedPayment.amount) }} €</div>
+                <div class="fw-bold fs-3 mt-2">{{ $toCurrency(selectedPayment.amount) }}</div>
                 <div class="text-muted fs-sm">{{ selectedPayment.payment_number }}</div>
               </div>
 
@@ -324,7 +324,7 @@
                 <select v-model="recordForm.invoice_uuid" class="form-select" @change="onInvoiceSelected">
                   <option value="">{{ $t('payments.recordSelectInvoice') }}</option>
                   <option v-for="inv in payableInvoices" :key="inv.uuid" :value="inv.uuid">
-                    {{ inv.reference }} - {{ inv.customer }} - {{ $toComma(inv.total) }} €
+                    {{ inv.reference }} - {{ inv.customer }} - {{ $toCurrency(inv.total) }}
                     <template v-if="inv.overdue"> ⚠️</template>
                   </option>
                 </select>
@@ -336,7 +336,7 @@
               <div class="mb-3">
                 <label class="form-label fw-semibold">{{ $t('payments.recordAmount') }}</label>
                 <div class="input-group">
-                  <span class="input-group-text">€</span>
+                  <span class="input-group-text">{{ $currencyLabel() }}</span>
                   <input :value="recordAmountDisplay" type="text" class="form-control" readonly tabindex="-1" />
                 </div>
               </div>

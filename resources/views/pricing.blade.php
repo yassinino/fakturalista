@@ -281,7 +281,7 @@
                 $badge      = $plan->translate('badge', $locale);
                 $shortDesc  = $plan->translate('short_description', $locale);
                 $btnText    = $plan->translate('button_text', $locale) ?: __('site.pricing.default_cta');
-                $btnUrl     = $plan->button_url ? url(parse_url($plan->button_url, PHP_URL_PATH) ?: '/free-trial') : url('/free-trial');
+                $btnUrl     = $plan->button_url ? url(parse_url($plan->button_url, PHP_URL_PATH) ?: '/register') : url('/register');
                 $price      = number_format($plan->monthly_price / 100, 2, ',', '');
                 $currency   = strtoupper($plan->currency ?? 'EUR') === 'EUR' ? '€' : strtoupper($plan->currency ?? 'EUR');
             @endphp

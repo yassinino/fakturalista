@@ -142,7 +142,7 @@
           </div>
           <div class="col-md-6">
             <label class="form-label fw-semibold">{{ $t('invoices.table.total') }}</label>
-            <p class="form-control-plaintext fw-bold">{{ $toComma(state.total) }} €</p>
+            <p class="form-control-plaintext fw-bold">{{ $toCurrency(state.total) }}</p>
           </div>
         </div>
 

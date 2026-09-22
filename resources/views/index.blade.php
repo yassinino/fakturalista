@@ -663,6 +663,91 @@ html { scroll-behavior: smooth; }
 }
 
 /* =========================================================================
+   SPAIN / VERI*FACTU TEASER
+   ========================================================================= */
+.fk-spain { padding: 40px 0 110px; }
+.fk-spain-panel {
+    background: linear-gradient(135deg, #fff 0%, var(--fk-pink-soft) 130%);
+    border: 1px solid var(--fk-pink-border);
+    border-radius: var(--fk-radius-lg);
+    padding: 64px;
+}
+.fk-spain-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+.fk-spain-text h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 700;
+    line-height: 1.22;
+    margin: 0 0 20px;
+}
+.fk-spain-text p { font-size: 15.5px; line-height: 1.7; margin: 0 0 14px; }
+.fk-spain-points {
+    list-style: none;
+    margin: 26px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+}
+.fk-spain-points li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--fk-ink);
+}
+.fk-spain-point-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--fk-border);
+    color: var(--fk-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.fk-spain-card {
+    background: #fff;
+    border: 1.5px solid var(--fk-pink);
+    border-radius: var(--fk-radius-md);
+    padding: 32px;
+    box-shadow: var(--fk-shadow-md);
+}
+.fk-spain-card-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--fk-ink);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .03em;
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+}
+.fk-spain-card-text { font-size: 14.5px; line-height: 1.65; margin: 0 0 22px; }
+.fk-spain-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--fk-pink) !important;
+    font-size: 14.5px;
+    transition: gap .18s ease;
+}
+.fk-spain-card-link:hover { gap: 12px; }
+@media (max-width: 991px) {
+    .fk-spain-panel { padding: 40px 28px; }
+    .fk-spain-grid { grid-template-columns: 1fr; gap: 36px; }
+}
+
+/* =========================================================================
    RESPONSIVE
    ========================================================================= */
 @media (max-width: 991px) {
@@ -684,6 +769,7 @@ html { scroll-behavior: smooth; }
     .fk-hero-ctas { flex-direction: column; }
     .fk-hero-visual { margin-top: 56px; }
     .fk-solution, .fk-how, .fk-features, .fk-value, .fk-pricing, .fk-faq { padding: 72px 0; }
+    .fk-spain { padding: 16px 0 72px; }
     .fk-feature-grid { grid-template-columns: 1fr; }
     .fk-section-head, .fk-solution-head, .fk-value-inner { margin-bottom: 40px; }
 }
@@ -717,7 +803,7 @@ document.addEventListener('click', function (e) {
             </h1>
             <p class="fk-hero-sub fk-reveal">{{ __('site.home.hero_sub') }}</p>
             <div class="fk-hero-ctas fk-reveal">
-                <a href="{{ url('/free-trial') }}" class="fk-btn fk-btn-primary fk-btn-lg">{{ __('site.nav.cta') }}</a>
+                <a href="{{ url('/register') }}" class="fk-btn fk-btn-primary fk-btn-lg">{{ __('site.nav.cta') }}</a>
                 <a href="{{ url('/') }}#como-funciona" class="fk-btn fk-btn-secondary fk-btn-lg">{{ __('site.home.hero_cta_secondary') }}</a>
             </div>
             <p class="fk-hero-micro fk-reveal">
@@ -908,11 +994,11 @@ document.addEventListener('click', function (e) {
                             <div class="fk-mock-stats">
                                 <div class="fk-mock-stat">
                                     <p class="fk-mock-stat-label">Cobrado este mes</p>
-                                    <p class="fk-mock-stat-value">3.240,00&nbsp;€</p>
+                                    <p class="fk-mock-stat-value">3.240,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
                                 </div>
                                 <div class="fk-mock-stat">
                                     <p class="fk-mock-stat-label">Pendiente</p>
-                                    <p class="fk-mock-stat-value">860,00&nbsp;€</p>
+                                    <p class="fk-mock-stat-value">860,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
                                 </div>
                             </div>
                             <div class="fk-mock-chart" aria-hidden="true">
@@ -954,7 +1040,7 @@ document.addEventListener('click', function (e) {
                 </div>
             </div>
             <div class="fk-how-cta fk-reveal">
-                <a href="{{ url('/free-trial') }}" class="fk-btn fk-btn-primary fk-btn-lg">{{ __('site.nav.cta') }}</a>
+                <a href="{{ url('/register') }}" class="fk-btn fk-btn-primary fk-btn-lg">{{ __('site.nav.cta') }}</a>
             </div>
         </div>
     </section>
@@ -1068,7 +1154,7 @@ document.addEventListener('click', function (e) {
                         <p class="fk-plan-name">{{ $planName }}</p>
                         <p class="fk-plan-desc">{{ $planDesc }}</p>
                         <div class="fk-plan-price">
-                            <span class="amount">{{ $plan->formattedPrice() }}&nbsp;€</span>
+                            <span class="amount">{{ $plan->formattedPrice() }}&nbsp;{{ strtoupper($plan->currency) }}</span>
                             <span class="period">{{ __('site.pricing.period') }}</span>
                         </div>
                         @if ($plan->trial_days)
@@ -1082,7 +1168,7 @@ document.addEventListener('click', function (e) {
                                 </li>
                             @endforeach
                         </ul>
-                        <a href="{{ url('/free-trial') }}" class="fk-plan-btn {{ $plan->is_featured ? 'fk-plan-btn--primary' : '' }}">
+                        <a href="{{ url('/register') }}" class="fk-plan-btn {{ $plan->is_featured ? 'fk-plan-btn--primary' : '' }}">
                             {{ __('site.nav.cta') }}
                         </a>
                     </div>
@@ -1116,6 +1202,64 @@ document.addEventListener('click', function (e) {
             </div>
         </div>
     </section>
+
+    {{--
+        Morocco Phase 1A.1 (docs/morocco-phase-1a1-country-boundary-cleanup.md):
+        this section is Spain/AEAT-specific marketing. French is now the
+        default locale (Morocco is the default market), so it's shown only
+        in the Spanish-locale context it actually applies to - not a
+        homepage redesign, just gating the one existing section. No
+        Morocco/DGI section is introduced in its place.
+    --}}
+    @if(app()->getLocale() === 'es')
+    <section class="fk-spain" id="facturacion-espana">
+        <div class="fk-container">
+            <div class="fk-spain-panel fk-reveal">
+                <div class="fk-spain-grid">
+                    <div class="fk-spain-text">
+                        <span class="fk-kicker">{{ __('site.home.spain_badge') }}</span>
+                        <h2>
+                            {{ __('site.home.spain_title_l1') }}<br>
+                            {{ __('site.home.spain_title_l2') }}
+                        </h2>
+                        <p>{{ __('site.home.spain_text_1') }}</p>
+                        <p>{{ __('site.home.spain_text_2') }}</p>
+
+                        <ul class="fk-spain-points">
+                            <li>
+                                <span class="fk-spain-point-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                                {{ __('site.home.spain_point_1') }}
+                            </li>
+                            <li>
+                                <span class="fk-spain-point-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                </span>
+                                {{ __('site.home.spain_point_2') }}
+                            </li>
+                            <li>
+                                <span class="fk-spain-point-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                </span>
+                                {{ __('site.home.spain_point_3') }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="fk-spain-card">
+                        <span class="fk-spain-card-badge">{{ __('site.home.spain_card_badge') }}</span>
+                        <p class="fk-spain-card-text">{{ __('site.home.spain_card_text') }}</p>
+                        <a href="{{ url('/verifactu') }}" class="fk-spain-card-link">
+                            {{ __('site.home.spain_card_cta') }}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
 
 </main>
 

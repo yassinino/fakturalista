@@ -18,7 +18,9 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoicePaymentsController;
 use App\Http\Controllers\InvoiceAiController;
 use App\Http\Controllers\StripeConnectController;
+use App\Http\Controllers\VerifactuCertificateController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\TaxPresetController;
 use App\Http\Controllers\UsageController;
 
 /*
@@ -58,17 +60,28 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         Route::get('/stats/cash-overview',[StatsController::class, 'cashOverview']);
         Route::get('/usage',              [UsageController::class, 'index']);
 
+        // Morocco Phase 1C.2 (docs/morocco-phase-1c2-tax-configuration.md) -
+        // the one central source of the current tenant's tax options.
+        Route::get('/tax-presets', [TaxPresetController::class, 'index']);
+
         // Settings (reads always work; writes allowed even in read-only - profile management)
         Route::get('/settings',                            [CompanyProfileController::class, 'show']);
         Route::match(['post', 'put'], '/settings',         [CompanyProfileController::class, 'update']);
         Route::get('/settings/payments/stripe/status',     [StripeConnectController::class, 'status']);
         Route::post('/settings/payments/stripe/disconnect', [StripeConnectController::class, 'disconnect']);
 
+        // VERI*FACTU (TEST environment only - see docs/verifactu-aeat-connectivity.md).
+        // Spain-only - see docs/morocco-phase-1a-implementation.md §6: hiding the
+        // Settings UI is not the only protection, this group enforces it server-side.
+        Route::middleware(['require.spain'])->group(function () {
+            Route::get('/settings/verifactu/certificate',    [VerifactuCertificateController::class, 'show']);
+            Route::post('/settings/verifactu/certificate',   [VerifactuCertificateController::class, 'store']);
+            Route::delete('/settings/verifactu/certificate', [VerifactuCertificateController::class, 'destroy']);
+        });
+
         // Items
-        // Product/service creation has been disabled from the admin - only
-        // browsing, editing and deleting existing items remains available.
         Route::post('/items/bulk-delete', [ItemController::class, 'bulkDelete']);
-        Route::resource('/items', ItemController::class)->except(['create', 'store']);
+        Route::resource('/items', ItemController::class)->except(['create']);
         Route::resource('/families', FamilyController::class);
 
         // Customers
@@ -89,6 +102,7 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         Route::post('/invoices/{invoice}/issue',            [InvoiceController::class, 'issue']);
         Route::post('/invoices/{invoice}/mark-paid',        [InvoiceController::class, 'markPaid']);
         Route::post('/invoices/{invoice}/cancel',           [InvoiceController::class, 'cancel']);
+        Route::post('/invoices/{invoice}/rectify',          [InvoiceController::class, 'rectify']);
         Route::post('/invoices/{invoice}/duplicate',        [InvoiceController::class, 'duplicate']);
         Route::post('/invoices/{invoice}/send',             [InvoiceController::class, 'send']);
         Route::post('/invoices/{invoice}/whatsapp',         [InvoiceController::class, 'whatsapp']);

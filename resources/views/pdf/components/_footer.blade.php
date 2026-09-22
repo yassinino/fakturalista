@@ -15,6 +15,35 @@
     </div>
 @endif
 
+{{-- Bank/payment details - invoices only, reusing the existing company
+     bank_name/iban/swift fields (Morocco Phase 1C.3, docs/morocco-phase-1c3-invoice-readiness.md §11).
+     Read from the live CompanyProfile, not the identity snapshot: this is
+     payment-routing information, not the invoice's frozen fiscal identity
+     (company name/ICE/IF/RC), and a tenant may legitimately switch bank
+     accounts between issuing invoices. No Moroccan bank field is invented;
+     only the three fields Settings already collects for every country are
+     shown, and only when at least one is actually configured. --}}
+@php
+    $bankDetails = $docType === 'invoice' ? array_filter([
+        'name'  => $company?->bank_name,
+        'iban'  => $company?->iban,
+        'swift' => $company?->swift,
+    ]) : [];
+@endphp
+@if(!empty($bankDetails))
+    <div class="notes-section">
+        <hr class="divider-light">
+        <div class="notes-title">
+            {{ match($locale) { 'fr' => 'Coordonnées bancaires', 'es' => 'Datos bancarios', default => 'Bank details' } }}
+        </div>
+        <div class="notes-body">
+            @if(!empty($bankDetails['name'])){{ $bankDetails['name'] }}<br>@endif
+            @if(!empty($bankDetails['iban']))IBAN: {{ $bankDetails['iban'] }}<br>@endif
+            @if(!empty($bankDetails['swift']))SWIFT/BIC: {{ $bankDetails['swift'] }}@endif
+        </div>
+    </div>
+@endif
+
 {{-- Notes section --}}
 @if(!empty($document->note))
     <div class="notes-section">

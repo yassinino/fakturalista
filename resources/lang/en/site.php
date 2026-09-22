@@ -36,6 +36,7 @@ return [
         'resources_help'       => 'Help Center',
         'resources_changelog'  => 'Changelog',
         'resources_api'        => 'API',
+        'resources_verifactu'  => 'VERI*FACTU',
         'cta_badge'            => 'Start today',
         'cta_title'            => 'Spend less time invoicing. More time growing your business.',
         'cta_sub'              => 'Create your free account and start invoicing in minutes.',
@@ -151,6 +152,19 @@ return [
         'pricing_trial_note'  => '14-day free trial',
         'pricing_cta_secondary' => 'View plans',
 
+        // Spain / VERI*FACTU (teaser section, links to /verifactu)
+        'spain_badge'      => 'Invoicing in Spain',
+        'spain_title_l1'   => 'Invoicing in Spain is changing.',
+        'spain_title_l2'   => 'Get ready ahead of time.',
+        'spain_text_1'     => 'Invoicing systems in Spain will need to adapt to new technical and fiscal requirements designed to guarantee the integrity, traceability and inalterability of invoicing records.',
+        'spain_text_2'     => 'Fakturalista is evolving to adapt to the new invoicing framework in Spain and make the transition easier for freelancers and small businesses.',
+        'spain_point_1'    => 'Traceable records',
+        'spain_point_2'    => 'More digital invoicing',
+        'spain_point_3'    => 'Ready for the new requirements',
+        'spain_card_badge' => 'VERI*FACTU',
+        'spain_card_text'  => 'VERI*FACTU is part of the new framework for invoicing software systems in Spain, and allows invoicing records to be sent to the Tax Agency under the conditions set out in the regulation.',
+        'spain_card_cta'   => 'Learn about VERI*FACTU',
+
         // FAQ
         'faq_title' => 'Frequently asked questions',
         'faq_q1'    => 'Can I try Fakturalista for free?',
@@ -179,8 +193,8 @@ return [
         'benefit_2_text'   => 'Invoice history, quotes and payment tracking.',
         'benefit_3_title'  => 'Real-time revenue dashboard',
         'benefit_3_text'   => 'Pending, paid and overdue - all at a glance.',
-        'benefit_4_title'  => 'Secure and compliant',
-        'benefit_4_text'   => 'Encrypted data, automatic backups and regulatory compliance.',
+        'benefit_4_title'  => 'Your data, protected',
+        'benefit_4_text'   => 'Encryption in transit and at rest, with automatic daily backups.',
         'trust_1'          => 'No credit card',
         'trust_2'          => 'Cancel anytime',
         'trust_3'          => 'English support',
@@ -208,6 +222,43 @@ return [
         'testi_3_role'     => 'Manager · Mechanical Workshop',
     ],
 
+    'register' => [
+        'page_title'       => 'Create your free account - Fakturalista',
+        'card_tag'         => 'Free trial',
+        'card_title'       => 'Create your account',
+        'card_sub'         => 'Start invoicing in under a minute.',
+        'label_first_name' => 'First name',
+        'label_last_name'  => 'Last name',
+        'label_email'      => 'Email',
+        'label_password'   => 'Password',
+        'label_password_confirmation' => 'Confirm password',
+        'label_company'    => 'Business name',
+        'label_tax_id'     => 'Tax ID (optional)',
+        'label_country'    => 'Country (optional)',
+        'placeholder_first_name' => 'Maria',
+        'placeholder_last_name'  => 'Garcia',
+        'placeholder_email'      => 'maria@mybusiness.com',
+        'placeholder_company'    => 'My Business Ltd',
+        'submit'           => 'Create my free account',
+        'submitting'       => 'We\'re setting up your workspace…',
+        'submitting_sub'   => 'This will only take a few seconds.',
+        'trial_note'       => '14 days free · No credit card required',
+        'already_have_account' => 'Already have an account?',
+        'sign_in'          => 'Sign in',
+        'error_msg'        => 'Please review the fields and try again.',
+    ],
+
+    'loginFinder' => [
+        'page_title'  => 'Sign in - Fakturalista',
+        'title'       => 'Sign in',
+        'sub'         => 'Enter the email you registered with and we\'ll take you to your workspace.',
+        'label_email' => 'Email',
+        'submit'      => 'Continue',
+        'not_found'   => 'We could not find an account with that email.',
+        'register_cta' => 'Don\'t have an account yet?',
+        'register_link' => 'Create one for free',
+    ],
+
 
     'pricing' => [
         'page_title'              => 'Pricing',
@@ -223,7 +274,7 @@ return [
         'no_commitment'           => 'No commitment · 14-day free trial',
         'default_cta'             => 'Get started',
         'no_plans'                => 'No plans available at the moment.',
-        'trust_intro'             => 'Thousands of freelancers and SMBs trust Fakturalista',
+        'trust_intro'             => 'Security and transparency in every plan',
         'trust_ssl'               => 'SSL & encryption',
         'trust_no_card'           => 'No credit card required',
         'trust_cancel'            => 'Cancel anytime',
@@ -398,7 +449,7 @@ return [
         'security_2_q' => 'Can I export my data?',
         'security_2_a' => 'Yes. You can export invoices as PDFs, client lists as CSV, and financial reports as Excel files from the export menu in your dashboard.',
         'security_3_q' => 'Are invoices compliant with local tax regulations?',
-        'security_3_a' => 'Fakturalista generates invoices that meet the requirements of Spanish tax law (AEAT): correct numbering, required fields and VAT breakdown. Always confirm with your accountant for your specific situation.',
+        'security_3_a' => 'Fakturalista generates invoices with sequential numbering, the required fields and the VAT breakdown that Spanish invoicing regulations require. This does not yet include sending invoicing records to the Spanish Tax Agency (AEAT) under VERI*FACTU, an integration that is in preparation. Always confirm with your accountant for your specific situation.',
 
         'still_title' => 'Still have questions?',
         'still_sub'   => 'Our support team is here to help. Send us a message and we\'ll get back to you within 24 hours.',
@@ -664,6 +715,86 @@ return [
         'placeholder' => 'Answer',
         'error'      => 'Incorrect answer, please try again.',
         'aria_label' => 'Security check: solve the math problem',
+    ],
+
+    'verifactu' => [
+        'meta_title'       => 'VERI*FACTU: what it is and how it affects your invoicing',
+        'meta_description' => 'Find out what VERI*FACTU is, what changes in invoicing in Spain, and how Fakturalista is preparing for the new technical and fiscal requirements.',
+
+        // Hero
+        'hero_badge'  => 'VERI*FACTU · Spain',
+        'hero_title'  => 'VERI*FACTU: the new invoicing landscape in Spain',
+        'hero_intro'  => 'Spanish regulation is transforming how businesses and professionals use their invoicing systems. Here\'s what\'s changing and how to prepare.',
+
+        // What is VERI*FACTU?
+        'what_title' => 'What is VERI*FACTU?',
+        'what_p1'    => 'Spanish regulation sets new requirements for the software and computer systems used for invoicing, aiming to guarantee that invoicing records are complete, traceable and unalterable.',
+        'what_p2'    => 'VERI*FACTU is the mode under which these systems can send invoicing records to the Tax Agency (AEAT), in line with the technical specifications set out in the regulation.',
+        'what_p3'    => 'In practice, this mostly affects how invoicing software behaves internally, not just the look of the invoices you already know.',
+
+        // Why is invoicing changing?
+        'why_title'   => 'Why is invoicing changing?',
+        'why_intro'   => 'The new regulatory framework rests on a few key principles:',
+        'why_1_title' => 'Integrity',
+        'why_1_text'  => 'Invoicing records must faithfully reflect each transaction, without uncontrolled changes.',
+        'why_2_title' => 'Traceability',
+        'why_2_text'  => 'Every record must be traceable and verifiable throughout its entire lifecycle.',
+        'why_3_title' => 'Inalterability',
+        'why_3_text'  => 'Once generated, an invoicing record must not be alterable without leaving a trace.',
+        'why_4_title' => 'Digitalization',
+        'why_4_text'  => 'Invoicing is moving towards more digital, standardized processes.',
+        'why_5_title' => 'Control & retention',
+        'why_5_text'  => 'Records must be kept, accessible and legible whenever required.',
+
+        // Dates
+        'dates_title' => 'When do the new requirements take effect?',
+        'dates_intro' => 'The applicable deadlines depend on the type of taxpayer:',
+        'date_1_label' => 'Before 1 January 2027',
+        'date_1_text'  => 'Taxpayers covered by article 3.1.a) of Royal Decree 1007/2023.',
+        'date_2_label' => 'Before 1 July 2027',
+        'date_2_text'  => 'The other taxpayers covered by article 3.1.',
+        'dates_note'   => 'Dates and obligations can vary depending on the taxpayer\'s tax situation. Always check the official information from the Spanish Tax Agency.',
+
+        // What does it mean for a freelancer?
+        'auto_title'  => 'What does this mean for a freelancer?',
+        'auto_intro'  => 'Until now, choosing invoicing software was mostly about ease of use and features. Under the new regulatory framework, whether the invoicing system meets the applicable technical requirements also becomes something to pay attention to.',
+        'auto_before_label' => 'Before',
+        'auto_before_text'  => 'Choosing software mainly for ease of use and features.',
+        'auto_after_label'  => 'New landscape',
+        'auto_after_text'   => 'Regulatory compliance of the invoicing system also becomes an important factor.',
+        'auto_note'   => 'This doesn\'t mean paper invoices, spreadsheets or other tools stop being valid in every case: applicability depends on the regulation in force and each taxpayer\'s situation.',
+
+        // Fakturalista + VERI*FACTU
+        'brand_title'  => 'Fakturalista is preparing for the new invoicing landscape in Spain.',
+        'brand_text'   => 'Our goal is for freelancers and small businesses to keep invoicing simply while Fakturalista evolves to adapt to the new technical and fiscal requirements.',
+        'brand_line_1' => 'You focus on your business.',
+        'brand_line_2' => 'We\'ll focus on making invoicing simpler and simpler.',
+        'brand_status' => 'VERI*FACTU integration in preparation',
+
+        // FAQ
+        'faq_title' => 'Frequently asked questions about VERI*FACTU',
+        'faq_q1' => 'What is VERI*FACTU?',
+        'faq_a1' => 'VERI*FACTU is the mode under which invoicing software systems can send invoicing records to the Tax Agency, as part of the new Spanish regulatory framework designed to guarantee the integrity and traceability of those records.',
+        'faq_q2' => 'Is VERI*FACTU mandatory?',
+        'faq_a2' => 'The regulation sets requirements for invoicing software systems, and VERI*FACTU is one of the modes it provides for. Whether it\'s mandatory, and under what conditions, depends on each taxpayer\'s situation, so we recommend checking the official information from the Tax Agency.',
+        'faq_q3' => 'When do I need to adapt my invoicing system?',
+        'faq_a3' => 'The set deadlines are before 1 January 2027 for taxpayers under article 3.1.a) of Royal Decree 1007/2023, and before 1 July 2027 for the other taxpayers under article 3.1. The exact date can vary depending on your situation.',
+        'faq_q4' => 'Does this affect freelancers?',
+        'faq_a4' => 'Yes, the new regulatory framework can affect freelancers and small businesses that use invoicing software systems, although the specific applicability depends on each tax situation.',
+        'faq_q5' => 'Will Fakturalista be compatible with VERI*FACTU?',
+        'faq_a5' => 'Fakturalista is working on adapting the platform to the new invoicing requirements in Spain. We\'ll let our users know as new features become available.',
+        'faq_q6' => 'Do I have to send all my invoices to the AEAT?',
+        'faq_a6' => 'Sending invoicing records to the Tax Agency depends on the system and mode used, as well as the regulation applicable to each taxpayer. We recommend checking the official AEAT information for your specific case.',
+
+        // Official sources
+        'sources_title'  => 'Official sources',
+        'sources_note'   => 'This page is for informational purposes only and does not replace professional tax or legal advice.',
+        'source_aeat'    => 'Spanish Tax Agency (AEAT)',
+        'source_rd1007'  => 'Royal Decree 1007/2023 (BOE)',
+        'source_orden'   => 'Order HAC/1177/2024 (BOE)',
+        'source_rdley15' => 'Royal Decree-Law 15/2025 (BOE)',
+
+        'cta_final' => 'Start for free',
     ],
 
 ];

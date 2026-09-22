@@ -82,7 +82,11 @@ return [
     |
     */
 
-    'locale' => 'es',
+    // Morocco Phase 1A: French is now the default for any visitor/session
+    // with no personal locale set yet (docs/morocco-phase-1a-implementation.md
+    // §7). Existing users/tenants are unaffected - see SetLocale middleware,
+    // which checks the authenticated user's own saved locale first.
+    'locale' => 'fr',
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +99,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'es',
+    'fallback_locale' => 'fr',
     'supported_locales' => ['es', 'fr', 'en'],
 
     /*

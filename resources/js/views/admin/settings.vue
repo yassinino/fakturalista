@@ -16,6 +16,7 @@
       <span class="sp-loading-dot"></span>
     </div>
 
+    <p v-else-if="!settingsLoaded" role="alert">Unable to load settings. <button type="button" @click="fetchSettings">Retry</button></p>
     <form v-else @submit.prevent="saveAll" novalidate>
       <div class="sp-layout">
 
@@ -25,7 +26,7 @@
         <aside class="sp-sidebar">
           <nav class="sp-nav">
 
-            <div class="sp-nav-group">{{ $t('settings.navGroups.business') }}</div>
+            <div class="sp-nav-group">{{ isMoroccoProfile ? 'Entreprise' : $t('settings.navGroups.business') }}</div>
             <button
               v-for="s in businessSections"
               :key="s.id"
@@ -38,7 +39,7 @@
               <span>{{ s.label }}</span>
             </button>
 
-            <div class="sp-nav-group">{{ $t('settings.navGroups.billing') }}</div>
+            <div class="sp-nav-group">{{ isMoroccoProfile ? 'Facturation' : $t('settings.navGroups.billing') }}</div>
             <button
               v-for="s in billingSections"
               :key="s.id"
@@ -51,7 +52,7 @@
               <span>{{ s.label }}</span>
             </button>
 
-            <div class="sp-nav-group">{{ $t('settings.navGroups.design') }}</div>
+            <div class="sp-nav-group">{{ isMoroccoProfile ? 'Design' : $t('settings.navGroups.design') }}</div>
             <button
               v-for="s in designSections"
               :key="s.id"
@@ -64,7 +65,7 @@
               <span>{{ s.label }}</span>
             </button>
 
-            <div class="sp-nav-group">{{ $t('settings.navGroups.account') }}</div>
+            <div class="sp-nav-group">{{ isMoroccoProfile ? 'Compte' : $t('settings.navGroups.account') }}</div>
             <button
               v-for="s in accountSections"
               :key="s.id"
@@ -151,35 +152,11 @@
 
             <div class="sc-line"></div>
 
-            <!-- Industry + country -->
-            <div class="sr">
-              <div class="sr-lbl">
-                <label class="sr-name">{{ $t('settings.companyProfile.industryCountry') }}</label>
-                <span class="sr-hint">{{ $t('settings.companyProfile.industryCountryHint') }}</span>
-              </div>
-              <div class="sr-inp">
-                <div class="row g-2">
-                  <div class="col-8">
-                    <input type="text" class="form-control" v-model="form.industry" :disabled="isSaving" placeholder="Software, Consulting, Retail…" />
-                  </div>
-                  <div class="col-4">
-                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.country_code }" v-model="form.country_code" :disabled="isSaving" maxlength="2" placeholder="ES" />
-                    <div v-if="errors.country_code" class="invalid-feedback">{{ errors.country_code[0] }}</div>
-                  </div>
-                </div>
-                <p class="sc-ftext">{{ $t('settings.companyProfile.isoHint') }}</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- ═══ Contact & Address ══════════════════════════════ -->
-          <section id="contact" class="sc">
-            <div class="sc-head">
-              <span class="sc-tag">{{ $t('settings.contact.tag') }}</span>
-              <h2 class="sc-title">{{ $t('settings.contact.title') }}</h2>
-              <p class="sc-desc">{{ $t('settings.contact.desc') }}</p>
-            </div>
-
+            <!-- Email / phone / website - Morocco Phase 2B: moved here from the
+                 old "Contact & Address" section so Company information holds
+                 name/trade name/email/phone/website together, per the
+                 requested section layout. Same form.* fields, same
+                 validation bindings - no new/duplicate field created. -->
             <div class="sr">
               <div class="sr-lbl">
                 <span class="sr-name">{{ $t('settings.contact.detailsName') }}</span>
@@ -193,7 +170,7 @@
                   </div>
                   <div>
                     <label class="sc-ftext mb-1">{{ $t('settings.contact.phone') }}</label>
-                    <input type="text" class="form-control" v-model="form.phone" :disabled="isSaving" placeholder="+34 600 000 000" />
+                    <input type="text" class="form-control" v-model="form.phone" :disabled="isSaving" :placeholder="isMoroccoProfile ? '+212 600 000 000' : '+34 600 000 000'" />
                   </div>
                   <div>
                     <label class="sc-ftext mb-1">{{ $t('settings.contact.website') }}</label>
@@ -205,16 +182,49 @@
 
             <div class="sc-line"></div>
 
+            <!-- Industry + country -->
             <div class="sr">
               <div class="sr-lbl">
-                <span class="sr-name">{{ $t('settings.contact.addressName') }}</span>
+                <label class="sr-name">{{ $t('settings.companyProfile.industryCountry') }}</label>
+                <span class="sr-hint">{{ $t('settings.companyProfile.industryCountryHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <div class="row g-2">
+                  <div class="col-8">
+                    <input type="text" class="form-control" v-model="form.industry" :disabled="isSaving" placeholder="Software, Consulting, Retail…" />
+                  </div>
+                  <div class="col-4">
+                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.country_code }" v-model="form.country_code" :disabled="isSaving" maxlength="2" :placeholder="templateStore.company.country" />
+                    <div v-if="errors.country_code" class="invalid-feedback">{{ errors.country_code[0] }}</div>
+                  </div>
+                </div>
+                <p class="sc-ftext">MA / ES</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ═══ Address ═════════════════════════════════════════
+               Morocco Phase 2B: address-only now that email/phone/website
+               moved into Company information above - reuses the existing
+               "addressName"/"addressHint" copy (already accurate: "Adresse"/
+               "Adresse fiscale et postale") instead of the old title/desc,
+               which described contact details no longer shown here. -->
+          <section id="contact" class="sc">
+            <div class="sc-head">
+              <span class="sc-tag">{{ $t('settings.contact.tag') }}</span>
+              <h2 class="sc-title">{{ $t('settings.contact.addressName') }}</h2>
+              <p class="sc-desc">{{ $t('settings.contact.addressHint') }}</p>
+            </div>
+
+            <div class="sr">
+              <div class="sr-lbl">
                 <span class="sr-hint">{{ $t('settings.contact.addressHint') }}</span>
               </div>
               <div class="sr-inp">
                 <div class="sr-stack">
                   <div>
                     <label class="sc-ftext mb-1">{{ $t('settings.contact.addressLine1') }}</label>
-                    <input type="text" class="form-control" v-model="form.address_line1" :disabled="isSaving" :placeholder="$t('settings.contact.streetPlaceholder')" />
+                    <input type="text" class="form-control" v-model="form.address_line1" :disabled="isSaving" :placeholder="isMoroccoProfile ? '12 Boulevard Zerktouni' : $t('settings.contact.streetPlaceholder')" />
                   </div>
                   <div>
                     <label class="sc-ftext mb-1">{{ $t('settings.contact.addressLine2') }}</label>
@@ -223,19 +233,19 @@
                   <div class="row g-2">
                     <div class="col-6">
                       <label class="sc-ftext mb-1">{{ $t('settings.contact.city') }}</label>
-                      <input type="text" class="form-control" v-model="form.city" :disabled="isSaving" placeholder="Barcelona" />
+                      <input type="text" class="form-control" v-model="form.city" :disabled="isSaving" :placeholder="isMoroccoProfile ? 'Casablanca' : 'Barcelona'" />
                     </div>
                     <div class="col-6">
                       <label class="sc-ftext mb-1">{{ $t('settings.contact.state') }}</label>
-                      <input type="text" class="form-control" v-model="form.state" :disabled="isSaving" placeholder="Catalonia" />
+                      <input type="text" class="form-control" v-model="form.state" :disabled="isSaving" :placeholder="isMoroccoProfile ? '' : 'Catalonia'" />
                     </div>
                     <div class="col-5">
                       <label class="sc-ftext mb-1">{{ $t('settings.contact.postalCode') }}</label>
-                      <input type="text" class="form-control" v-model="form.postal_code" :disabled="isSaving" placeholder="08001" />
+                      <input type="text" class="form-control" v-model="form.postal_code" :disabled="isSaving" :placeholder="isMoroccoProfile ? '20100' : '08001'" />
                     </div>
                     <div class="col-7">
                       <label class="sc-ftext mb-1">{{ $t('settings.contact.country') }}</label>
-                      <input type="text" class="form-control" v-model="form.country" :disabled="isSaving" placeholder="Spain" />
+                      <input type="text" class="form-control" v-model="form.country" readonly :placeholder="templateStore.company.country_name" />
                     </div>
                   </div>
                 </div>
@@ -244,6 +254,32 @@
           </section>
 
           <!-- ═══ Tax & Legal ════════════════════════════════════ -->
+          <section id="taxes" class="sc">
+            <div class="sc-head"><h3 class="sc-title">Taxes</h3></div>
+            <div class="sr">
+              <div class="sr-lbl"><span class="sr-name">Available</span></div>
+              <div class="sr-inp">
+                <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
+                <ul><li v-for="preset in presets" :key="preset.code">{{ preset.label }}</li></ul>
+              </div>
+            </div>
+            <div class="sr">
+              <div class="sr-lbl">
+                <label for="default-tax" class="sr-name">Default tax</label>
+                <span class="sr-hint">Applies to new lines and new items.</span>
+              </div>
+              <div class="sr-inp">
+                <select id="default-tax" class="form-select" :value="form.default_tax_code || defaultCode"
+                  :disabled="isSaving || !taxReady || form.country_code !== taxCountry"
+                  @change="form.default_tax_code = $event.target.value">
+                  <option v-for="preset in presets" :key="preset.code" :value="preset.code">{{ preset.label }}</option>
+                </select>
+                <p v-if="form.country_code !== taxCountry" class="sr-hint">Save the country to load its taxes.</p>
+                <p v-if="errors.default_tax_code" class="text-danger">{{ errors.default_tax_code[0] }}</p>
+              </div>
+            </div>
+          </section>
+
           <section id="tax" class="sc">
             <div class="sc-head">
               <span class="sc-tag">{{ $t('settings.tax.tag') }}</span>
@@ -251,39 +287,80 @@
               <p class="sc-desc">{{ $t('settings.tax.desc') }}</p>
             </div>
 
-            <div class="sr">
-              <div class="sr-lbl">
-                <label for="tax_id" class="sr-name">{{ $t('settings.tax.nifName') }}</label>
-                <span class="sr-hint">{{ $t('settings.tax.nifHint') }}</span>
+            <!-- Morocco: ICE (primary identifier, prominent) + IF + RC.
+                 No NIF/VAT shown - Morocco Phase 1B, docs/morocco-phase-1b-identity.md §5. -->
+            <template v-if="isMoroccoProfile">
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="ice" class="sr-name">{{ $t('settings.tax.iceName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.iceHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="ice" type="text" class="form-control" v-model="form.ice" :disabled="isSaving" placeholder="001234567000089" />
+                </div>
               </div>
-              <div class="sr-inp">
-                <input id="tax_id" type="text" class="form-control" v-model="form.tax_id" :disabled="isSaving" placeholder="B12345678" />
-              </div>
-            </div>
 
-            <div class="sc-line"></div>
+              <div class="sc-line"></div>
 
-            <div class="sr">
-              <div class="sr-lbl">
-                <label for="vat_number" class="sr-name">{{ $t('settings.tax.vatName') }}</label>
-                <span class="sr-hint">{{ $t('settings.tax.vatHint') }}</span>
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="if_number" class="sr-name">{{ $t('settings.tax.ifName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.ifHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="if_number" type="text" class="form-control" v-model="form.if_number" :disabled="isSaving" placeholder="12345678" />
+                </div>
               </div>
-              <div class="sr-inp">
-                <input id="vat_number" type="text" class="form-control" v-model="form.vat_number" :disabled="isSaving" placeholder="ES00000000" />
-              </div>
-            </div>
 
-            <div class="sc-line"></div>
+              <div class="sc-line"></div>
 
-            <div class="sr">
-              <div class="sr-lbl">
-                <label for="registration_number" class="sr-name">{{ $t('settings.tax.regName') }}</label>
-                <span class="sr-hint">{{ $t('settings.tax.regHint') }}</span>
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="registration_number" class="sr-name">{{ $t('settings.tax.rcName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.rcHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="registration_number" type="text" class="form-control" v-model="form.registration_number" :disabled="isSaving" placeholder="12345 - Casablanca" />
+                </div>
               </div>
-              <div class="sr-inp">
-                <input id="registration_number" type="text" class="form-control" v-model="form.registration_number" :disabled="isSaving" placeholder="RM Madrid T-12345" />
+            </template>
+
+            <!-- Spain / everyone else: unchanged NIF/VAT/Registro Mercantil -->
+            <template v-else>
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="tax_id" class="sr-name">{{ $t('settings.tax.nifName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.nifHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="tax_id" type="text" class="form-control" v-model="form.tax_id" :disabled="isSaving" placeholder="B12345678" />
+                </div>
               </div>
-            </div>
+
+              <div class="sc-line"></div>
+
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="vat_number" class="sr-name">{{ $t('settings.tax.vatName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.vatHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="vat_number" type="text" class="form-control" v-model="form.vat_number" :disabled="isSaving" placeholder="ES00000000" />
+                </div>
+              </div>
+
+              <div class="sc-line"></div>
+
+              <div class="sr">
+                <div class="sr-lbl">
+                  <label for="registration_number" class="sr-name">{{ $t('settings.tax.regName') }}</label>
+                  <span class="sr-hint">{{ $t('settings.tax.regHint') }}</span>
+                </div>
+                <div class="sr-inp">
+                  <input id="registration_number" type="text" class="form-control" v-model="form.registration_number" :disabled="isSaving" placeholder="RM Madrid T-12345" />
+                </div>
+              </div>
+            </template>
           </section>
 
           <!-- ═══ Invoice Settings ═══════════════════════════════ -->
@@ -338,7 +415,7 @@
                 <div class="row g-2">
                   <div class="col-4">
                     <label class="sc-ftext mb-1">{{ $t('settings.invoicing.currency') }}</label>
-                    <input type="text" class="form-control" v-model="form.currency" :disabled="isSaving" maxlength="3" placeholder="EUR" />
+                    <input type="text" class="form-control" v-model="form.currency" :disabled="isSaving" maxlength="3" :placeholder="templateStore.company.currency" />
                   </div>
                   <div class="col-4">
                     <label class="sc-ftext mb-1">{{ $t('settings.invoicing.locale') }}</label>
@@ -382,7 +459,7 @@
                 <label for="bank_name" class="sr-name">{{ $t('settings.banking.bankName') }}</label>
               </div>
               <div class="sr-inp">
-                <input id="bank_name" type="text" class="form-control" v-model="form.bank_name" :disabled="isSaving" placeholder="Santander" />
+                <input id="bank_name" type="text" class="form-control" v-model="form.bank_name" :disabled="isSaving" :placeholder="isMoroccoProfile ? 'Attijariwafa Bank' : 'Santander'" />
               </div>
             </div>
 
@@ -393,7 +470,7 @@
                 <label for="iban" class="sr-name">{{ $t('settings.banking.iban') }}</label>
               </div>
               <div class="sr-inp">
-                <input id="iban" type="text" class="form-control" :class="{ 'is-invalid': errors.iban }" v-model="form.iban" :disabled="isSaving" placeholder="ES00 0000 0000 0000 0000 0000" />
+                <input id="iban" type="text" class="form-control" :class="{ 'is-invalid': errors.iban }" v-model="form.iban" :disabled="isSaving" :placeholder="isMoroccoProfile ? 'MA64 2300 1029 0660 5211 0184 0061' : 'ES00 0000 0000 0000 0000 0000'" />
                 <div v-if="errors.iban" class="invalid-feedback">{{ errors.iban[0] }}</div>
               </div>
             </div>
@@ -405,7 +482,7 @@
                 <label for="swift" class="sr-name">{{ $t('settings.banking.swift') }}</label>
               </div>
               <div class="sr-inp">
-                <input id="swift" type="text" class="form-control" v-model="form.swift" :disabled="isSaving" placeholder="BSCHESMMXXX" />
+                <input id="swift" type="text" class="form-control" v-model="form.swift" :disabled="isSaving" :placeholder="isMoroccoProfile ? 'BCMAMAMC' : 'BSCHESMMXXX'" />
               </div>
             </div>
 
@@ -520,6 +597,58 @@
                   <div class="int-desc">{{ $t('settings.paypal.desc') }}</div>
                 </div>
                 <span class="int-pill">{{ $t('settings.comingSoon') }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ═══ VERI*FACTU (AEAT TEST) ═════════════════════════ -->
+          <section v-if="isVerifactuEligible" id="verifactu" class="sc">
+            <div class="sc-head">
+              <span class="sc-tag sc-tag--warn">{{ $t('settings.verifactu.envBadge') }}</span>
+              <h2 class="sc-title">{{ $t('settings.verifactu.title') }}</h2>
+              <p class="sc-desc">{{ $t('settings.verifactu.desc') }}</p>
+            </div>
+
+            <div class="sc-body">
+              <div v-if="vfCertificate" class="vf-cert-card">
+                <div class="vf-cert-row">
+                  <span class="vf-cert-label">{{ $t('settings.verifactu.configured') }}</span>
+                  <span class="vf-cert-badge vf-cert-badge--ok">
+                    <i class="fa fa-check-circle"></i> {{ $t('common.yes') }}
+                  </span>
+                </div>
+                <div class="vf-cert-row">
+                  <span class="vf-cert-label">{{ $t('settings.verifactu.subject') }}</span>
+                  <span>{{ vfCertificate.subject }}</span>
+                </div>
+                <div class="vf-cert-row">
+                  <span class="vf-cert-label">{{ $t('settings.verifactu.issuer') }}</span>
+                  <span>{{ vfCertificate.issuer }}</span>
+                </div>
+                <div class="vf-cert-row">
+                  <span class="vf-cert-label">{{ $t('settings.verifactu.validity') }}</span>
+                  <span>{{ vfCertificate.valid_from }} → {{ vfCertificate.valid_to }}</span>
+                </div>
+                <div class="vf-cert-row">
+                  <span class="vf-cert-label">{{ $t('settings.verifactu.status') }}</span>
+                  <span class="vf-cert-badge" :class="'vf-cert-badge--' + vfCertificate.status">
+                    {{ $t('settings.verifactu.statusValues.' + vfCertificate.status) }}
+                  </span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger mt-2" @click="deleteVfCertificate">
+                  <i class="fa fa-trash me-1"></i>{{ $t('settings.verifactu.remove') }}
+                </button>
+              </div>
+
+              <div v-else class="vf-cert-upload">
+                <p class="vf-cert-hint">{{ $t('settings.verifactu.uploadHint') }}</p>
+                <input type="file" ref="vfCertFile" accept=".p12,.pfx" class="form-control mb-2" />
+                <input type="password" v-model="vfPassphrase" class="form-control mb-2" :placeholder="$t('settings.verifactu.passphrase')" />
+                <button type="button" class="btn btn-sm btn-primary" :disabled="vfUploading" @click="uploadVfCertificate">
+                  <span v-if="vfUploading" class="spinner-border spinner-border-sm me-1"></span>
+                  {{ $t('settings.verifactu.upload') }}
+                </button>
+                <p v-if="vfError" class="text-danger mt-2">{{ vfError }}</p>
               </div>
             </div>
           </section>
@@ -734,12 +863,22 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import { useRoute }  from 'vue-router';
+import { reactive, ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { useTemplateStore } from '@/stores/template';
+import { useTenantCountry } from '@/composables/useTenantCountry';
+import { canOpenSettingsSection, requestsVerifactu } from '@/utils/countryExperience.mjs';
+import { useRouter, useRoute }  from 'vue-router';
 import { useI18n }   from 'vue-i18n';
 import axios from 'axios';
 import { createToaster } from '@meforma/vue-toaster';
+import { useTaxPresets } from '@/composables/useTaxPresets';
 import { setLocale } from '@/i18n';
+
+const { presets, country: taxCountry, defaultCode, taxReady, taxError, loadTaxes } = useTaxPresets();
+
+const templateStore = useTemplateStore();
+const { isSpain: isVerifactuEligible, isMorocco: isMoroccoProfile } = useTenantCountry();
+const router = useRouter();
 
 const toaster = createToaster({});
 const route   = useRoute();
@@ -747,16 +886,26 @@ const { t }   = useI18n();
 
 // ── Nav groups (computed so labels re-render on locale change) ──
 const businessSections = computed(() => [
-  { id: 'company', label: t('settings.nav.company'),     icon: 'fa fa-building' },
-  { id: 'contact', label: t('settings.nav.contact'),     icon: 'fa fa-map-marker-alt' },
-  { id: 'tax',     label: t('settings.nav.taxLegal'),    icon: 'fa fa-receipt' },
+  { id: 'company', label: isMoroccoProfile.value ? 'Entreprise' : t('settings.nav.company'),     icon: 'fa fa-building' },
+  { id: 'contact', label: isMoroccoProfile.value ? 'Adresse' : t('settings.nav.contact'),     icon: 'fa fa-map-marker-alt' },
+  { id: 'taxes', label: 'Taxes', icon: 'fa fa-percent' },
+  { id: 'tax',     label: isMoroccoProfile.value ? 'Fiscal & Légal' : t('settings.nav.taxLegal'),    icon: 'fa fa-receipt' },
 ]);
-const billingSections = computed(() => [
-  { id: 'invoicing', label: t('settings.nav.invoiceSettings'), icon: 'fa fa-file-invoice' },
-  { id: 'banking',   label: t('settings.nav.banking'),          icon: 'fa fa-university' },
-]);
+const billingSections = computed(() => {
+  const sections = [
+    { id: 'invoicing', label: isMoroccoProfile.value ? 'Paramètres de facture' : t('settings.nav.invoiceSettings'), icon: 'fa fa-file-invoice' },
+    { id: 'banking',   label: isMoroccoProfile.value ? 'Banque' : t('settings.nav.banking'),          icon: 'fa fa-university' },
+  ];
+  // Morocco Phase 1A: VERI*FACTU is Spain-only. Hiding the nav entry is
+  // not the only protection - the backend routes refuse a non-Spanish
+  // tenant regardless (see routes/tenant_api.php require.spain).
+  if (isVerifactuEligible.value) {
+    sections.push({ id: 'verifactu', label: t('settings.nav.verifactu'), icon: 'fa fa-shield-alt' });
+  }
+  return sections;
+});
 const designSections = computed(() => [
-  { id: 'branding', label: t('settings.nav.branding'), icon: 'fa fa-palette' },
+  { id: 'branding', label: isMoroccoProfile.value ? 'Image de marque' : t('settings.nav.branding'), icon: 'fa fa-palette' },
 ]);
 const accountSections = computed(() => [
   { id: 'notifications', label: t('settings.nav.notifications'), icon: 'fa fa-bell' },
@@ -765,7 +914,8 @@ const accountSections = computed(() => [
 ]);
 
 // ── State ──────────────────────────────────────────────────────
-const isLoading     = ref(false);
+const isLoading     = ref(true);
+const settingsLoaded = ref(false);
 const isSaving      = ref(false);
 const errors        = ref({});
 const saveStatus    = ref('');
@@ -782,7 +932,7 @@ const isDrawing        = ref(false);
 const signatureCtx     = ref(null);
 
 // ── Language selector state ────────────────────────────────────
-const userLocale = ref('es');
+const userLocale = ref(templateStore.company.locale);
 const langSaving = ref(false);
 
 // ── Stripe Connect state ───────────────────────────────────────
@@ -799,6 +949,61 @@ const stripeStatus = reactive({
 });
 
 const stripeConnected  = computed(() => !!stripeStatus.account_id);
+
+// Morocco Phase 1A: VERI*FACTU is only ever shown to Spanish tenants -
+// see docs/morocco-phase-1a-implementation.md §6.
+
+// Morocco Phase 1B: ICE/IF/RC vs NIF/VAT/Registro Mercantil -
+// docs/morocco-phase-1b-identity.md §5.
+
+
+// ── VERI*FACTU certificate state (AEAT TEST only) ───────────────
+const vfCertificate = ref(null);
+const vfPassphrase  = ref('');
+const vfCertFile    = ref(null);
+const vfUploading   = ref(false);
+const vfError       = ref('');
+
+async function loadVfCertificate() {
+  if (!isVerifactuEligible.value) return;
+  try {
+    const { data } = await axios.get('/settings/verifactu/certificate');
+    vfCertificate.value = data.certificate;
+  } catch { /* non-critical */ }
+}
+
+async function uploadVfCertificate() {
+  if (!isVerifactuEligible.value) return;
+  vfError.value = '';
+  const file = vfCertFile.value?.files?.[0];
+  if (!file || !vfPassphrase.value) {
+    vfError.value = t('settings.verifactu.errors.missingFields');
+    return;
+  }
+  vfUploading.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('certificate', file);
+    formData.append('passphrase', vfPassphrase.value);
+    const { data } = await axios.post('/settings/verifactu/certificate', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    vfCertificate.value = data.certificate;
+    vfPassphrase.value = '';
+  } catch (e) {
+    vfError.value = e.response?.data?.message || t('settings.verifactu.errors.uploadFailed');
+  } finally {
+    vfUploading.value = false;
+  }
+}
+
+async function deleteVfCertificate() {
+  if (!isVerifactuEligible.value) return;
+  try {
+    await axios.delete('/settings/verifactu/certificate');
+    vfCertificate.value = null;
+  } catch { /* non-critical */ }
+}
 const stripeOnboarded  = computed(() => stripeStatus.onboarding_completed);
 const stripeIncomplete = computed(() => stripeConnected.value && !stripeOnboarded.value);
 
@@ -809,10 +1014,13 @@ const form = reactive({
   legal_name:            '',
   trade_name:            '',
   industry:              '',
-  country_code:          'ES',
+  country_code:          templateStore.company.country || 'MA',
   tax_id:                '',
   vat_number:            '',
   registration_number:   '',
+  // Morocco Phase 1B - docs/morocco-phase-1b-identity.md
+  ice:                   '',
+  if_number:             '',
   email:                 '',
   phone:                 '',
   website:               '',
@@ -824,12 +1032,13 @@ const form = reactive({
   country:               '',
   brand_color:           '#E91E63',
   invoice_footer_note:   '',
+  default_tax_code:      null,
   invoice_prefix:        'INV',
   invoice_next_number:   1,
   invoice_number_format: '{PREFIX}-{YYYY}-{NUMBER}',
-  timezone:              'Europe/Madrid',
-  locale:                'es',
-  currency:              'EUR',
+  timezone:              templateStore.company.timezone,
+  locale:                templateStore.company.locale,
+  currency:              templateStore.company.currency,
   bank_name:             '',
   iban:                  '',
   swift:                 '',
@@ -846,11 +1055,18 @@ const invoiceNumberPreview = computed(() => {
 });
 
 // ── Lifecycle ──────────────────────────────────────────────────
-onMounted(() => {
-  fetchSettings();
+onMounted(async () => {
+  await fetchSettings();
   loadUserLocale();
+  await nextTick();
   setupScrollSpy();
+  openRequestedSection();
   handleOAuthRedirect();
+  // Only fetch the certificate for eligible (Spanish) tenants - form.country_code
+  // must be loaded first, hence awaiting fetchSettings() above.
+  if (isVerifactuEligible.value) {
+    loadVfCertificate();
+  }
 });
 
 onUnmounted(() => {
@@ -865,6 +1081,8 @@ async function fetchSettings() {
   try {
     const { data } = await axios.get('/settings');
     fillForm(data?.settings ?? data ?? {});
+    templateStore.setCompanyContext(data.company_context);
+    settingsLoaded.value = true;
   } catch {
     toaster.error(t('settings.errors.load'));
   } finally {
@@ -875,11 +1093,12 @@ async function fetchSettings() {
 async function loadUserLocale() {
   try {
     const { data } = await axios.get('/user');
-    userLocale.value = data.locale || 'es';
+    userLocale.value = data.user?.locale || templateStore.company.locale;
   } catch { /* non-critical */ }
 }
 
 function fillForm(data = {}) {
+  form.default_tax_code = data.default_tax_code ?? null;
   Object.keys(form).forEach(key => {
     if (data[key] !== undefined && data[key] !== null) form[key] = data[key];
   });
@@ -904,7 +1123,8 @@ async function saveAll() {
   try {
     const payload = new FormData();
     payload.append('_method', 'put');
-    Object.entries(form).forEach(([k, v]) => payload.append(k, v ?? ''));
+    Object.entries(form).forEach(([k, v]) => payload.append(k,
+      k === 'default_tax_code' && form.country_code !== taxCountry.value ? '' : (v ?? '')));
     if (logoFile.value)  payload.append('logo',  logoFile.value);
     if (stampFile.value) payload.append('stamp', stampFile.value);
 
@@ -912,6 +1132,8 @@ async function saveAll() {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     fillForm(data?.settings ?? {});
+    templateStore.setCompanyContext(data.company_context);
+    await loadTaxes();
     logoFile.value  = null;
     stampFile.value = null;
 
@@ -1006,23 +1228,44 @@ async function disconnectStripe() {
 }
 
 // ── Scroll spy ─────────────────────────────────────────────────
-const allSections = ['company','contact','tax','invoicing','banking','branding','notifications','language','account'];
+const allSections = computed(() => [...businessSections.value, ...billingSections.value, ...designSections.value, ...accountSections.value].map(section => section.id));
 
 function setupScrollSpy() {
   spyObserver = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) activeSection.value = e.target.id; });
   }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
 
-  allSections.forEach(id => {
+  allSections.value.forEach(id => {
     const el = document.getElementById(id);
     if (el) spyObserver.observe(el);
   });
 }
 
 function scrollTo(id) {
+  if (!canOpenSettingsSection(templateStore.company, id)) return;
   const el = document.getElementById(id);
   if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); activeSection.value = id; }
 }
+
+function openRequestedSection() {
+  if (requestsVerifactu(route) && !isVerifactuEligible.value) {
+    router.replace({ name: 'backend-settings' });
+    return;
+  }
+  const section = route.hash?.slice(1) || route.query.section;
+  if (section) scrollTo(section);
+}
+watch(() => route.fullPath, () => nextTick(openRequestedSection));
+watch(isVerifactuEligible, async eligible => {
+  if (eligible && settingsLoaded.value) await loadVfCertificate();
+  if (!eligible) {
+    vfCertificate.value = null;
+    vfPassphrase.value = '';
+    vfCertFile.value = null;
+    if (activeSection.value === 'verifactu') activeSection.value = 'company';
+    openRequestedSection();
+  }
+});
 
 // ── Signature ──────────────────────────────────────────────────
 function openSignaturePad() {
@@ -1302,6 +1545,51 @@ function saveSignature() {
   text-transform: uppercase;
   color: var(--sp-accent);
   margin-bottom: 0.4rem;
+}
+
+.sc-tag--warn {
+  color: #b45309;
+}
+
+.vf-cert-card, .vf-cert-upload {
+  border: 1px solid #e5e0db;
+  border-radius: 10px;
+  padding: 16px;
+  max-width: 480px;
+}
+
+.vf-cert-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f2efe9;
+  font-size: 0.85rem;
+}
+
+.vf-cert-label {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.vf-cert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.vf-cert-badge--ok { background: #dcfce7; color: #16a34a; }
+.vf-cert-badge--expiring_soon { background: #fef3c7; color: #b45309; }
+.vf-cert-badge--expired, .vf-cert-badge--invalid { background: #fee2e2; color: #dc2626; }
+
+.vf-cert-hint {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 10px;
 }
 
 .sc-title {

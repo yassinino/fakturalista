@@ -14,15 +14,27 @@
                 <div class="addr-label">
                     {{ $docType === 'quote' ? __('quote.bill_to') : __('invoice.billing_address') }}
                 </div>
-                <div class="addr-name">{{ $document->customer?->name ?? '-' }}</div>
-                @if(!empty($design['show_customer_number']) && !empty($document->customer?->reference))
-                    <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $document->customer->reference]) }}</div>
+                <div class="addr-name">{{ ($docType === 'invoice' ? ($customerIdentity['name'] ?? null) : $document->customer?->name) ?? '-' }}</div>
+                @if($docType === 'invoice')
+                    {{-- Country-aware, snapshot-first (Morocco Phase 1B, docs/morocco-phase-1b-identity.md §8) --}}
+                    @if(strtoupper($companyIdentity['country_code'] ?? '') === 'MA')
+                        @if(!empty($customerIdentity['ice']))
+                            <div class="addr-sub">{{ __('invoice.ice', ['id' => $customerIdentity['ice']]) }}</div>
+                        @endif
+                    @else
+                        @if(!empty($customerIdentity['tax_id']))
+                            <div class="addr-sub">{{ __('invoice.tax_id', ['id' => $customerIdentity['tax_id']]) }}</div>
+                        @endif
+                    @endif
                 @endif
-                @if($document->customer?->address_billing)
-                    <div class="addr-sub" style="white-space: pre-line;">{!! nl2br(e($document->customer->address_billing)) !!}</div>
+                @if(!empty($design['show_customer_number']) && !empty($customerIdentity['reference'] ?? $document->customer?->reference))
+                    <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $customerIdentity['reference'] ?? $document->customer->reference]) }}</div>
                 @endif
-                @if(!empty($design['show_customer_phone']) && !empty($document->customer?->phone))
-                    <div class="addr-sub">{{ __('invoice.phone', ['phone' => $document->customer->phone]) }}</div>
+                @if($customerIdentity['address_billing'] ?? $document->customer?->address_billing)
+                    <div class="addr-sub" style="white-space: pre-line;">{!! nl2br(e($customerIdentity['address_billing'] ?? $document->customer->address_billing)) !!}</div>
+                @endif
+                @if(!empty($design['show_customer_phone']) && !empty($customerIdentity['phone'] ?? $document->customer?->phone))
+                    <div class="addr-sub">{{ __('invoice.phone', ['phone' => $customerIdentity['phone'] ?? $document->customer->phone]) }}</div>
                 @endif
                 @if($docType === 'quote' && !empty($document->customer?->email))
                     <div class="addr-sub">{{ $document->customer->email }}</div>
@@ -34,15 +46,26 @@
                 <div class="addr-label">
                     {{ $docType === 'quote' ? __('quote.bill_to') : __('invoice.billing_address') }}
                 </div>
-                <div class="addr-name">{{ $document->customer?->name ?? '-' }}</div>
-                @if(!empty($design['show_customer_number']) && !empty($document->customer?->reference))
-                    <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $document->customer->reference]) }}</div>
+                <div class="addr-name">{{ ($docType === 'invoice' ? ($customerIdentity['name'] ?? null) : $document->customer?->name) ?? '-' }}</div>
+                @if($docType === 'invoice')
+                    @if(strtoupper($companyIdentity['country_code'] ?? '') === 'MA')
+                        @if(!empty($customerIdentity['ice']))
+                            <div class="addr-sub">{{ __('invoice.ice', ['id' => $customerIdentity['ice']]) }}</div>
+                        @endif
+                    @else
+                        @if(!empty($customerIdentity['tax_id']))
+                            <div class="addr-sub">{{ __('invoice.tax_id', ['id' => $customerIdentity['tax_id']]) }}</div>
+                        @endif
+                    @endif
                 @endif
-                @if($document->customer?->address_billing)
-                    <div class="addr-sub" style="white-space: pre-line;">{!! nl2br(e($document->customer->address_billing)) !!}</div>
+                @if(!empty($design['show_customer_number']) && !empty($customerIdentity['reference'] ?? $document->customer?->reference))
+                    <div class="addr-sub">{{ __('invoice.customer_number', ['number' => $customerIdentity['reference'] ?? $document->customer->reference]) }}</div>
                 @endif
-                @if(!empty($design['show_customer_phone']) && !empty($document->customer?->phone))
-                    <div class="addr-sub">{{ __('invoice.phone', ['phone' => $document->customer->phone]) }}</div>
+                @if($customerIdentity['address_billing'] ?? $document->customer?->address_billing)
+                    <div class="addr-sub" style="white-space: pre-line;">{!! nl2br(e($customerIdentity['address_billing'] ?? $document->customer->address_billing)) !!}</div>
+                @endif
+                @if(!empty($design['show_customer_phone']) && !empty($customerIdentity['phone'] ?? $document->customer?->phone))
+                    <div class="addr-sub">{{ __('invoice.phone', ['phone' => $customerIdentity['phone'] ?? $document->customer->phone]) }}</div>
                 @endif
                 @if($docType === 'quote' && !empty($document->customer?->email))
                     <div class="addr-sub">{{ $document->customer->email }}</div>

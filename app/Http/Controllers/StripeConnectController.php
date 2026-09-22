@@ -98,7 +98,7 @@ class StripeConnectController extends Controller
      */
     public function status(Request $request)
     {
-        $profile = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
+        $profile = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
 
         // Refresh from Stripe on every status call so the UI always reflects reality
         $this->stripe->refreshAccountStatus($profile);
@@ -114,7 +114,7 @@ class StripeConnectController extends Controller
      */
     public function disconnect(Request $request)
     {
-        $profile = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
+        $profile = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
 
         if (empty($profile->stripe_account_id)) {
             $msg = 'No Stripe account is connected.';

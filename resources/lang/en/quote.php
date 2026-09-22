@@ -17,6 +17,8 @@ return [
     'discount'         => 'Discount',
     'total'            => 'Total',
     'tax_line'         => 'Tax (:rate%)',
+    'exempt'           => 'Exempt',
+    'total_tax'        => 'Total Tax',
     'notes'            => 'Notes',
     'valid_through'    => 'This quote is valid through :date.',
 ];

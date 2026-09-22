@@ -164,18 +164,106 @@
   
               </div>
 
-               <div class="form-floating mb-4">
+               <!-- Morocco: ICE (primary identifier) + IF + RC. No Spain/AEAT terminology.
+                    Business-only (Morocco Phase 2A) - see customers/create.vue for the
+                    same fix; ICE/IF/RC are company identifiers, meaningless for an
+                    individual customer (state.type == 2). -->
+               <template v-if="isMorocco && state.type == 1">
+                 <div class="form-floating mb-4">
+                   <input
+                     type="text"
+                     id="val-ice"
+                     class="form-control"
+                     v-model="state.ice"
+                     :placeholder="$t('customers.fields.ice')"
+                   />
+                   <label for="val-ice">{{ $t("customers.fields.ice") }}</label>
+                 </div>
+                 <p class="ctc-edit-hint mb-3">{{ $t('customers.fields.iceHelp') }}</p>
+
+                 <div class="form-floating mb-4">
+                   <input
+                     type="text"
+                     id="val-if"
+                     class="form-control"
+                     v-model="state.if_number"
+                     :placeholder="$t('customers.fields.ifNumber')"
+                   />
+                   <label for="val-if">{{ $t("customers.fields.ifNumber") }}</label>
+                 </div>
+
+                 <div class="form-floating mb-4">
+                   <input
+                     type="text"
+                     id="val-rc"
+                     class="form-control"
+                     v-model="state.commercial_register"
+                     :placeholder="$t('customers.fields.commercialRegister')"
+                   />
+                   <label for="val-rc">{{ $t("customers.fields.commercialRegister") }}</label>
+                 </div>
+               </template>
+
+               <!-- Spain / everyone else: unchanged NIF + AEAT foreign-customer model.
+                    Morocco Phase 2A: explicitly excludes a Moroccan individual customer
+                    (isMorocco && state.type == 2) - they get neither block, matching
+                    "do not force company identifiers on an individual" for either country. -->
+               <template v-else-if="!isMorocco">
+                 <div class="form-floating mb-1">
+                  <input
+                  type="text"
+                  id="val-nif"
+                  class="form-control"
+                  v-model="state.tax_id"
+                  :placeholder="$t('customers.fields.nif')"
+                />
+                <label for="val-nif">{{ $t("customers.fields.nif") }}</label>
+              </div>
+              <p class="ctc-edit-hint mb-3">{{ $t('customers.fields.nifHelp') }}</p>
+
+              <div class="form-check mb-3">
                 <input
-                type="text"
-                id="val-nif"
-                class="form-control"
-                v-model="state.ice"
-                :placeholder="$t('customers.fields.nif')"
-              />
-              <label for="val-email">{{ $t("customers.fields.nif") }}</label>
-            </div>
-  
-  
+                  type="checkbox"
+                  id="val-is-foreign"
+                  class="form-check-input"
+                  v-model="isForeignCustomer"
+                />
+                <label class="form-check-label" for="val-is-foreign">
+                  {{ $t('customers.fields.foreignCustomerToggle') }}
+                </label>
+              </div>
+
+              <template v-if="isForeignCustomer">
+                <div class="form-floating mb-4">
+                  <select
+                    id="val-foreign-id-type"
+                    class="form-control"
+                    v-model="state.foreign_tax_id_type"
+                  >
+                    <option value="">{{ $t('common.selectOption') }}</option>
+                    <option value="02">{{ $t('customers.fields.foreignIdTypeOptions.02') }}</option>
+                    <option value="03">{{ $t('customers.fields.foreignIdTypeOptions.03') }}</option>
+                    <option value="04">{{ $t('customers.fields.foreignIdTypeOptions.04') }}</option>
+                    <option value="05">{{ $t('customers.fields.foreignIdTypeOptions.05') }}</option>
+                    <option value="06">{{ $t('customers.fields.foreignIdTypeOptions.06') }}</option>
+                    <option value="07">{{ $t('customers.fields.foreignIdTypeOptions.07') }}</option>
+                  </select>
+                  <label for="val-foreign-id-type">{{ $t('customers.fields.foreignIdType') }}</label>
+                </div>
+                <div class="form-floating mb-1">
+                  <input
+                    type="text"
+                    id="val-foreign-id"
+                    class="form-control"
+                    v-model="state.foreign_tax_id"
+                  />
+                  <label for="val-foreign-id">{{ $t('customers.fields.foreignIdNumber') }}</label>
+                </div>
+                <p class="ctc-edit-hint mb-3">{{ $t('customers.fields.foreignIdCountryHint') }}</p>
+              </template>
+               </template>
+
+
             </div>
           </div>
   
@@ -419,13 +507,18 @@
   </template>
   
   <script setup>
-  import { reactive, ref, computed, onMounted } from "vue";
+import { useTenantCountry } from '@/composables/useTenantCountry';
+  import { reactive, ref, computed, onMounted, watch } from "vue";
   import axios from 'axios'
   import { createToaster } from '@meforma/vue-toaster';
   const toaster = createToaster({ /* options */ });
   import { useRoute } from 'vue-router'
   import { useI18n } from "vue-i18n";
+  import { useTemplateStore } from "@/stores/template";
   const { t } = useI18n();
+  const templateStore = useTemplateStore();
+  // Morocco Phase 1B: country-aware fiscal identity fields (docs/morocco-phase-1b-identity.md).
+  const { isMorocco } = useTenantCountry();
   
   // Vuelidate, for more info and examples you can check out https://github.com/vuelidate/vuelidate
   import useVuelidate from "@vuelidate/core";
@@ -446,13 +539,23 @@
   const route = useRoute()
   const uuid = ref(route.params.id)
   
+  const isForeignCustomer = ref(false);
+
   onMounted(async () => {
           let res = await axios.get('/customers/' + uuid.value + '/edit');
           state.value = res.data.customer
           state.value.is_same_address = state.value.is_same_address == 1 ? true : false;
+          isForeignCustomer.value = !!state.value.foreign_tax_id_type;
 
           let response = await axios.get('/countries');
           countries.value = response.data.countries
+  });
+
+  watch(isForeignCustomer, (checked) => {
+    if (!checked) {
+      state.value.foreign_tax_id_type = null;
+      state.value.foreign_tax_id = null;
+    }
   });
   
   
@@ -535,5 +638,11 @@
 :global(.customer-form-card) {
   overflow: hidden;
   border-top: 3px solid #E91E63 !important;
+}
+
+.ctc-edit-hint {
+  margin-top: -8px;
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 </style>

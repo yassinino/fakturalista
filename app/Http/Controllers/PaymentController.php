@@ -43,10 +43,22 @@ class PaymentController extends Controller
     {
         $this->initStripe();
 
-        $company     = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
-        $companyName = $company->trade_name ?: $company->legal_name ?: config('app.name');
-        $currency    = strtolower($company->currency ?: 'eur');
-        $host        = request()->getSchemeAndHttpHost();
+        $tenantContext = app(\App\Services\TenantContextService::class);
+        $company       = $tenantContext->ensureCompanyProfile();
+        $companyName   = $company->trade_name ?: $company->legal_name ?: config('app.name');
+        $currency      = strtolower($company->currency ?: 'eur');
+        $host          = request()->getSchemeAndHttpHost();
+
+        // Morocco Phase 2A: this was hardcoded 'Factura' (Spanish) regardless
+        // of tenant - a Moroccan customer paying via Stripe Checkout saw
+        // Spanish wording on the payment page. Same document-type wording
+        // already used tenant-locale-aware in the PDF header
+        // (resources/views/pdf/components/_header.blade.php).
+        $documentWord = match ($tenantContext->locale()) {
+            'fr'    => 'Facture',
+            'es'    => 'Factura',
+            default => 'Invoice',
+        };
 
         $sessionData = [
             'payment_method_types' => ['card'],
@@ -55,7 +67,7 @@ class PaymentController extends Controller
                     'currency'     => $currency,
                     'unit_amount'  => (int) round(($invoice->total ?? 0) * 100),
                     'product_data' => [
-                        'name'        => 'Factura ' . $invoice->reference,
+                        'name'        => $documentWord . ' ' . $invoice->reference,
                         'description' => $companyName,
                     ],
                 ],
@@ -116,7 +128,7 @@ class PaymentController extends Controller
         }
 
         // Check that the Connect account is ready to accept payments
-        $company        = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
+        $company        = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
         $connectService = app(StripeConnectService::class);
 
         if (!$connectService->canAcceptPayments($company)) {
@@ -166,7 +178,7 @@ class PaymentController extends Controller
             abort(503, 'Online payment is not available.');
         }
 
-        $company        = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
+        $company        = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
         $connectService = app(StripeConnectService::class);
 
         if (!$connectService->canAcceptPayments($company)) {

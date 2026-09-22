@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
     <div class="itc">
 
       <!-- ── PLAN-LIMIT BANNER ── -->
@@ -39,7 +40,7 @@
           <button type="button" class="itc-btn itc-btn--ghost" @click="goBack">
             {{ $t('common.cancel') }}
           </button>
-          <button type="button" class="itc-btn itc-btn--primary" @click="handleSave" :disabled="saving">
+          <button type="button" class="itc-btn itc-btn--primary" @click="handleSave" :disabled="saving || !taxReady">
             <i :class="saving ? 'fa fa-spinner fa-spin' : 'fa fa-check'"></i>
             {{ saving ? $t('items.form.savingBtn') : $t('items.form.createBtn') }}
           </button>
@@ -137,7 +138,7 @@
                 <div class="itc-field">
                   <label class="itc-label" for="itc-price">{{ $t('items.fields.salesPrice') }}</label>
                   <div class="itc-input-prefixed">
-                    <span class="itc-prefix">{{ state.currency || 'EUR' }}</span>
+                    <span class="itc-prefix">{{ state.currency || templateStore.company.currency }}</span>
                     <input
                       id="itc-price"
                       type="text"
@@ -160,7 +161,7 @@
                     class="itc-input itc-input--upper"
                     v-model="state.currency"
                     maxlength="3"
-                    :placeholder="$t('items.form.currencyPlaceholder')"
+                    :placeholder="templateStore.company.currency"
                   />
                 </div>
 
@@ -177,7 +178,7 @@
                 <div v-if="state.type === 2" class="itc-field">
                   <label class="itc-label" for="itc-cost">{{ $t('items.fields.purchasePrice') }}</label>
                   <div class="itc-input-prefixed">
-                    <span class="itc-prefix">{{ state.currency || 'EUR' }}</span>
+                    <span class="itc-prefix">{{ state.currency || templateStore.company.currency }}</span>
                     <input
                       id="itc-cost"
                       type="text"
@@ -193,23 +194,9 @@
 
               <!-- VAT chips -->
               <div class="itc-field itc-field--mt">
-                <label class="itc-label">{{ $t('items.fields.tax') }}</label>
-                <div class="itc-vat-row" role="radiogroup">
-                  <label
-                    v-for="rate in [0, 4, 10, 21]"
-                    :key="rate"
-                    class="itc-vat-chip"
-                    :class="{ 'itc-vat-chip--on': Number(state.vta) === rate }"
-                  >
-                    <input
-                      type="radio"
-                      :value="rate"
-                      v-model.number="state.vta"
-                      class="itc-sr-only"
-                    />
-                    {{ rate }}%
-                  </label>
-                </div>
+                <label class="itc-label">{{ taxName }}</label>
+                <TaxSelect class="itc-select" :line="state" :presets="presets" :tax-name="taxName"
+                  @change="Object.assign(state, $event)" />
               </div>
             </section>
 
@@ -319,12 +306,12 @@
                 <dt>{{ $t('items.fields.salesPrice') }}</dt>
                 <dd class="itc-preview__price">
                   {{ state.sales_price ? Number(state.sales_price).toFixed(2) : '—' }}
-                  {{ state.currency || 'EUR' }}
+                  {{ state.currency || templateStore.company.currency }}
                 </dd>
               </div>
               <div class="itc-preview__row">
-                <dt>{{ $t('items.fields.tax') }}</dt>
-                <dd>{{ state.vta }}%</dd>
+                <dt>{{ taxName }}</dt>
+                <dd>{{ taxLabel(state.vta, state.tax_treatment, taxName) }}</dd>
               </div>
               <div v-if="state.type === 2" class="itc-preview__row">
                 <dt>{{ $t('items.fields.unit') }}</dt>
@@ -361,7 +348,7 @@
           <button type="button" class="itc-btn itc-btn--ghost" @click="goBack">
             {{ $t('common.cancel') }}
           </button>
-          <button type="button" class="itc-btn itc-btn--primary" @click="handleSave" :disabled="saving">
+          <button type="button" class="itc-btn itc-btn--primary" @click="handleSave" :disabled="saving || !taxReady">
             <i :class="saving ? 'fa fa-spinner fa-spin' : 'fa fa-check'"></i>
             {{ saving ? $t('items.form.savingBtn') : $t('items.form.createBtn') }}
           </button>
@@ -426,10 +413,16 @@
 </template>
 
 <script setup>
+import TaxSelect from '@/components/TaxSelect.vue';
+import { useTaxPresets } from '@/composables/useTaxPresets';
+import { taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import VueSelect from "vue-select";
+import { useTemplateStore } from "@/stores/template";
+
+const templateStore = useTemplateStore();
 import { createToaster } from "@meforma/vue-toaster";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -454,12 +447,15 @@ const state = reactive({
   sales_price: null,
   purchase_price: null,
   reference: null,
-  vta: 0,
-  currency: "EUR",
+  vta: null,
+  tax_treatment: "taxable",
+  currency: templateStore.company.currency,
   active: true,
   description: null,
   family_id: null,
 });
+
+const { presets, taxName, taxReady, taxError, loadTaxes } = useTaxPresets(() => [state]);
 
 const family = reactive({ name: null });
 const modal_family = ref();
@@ -502,6 +498,7 @@ async function addFamily() {
 }
 
 async function handleSave() {
+  if (!taxReady.value) return;
   const ok = await v$.value.$validate();
   if (!ok) return;
 

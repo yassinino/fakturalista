@@ -3,6 +3,8 @@
 namespace App\Mail;
 
 use App\Models\Quote;
+use App\Services\CurrencyFormatter;
+use App\Services\TenantContextService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -41,12 +43,18 @@ class QuoteEmail extends Mailable
     {
         $filename = 'devis-' . $this->quote->reference . '.pdf';
 
+        $context   = app(TenantContextService::class);
+        $formatter = app(CurrencyFormatter::class);
+        $currency  = $context->currency();
+
         return $this
             ->subject("Devis {$this->quote->reference} · {$this->companyName}")
             ->view('emails.invoice')   // reuse the same email template
             ->with([
                 'invoice'     => $this->quote,   // blade uses $invoice variable
                 'isQuote'     => true,
+                'formattedTotal'    => $formatter->format((float) $this->quote->total, $currency, 'fr'),
+                'formattedSubTotal' => $formatter->format((float) $this->quote->sub_total, $currency, 'fr'),
             ])
             ->attachData($this->pdfContent, $filename, ['mime' => 'application/pdf']);
     }

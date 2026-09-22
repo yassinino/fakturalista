@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
     <div class="inv-create">
 
       <!-- ── TOP BAR ── -->
@@ -12,7 +13,7 @@
           <h1 class="inv-page-title">{{ $t('items.editTitle') }}</h1>
           <p class="inv-page-hint">{{ $t('items.form.editPageHint') }}</p>
         </div>
-        <button class="inv-btn inv-btn-primary" type="button" @click="handleSave" :disabled="saving || loading">
+        <button class="inv-btn inv-btn-primary" type="button" @click="handleSave" :disabled="saving || loading || !taxReady">
           <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
           {{ saving ? $t('items.form.savingBtn') : $t('items.form.editBtn') }}
         </button>
@@ -107,20 +108,16 @@
                 class="inv-input items-currency-input"
                 v-model="state.currency"
                 maxlength="3"
-                :placeholder="$t('items.form.currencyPlaceholder')"
+                :placeholder="templateStore.company.currency"
               />
             </div>
           </div>
 
           <div :class="state.type == 2 ? 'inv-two-col items-mt' : 'inv-field-group items-mt'">
             <div class="inv-field-group">
-              <label class="inv-label">{{ $t('items.fields.tax') }}</label>
-              <select class="inv-select" v-model="state.vta">
-                <option value="0">0%</option>
-                <option value="4">4%</option>
-                <option value="10">10%</option>
-                <option value="21">21%</option>
-              </select>
+              <label class="inv-label">{{ taxName }}</label>
+              <TaxSelect class="inv-select" :line="state" :presets="presets" :tax-name="taxName"
+                @change="Object.assign(state, $event)" />
             </div>
 
             <div class="inv-field-group" v-if="state.type == 2">
@@ -213,7 +210,7 @@
             class="inv-btn inv-btn-primary"
             type="button"
             @click="handleSave"
-            :disabled="saving || loading"
+            :disabled="saving || loading || !taxReady"
           >
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
             {{ saving ? $t('items.form.savingBtn') : $t('items.form.editBtn') }}
@@ -290,6 +287,8 @@
 </template>
 
 <script setup>
+import TaxSelect from '@/components/TaxSelect.vue';
+import { useTaxPresets } from '@/composables/useTaxPresets';
 import { reactive, ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { Modal } from "bootstrap";
@@ -299,6 +298,9 @@ import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { useTemplateStore } from "@/stores/template";
+
+const templateStore = useTemplateStore();
 
 const { t } = useI18n();
 const toaster = createToaster();
@@ -320,12 +322,15 @@ const state = reactive({
   sales_price: null,
   purchase_price: null,
   reference: null,
-  vta: 0,
-  currency: "EUR",
+  vta: null,
+  tax_treatment: "taxable",
+  currency: templateStore.company.currency,
   active: true,
   description: null,
   family_id: null,
 });
+
+const { presets, taxName, taxReady, taxError, loadTaxes } = useTaxPresets();
 
 const family = reactive({ name: null });
 const modal_family = ref();
@@ -348,7 +353,8 @@ onMounted(async () => {
     purchase_price: item.purchase_price,
     reference:      item.reference,
     vta:            item.vta ?? 0,
-    currency:       item.currency ?? "EUR",
+    tax_treatment: item.tax_treatment ?? "taxable",
+    currency:       item.currency ?? templateStore.company.currency,
     active:         item.active ?? true,
     description:    item.description,
     family_id:      item.family_id,
@@ -386,6 +392,7 @@ async function addFamily() {
 }
 
 async function handleSave() {
+  if (!taxReady.value) return;
   const result = await v$.value.$validate();
   if (!result) return;
 

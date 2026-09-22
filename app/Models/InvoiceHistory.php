@@ -14,6 +14,8 @@ class InvoiceHistory extends Model
     const ACTION_CANCELLED  = 'cancelled';
     const ACTION_SENT       = 'sent';
     const ACTION_WHATSAPP   = 'whatsapp';
+    const ACTION_RECTIFIED  = 'rectified';
+    const ACTION_VERIFACTU_RECORD_GENERATED = 'verifactu_record_generated';
 
     protected $table = 'invoice_history';
 

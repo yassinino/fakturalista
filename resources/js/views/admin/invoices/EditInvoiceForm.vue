@@ -1,25 +1,25 @@
 <template>
   <div class="content">
+    <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
     <div class="inv-create">
 
       <!-- ── TOP BAR ── -->
       <div class="inv-topbar">
         <div>
           <h1 class="inv-page-title">
-            {{ state.reference ? `Factura ${state.reference}` : 'Editar factura' }}
+            {{ state.reference ? $t('invoices.editTitle', { number: state.reference }) : $t('invoices.title') }}
           </h1>
           <p class="inv-page-hint">
-            <span class="inv-status-chip inv-status-draft">Borrador</span>
-            &nbsp;· Modifica los datos y guarda los cambios
+            <span class="inv-status-chip inv-status-draft">{{ $t('invoices.statusDraft') }}</span>
           </p>
         </div>
         <div class="inv-topbar-actions">
           <button type="button" class="inv-btn inv-btn-ghost" @click="handleDuplicate" :disabled="actionBusy || sendingEmail">
-            <i class="fa fa-copy me-1"></i>Duplicar
+            <i class="fa fa-copy me-1"></i>{{ $t('invoices.actionDuplicate') }}
           </button>
           <button type="button" class="inv-btn inv-btn-outline" @click="handleIssue" :disabled="actionBusy || saving || sendingEmail">
             <i v-if="actionBusy" class="fa fa-spinner fa-spin me-1"></i>
-            <i v-else class="fa fa-paper-plane me-1"></i>Emitir
+            <i v-else class="fa fa-paper-plane me-1"></i>{{ $t('invoices.actionIssue') }}
           </button>
           <button
             type="button"
@@ -43,9 +43,9 @@
             <i v-else class="fab fa-whatsapp me-1"></i>
             WhatsApp
           </button>
-          <button type="button" class="inv-btn inv-btn-primary" @click="handleSave" :disabled="saving || actionBusy || sendingEmail">
+          <button type="button" class="inv-btn inv-btn-primary" @click="handleSave" :disabled="saving || actionBusy || sendingEmail || !taxReady">
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
-            Guardar cambios
+            {{ $t('common.save') }}
           </button>
         </div>
       </div>
@@ -60,7 +60,7 @@
 
             <!-- Client -->
             <div class="inv-field-group">
-              <label class="inv-label inv-label-req">Cliente</label>
+              <label class="inv-label inv-label-req">{{ $t('documents.customer') }}</label>
               <VueSelect
                 v-model="state.customer_id"
                 :options="customers"
@@ -68,11 +68,11 @@
                 :reduce="o => o.uuid"
                 @option:selected="onClientSelect"
                 @blur="v$.customer_id.$touch"
-                placeholder="Buscar cliente..."
+                :placeholder="$t('invoices.form.clientPlaceholder')"
                 :class="{ 'inv-select-err': v$.customer_id.$errors.length }"
               />
               <p v-if="v$.customer_id.$errors.length" class="inv-err-msg">
-                <i class="fa fa-exclamation-circle me-1"></i>Selecciona un cliente
+                <i class="fa fa-exclamation-circle me-1"></i>{{ $t('documents.selectCustomer') }}
               </p>
               <div v-if="state.address" class="inv-addr-preview">
                 <i class="fa fa-map-marker-alt"></i> {{ state.address }}
@@ -83,7 +83,7 @@
             <div class="inv-field-group">
               <div class="inv-date-row">
                 <div>
-                  <label class="inv-label inv-label-req">Fecha de emisión</label>
+                  <label class="inv-label inv-label-req">{{ $t('invoices.form.issueDateLabel') }}</label>
                   <FlatPickr
                     v-model="state.date"
                     class="inv-input"
@@ -91,7 +91,7 @@
                   />
                 </div>
                 <div>
-                  <label class="inv-label">Fecha de vencimiento</label>
+                  <label class="inv-label">{{ $t('invoices.form.dueDateLabel') }}</label>
                   <FlatPickr
                     v-model="state.expiration_date"
                     class="inv-input"
@@ -106,14 +106,13 @@
                 @click="showAdvanced = !showAdvanced"
               >
                 <i class="fa" :class="showAdvanced ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                Más opciones
+                {{ $t('invoices.form.moreOptions') }}
               </button>
 
               <Transition name="inv-slide">
                 <div v-if="showAdvanced" class="inv-adv-panel">
-                  <label class="inv-label">Referencia</label>
+                  <label class="inv-label">{{ $t('items.fields.reference') }}</label>
                   <input class="inv-input" :value="state.reference" disabled style="opacity:0.5" />
-                  <p class="inv-adv-hint">El número de factura se asigna automáticamente.</p>
                 </div>
               </Transition>
             </div>
@@ -125,17 +124,17 @@
              CARD 2 - Line Items
              ═══════════════════════════════════════ -->
         <section class="inv-card">
-          <p class="inv-section-label">Líneas de factura</p>
+          <p class="inv-section-label">{{ $t('invoices.form.linesLabel') }}</p>
           <div class="inv-table-scroll">
             <table class="inv-table">
               <thead>
                 <tr>
-                  <th class="inv-th inv-col-desc">Descripción / Producto</th>
-                  <th class="inv-th inv-col-qty">Cant.</th>
-                  <th class="inv-th inv-col-unit inv-hide-mobile">Ud.</th>
-                  <th class="inv-th inv-col-price">Precio unit.</th>
-                  <th class="inv-th inv-col-vta">IVA %</th>
-                  <th class="inv-th inv-col-total">Total</th>
+                  <th class="inv-th inv-col-desc">{{ $t('invoices.form.colDesc') }}</th>
+                  <th class="inv-th inv-col-qty">{{ $t('invoices.form.colQty') }}</th>
+                  <th class="inv-th inv-col-unit inv-hide-mobile">{{ $t('invoices.form.colUnit') }}</th>
+                  <th class="inv-th inv-col-price">{{ $t('invoices.form.colPrice') }}</th>
+                  <th class="inv-th inv-col-vta">{{ taxName }}</th>
+                  <th class="inv-th inv-col-total">{{ $t('documents.total') }}</th>
                   <th class="inv-th inv-col-del"></th>
                 </tr>
               </thead>
@@ -153,13 +152,13 @@
                       label="name"
                       :reduce="o => o.id"
                       @option:selected="v => selectProduct(index, v)"
-                      placeholder="Producto o escribe descripción..."
+                      :placeholder="$t('invoices.form.productPlaceholder')"
                       class="inv-line-vs"
                     />
                     <input
                       class="inv-input inv-desc-sub"
                       v-model="cart.description"
-                      placeholder="Descripción adicional (opcional)"
+                      :placeholder="$t('invoices.form.descSubPlaceholder')"
                       @keydown.enter.prevent="addNewItem"
                     />
                   </td>
@@ -197,17 +196,13 @@
 
                   <!-- VAT -->
                   <td class="inv-td">
-                    <select class="inv-select" v-model="cart.vta">
-                      <option value="0">0%</option>
-                      <option value="4">4%</option>
-                      <option value="10">10%</option>
-                      <option value="21">21%</option>
-                    </select>
+                    <TaxSelect class="inv-select" :line="cart" :presets="presets" :tax-name="taxName"
+                      @change="Object.assign(cart, $event)" />
                   </td>
 
                   <!-- Row total -->
                   <td class="inv-td inv-td-rowtotal">
-                    {{ $toComma(totalRow[index]) }}&thinsp;€
+                    {{ $toCurrency(totalRow[index]) }}
                   </td>
 
                   <!-- Remove -->
@@ -217,7 +212,7 @@
                       class="inv-del-btn"
                       @click="removeCart(cart)"
                       :disabled="state.carts.length === 1"
-                      title="Eliminar línea"
+                      :title="$t('invoices.form.removeLineTitle')"
                     >
                       <i class="fa fa-times"></i>
                     </button>
@@ -228,7 +223,7 @@
           </div>
 
           <button type="button" class="inv-add-line" @click="addNewItem">
-            <i class="fa fa-plus"></i> Añadir línea
+            <i class="fa fa-plus"></i> {{ $t('invoices.form.addLine') }}
           </button>
         </section>
 
@@ -239,43 +234,46 @@
 
           <!-- Note -->
           <div class="inv-note-col">
-            <label class="inv-label">Notas</label>
+            <label class="inv-label">{{ $t('documents.note') }}</label>
             <textarea
               class="inv-textarea"
               v-model="state.note"
               rows="4"
-              placeholder="Condiciones de pago, observaciones para el cliente…"
+              :placeholder="$t('invoices.form.notesPlaceholder')"
             ></textarea>
+
+            <!-- Morocco Phase 2A: VERI*FACTU/AEAT-only field, Spain-only -
+                 see CreateInvoiceForm.vue for the same fix. -->
+            <template v-if="isSpain">
+              <label class="inv-label" for="inv-edit-descripcion-operacion">
+                {{ $t('invoices.form.descripcionOperacionLabel') }}
+              </label>
+              <p class="inv-field-hint">{{ $t('invoices.form.descripcionOperacionHelp') }}</p>
+              <textarea
+                id="inv-edit-descripcion-operacion"
+                class="inv-textarea"
+                v-model="state.descripcion_operacion"
+                rows="2"
+                maxlength="500"
+                :placeholder="$t('invoices.form.descripcionOperacionPlaceholder')"
+              ></textarea>
+            </template>
           </div>
 
           <!-- Totals -->
           <div class="inv-totals-col">
             <div class="inv-tot-row">
-              <span class="inv-tot-label">Subtotal</span>
-              <span class="inv-tot-val">{{ $toComma(subTotal) }}&thinsp;€</span>
+              <span class="inv-tot-label">{{ $t('invoices.form.subtotal') }}</span>
+              <span class="inv-tot-val">{{ $toCurrency(subTotal) }}</span>
             </div>
-            <template v-if="vtaTotal4 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">IVA 4%</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal4) }}&thinsp;€</span>
-              </div>
-            </template>
-            <template v-if="vtaTotal10 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">IVA 10%</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal10) }}&thinsp;€</span>
-              </div>
-            </template>
-            <template v-if="vtaTotal21 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">IVA 21%</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal21) }}&thinsp;€</span>
-              </div>
-            </template>
+            <div v-for="group in taxGroups" :key="group.key" class="inv-tot-row inv-tot-tax">
+              <span class="inv-tot-label">{{ taxLabel(group.rate, group.treatment, taxName) }}</span>
+              <span class="inv-tot-val">{{ $toCurrency(group.amount) }}</span>
+            </div>
             <div class="inv-tot-divider"></div>
             <div class="inv-tot-row inv-tot-grand">
-              <span class="inv-tot-grand-label">Total</span>
-              <span class="inv-tot-grand-val">{{ $toComma(total) }}&thinsp;€</span>
+              <span class="inv-tot-grand-label">{{ $t('documents.total') }}</span>
+              <span class="inv-tot-grand-val">{{ $toCurrency(total) }}</span>
             </div>
           </div>
 
@@ -288,7 +286,7 @@
         <div class="inv-sticky-inner">
           <span class="inv-footer-hint">
             <i class="fa fa-keyboard me-1"></i>
-            Tab para navegar entre campos · Enter para añadir línea
+            {{ $t('invoices.form.footerHint') }}
           </span>
           <button
             class="inv-btn inv-btn-primary"
@@ -297,7 +295,7 @@
             :disabled="saving || actionBusy"
           >
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
-            Guardar cambios
+            {{ $t('common.save') }}
           </button>
         </div>
       </div>
@@ -319,6 +317,10 @@
 </template>
 
 <script setup>
+import TaxSelect from '@/components/TaxSelect.vue';
+import { useTenantCountry } from '@/composables/useTenantCountry';
+import { useTaxPresets } from '@/composables/useTaxPresets';
+import { previewTaxGroups, taxFields, taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import VueSelect from "vue-select";
 import FlatPickr from "vue-flatpickr-component";
@@ -338,6 +340,7 @@ const emit   = defineEmits(["saveDocument"]);
 const { t }  = useI18n();
 const router  = useRouter();
 const toaster = createToaster();
+const { isSpain } = useTenantCountry();
 
 // ── UI state ──────────────────────────────────────────────
 const saving        = ref(false);
@@ -358,7 +361,7 @@ const normalizeCart = (c) => ({
   unite:       c.unite       || "pc",
   price:       Number(c.price)       || 0,
   discount:    Number(c.discount)    || 0,
-  vta:         Number(c.vta)         || 0,
+  ...taxFields(c),
   total:       Number(c.total)       || 0,
 });
 
@@ -379,13 +382,16 @@ const state = reactive({
   payment_terms:    props.invoice.payment_terms    ?? "",
   reference:        props.invoice.reference        ?? "",
   note:             props.invoice.note             ?? "",
+  descripcion_operacion: props.invoice.descripcion_operacion ?? "",
   carts: (props.invoice.carts?.length
     ? props.invoice.carts.map(normalizeCart)
-    : [{ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: 0, total: 0 }]
+    : [{ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: null, tax_treatment: "taxable", total: 0 }]
   ),
 });
 
 // ── Remote data ───────────────────────────────────────────
+const { presets, taxName, defaultTax, taxReady, taxError, loadTaxes } = useTaxPresets(() => state.carts);
+
 const customers = ref([]);
 const items     = ref([]);
 
@@ -413,13 +419,13 @@ const selectProduct = (index, value) => {
     unite:       value.unite       || "pc",
     price:       Number(value.sales_price) || 0,
     discount:    0,
-    vta:         0,
+    ...taxFields(value),
     total:       Number(value.sales_price) || 0,
   };
 };
 
 const addNewItem = () => {
-  state.carts.push({ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: 0, total: 0 });
+  state.carts.push({ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, ...defaultTax(), total: 0 });
 };
 
 const removeCart = (cart) => {
@@ -450,31 +456,8 @@ const subTotal = computed(() => {
   return Number(sum.toFixed(2));
 });
 
-const vtaTotal = computed(() => {
-  const vta = state.carts.reduce(
-    (acc, cart) => acc + (cart.vta * cart.total) / 100,
-    0
-  );
-  return vta - (vta * state.discount_rate) / 100;
-});
-
-const calcVta = (rate) => {
-  const raw = state.carts.reduce((acc, cart) => {
-    if (Number(cart.vta) === rate) {
-      const row =
-        Number(cart.qty * cart.price) -
-        (Number(cart.qty * cart.price) * cart.discount) / 100;
-      return acc + (row * rate) / 100;
-    }
-    return acc;
-  }, 0);
-  const final = raw - (raw * Number(state.discount_rate || 0)) / 100;
-  return Number(final.toFixed(2));
-};
-
-const vtaTotal4  = computed(() => calcVta(4));
-const vtaTotal10 = computed(() => calcVta(10));
-const vtaTotal21 = computed(() => calcVta(21));
+const taxGroups = computed(() => previewTaxGroups(state.carts, state.discount_rate));
+const vtaTotal = computed(() => taxGroups.value.reduce((sum, group) => sum + group.amount, 0));
 
 const discountTotal = computed(
   () => (subTotal.value * state.discount_rate) / 100
@@ -494,6 +477,7 @@ const v$ = useVuelidate(rules, state);
 
 // ── Save (calls parent's saveInvoice → PUT) ───────────────
 const handleSave = async () => {
+  if (!taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
 
@@ -502,9 +486,6 @@ const handleSave = async () => {
   state.total           = total.value;
   state.sub_total       = subTotal.value;
   state.vta             = vtaTotal.value;
-  state.vta4            = vtaTotal4.value;
-  state.vta10           = vtaTotal10.value;
-  state.vta21           = vtaTotal21.value;
   state.discount_amount = discountTotal.value;
 
   emit("saveDocument", state);
@@ -540,14 +521,12 @@ const handleDuplicate = async () => {
 
 // ── Save changes then open WhatsApp (auto-issues if draft) ───
 const handleWhatsApp = async () => {
+  if (!taxReady.value) return;
   if (!state.customer_phone) return;
 
   state.total           = total.value;
   state.sub_total       = subTotal.value;
   state.vta             = vtaTotal.value;
-  state.vta4            = vtaTotal4.value;
-  state.vta10           = vtaTotal10.value;
-  state.vta21           = vtaTotal21.value;
   state.discount_amount = discountTotal.value;
 
   sendingWa.value = true;
@@ -564,15 +543,13 @@ const handleWhatsApp = async () => {
 
 // ── Save changes then open send modal ─────────────────────
 const handleSendAndSave = async () => {
+  if (!taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
 
   state.total           = total.value;
   state.sub_total       = subTotal.value;
   state.vta             = vtaTotal.value;
-  state.vta4            = vtaTotal4.value;
-  state.vta10           = vtaTotal10.value;
-  state.vta21           = vtaTotal21.value;
   state.discount_amount = discountTotal.value;
 
   saving.value = true;
@@ -706,6 +683,12 @@ const handleModalSend = async (message) => {
   font-weight: 600;
   color: #374151;
   margin-bottom: 6px;
+}
+
+.inv-field-hint {
+  margin: -4px 0 6px;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .inv-label-req::after {
@@ -865,7 +848,7 @@ const handleModalSend = async (message) => {
 .inv-col-qty   { width: 80px; }
 .inv-col-unit  { width: 90px; }
 .inv-col-price { width: 120px; }
-.inv-col-vta   { width: 90px; }
+.inv-col-vta   { min-width: 150px; }
 .inv-col-total { width: 120px; text-align: right; }
 .inv-col-del   { width: 44px; }
 

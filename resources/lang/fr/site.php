@@ -36,6 +36,7 @@ return [
         'resources_help'       => 'Centre d\'aide',
         'resources_changelog'  => 'Nouveautés',
         'resources_api'        => 'API',
+        'resources_verifactu'  => 'VERI*FACTU',
         'cta_badge'            => 'Commencez aujourd\'hui',
         'cta_title'            => 'Passez moins de temps à facturer. Plus de temps à développer votre activité.',
         'cta_sub'              => 'Créez votre compte gratuit et commencez à facturer en quelques minutes.',
@@ -151,6 +152,19 @@ return [
         'pricing_trial_note'  => 'Essai gratuit de 14 jours',
         'pricing_cta_secondary' => 'Voir les tarifs',
 
+        // Espagne / VERI*FACTU (section teaser, lien vers /verifactu)
+        'spain_badge'      => 'Facturation en Espagne',
+        'spain_title_l1'   => 'La facturation en Espagne évolue.',
+        'spain_title_l2'   => 'Préparez-vous à l\'avance.',
+        'spain_text_1'     => 'Les systèmes de facturation en Espagne devront s\'adapter à de nouvelles exigences techniques et fiscales destinées à garantir l\'intégrité, la traçabilité et l\'inaltérabilité des registres de facturation.',
+        'spain_text_2'     => 'Fakturalista évolue pour s\'adapter au nouveau cadre de facturation en Espagne et faciliter la transition pour les indépendants et les petites entreprises.',
+        'spain_point_1'    => 'Registres traçables',
+        'spain_point_2'    => 'Facturation plus digitale',
+        'spain_point_3'    => 'Préparés pour les nouvelles exigences',
+        'spain_card_badge' => 'VERI*FACTU',
+        'spain_card_text'  => 'VERI*FACTU fait partie du nouveau cadre applicable aux systèmes informatiques de facturation en Espagne et permet l\'envoi des registres de facturation à l\'administration fiscale dans les conditions prévues par la réglementation.',
+        'spain_card_cta'   => 'Découvrir VERI*FACTU',
+
         // FAQ
         'faq_title' => 'Questions fréquentes',
         'faq_q1'    => 'Puis-je essayer Fakturalista gratuitement ?',
@@ -179,8 +193,8 @@ return [
         'benefit_2_text'   => 'Historique des factures, devis et suivi des paiements.',
         'benefit_3_title'  => 'Tableau de bord en temps réel',
         'benefit_3_text'   => 'En attente, payé et en retard - d\'un seul coup d\'œil.',
-        'benefit_4_title'  => 'Sécurisé et conforme',
-        'benefit_4_text'   => 'Données chiffrées, sauvegardes automatiques et conformité réglementaire.',
+        'benefit_4_title'  => 'Vos données, protégées',
+        'benefit_4_text'   => 'Chiffrement en transit et au repos, sauvegardes automatiques quotidiennes.',
         'trust_1'          => 'Sans carte de crédit',
         'trust_2'          => 'Annulez quand vous voulez',
         'trust_3'          => 'Support en français',
@@ -208,6 +222,43 @@ return [
         'testi_3_role'     => 'Gérant · Atelier mécanique',
     ],
 
+    'register' => [
+        'page_title'       => 'Créez votre compte gratuit - Fakturalista',
+        'card_tag'         => 'Essai gratuit',
+        'card_title'       => 'Créez votre compte',
+        'card_sub'         => 'Commencez à facturer en moins d\'une minute.',
+        'label_first_name' => 'Prénom',
+        'label_last_name'  => 'Nom',
+        'label_email'      => 'Email',
+        'label_password'   => 'Mot de passe',
+        'label_password_confirmation' => 'Confirmer le mot de passe',
+        'label_company'    => 'Nom de l\'entreprise',
+        'label_tax_id'     => 'ICE/IF (optionnel)',
+        'label_country'    => 'Pays (optionnel)',
+        'placeholder_first_name' => 'Fatima',
+        'placeholder_last_name'  => 'El Amrani',
+        'placeholder_email'      => 'fatima@monentreprise.com',
+        'placeholder_company'    => 'Mon Entreprise SARL',
+        'submit'           => 'Créer mon compte gratuit',
+        'submitting'       => 'Nous préparons votre espace…',
+        'submitting_sub'   => 'Cela ne prendra que quelques secondes.',
+        'trial_note'       => '14 jours gratuits · Sans carte de crédit',
+        'already_have_account' => 'Vous avez déjà un compte ?',
+        'sign_in'          => 'Se connecter',
+        'error_msg'        => 'Veuillez vérifier les champs et réessayer.',
+    ],
+
+    'loginFinder' => [
+        'page_title'  => 'Connexion - Fakturalista',
+        'title'       => 'Se connecter',
+        'sub'         => 'Indiquez l\'email utilisé lors de votre inscription et nous vous redirigerons vers votre espace.',
+        'label_email' => 'Email',
+        'submit'      => 'Continuer',
+        'not_found'   => 'Aucun compte trouvé avec cet email.',
+        'register_cta' => 'Pas encore de compte ?',
+        'register_link' => 'Créez-en un gratuitement',
+    ],
+
 
     'pricing' => [
         'page_title'              => 'Tarifs',
@@ -223,7 +274,7 @@ return [
         'no_commitment'           => 'Sans engagement · Essai gratuit 14 jours',
         'default_cta'             => 'Commencer',
         'no_plans'                => 'Aucun plan disponible pour le moment.',
-        'trust_intro'             => 'Des milliers de freelances et PME font confiance à Fakturalista',
+        'trust_intro'             => 'Sécurité et transparence à chaque forfait',
         'trust_ssl'               => 'SSL & chiffrement',
         'trust_no_card'           => 'Sans carte de crédit',
         'trust_cancel'            => 'Annulez quand vous voulez',
@@ -398,7 +449,7 @@ return [
         'security_2_q' => 'Puis-je exporter mes données ?',
         'security_2_a' => 'Oui. Vous pouvez exporter les factures en PDF, les listes de clients en CSV et les rapports financiers en Excel depuis le menu d\'export de votre tableau de bord.',
         'security_3_q' => 'Les factures sont-elles conformes à la réglementation fiscale ?',
-        'security_3_a' => 'Fakturalista génère des factures conformes aux exigences légales en vigueur (numérotation, champs obligatoires, ventilation de la TVA). Consultez toujours votre comptable pour votre situation spécifique.',
+        'security_3_a' => 'Fakturalista génère des factures avec une numérotation séquentielle, les mentions obligatoires et la ventilation de la TVA exigées par la réglementation espagnole sur la facturation. Cela n\'inclut pas encore la transmission des registres de facturation à l\'administration fiscale espagnole (AEAT) dans le cadre de VERI*FACTU, une intégration actuellement en préparation. Consultez toujours votre comptable pour votre situation spécifique.',
 
         'still_title' => 'Vous avez d\'autres questions ?',
         'still_sub'   => 'Notre équipe de support est là pour vous aider. Envoyez-nous un message et nous vous répondrons dans les 24 heures.',
@@ -664,6 +715,86 @@ return [
         'placeholder' => 'Réponse',
         'error'      => 'Réponse incorrecte, veuillez réessayer.',
         'aria_label' => 'Vérification de sécurité : résolvez ce calcul',
+    ],
+
+    'verifactu' => [
+        'meta_title'       => 'VERI*FACTU : qu\'est-ce que c\'est et quel impact sur votre facturation',
+        'meta_description' => 'Découvrez ce qu\'est VERI*FACTU, ce qui change dans la facturation en Espagne, et comment Fakturalista se prépare aux nouvelles exigences techniques et fiscales.',
+
+        // Hero
+        'hero_badge'  => 'VERI*FACTU · Espagne',
+        'hero_title'  => 'VERI*FACTU : le nouveau paysage de la facturation en Espagne',
+        'hero_intro'  => 'La réglementation espagnole transforme la façon dont les entreprises et les professionnels utilisent leurs systèmes de facturation. Voici ce qui change et comment vous y préparer.',
+
+        // Qu'est-ce que VERI*FACTU ?
+        'what_title' => 'Qu\'est-ce que VERI*FACTU ?',
+        'what_p1'    => 'La réglementation espagnole établit de nouvelles exigences pour les logiciels et systèmes informatiques utilisés pour facturer, dans le but de garantir que les registres de facturation soient intègres, traçables et inaltérables.',
+        'what_p2'    => 'VERI*FACTU est le mode selon lequel ces systèmes peuvent transmettre les registres de facturation à l\'administration fiscale (AEAT), conformément aux spécifications techniques établies par la réglementation.',
+        'what_p3'    => 'En pratique, cela concerne surtout le fonctionnement interne des logiciels de facturation, pas seulement l\'apparence des factures que vous connaissez déjà.',
+
+        // Pourquoi la facturation évolue-t-elle ?
+        'why_title'   => 'Pourquoi la facturation évolue-t-elle ?',
+        'why_intro'   => 'Le nouveau cadre réglementaire repose sur plusieurs principes clés :',
+        'why_1_title' => 'Intégrité',
+        'why_1_text'  => 'Les registres de facturation doivent refléter fidèlement chaque opération, sans modifications non contrôlées.',
+        'why_2_title' => 'Traçabilité',
+        'why_2_text'  => 'Chaque registre doit pouvoir être suivi et vérifié tout au long de son cycle de vie.',
+        'why_3_title' => 'Inaltérabilité',
+        'why_3_text'  => 'Une fois généré, un registre de facturation ne doit pas pouvoir être modifié sans laisser de trace.',
+        'why_4_title' => 'Digitalisation',
+        'why_4_text'  => 'La facturation évolue vers des processus plus digitaux et standardisés.',
+        'why_5_title' => 'Contrôle et conservation',
+        'why_5_text'  => 'Les registres doivent être conservés, accessibles et lisibles lorsque cela est nécessaire.',
+
+        // Dates
+        'dates_title' => 'Quand les nouvelles exigences entrent-elles en vigueur ?',
+        'dates_intro' => 'Les délais applicables dépendent du type de contribuable :',
+        'date_1_label' => 'Avant le 1er janvier 2027',
+        'date_1_text'  => 'Contribuables relevant de l\'article 3.1.a) du Real Decreto 1007/2023.',
+        'date_2_label' => 'Avant le 1er juillet 2027',
+        'date_2_text'  => 'Les autres contribuables relevant de l\'article 3.1.',
+        'dates_note'   => 'Les dates et obligations peuvent varier selon la situation fiscale du contribuable. Consultez toujours les informations officielles de l\'administration fiscale espagnole.',
+
+        // Que signifie ce changement pour un indépendant ?
+        'auto_title'  => 'Que signifie ce changement pour un indépendant ?',
+        'auto_intro'  => 'Jusqu\'à présent, choisir un logiciel de facturation était surtout une question de simplicité d\'usage et de fonctionnalités. Avec le nouveau cadre réglementaire, la conformité du système de facturation aux exigences techniques applicables devient elle aussi un critère important.',
+        'auto_before_label' => 'Avant',
+        'auto_before_text'  => 'Choisir un logiciel principalement pour sa simplicité et ses fonctionnalités.',
+        'auto_after_label'  => 'Nouveau contexte',
+        'auto_after_text'   => 'L\'adaptation réglementaire du système de facturation devient elle aussi un facteur important.',
+        'auto_note'   => 'Cela ne signifie pas que les factures papier, les tableurs ou d\'autres outils perdent toute validité dans tous les cas : l\'applicabilité concrète dépend de la réglementation en vigueur et de la situation de chaque contribuable.',
+
+        // Fakturalista + VERI*FACTU
+        'brand_title'  => 'Fakturalista se prépare à la nouvelle facturation en Espagne.',
+        'brand_text'   => 'Notre objectif est de permettre aux indépendants et petites entreprises de continuer à facturer simplement, pendant que Fakturalista évolue pour s\'adapter aux nouvelles exigences techniques et fiscales.',
+        'brand_line_1' => 'Occupez-vous de votre activité.',
+        'brand_line_2' => 'Nous nous occupons de rendre la facturation toujours plus simple.',
+        'brand_status' => 'Intégration VERI*FACTU en préparation',
+
+        // FAQ
+        'faq_title' => 'Questions fréquentes sur VERI*FACTU',
+        'faq_q1' => 'Qu\'est-ce que VERI*FACTU ?',
+        'faq_a1' => 'VERI*FACTU est le mode selon lequel les systèmes informatiques de facturation peuvent transmettre les registres de facturation à l\'administration fiscale, dans le cadre du nouveau dispositif réglementaire espagnol destiné à garantir l\'intégrité et la traçabilité de ces registres.',
+        'faq_q2' => 'VERI*FACTU est-il obligatoire ?',
+        'faq_a2' => 'La réglementation fixe des exigences pour les systèmes informatiques de facturation, et VERI*FACTU est l\'une des modalités prévues. Le caractère obligatoire et les conditions précises dépendent de la situation de chaque contribuable ; nous vous recommandons de consulter les informations officielles de l\'administration fiscale.',
+        'faq_q3' => 'Quand dois-je adapter mon système de facturation ?',
+        'faq_a3' => 'Les délais fixés sont avant le 1er janvier 2027 pour les contribuables relevant de l\'article 3.1.a) du Real Decreto 1007/2023, et avant le 1er juillet 2027 pour les autres contribuables relevant de l\'article 3.1. La date exacte peut varier selon votre situation.',
+        'faq_q4' => 'Cela concerne-t-il les indépendants ?',
+        'faq_a4' => 'Oui, le nouveau cadre réglementaire peut concerner les indépendants et petites entreprises qui utilisent des systèmes informatiques de facturation, bien que l\'applicabilité précise dépende de chaque situation fiscale.',
+        'faq_q5' => 'Fakturalista sera-t-il compatible avec VERI*FACTU ?',
+        'faq_a5' => 'Fakturalista travaille actuellement à l\'adaptation de la plateforme aux nouvelles exigences de facturation en Espagne. Nous informerons nos utilisateurs au fur et à mesure de la disponibilité des nouvelles fonctionnalités.',
+        'faq_q6' => 'Dois-je envoyer toutes mes factures à l\'AEAT ?',
+        'faq_a6' => 'L\'envoi des registres de facturation à l\'administration fiscale dépend du système et de la modalité utilisés, ainsi que de la réglementation applicable à chaque contribuable. Nous vous recommandons de consulter les informations officielles de l\'AEAT pour connaître votre cas précis.',
+
+        // Sources officielles
+        'sources_title'  => 'Sources officielles',
+        'sources_note'   => 'Cette page a un objectif purement informatif et ne remplace pas un conseil fiscal ou juridique professionnel.',
+        'source_aeat'    => 'Agence fiscale espagnole (AEAT)',
+        'source_rd1007'  => 'Real Decreto 1007/2023 (BOE)',
+        'source_orden'   => 'Orden HAC/1177/2024 (BOE)',
+        'source_rdley15' => 'Real Decreto-ley 15/2025 (BOE)',
+
+        'cta_final' => 'Commencer gratuitement',
     ],
 
 ];

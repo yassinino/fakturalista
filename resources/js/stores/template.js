@@ -24,6 +24,19 @@ export const useTemplateStore = defineStore({
       showTrialBanner:     localStorage.getItem('billing_show_banner') === 'true',
     },
 
+    // Country/currency/locale/timezone for the CURRENT tenant's business
+    // documents (Morocco Phase 1A) - refreshed alongside `billing` on
+    // login and /user. Not persisted to localStorage: unlike billing
+    // state. The authenticated layout waits for it before mounting forms.
+    companyLoaded: false,
+    company: {
+      country:  null,
+      country_name: "",
+      currency: 'MAD',
+      locale:   'fr',
+      timezone: 'Africa/Casablanca',
+    },
+
     // Plan limits + current usage - refreshed from GET /api/usage on dashboard mount
     usage: {
       plan:      null,   // { name, slug, amount } or null
@@ -77,11 +90,16 @@ export const useTemplateStore = defineStore({
       if (data.billing) {
         this.setBillingStatus(data.billing);
       }
+      if (data.company_context) {
+        this.setCompanyContext(data.company_context);
+      }
     },
     logoutUser () {
       this.app.isLoggedUserIn = false;
       this.app.accessToken = null;
       this.app.token = '';
+      this.companyLoaded = false;
+      this.company = { country: null, country_name: '', currency: 'MAD', locale: 'fr', timezone: 'Africa/Casablanca' };
       localStorage.removeItem('accessToken');
       localStorage.removeItem('geseno_user');
       localStorage.removeItem('billing_onboarding');
@@ -89,6 +107,22 @@ export const useTemplateStore = defineStore({
       localStorage.removeItem('billing_trial_ends_at');
       localStorage.removeItem('billing_readonly');
       localStorage.removeItem('billing_show_banner');
+    },
+    async refreshSession() {
+      const { data } = await axios.get('/user');
+      if (!data.company_context?.country) throw new Error('Missing tenant context');
+      this.setCompanyContext(data.company_context);
+      if (data.billing) this.setBillingStatus(data.billing);
+      return data;
+    },
+    setCompanyContext (data) {
+      if (!data) return;
+      this.company.country  = data.country  ?? this.company.country;
+      this.company.country_name = data.country_name ?? this.company.country_name;
+      this.companyLoaded = !!this.company.country;
+      this.company.currency = data.currency ?? this.company.currency;
+      this.company.locale   = data.locale   ?? this.company.locale;
+      this.company.timezone = data.timezone ?? this.company.timezone;
     },
     setUsage (data) {
       this.usage.plan      = data.plan      ?? null;

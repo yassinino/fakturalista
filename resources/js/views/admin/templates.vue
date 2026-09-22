@@ -1,4 +1,5 @@
 <template>
+  <p v-if="taxError" class="text-danger" role="alert">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
   <div class="content">
     <div class="tb-root">
 
@@ -213,7 +214,7 @@
                     <thead>
                       <tr :style="tableHeadStyle">
                         <th :style="thStyle" class="tb-th-main">{{ $t('templates.preview.itemCol') }}</th>
-                        <th v-if="design.show_tax_column" :style="thStyle" class="tb-th-center">IVA</th>
+                        <th v-if="design.show_tax_column" :style="thStyle" class="tb-th-center">{{ taxName }}</th>
                         <th v-if="design.show_discount" :style="thStyle" class="tb-th-center">Dto.</th>
                         <th :style="thStyle" class="tb-th-center">{{ $t('templates.preview.qtyCol') }}</th>
                         <th :style="thStyle" class="tb-th-center">{{ $t('templates.preview.priceCol') }}</th>
@@ -226,11 +227,11 @@
                           <div :style="itemNameStyle">PS-001 test</div>
                           <div :style="itemDescStyle">{{ $t('templates.preview.itemDesc') }}</div>
                         </td>
-                        <td v-if="design.show_tax_column" :style="tdStyle" class="tb-td-center">20%</td>
+                        <td v-if="design.show_tax_column" :style="tdStyle" class="tb-td-center">{{ taxReady ? taxLabel(previewTax.vta, previewTax.tax_treatment, taxName) : "—" }}</td>
                         <td v-if="design.show_discount" :style="tdStyle" class="tb-td-center">5%</td>
                         <td :style="tdStyle" class="tb-td-center">1</td>
-                        <td :style="tdStyle" class="tb-td-center">333,00 €</td>
-                        <td :style="tdStyle" class="tb-td-right">333,00 €</td>
+                        <td :style="tdStyle" class="tb-td-center">333,00 {{ $currencyLabel() }}</td>
+                        <td :style="tdStyle" class="tb-td-right">333,00 {{ $currencyLabel() }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -244,11 +245,11 @@
                           <tbody>
                             <tr v-if="design.show_subtotal">
                               <td :style="totalLabelStyle">{{ $t('templates.preview.subtotalHT') }}</td>
-                              <td :style="totalValueStyle">333,00 €</td>
+                              <td :style="totalValueStyle">333,00 {{ $currencyLabel() }}</td>
                             </tr>
                             <tr v-if="design.show_tax_breakdown">
-                              <td :style="totalLabelStyle">IVA (333 × 20%)</td>
-                              <td :style="totalValueStyle">66,60 €</td>
+                              <td :style="totalLabelStyle">{{ taxLabel(previewTax.vta, previewTax.tax_treatment, taxName) }}</td>
+                              <td :style="totalValueStyle">{{ $toCurrency(previewTaxAmount) }}</td>
                             </tr>
                             <tr v-if="design.show_payment_terms">
                               <td :style="totalLabelStyle">{{ $t('templates.preview.paymentTermsRow') }}</td>
@@ -256,7 +257,7 @@
                             </tr>
                             <tr>
                               <td :style="totalFinalLabelStyle">{{ $t('templates.preview.grandTotal') }}</td>
-                              <td :style="totalFinalValueStyle">399,60 €</td>
+                              <td :style="totalFinalValueStyle">{{ $toCurrency(333 + previewTaxAmount) }}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -479,7 +480,7 @@
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_discount" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
-                          <span class="tb-toggle-lbl">{{ $t('templates.itemsTable.showTaxColumn') }}</span>
+                          <span class="tb-toggle-lbl">{{ taxName }} column</span>
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_tax_column" /><span class="tb-toggle-track"></span></span>
                         </label>
                       </div>
@@ -500,7 +501,7 @@
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_subtotal" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
-                          <span class="tb-toggle-lbl">{{ $t('templates.totals.showTaxBreakdown') }}</span>
+                          <span class="tb-toggle-lbl">{{ taxName }} breakdown</span>
                           <span class="tb-toggle"><input type="checkbox" v-model="design.show_tax_breakdown" /><span class="tb-toggle-track"></span></span>
                         </label>
                         <label class="tb-toggle-row">
@@ -537,11 +538,18 @@
 </template>
 
 <script setup>
+import { useTemplateStore } from '@/stores/template';
+import { useTaxPresets } from '@/composables/useTaxPresets';
+import { taxLabel, previewTaxGroups } from '@/utils/tax.mjs';
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
+const templateStore = useTemplateStore();
+const { taxName, defaultTax, taxReady, taxError, loadTaxes } = useTaxPresets();
+const previewTax = computed(() => defaultTax());
+const previewTaxAmount = computed(() => previewTaxGroups([{ qty: 1, price: 333, ...previewTax.value }])[0].amount);
 
 // ── Phase & preset state ───────────────────────────────────
 // Starts at 'gallery'. loadTemplate() switches to 'editor' if a saved template exists.
@@ -960,7 +968,7 @@ const sample = {
   customerNumber: "C-001",
   paymentTerms:   "Neto 30 días",
 };
-const currentDate = new Date().toLocaleDateString("es-ES");
+const currentDate = new Date().toLocaleDateString(templateStore.company.locale);
 
 // ── Color helpers ──────────────────────────────────────────
 function hexToRgb(hex) {

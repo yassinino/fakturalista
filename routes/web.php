@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RegisterTrialController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\TenantNotFoundController;
 use Illuminate\Support\Facades\Route;
@@ -21,14 +22,35 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
 
 $siteRoutes = function () {
     Route::post('/locale', [HomeController::class, 'setLocale'])->name('locale.set');
+    // Legacy manual free-trial request form - kept working (and its data,
+    // if any, untouched) for historical reasons, but no longer linked to
+    // from any public CTA - see the /register self-service flow below.
     Route::get('/free-trial', [HomeController::class, 'freeTrial'])->name('free-trial');
     Route::post('/free-trial', [HomeController::class, 'sendFreeTrial'])->name('free-trial.send');
+
+    // Self-service trial signup - automatic tenant provisioning, replaces
+    // the manual /free-trial workflow as the target of every public
+    // "Empieza gratis" CTA. `throttle:register` is a dedicated, tighter
+    // limiter (see RouteServiceProvider) - this endpoint creates a full
+    // tenant database per successful submission, unlike ordinary form posts.
+    Route::get('/register', [RegisterTrialController::class, 'create'])->name('register');
+    Route::post('/register', [RegisterTrialController::class, 'store'])
+        ->middleware('throttle:register')
+        ->name('register.store');
+
+    // Minimal "find my workspace" helper for the registration page's
+    // "Already have an account? Sign in" link - see HomeController::login().
+    Route::get('/login', [HomeController::class, 'login'])->name('login');
+    Route::post('/login', [HomeController::class, 'findWorkspace'])
+        ->middleware('throttle:login-finder')
+        ->name('login.find-workspace');
     Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
     Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.send');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
     Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
+    Route::get('/verifactu', [HomeController::class, 'verifactu'])->name('verifactu');
     Route::get('/security', [HomeController::class, 'security'])->name('security');
     Route::get('/integrations', [HomeController::class, 'integrations'])->name('integrations');
     Route::get('/documentation', [HomeController::class, 'documentation'])->name('documentation');

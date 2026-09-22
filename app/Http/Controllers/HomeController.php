@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Models\Plan;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Validator;
 use App\Mail\ContactMessage;
 use App\Mail\FreeTrialRequest;
@@ -35,6 +37,11 @@ class HomeController extends Controller
     public function freeTrial()
     {
         return view('free-trial', ['captcha' => MathCaptchaService::generate()]);
+    }
+
+    public function verifactu()
+    {
+        return view('verifactu');
     }
 
     public function pricing()
@@ -191,6 +198,52 @@ class HomeController extends Controller
         }
 
         return back()->with('status', 'Solicitud enviada correctamente.');
+    }
+
+    /**
+     * "Already have an account? Sign in" from the public registration page
+     * (resources/views/register.blade.php). Login itself is tenant-domain-
+     * scoped (auth happens against a User row that lives in the TENANT
+     * database - see routes/tenant.php / AuthController::login()), so a
+     * visitor on the central marketing domain can't sign in directly here.
+     * This is a minimal, read-only lookup by owner email - it only ever
+     * redirects to that tenant's own /admin/login, it never authenticates
+     * anyone itself.
+     */
+    public function login()
+    {
+        return view('login-finder');
+    }
+
+    public function findWorkspace(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Light throttling: this endpoint doesn't create anything, but it
+        // does let a caller probe "does an account exist for email X" -
+        // rate-limit it the same way a login form would be.
+        $key = 'find-workspace:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            return back()->withErrors(['email' => 'Demasiados intentos. Espera un minuto e inténtalo de nuevo.']);
+        }
+        RateLimiter::hit($key, 60);
+
+        $email  = trim(strtolower((string) $request->input('email')));
+        $domain = Tenant::where('owner_email', $email)->first()?->domains->first()?->domain;
+
+        if (!$domain) {
+            return back()
+                ->withInput()
+                ->withErrors(['email' => __('site.loginFinder.not_found')]);
+        }
+
+        return redirect()->away('https://' . $domain . '/admin/login?email=' . urlencode($email));
     }
 
     public function about()

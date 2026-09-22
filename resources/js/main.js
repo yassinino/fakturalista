@@ -6,6 +6,7 @@ import App from "./App.vue";
 // import router from "./router/starter";
 import router from "./router";
 import { i18n } from "@/i18n";
+import { useTemplateStore } from "@/stores/template";
 
 // Template components
 import BaseBlock from "@/components/BaseBlock.vue";
@@ -88,6 +89,27 @@ app.config.globalProperties.$toComma = function (value, decimals = 2) {
   let [i, d = ''] = s.split('.');
   d = d.slice(0, decimals);
   return d ? `${i},${d}` : i;
+};
+
+// Morocco Phase 1A: currencies with a single, unambiguous, widely-used
+// glyph render with it; anything else (including MAD) renders with its
+// plain ISO 4217 code rather than a guessed symbol - mirrors
+// app/Services/CurrencyFormatter.php so PDF/email and the admin UI never
+// disagree on how an amount is displayed.
+const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', GBP: '£' };
+
+app.config.globalProperties.$currencyLabel = function () {
+  const currency = useTemplateStore().company.currency || 'MAD';
+  return CURRENCY_SYMBOLS[currency] || currency;
+};
+
+// Drop-in replacement for the "$toComma(x) + ' €'" / "$toComma(x) + '&thinsp;€'"
+// pattern used throughout the invoice/quote/payment views - reads the
+// current tenant's currency instead of hardcoding the euro sign.
+app.config.globalProperties.$toCurrency = function (value, decimals = 2) {
+  const formatted = this.$toComma(value, decimals);
+  if (formatted === '') return '';
+  return `${formatted} ${this.$currencyLabel()}`;
 };
 
 // --- Drop-in directive replacement ---
@@ -194,7 +216,6 @@ app.directive('decimal', {
 // ..and finally mount it!
 app.mount("#app");
 
-import { useTemplateStore } from "@/stores/template";
 const store = useTemplateStore();
 
  

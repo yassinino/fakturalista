@@ -462,7 +462,7 @@
                             </ul>
 
                             <div class="nav-right">
-                                <a href="{{ url('/free-trial') }}" class="nav-btn">{{ __('site.nav.cta') }}</a>
+                                <a href="{{ url('/register') }}" class="nav-btn">{{ __('site.nav.cta') }}</a>
                             </div>
                         </div>
                         <!-- /.menu-wrapper -->
@@ -486,7 +486,7 @@
                     <div class="fk-prefooter-badge">{{ __('site.footer.cta_badge') }}</div>
                     <h2 class="fk-prefooter-title">{{ __('site.footer.cta_title') }}</h2>
                     <p class="fk-prefooter-sub">{{ __('site.footer.cta_sub') }}</p>
-                    <a href="{{ url('/free-trial') }}" class="fk-prefooter-btn">
+                    <a href="{{ url('/register') }}" class="fk-prefooter-btn">
                         {{ __('site.footer.cta_btn') }}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
@@ -511,7 +511,7 @@
                                 <img src="{{ url('assets/logo.svg') }}" alt="Fakturalista" class="fk-footer-logo" />
                             </a>
                             <p class="fk-footer-desc">{{ __('site.footer.tagline') }}</p>
-                            <a href="{{ url('/free-trial') }}" class="fk-footer-brand-cta">{{ __('site.nav.cta') }}</a>
+                            <a href="{{ url('/register') }}" class="fk-footer-brand-cta">{{ __('site.nav.cta') }}</a>
                         </div>
 
                         <!-- Product column -->
@@ -543,6 +543,9 @@
                                 <li><a href="{{ url('/help-center') }}">{{ __('site.footer.resources_help') }}</a></li>
                                 <li><a href="{{ url('/api-docs') }}">{{ __('site.footer.resources_api') }}</a></li>
                                 <li><a href="{{ url('/changelog') }}">{{ __('site.footer.resources_changelog') }}</a></li>
+                                @if(app()->getLocale() === 'es')
+                                    <li><a href="{{ url('/verifactu') }}">{{ __('site.footer.resources_verifactu') }}</a></li>
+                                @endif
                             </ul>
                         </div>
 

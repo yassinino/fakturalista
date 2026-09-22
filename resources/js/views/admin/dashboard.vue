@@ -21,6 +21,40 @@
       </div>
     </div>
 
+    <!-- ── GETTING STARTED CHECKLIST ───────────────────────────────
+         Morocco Phase 2A: a brand-new tenant with zero invoices landed
+         directly on empty KPI cards/tables with no guidance. Shown only
+         until the tenant's first invoice exists (§5 of the brief) - the
+         normal dashboard becomes primary again the moment real activity
+         appears. Labels are inline, locale-switched text (not $t()/lang
+         files) per this phase's "keep new labels local, don't touch
+         translation files" instruction - same pattern already used in
+         the PDF components (resources/views/pdf/components/*.blade.php). -->
+    <div class="db-card db-getting-started" v-if="!isLoadingStats && stats.invoices === 0">
+      <div class="db-card-head">
+        <h3 class="db-card-title">{{ gettingStarted.title }}</h3>
+      </div>
+      <ul class="db-checklist">
+        <li class="db-checklist-item" :class="{ 'db-checklist-item--done': companyInfoComplete }">
+          <i class="fa db-checklist-icon" :class="companyInfoComplete ? 'fa-check-circle' : 'fa-circle'"></i>
+          <router-link v-if="!companyInfoComplete" :to="{ name: 'backend-settings' }">{{ gettingStarted.companyInfo }}</router-link>
+          <span v-else>{{ gettingStarted.companyInfo }}</span>
+        </li>
+        <li class="db-checklist-item" :class="{ 'db-checklist-item--done': stats.customers > 0 }">
+          <i class="fa db-checklist-icon" :class="stats.customers > 0 ? 'fa-check-circle' : 'fa-circle'"></i>
+          <router-link :to="{ name: 'backend-create-customer' }">{{ gettingStarted.addCustomer }}</router-link>
+        </li>
+        <li class="db-checklist-item" :class="{ 'db-checklist-item--done': stats.items > 0 }">
+          <i class="fa db-checklist-icon" :class="stats.items > 0 ? 'fa-check-circle' : 'fa-circle'"></i>
+          <router-link :to="{ name: 'backend-create-item' }">{{ gettingStarted.addItem }}</router-link>
+        </li>
+        <li class="db-checklist-item">
+          <i class="fa fa-circle db-checklist-icon"></i>
+          <router-link :to="{ name: 'backend-create-invoice' }">{{ gettingStarted.addInvoice }}</router-link>
+        </li>
+      </ul>
+    </div>
+
     <!-- ── KPI CARDS ────────────────────────────────────────────── -->
     <div class="db-kpi-grid">
 
@@ -432,21 +466,55 @@
 import { reactive, ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
+import { useTemplateStore } from "@/stores/template";
 
 const { locale, t } = useI18n();
+const store = useTemplateStore();
 
 const localeMap = { es: "es-ES", en: "en-US", fr: "fr-FR" };
 
+// Currency is the TENANT's own (Morocco Phase 1A), not hardcoded - the
+// staff member's own UI locale (localeMap above) still controls number/
+// date formatting, since that's a personal preference, not a business
+// document.
 const formatCurrency = (value) =>
   new Intl.NumberFormat(localeMap[locale.value] || "es-ES", {
     style: "currency",
-    currency: "EUR",
+    currency: store.company.currency || "MAD",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(Number(value ?? 0));
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString(localeMap[locale.value] || "es-ES") : "";
+
+// ── Getting-started checklist (Morocco Phase 2A) ────────────────
+// Inline, locale-switched labels - not $t()/lang files, see the template
+// comment above for why.
+const GETTING_STARTED_TEXT = {
+  fr: {
+    title: "Pour bien démarrer",
+    companyInfo: "Informations de l'entreprise complétées",
+    addCustomer: "Ajoutez votre premier client",
+    addItem: "Ajoutez un produit ou service",
+    addInvoice: "Créez votre première facture",
+  },
+  es: {
+    title: "Primeros pasos",
+    companyInfo: "Información de la empresa completada",
+    addCustomer: "Añade tu primer cliente",
+    addItem: "Añade un producto o servicio",
+    addInvoice: "Crea tu primera factura",
+  },
+  en: {
+    title: "Getting started",
+    companyInfo: "Company information completed",
+    addCustomer: "Add your first customer",
+    addItem: "Add a service or product",
+    addInvoice: "Create your first invoice",
+  },
+};
+const gettingStarted = computed(() => GETTING_STARTED_TEXT[locale.value] || GETTING_STARTED_TEXT.fr);
 
 // ── Greeting ──────────────────────────────────────────────────
 const userName = ref("");
@@ -559,10 +627,17 @@ function usageColor(remaining, limit) {
 }
 
 // ── User (for personalised greeting) ─────────────────────────
+// Real signal, not assumed: the same /user call already used for the
+// greeting also returns billing.onboarding_completed (CompanyProfile.
+// onboarding_completed_at !== null server-side) - the exact fact the
+// require.onboarding middleware itself gates on. Defaults to true so a
+// failed/slow request never shows a false "incomplete" step.
+const companyInfoComplete = ref(true);
 const loadUser = async () => {
   try {
     const { data } = await axios.get("/user");
     userName.value = data?.user?.name ?? data?.name ?? "";
+    companyInfoComplete.value = data?.billing?.onboarding_completed ?? true;
   } catch { /* silent - greeting works without name */ }
 };
 
@@ -938,6 +1013,48 @@ onMounted(() => {
 .db-card--warn {
   border-color: rgba(224, 123, 0, 0.22);
 }
+
+/* ── Getting-started checklist ── */
+.db-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 6px 20px 16px;
+}
+
+.db-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 13px;
+  color: var(--db-text-2);
+  border-bottom: 1px solid var(--db-border);
+}
+
+.db-checklist-item:last-child { border-bottom: none; }
+
+.db-checklist-item a {
+  color: var(--db-text-2);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.db-checklist-item a:hover { color: var(--db-pink); text-decoration: underline; }
+
+.db-checklist-icon {
+  font-size: 15px;
+  color: var(--db-border);
+  flex: none;
+}
+
+.db-checklist-item--done {
+  color: var(--db-text-3);
+  text-decoration: line-through;
+}
+
+.db-checklist-item--done a { color: var(--db-text-3); }
+
+.db-checklist-item--done .db-checklist-icon { color: #16a34a; }
 
 .db-card-head {
   display: flex;

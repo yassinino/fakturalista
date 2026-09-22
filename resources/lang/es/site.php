@@ -36,6 +36,7 @@ return [
         'resources_help'       => 'Centro de ayuda',
         'resources_changelog'  => 'Novedades',
         'resources_api'        => 'API',
+        'resources_verifactu'  => 'VERI*FACTU',
         'cta_badge'            => 'Empieza hoy',
         'cta_title'            => 'Dedica menos tiempo a facturar. Más tiempo a hacer crecer tu negocio.',
         'cta_sub'              => 'Crea tu cuenta gratis y empieza a facturar en minutos.',
@@ -151,6 +152,19 @@ return [
         'pricing_trial_note'  => 'Prueba gratuita de 14 días',
         'pricing_cta_secondary' => 'Ver planes',
 
+        // España / VERI*FACTU (teaser section, links to /verifactu)
+        'spain_badge'      => 'Facturación en España',
+        'spain_title_l1'   => 'La facturación en España está cambiando.',
+        'spain_title_l2'   => 'Prepárate con tiempo.',
+        'spain_text_1'     => 'Los sistemas de facturación en España deberán adaptarse a nuevos requisitos técnicos y fiscales destinados a garantizar la integridad, trazabilidad e inalterabilidad de los registros de facturación.',
+        'spain_text_2'     => 'Fakturalista evoluciona para adaptarse al nuevo marco de facturación en España y facilitar la transición a autónomos y pequeños negocios.',
+        'spain_point_1'    => 'Registros trazables',
+        'spain_point_2'    => 'Facturación más digital',
+        'spain_point_3'    => 'Preparados para los nuevos requisitos',
+        'spain_card_badge' => 'VERI*FACTU',
+        'spain_card_text'  => 'VERI*FACTU forma parte del nuevo marco para los sistemas informáticos de facturación en España y permite la remisión de registros de facturación a la Agencia Tributaria bajo las condiciones establecidas por la normativa.',
+        'spain_card_cta'   => 'Conocer VERI*FACTU',
+
         // FAQ
         'faq_title' => 'Preguntas frecuentes',
         'faq_q1'    => '¿Puedo probar Fakturalista gratis?',
@@ -179,8 +193,8 @@ return [
         'benefit_2_text'   => 'Historial de facturas, presupuestos y seguimiento de cobros.',
         'benefit_3_title'  => 'Panel de ingresos en tiempo real',
         'benefit_3_text'   => 'Pendientes, pagados y vencidos de un solo vistazo.',
-        'benefit_4_title'  => 'Seguro y conforme a la AEAT',
-        'benefit_4_text'   => 'Datos cifrados, copias automáticas y cumplimiento normativo.',
+        'benefit_4_title'  => 'Tus datos, protegidos',
+        'benefit_4_text'   => 'Cifrado en tránsito y en reposo, copias de seguridad automáticas diarias.',
         'trust_1'          => 'Sin tarjeta de crédito',
         'trust_2'          => 'Cancela cuando quieras',
         'trust_3'          => 'Soporte en español',
@@ -208,6 +222,43 @@ return [
         'testi_3_role'     => 'Gerente · Taller Mecánico',
     ],
 
+    'register' => [
+        'page_title'       => 'Crea tu cuenta gratis - Fakturalista',
+        'card_tag'         => 'Prueba gratuita',
+        'card_title'       => 'Crea tu cuenta',
+        'card_sub'         => 'Empieza a facturar en menos de un minuto.',
+        'label_first_name' => 'Nombre',
+        'label_last_name'  => 'Apellidos',
+        'label_email'      => 'Email',
+        'label_password'   => 'Contraseña',
+        'label_password_confirmation' => 'Confirmar contraseña',
+        'label_company'    => 'Nombre del negocio',
+        'label_tax_id'     => 'NIF/CIF (opcional)',
+        'label_country'    => 'País (opcional)',
+        'placeholder_first_name' => 'María',
+        'placeholder_last_name'  => 'García',
+        'placeholder_email'      => 'maria@miempresa.com',
+        'placeholder_company'    => 'Mi Empresa S.L.',
+        'submit'           => 'Crear mi cuenta gratis',
+        'submitting'       => 'Estamos preparando tu espacio…',
+        'submitting_sub'   => 'Solo tardará unos segundos.',
+        'trial_note'       => '14 días gratis · Sin tarjeta de crédito',
+        'already_have_account' => '¿Ya tienes una cuenta?',
+        'sign_in'          => 'Iniciar sesión',
+        'error_msg'        => 'Por favor revisa los campos e inténtalo de nuevo.',
+    ],
+
+    'loginFinder' => [
+        'page_title'  => 'Iniciar sesión - Fakturalista',
+        'title'       => 'Iniciar sesión',
+        'sub'         => 'Indica el email con el que te registraste y te llevaremos a tu espacio de trabajo.',
+        'label_email' => 'Email',
+        'submit'      => 'Continuar',
+        'not_found'   => 'No hemos encontrado ninguna cuenta con ese email.',
+        'register_cta' => '¿Aún no tienes cuenta?',
+        'register_link' => 'Crea una gratis',
+    ],
+
 
     'pricing' => [
         'page_title'              => 'Precios',
@@ -223,7 +274,7 @@ return [
         'no_commitment'           => 'Sin compromiso · Prueba gratuita 14 días',
         'default_cta'             => 'Empezar',
         'no_plans'                => 'No hay planes disponibles por el momento.',
-        'trust_intro'             => 'Miles de autónomos y pymes confían en Fakturalista',
+        'trust_intro'             => 'Seguridad y transparencia en cada plan',
         'trust_ssl'               => 'SSL y cifrado',
         'trust_no_card'           => 'Sin tarjeta de crédito',
         'trust_cancel'            => 'Cancela cuando quieras',
@@ -398,7 +449,7 @@ return [
         'security_2_q' => '¿Puedo exportar mis datos?',
         'security_2_a' => 'Sí. Puedes exportar facturas en PDF, listas de clientes en CSV e informes financieros en Excel desde el menú de exportación de tu panel.',
         'security_3_q' => '¿Las facturas cumplen con la normativa fiscal española?',
-        'security_3_a' => 'Fakturalista genera facturas que cumplen con los requisitos de la Agencia Tributaria (AEAT): numeración correcta, campos obligatorios y desglose del IVA. Consulta siempre con tu gestor para tu situación específica.',
+        'security_3_a' => 'Fakturalista genera facturas con numeración correlativa, los campos obligatorios y el desglose de IVA que exige la normativa española de facturación. Esto no incluye todavía la remisión de registros de facturación a la Agencia Tributaria (AEAT) bajo VERI*FACTU, una integración que está en preparación. Consulta siempre con tu gestor para tu situación específica.',
 
         'still_title' => '¿Tienes más preguntas?',
         'still_sub'   => 'Nuestro equipo de soporte está aquí para ayudarte. Envíanos un mensaje y te responderemos en menos de 24 horas.',
@@ -664,6 +715,86 @@ return [
         'placeholder' => 'Respuesta',
         'error'      => 'Respuesta incorrecta, inténtalo de nuevo.',
         'aria_label' => 'Verificación de seguridad: resuelve esta operación',
+    ],
+
+    'verifactu' => [
+        'meta_title'       => 'VERI*FACTU: qué es y cómo afecta a tu facturación',
+        'meta_description' => 'Descubre qué es VERI*FACTU, qué cambia en la facturación en España y cómo se está preparando Fakturalista para los nuevos requisitos técnicos y fiscales.',
+
+        // Hero
+        'hero_badge'  => 'VERI*FACTU · España',
+        'hero_title'  => 'VERI*FACTU: el nuevo escenario de la facturación en España',
+        'hero_intro'  => 'La normativa española está transformando la forma en que empresas y profesionales utilizan sus sistemas de facturación. Te explicamos qué está cambiando y cómo prepararte.',
+
+        // ¿Qué es VERI*FACTU?
+        'what_title' => '¿Qué es VERI*FACTU?',
+        'what_p1'    => 'La normativa española establece nuevos requisitos para los programas y sistemas informáticos que se utilizan para facturar, con el objetivo de garantizar que los registros de facturación sean íntegros, trazables e inalterables.',
+        'what_p2'    => 'VERI*FACTU es el modo bajo el que estos sistemas pueden remitir los registros de facturación a la Agencia Tributaria (AEAT), de acuerdo con las especificaciones técnicas establecidas por la normativa.',
+        'what_p3'    => 'En la práctica, esto afecta sobre todo a cómo deben comportarse los programas de facturación por dentro, no solo al aspecto de las facturas que ya conoces.',
+
+        // ¿Por qué está cambiando la facturación?
+        'why_title'   => '¿Por qué está cambiando la facturación?',
+        'why_intro'   => 'El nuevo marco normativo se apoya en varios principios clave:',
+        'why_1_title' => 'Integridad',
+        'why_1_text'  => 'Los registros de facturación deben reflejar fielmente cada operación, sin modificaciones no controladas.',
+        'why_2_title' => 'Trazabilidad',
+        'why_2_text'  => 'Cada registro debe poder seguirse y verificarse a lo largo de todo su ciclo de vida.',
+        'why_3_title' => 'Inalterabilidad',
+        'why_3_text'  => 'Una vez generado, un registro de facturación no debe poder alterarse sin dejar rastro.',
+        'why_4_title' => 'Digitalización',
+        'why_4_text'  => 'La facturación avanza hacia procesos más digitales y estandarizados.',
+        'why_5_title' => 'Control y conservación',
+        'why_5_text'  => 'Los registros deben conservarse y estar accesibles y legibles cuando se requieran.',
+
+        // Fechas
+        'dates_title' => '¿Cuándo entran en vigor los nuevos requisitos?',
+        'dates_intro' => 'Los plazos aplicables dependen del tipo de contribuyente:',
+        'date_1_label' => 'Antes del 1 de enero de 2027',
+        'date_1_text'  => 'Contribuyentes incluidos en el artículo 3.1.a) del Real Decreto 1007/2023.',
+        'date_2_label' => 'Antes del 1 de julio de 2027',
+        'date_2_text'  => 'El resto de contribuyentes incluidos en el artículo 3.1.',
+        'dates_note'   => 'Las fechas y obligaciones pueden variar según la situación fiscal del contribuyente. Consulta siempre la información oficial de la Agencia Tributaria.',
+
+        // ¿Qué significa para un autónomo?
+        'auto_title'  => '¿Qué significa para un autónomo?',
+        'auto_intro'  => 'Hasta ahora, elegir un programa de facturación era, sobre todo, una cuestión de facilidad de uso y funcionalidades. Con el nuevo marco normativo, también hay que prestar atención a si el sistema de facturación cumple los requisitos técnicos aplicables.',
+        'auto_before_label' => 'Antes',
+        'auto_before_text'  => 'Elegir un programa principalmente por facilidad y funcionalidades.',
+        'auto_after_label'  => 'Nuevo escenario',
+        'auto_after_text'   => 'La adaptación normativa del sistema de facturación también pasa a ser un factor importante.',
+        'auto_note'   => 'Esto no significa que las facturas en papel, las hojas de cálculo u otras formas de facturar dejen de ser válidas en todos los casos: la aplicabilidad concreta depende de la normativa vigente y de la situación de cada contribuyente.',
+
+        // Fakturalista + VERI*FACTU
+        'brand_title'  => 'Fakturalista se prepara para la nueva facturación en España.',
+        'brand_text'   => 'Nuestro objetivo es que autónomos y pequeños negocios puedan seguir facturando de forma sencilla mientras Fakturalista evoluciona para adaptarse a los nuevos requisitos técnicos y fiscales.',
+        'brand_line_1' => 'Queremos que tú te ocupes de tu negocio.',
+        'brand_line_2' => 'Nosotros, de hacer la facturación cada vez más sencilla.',
+        'brand_status' => 'Integración VERI*FACTU en preparación',
+
+        // FAQ
+        'faq_title' => 'Preguntas frecuentes sobre VERI*FACTU',
+        'faq_q1' => '¿Qué es VERI*FACTU?',
+        'faq_a1' => 'VERI*FACTU es el modo bajo el que los sistemas informáticos de facturación pueden remitir los registros de facturación a la Agencia Tributaria, dentro del nuevo marco normativo español que busca garantizar la integridad y trazabilidad de dichos registros.',
+        'faq_q2' => '¿Es obligatorio VERI*FACTU?',
+        'faq_a2' => 'La normativa establece requisitos para los sistemas informáticos de facturación, y VERI*FACTU es una de las modalidades previstas. La obligatoriedad y las condiciones concretas dependen de la situación de cada contribuyente, por lo que te recomendamos consultar la información oficial de la Agencia Tributaria.',
+        'faq_q3' => '¿Cuándo debo adaptar mi sistema de facturación?',
+        'faq_a3' => 'Los plazos establecidos son antes del 1 de enero de 2027 para los contribuyentes del artículo 3.1.a) del Real Decreto 1007/2023, y antes del 1 de julio de 2027 para el resto de contribuyentes del artículo 3.1. La fecha exacta puede variar según tu situación.',
+        'faq_q4' => '¿Afecta a los autónomos?',
+        'faq_a4' => 'Sí, el nuevo marco normativo puede afectar a autónomos y pequeños negocios que utilicen sistemas informáticos de facturación, aunque la aplicabilidad concreta depende de cada situación fiscal.',
+        'faq_q5' => '¿Fakturalista será compatible con VERI*FACTU?',
+        'faq_a5' => 'Fakturalista está trabajando en la adaptación de la plataforma a los nuevos requisitos de facturación en España. Informaremos a nuestros usuarios a medida que las nuevas funcionalidades estén disponibles.',
+        'faq_q6' => '¿Tengo que enviar todas mis facturas a la AEAT?',
+        'faq_a6' => 'El envío de registros de facturación a la Agencia Tributaria depende del sistema y la modalidad utilizados, así como de la normativa aplicable a cada contribuyente. Te recomendamos consultar la información oficial de la AEAT para conocer tu caso concreto.',
+
+        // Fuentes oficiales
+        'sources_title'  => 'Fuentes oficiales',
+        'sources_note'   => 'Esta página tiene un propósito informativo y no sustituye el asesoramiento fiscal o legal profesional.',
+        'source_aeat'    => 'Agencia Estatal de Administración Tributaria (AEAT)',
+        'source_rd1007'  => 'Real Decreto 1007/2023 (BOE)',
+        'source_orden'   => 'Orden HAC/1177/2024 (BOE)',
+        'source_rdley15' => 'Real Decreto-ley 15/2025 (BOE)',
+
+        'cta_final' => 'Empieza gratis',
     ],
 
 ];

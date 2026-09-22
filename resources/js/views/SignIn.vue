@@ -108,6 +108,12 @@
             <p class="fl-card-subtitle">{{ $t('auth.subtitle') }}</p>
           </div>
 
+          <!-- Welcome banner - only present right after self-service registration
+               (RegisterTrialController redirects here with ?welcome=1&email=...) -->
+          <div v-if="welcomeMessage" class="fl-alert" role="status" style="background:#f0fdf4;border-color:#bbf7d0;color:#166534;">
+            <i class="fa fa-check-circle me-2"></i>{{ welcomeMessage }}
+          </div>
+
           <!-- Error alert -->
           <div v-if="errorMessage" class="fl-alert" role="alert">
             <i class="fa fa-exclamation-circle me-2"></i>{{ errorMessage }}
@@ -208,7 +214,8 @@
 
 
 <script setup>
-import { reactive, computed, ref } from "vue";
+import { reactive, computed, ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { useTemplateStore } from "@/stores/template";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
@@ -217,18 +224,36 @@ import { setLocale } from "@/i18n";
 import useVuelidate from "@vuelidate/core";
 import { required, minLength, email } from "@vuelidate/validators";
 
-const store        = useTemplateStore();
-const { t }        = useI18n();
-const errorMessage = ref("");
-const isLoading    = ref(false);
-const showPassword = ref(false);
-const rememberMe   = ref(false);
+const store          = useTemplateStore();
+const route          = useRoute();
+const { t }          = useI18n();
+const errorMessage   = ref("");
+const welcomeMessage = ref("");
+const isLoading      = ref(false);
+const showPassword   = ref(false);
+const rememberMe     = ref(false);
 
 const isDark = computed(() => store.settings.darkMode);
 
 const state = reactive({
   email:    null,
   password: null,
+});
+
+// Self-service registration (RegisterTrialController) redirects the
+// browser straight to this page with the just-registered email and a
+// "welcome" flag - true auto-login isn't possible across the domain
+// switch from the central marketing site to this tenant's own subdomain
+// (auth is tenant-DB-scoped), so the smoothest safe alternative is: the
+// account is already fully provisioned, just pre-fill the one field the
+// visitor already knows (the email they just typed) and greet them.
+onMounted(() => {
+  if (route.query.email) {
+    state.email = String(route.query.email);
+  }
+  if (route.query.welcome === '1') {
+    welcomeMessage.value = t('auth.welcomeAfterRegister');
+  }
 });
 
 const rules = computed(() => ({
@@ -249,7 +274,7 @@ async function onSubmit() {
     .post("/login", state)
     .then((res) => {
       store.loginUser(res.data.data);
-      setLocale(res.data.data?.user?.locale || "es");
+      setLocale(res.data.data?.user?.locale || "fr");
       window.location.href = "/admin/dashboard";
     })
     .catch((error) => {

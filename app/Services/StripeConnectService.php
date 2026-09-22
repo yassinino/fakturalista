@@ -78,7 +78,7 @@ class StripeConnectService
             'stripe_connected_at'      => now(),
         ];
 
-        $profile = CompanyProfile::firstOrCreate([], ['legal_name' => '']);
+        $profile = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
         $profile->update($data);
 
         Log::info('Stripe Connect: account linked', [
@@ -181,6 +181,15 @@ class StripeConnectService
         $companyName = $profile->trade_name ?: $profile->legal_name ?: config('app.name');
         $currency    = strtolower($profile->currency ?: 'eur');
 
+        // Morocco Phase 2A: was hardcoded 'Factura' (Spanish) regardless of
+        // tenant - see PaymentController::createSession() for the same fix
+        // and rationale.
+        $documentWord = match ($profile->locale) {
+            'fr'    => 'Facture',
+            'es'    => 'Factura',
+            default => 'Invoice',
+        };
+
         return StripeSession::create(
             [
                 'payment_method_types' => ['card'],
@@ -189,7 +198,7 @@ class StripeConnectService
                         'currency'     => $currency,
                         'unit_amount'  => (int) round(($invoice->total ?? 0) * 100),
                         'product_data' => [
-                            'name'        => 'Factura ' . $invoice->reference,
+                            'name'        => $documentWord . ' ' . $invoice->reference,
                             'description' => $companyName,
                         ],
                     ],

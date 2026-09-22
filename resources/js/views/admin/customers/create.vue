@@ -239,23 +239,99 @@
           </div>
         </section>
 
-        <!-- ═══ CARD 5: Datos fiscales ═══ -->
-        <section class="ctc-card">
+        <!-- ═══ CARD 5: Datos fiscales - country-aware (Morocco Phase 1B) ═══
+             Business-only for Morocco (Morocco Phase 2A): ICE/IF/RC are company
+             registration identifiers, not personal ones - showing this whole card
+             for an individual customer (state.type == 2) made no sense and was
+             never gated by type before this fix. Spain's NIF applies to
+             individuals too (DNI/NIF), so that branch is untouched. -->
+        <section class="ctc-card" v-if="!isMorocco || state.type == 1">
           <div class="ctc-card__head">
             <span class="ctc-card__icon"><i class="fa fa-file-invoice"></i></span>
             <span class="ctc-card__label">Datos fiscales</span>
           </div>
 
-          <div class="ctc-field">
-            <label class="ctc-label" for="ctc-nif">{{ $t('customers.fields.nif') }}</label>
-            <input
-              id="ctc-nif"
-              type="text"
-              class="ctc-input"
-              v-model="state.ice"
-              :placeholder="$t('customers.fields.nif')"
-            />
-          </div>
+          <!-- Morocco: ICE (primary identifier) + IF + RC. No Spain/AEAT terminology. -->
+          <template v-if="isMorocco">
+            <div class="ctc-field">
+              <label class="ctc-label" for="ctc-ice">{{ $t('customers.fields.ice') }}</label>
+              <p class="ctc-field-hint">{{ $t('customers.fields.iceHelp') }}</p>
+              <input
+                id="ctc-ice"
+                type="text"
+                class="ctc-input"
+                v-model="state.ice"
+                :placeholder="$t('customers.fields.ice')"
+              />
+            </div>
+            <div class="ctc-field ctc-field--mt">
+              <label class="ctc-label" for="ctc-if">{{ $t('customers.fields.ifNumber') }}</label>
+              <input
+                id="ctc-if"
+                type="text"
+                class="ctc-input"
+                v-model="state.if_number"
+                :placeholder="$t('customers.fields.ifNumber')"
+              />
+            </div>
+            <div class="ctc-field ctc-field--mt">
+              <label class="ctc-label" for="ctc-rc">{{ $t('customers.fields.commercialRegister') }}</label>
+              <input
+                id="ctc-rc"
+                type="text"
+                class="ctc-input"
+                v-model="state.commercial_register"
+                :placeholder="$t('customers.fields.commercialRegister')"
+              />
+            </div>
+          </template>
+
+          <!-- Spain / everyone else: unchanged NIF + AEAT foreign-customer model -->
+          <template v-else>
+            <div class="ctc-field">
+              <label class="ctc-label" for="ctc-nif">{{ $t('customers.fields.nif') }}</label>
+              <p class="ctc-field-hint">{{ $t('customers.fields.nifHelp') }}</p>
+              <input
+                id="ctc-nif"
+                type="text"
+                class="ctc-input"
+                v-model="state.tax_id"
+                :placeholder="$t('customers.fields.nif')"
+              />
+            </div>
+
+            <div class="ctc-field ctc-field--mt">
+              <label class="ctc-checkbox-label">
+                <input type="checkbox" v-model="isForeignCustomer" />
+                {{ $t('customers.fields.foreignCustomerToggle') }}
+              </label>
+            </div>
+
+            <template v-if="isForeignCustomer">
+              <div class="ctc-field ctc-field--mt">
+                <label class="ctc-label" for="ctc-foreign-id-type">{{ $t('customers.fields.foreignIdType') }}</label>
+                <select id="ctc-foreign-id-type" class="ctc-select" v-model="state.foreign_tax_id_type">
+                  <option value="">{{ $t('common.selectOption') }}</option>
+                  <option value="02">{{ $t('customers.fields.foreignIdTypeOptions.02') }}</option>
+                  <option value="03">{{ $t('customers.fields.foreignIdTypeOptions.03') }}</option>
+                  <option value="04">{{ $t('customers.fields.foreignIdTypeOptions.04') }}</option>
+                  <option value="05">{{ $t('customers.fields.foreignIdTypeOptions.05') }}</option>
+                  <option value="06">{{ $t('customers.fields.foreignIdTypeOptions.06') }}</option>
+                  <option value="07">{{ $t('customers.fields.foreignIdTypeOptions.07') }}</option>
+                </select>
+              </div>
+              <div class="ctc-field ctc-field--mt">
+                <label class="ctc-label" for="ctc-foreign-id">{{ $t('customers.fields.foreignIdNumber') }}</label>
+                <input
+                  id="ctc-foreign-id"
+                  type="text"
+                  class="ctc-input"
+                  v-model="state.foreign_tax_id"
+                />
+              </div>
+              <p class="ctc-field-hint">{{ $t('customers.fields.foreignIdCountryHint') }}</p>
+            </template>
+          </template>
         </section>
 
       </form>
@@ -283,14 +359,19 @@
 </template>
 
 <script setup>
-import { reactive,ref, computed, onMounted } from "vue";
+import { useTenantCountry } from '@/composables/useTenantCountry';
+import { reactive,ref, computed, onMounted, watch } from "vue";
 import axios from 'axios'
 import { createToaster } from '@meforma/vue-toaster';
 const toaster = createToaster({ /* options */ });
 import { useRouter } from 'vue-router'
 import { useI18n } from "vue-i18n";
+import { useTemplateStore } from "@/stores/template";
 const route = useRouter()
 const { t } = useI18n();
+const templateStore = useTemplateStore();
+// Morocco Phase 1B: country-aware fiscal identity fields (docs/morocco-phase-1b-identity.md).
+const { isMorocco } = useTenantCountry();
 
 // Vuelidate, for more info and examples you can check out https://github.com/vuelidate/vuelidate
 import useVuelidate from "@vuelidate/core";
@@ -318,7 +399,21 @@ const state = reactive({
   phone_number : null,
   website : null,
   is_same_address : true,
+  ice: null,
+  if_number: null,
+  commercial_register: null,
+  tax_id: null,
+  foreign_tax_id_type: null,
+  foreign_tax_id: null,
   contacts : []
+});
+
+const isForeignCustomer = ref(false);
+watch(isForeignCustomer, (checked) => {
+  if (!checked) {
+    state.foreign_tax_id_type = null;
+    state.foreign_tax_id = null;
+  }
 });
 
 const countries = ref()
@@ -591,6 +686,22 @@ async function onSubmit() {
   margin: 0 0 6px;
 }
 .ctc-label--req::after { content: " *"; color: var(--accent); }
+
+.ctc-field-hint {
+  margin: -2px 0 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.ctc-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-body);
+  cursor: pointer;
+}
 
 .ctc-input,
 .ctc-select {

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TenantResource\Pages;
 
 use App\Filament\Resources\TenantResource;
 use App\Services\TenantProvisioningService;
+use App\Services\TenantContextService;
 use Filament\Forms;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Notifications\Notification;
@@ -52,31 +53,41 @@ class CreateTenant extends CreateRecord
                         ->tel()
                         ->maxLength(50),
 
+                    // Morocco Phase 1A: Morocco is now the default market for
+                    // new tenants (docs/morocco-phase-1a-implementation.md).
+                    // Spain remains fully selectable - only the default changed.
                     Forms\Components\Select::make('country')
                         ->label('País')
                         ->options(TenantResource::countryOptions())
                         ->searchable()
                         ->required()
-                        ->default('ES'),
+                        ->default('MA')
+                        ->live()
+                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                            $defaults = TenantContextService::defaultsForCountry($state ?: 'MA');
+                            $set('currency', $defaults['currency']);
+                            $set('language', $defaults['locale']);
+                            $set('timezone', $defaults['timezone']);
+                        }),
 
                     Forms\Components\Select::make('timezone')
                         ->label('Zona horaria')
                         ->options(TenantResource::timezoneOptions())
                         ->searchable()
                         ->required()
-                        ->default('Europe/Madrid'),
+                        ->default('Africa/Casablanca'),
 
                     Forms\Components\Select::make('currency')
                         ->label('Moneda')
                         ->options(TenantResource::currencyOptions())
                         ->required()
-                        ->default('EUR'),
+                        ->default('MAD'),
 
                     Forms\Components\Select::make('language')
                         ->label('Idioma')
                         ->options(['es' => 'Español', 'fr' => 'Français', 'en' => 'English'])
                         ->required()
-                        ->default('es'),
+                        ->default('fr'),
                 ])->columns(2),
 
             // ── Step 2: Subdomain ─────────────────────────────────────────

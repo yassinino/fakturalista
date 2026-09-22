@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <p v-if="taxError" role="alert" class="text-danger">{{ taxError }} <button type="button" @click="loadTaxes">Retry</button></p>
     <div class="inv-create">
 
       <!-- ── TOP BAR ── -->
@@ -8,7 +9,7 @@
           <h1 class="inv-page-title">{{ $t('quotes.newTitle') }}</h1>
           <p class="inv-page-hint">{{ $t('quotes.form.pageHint') }}</p>
         </div>
-        <button class="inv-btn inv-btn-primary" type="button" @click="handleSave" :disabled="saving">
+        <button class="inv-btn inv-btn-primary" type="button" @click="handleSave" :disabled="saving || !taxReady">
           <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
           {{ $t('quotes.form.createBtn') }}
         </button>
@@ -101,7 +102,7 @@
                   <th class="inv-th inv-col-qty">{{ $t('quotes.form.colQty') }}</th>
                   <th class="inv-th inv-col-unit inv-hide-mobile">{{ $t('quotes.form.colUnit') }}</th>
                   <th class="inv-th inv-col-price">{{ $t('quotes.form.colPrice') }}</th>
-                  <th class="inv-th inv-col-vta">{{ $t('quotes.form.colVat') }}</th>
+                  <th class="inv-th inv-col-vta">{{ taxName }}</th>
                   <th class="inv-th inv-col-total">{{ $t('documents.total') }}</th>
                   <th class="inv-th inv-col-del"></th>
                 </tr>
@@ -159,16 +160,12 @@
                   </td>
 
                   <td class="inv-td">
-                    <select class="inv-select" v-model="cart.vta">
-                      <option value="0">0%</option>
-                      <option value="4">4%</option>
-                      <option value="10">10%</option>
-                      <option value="21">21%</option>
-                    </select>
+                    <TaxSelect class="inv-select" :line="cart" :presets="presets" :tax-name="taxName"
+                      @change="Object.assign(cart, $event)" />
                   </td>
 
                   <td class="inv-td inv-td-rowtotal">
-                    {{ $toComma(totalRow[index]) }}&thinsp;€
+                    {{ $toCurrency(totalRow[index]) }}
                   </td>
 
                   <td class="inv-td">
@@ -210,30 +207,16 @@
           <div class="inv-totals-col">
             <div class="inv-tot-row">
               <span class="inv-tot-label">{{ $t('quotes.form.subtotal') }}</span>
-              <span class="inv-tot-val">{{ $toComma(subTotal) }}&thinsp;€</span>
+              <span class="inv-tot-val">{{ $toCurrency(subTotal) }}</span>
             </div>
-            <template v-if="vtaTotal4 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">{{ $t('documents.taxLabel', { rate: 4 }) }}</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal4) }}&thinsp;€</span>
-              </div>
-            </template>
-            <template v-if="vtaTotal10 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">{{ $t('documents.taxLabel', { rate: 10 }) }}</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal10) }}&thinsp;€</span>
-              </div>
-            </template>
-            <template v-if="vtaTotal21 > 0">
-              <div class="inv-tot-row inv-tot-tax">
-                <span class="inv-tot-label">{{ $t('documents.taxLabel', { rate: 21 }) }}</span>
-                <span class="inv-tot-val">{{ $toComma(vtaTotal21) }}&thinsp;€</span>
-              </div>
-            </template>
+            <div v-for="group in taxGroups" :key="group.key" class="inv-tot-row inv-tot-tax">
+              <span class="inv-tot-label">{{ taxLabel(group.rate, group.treatment, taxName) }}</span>
+              <span class="inv-tot-val">{{ $toCurrency(group.amount) }}</span>
+            </div>
             <div class="inv-tot-divider"></div>
             <div class="inv-tot-row inv-tot-grand">
               <span class="inv-tot-grand-label">{{ $t('documents.total') }}</span>
-              <span class="inv-tot-grand-val">{{ $toComma(total) }}&thinsp;€</span>
+              <span class="inv-tot-grand-val">{{ $toCurrency(total) }}</span>
             </div>
           </div>
 
@@ -252,7 +235,7 @@
             class="inv-btn inv-btn-primary"
             type="button"
             @click="handleSave"
-            :disabled="saving"
+            :disabled="saving || !taxReady"
           >
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
             {{ $t('quotes.form.createBtn') }}
@@ -265,6 +248,9 @@
 </template>
 
 <script setup>
+import TaxSelect from '@/components/TaxSelect.vue';
+import { useTaxPresets } from '@/composables/useTaxPresets';
+import { previewTaxGroups, taxFields, taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import VueSelect from "vue-select";
 import FlatPickr from "vue-flatpickr-component";
@@ -296,9 +282,11 @@ const state = reactive({
   expiration_date: fmtDate(validDate),
   note: "",
   carts: [
-    { item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: 0, total: 0 },
+    { item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: null, tax_treatment: "taxable", total: 0 },
   ],
 });
+
+const { presets, taxName, defaultTax, taxReady, taxError, loadTaxes } = useTaxPresets(() => state.carts);
 
 const customers = ref([]);
 const items = ref([]);
@@ -326,13 +314,13 @@ const selectProduct = (index, value) => {
     unite:       value.unite || "pc",
     price:       value.sales_price,
     discount:    0,
-    vta:         0,
+    ...taxFields(value),
     total:       value.sales_price,
   };
 };
 
 const addNewItem = () => {
-  state.carts.push({ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, vta: 0, total: 0 });
+  state.carts.push({ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, ...defaultTax(), total: 0 });
 };
 
 const removeCart = (cart) => {
@@ -358,26 +346,8 @@ const subTotal = computed(() => {
   return Number(sum.toFixed(2));
 });
 
-const vtaTotal = computed(() => {
-  const vta = state.carts.reduce((acc, cart) => acc + (cart.vta * cart.total) / 100, 0);
-  return vta - (vta * state.discount_rate) / 100;
-});
-
-const calcVta = (rate) => {
-  const raw = state.carts.reduce((acc, cart) => {
-    if (Number(cart.vta) === rate) {
-      const row = Number(cart.qty * cart.price) - (Number(cart.qty * cart.price) * cart.discount) / 100;
-      return acc + (row * rate) / 100;
-    }
-    return acc;
-  }, 0);
-  const final = raw - (raw * Number(state.discount_rate || 0)) / 100;
-  return Number(final.toFixed(2));
-};
-
-const vtaTotal4  = computed(() => calcVta(4));
-const vtaTotal10 = computed(() => calcVta(10));
-const vtaTotal21 = computed(() => calcVta(21));
+const taxGroups = computed(() => previewTaxGroups(state.carts, state.discount_rate));
+const vtaTotal = computed(() => taxGroups.value.reduce((sum, group) => sum + group.amount, 0));
 
 const discountTotal = computed(() => (subTotal.value * state.discount_rate) / 100);
 
@@ -393,6 +363,7 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, state);
 
 const handleSave = async () => {
+  if (!taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
 
@@ -401,9 +372,9 @@ const handleSave = async () => {
   state.total           = total.value;
   state.sub_total       = subTotal.value;
   state.vta             = vtaTotal.value;
-  state.vta4            = vtaTotal4.value;
-  state.vta10           = vtaTotal10.value;
-  state.vta21           = vtaTotal21.value;
+
+
+
   state.discount_amount = discountTotal.value;
 
   emit("saveDocument", state);
@@ -637,7 +608,7 @@ const handleSave = async () => {
 .inv-col-qty   { width: 80px; }
 .inv-col-unit  { width: 90px; }
 .inv-col-price { width: 120px; }
-.inv-col-vta   { width: 90px; }
+.inv-col-vta   { min-width: 150px; }
 .inv-col-total { width: 120px; text-align: right; }
 .inv-col-del   { width: 44px; }
 

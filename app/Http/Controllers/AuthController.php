@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Mail\PasswordResetEmail;
 use App\Models\CompanyProfile;
 use App\Models\User;
+use App\Services\TenantContextService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -142,18 +143,34 @@ class AuthController extends Controller
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
         return response(['data' => [
-            'user'        => auth()->user(),
-            'accessToken' => $accessToken,
-            'billing'     => $this->billingState(),
+            'user'            => auth()->user(),
+            'accessToken'     => $accessToken,
+            'billing'         => $this->billingState(),
+            'company_context' => $this->companyContext(),
         ]], 200);
     }
 
     public function user(Request $request){
         $user = $request->user();
         return response([
-            'user'    => $user,
-            'billing' => $this->billingState(),
+            'user'            => $user,
+            'billing'         => $this->billingState(),
+            'company_context' => $this->companyContext(),
         ], 200);
+    }
+
+    /**
+     * Country/currency/locale/timezone for the current tenant - Morocco
+     * Phase 1A. Sent alongside `billing` so the Vue app has it without a
+     * second round-trip; used to drive currency formatting and other
+     * country-aware UI decisions client-side (see resources/js/main.js
+     * $toCurrency/$currencyLabel and stores/template.js companyContext).
+     */
+    private function companyContext(): array
+    {
+        $context = app(TenantContextService::class);
+
+        return $context->toArray();
     }
 
     /**

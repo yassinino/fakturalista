@@ -16,14 +16,18 @@ class SetLocale
         // Authenticated user's saved preference takes highest priority
         $locale = $request->user()?->locale;
 
-        // Fall back to session (used by the public site switcher)
-        if (! $locale || ! in_array($locale, $supported, true)) {
+        // Fall back to session (used by the public site switcher). Guarded
+        // by hasSession(): API routes carry no session middleware at all
+        // (see app/Http/Kernel.php's 'api' group), so calling session()
+        // unconditionally here throws "Session store not set on request"
+        // for any authenticated API user whose locale is empty/unsupported.
+        if ((! $locale || ! in_array($locale, $supported, true)) && $request->hasSession()) {
             $locale = $request->session()->get('locale');
         }
 
-        // Final fallback to app default
+        // Final fallback to app default (Morocco Phase 1A: 'fr' - see config/app.php)
         if (! $locale || ! in_array($locale, $supported, true)) {
-            $locale = config('app.locale', 'es');
+            $locale = config('app.locale', 'fr');
         }
 
         App::setLocale($locale);

@@ -4,8 +4,14 @@ namespace App\Services\Pdf;
 
 use App\Models\CompanyProfile;
 use App\Models\InvoiceTemplate;
+use App\Services\CurrencyFormatter;
+use App\Services\Tax\TaxTreatment;
+use App\Services\Tax\TaxPresetService;
+use App\Services\Tax\DocumentCalculationService;
+use App\Services\TenantContextService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -45,6 +51,9 @@ class TemplateRendererService
     public function render(object $document, string $docType): string
     {
         $document->loadMissing('customer', 'carts');
+        if ($docType === 'invoice' && method_exists($document, 'taxLines')) {
+            $document->loadMissing('taxLines');
+        }
 
         $template = InvoiceTemplate::where('is_active', true)
             ->orderByDesc('is_default')
@@ -62,20 +71,41 @@ class TemplateRendererService
             'template'    => $template?->name ?? 'default',
         ]);
 
-        $locale           = app()->getLocale() ?: config('app.locale', 'es');
-        $supportedLocales = config('app.supported_locales', ['es', 'fr', 'en']);
-        if (!in_array($locale, $supportedLocales, true)) {
-            $locale = config('app.locale', 'es');
-        }
+        // Business-document locale/currency come from the TENANT's own
+        // configuration, never from whichever staff member happens to be
+        // logged in and rendering it (Morocco Phase 1A - see
+        // docs/morocco-phase-1a-implementation.md §4). This is a separate
+        // concept from the staff UI's own locale (App::getLocale()).
+        $context  = app(TenantContextService::class);
+        $locale   = $context->locale();
+        $currency = $context->currency();
 
-        [$decimalSep, $thousandsSep, $dateFmt] = match ($locale) {
-            'en'    => ['.', ',', 'm/d/Y'],
-            'fr'    => [',', ' ', 'd/m/Y'],
-            default => [',', '.', 'd-m-Y'],
+        // The comment above states the intent but, before this fix, never
+        // enforced it: every `__()` call inside the PDF Blade components
+        // (labels like invoice.date/status/billing_address/quantity/...)
+        // still read Laravel's ACTIVE app locale, not this tenant-derived
+        // `$locale` - which is whatever the currently logged-in user's own
+        // `users.locale` happens to be (schema default 'es', unrelated to
+        // the tenant being rendered). A Moroccan tenant's invoice, opened by
+        // a user whose own UI locale is still Spanish, silently mixed French
+        // labels (computed inline via match($locale), e.g. "Facture",
+        // "Sous-total HT") with Spanish ones from `__()` (e.g. "Factura
+        // Núm.", "Cantidad", "Importe") on the SAME PDF. Restored in a
+        // `finally` below so this never leaks into the rest of the request
+        // (e.g. a subsequent JSON response in the same send()/print() call
+        // must keep using the staff user's own locale).
+        $previousAppLocale = App::getLocale();
+        App::setLocale($locale);
+
+        $dateFmt = match ($locale) {
+            'en'    => 'm/d/Y',
+            'fr'    => 'd/m/Y',
+            default => 'd-m-Y',
         };
 
-        $formatMoney  = fn($v) => number_format((float) $v, 2, $decimalSep, $thousandsSep) . ' €';
-        $formatNumber = fn($v) => number_format((float) $v, 2, $decimalSep, $thousandsSep);
+        $formatter    = app(CurrencyFormatter::class);
+        $formatMoney  = fn($v) => $formatter->format((float) $v, $currency, $locale);
+        $formatNumber = fn($v) => $formatter->formatNumber((float) $v, $locale);
 
         $fontSize    = match ($design['font_size'] ?? 'medium') {
             'small' => 13,
@@ -94,28 +124,80 @@ class TemplateRendererService
 
         $statusData = $this->resolveStatus($document->status ?? 'draft', $docType, $locale);
 
-        // Tax breakdown computed from cart lines (works for both Invoice and Quote)
+        // New invoices render their persisted breakdown, including treatment.
+        // Quotes use the same calculator for their mutable preview. Legacy
+        // invoices keep their stored Spanish amounts; no financial data is saved.
         $taxGroups = [];
-        foreach (($document->carts ?? []) as $cart) {
-            $rate = (int) ($cart->vta ?? 0);
-            if ($rate <= 0) {
-                continue;
+        if ($docType === 'invoice' && $document->taxLines->isNotEmpty()) {
+            foreach ($document->taxLines as $line) {
+                $taxGroups[] = [
+                    'rate' => (float) $line->rate,
+                    'treatment' => $line->treatment ?? TaxTreatment::TAXABLE,
+                    'base' => (float) $line->taxable_base,
+                    'amount' => (float) $line->tax_amount,
+                ];
             }
-            $lineBase         = (float) $cart->qty * (float) $cart->price;
-            $taxGroups[$rate] = ($taxGroups[$rate] ?? 0) + round($lineBase * $rate / 100, 2);
+        } elseif ($docType === 'quote') {
+            $calculation = app(DocumentCalculationService::class)->calculate(
+                $document->carts->map(fn ($cart) => [
+                    'quantity' => $cart->qty,
+                    'unit_price' => $cart->price,
+                    'discount' => $cart->discount,
+                    'tax_rate' => $cart->vta,
+                    'treatment' => $cart->tax_treatment ?? TaxTreatment::TAXABLE,
+                ])->all(),
+                (float) $document->discount_rate,
+            );
+            foreach ($calculation->taxBreakdown as $row) {
+                $taxGroups[] = [
+                    'rate' => $row['rate'], 'treatment' => $row['treatment'],
+                    'base' => $row['taxable_base'], 'amount' => $row['tax_amount'],
+                ];
+            }
+        } else {
+            foreach ([4, 10, 21] as $rate) {
+                if ((float) $document->{'vta' . $rate} != 0) {
+                    $taxGroups[] = [
+                        'rate' => $rate, 'treatment' => TaxTreatment::TAXABLE,
+                        'amount' => (float) $document->{'vta' . $rate},
+                    ];
+                }
+            }
         }
-        ksort($taxGroups);
+        $taxGroups = array_values(array_filter($taxGroups, fn ($group) =>
+            $group['rate'] > 0 || $group['treatment'] !== TaxTreatment::TAXABLE
+        ));
+        $totalTaxAmount = (float) ($document->vta ?? 0);
 
         $subTotal       = (float) ($document->sub_total ?? 0);
         $discountAmount = (float) ($document->discount_amount ?? 0);
         $grandTotal     = (float) ($document->total ?? 0);
 
-        $companyName  = $company?->trade_name ?: ($company?->legal_name ?: config('app.name'));
+        // Identity (name/tax IDs/address) is snapshot-first for an ISSUED
+        // invoice - Morocco Phase 1B (docs/morocco-phase-1b-identity.md §7).
+        // An issued invoice must never change appearance because Settings
+        // or the customer record were edited afterward. Quotes, drafts, and
+        // any invoice issued before this snapshot existed (company_snapshot
+        // is null) fall back to the live data exactly as before - this is
+        // purely additive, nothing about the non-snapshot path changed.
+        $companySnapshot  = ($docType === 'invoice') ? ($document->company_snapshot ?? null) : null;
+        $customerSnapshot = ($docType === 'invoice') ? ($document->customer_snapshot ?? null) : null;
+
+        $companyIdentity = $companySnapshot ?? $company?->identitySnapshot() ?? [];
+        $taxCountry = $companyIdentity['country_code'] ?? $context->country();
+        $isMoroccanTax = strtoupper($taxCountry) === 'MA';
+        $taxPresets = app(TaxPresetService::class);
+        $taxName = $taxPresets->taxName($taxCountry);
+        $taxLabel = fn ($rate, $treatment) => $taxPresets->label($taxCountry, (float) $rate, $treatment);
+
+        $customerIdentity = $customerSnapshot ?? $document->customer?->identitySnapshot() ?? [];
+
+        $companyName  = $companyIdentity['trade_name'] ?? $companyIdentity['legal_name'] ?? config('app.name');
         $addressParts = array_filter([
-            $company?->address_line1,
-            $company?->address_line2,
-            trim(implode(' ', array_filter([$company?->postal_code, $company?->city]))),
-            $company?->country,
+            $companyIdentity['address_line1'] ?? null,
+            $companyIdentity['address_line2'] ?? null,
+            trim(implode(' ', array_filter([$companyIdentity['postal_code'] ?? null, $companyIdentity['city'] ?? null]))),
+            $companyIdentity['country'] ?? null,
         ]);
         $companyAddress = implode("\n", $addressParts);
 
@@ -136,10 +218,12 @@ class TemplateRendererService
             return Pdf::loadView('pdf.document', compact(
                 'document', 'docType', 'design', 'company',
                 'companyName', 'companyAddress', 'logoSrc',
+                'companyIdentity', 'customerIdentity',
                 'fontSize', 'logoWidthPx', 'isLogoAbove',
                 'locale', 'formatMoney', 'formatNumber',
                 'docDate', 'expiryDate', 'statusData',
-                'taxGroups', 'subTotal', 'discountAmount', 'grandTotal',
+                'taxGroups', 'totalTaxAmount', 'subTotal', 'discountAmount', 'grandTotal',
+                'isMoroccanTax', 'taxName', 'taxLabel',
                 'pdfPaymentUrl'
             ))
             ->setPaper('a4')
@@ -153,6 +237,8 @@ class TemplateRendererService
                 'trace'       => $e->getTraceAsString(),
             ]);
             throw $e;
+        } finally {
+            App::setLocale($previousAppLocale);
         }
     }
 

@@ -22,6 +22,9 @@ class Cart extends Model
         'total',
         'discount',
         'vta',
+        // Morocco Phase 1C.2 - semantic label (taxable/exempt/out_of_scope),
+        // never the same thing as a numeric 0% rate. See App\Services\Tax\TaxTreatment.
+        'tax_treatment',
     ];
 
     public function cartable(): MorphTo

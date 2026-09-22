@@ -13,10 +13,13 @@ return [
     'unit_price'       => 'Prix unitaire',
     'tax'              => 'TVA',
     'amount'           => 'Montant',
-    'subtotal'         => 'Sous-total',
+    'subtotal'         => 'Sous-total HT',
     'discount'         => 'Remise',
-    'total'            => 'Total',
+    'total'            => 'Total TTC',
     'tax_line'         => 'TVA (:rate%)',
+    // Morocco Phase 1C.2 (docs/morocco-phase-1c2-tax-configuration.md §13)
+    'exempt'           => 'Exonéré',
+    'total_tax'        => 'Total TVA',
     'notes'            => 'Notes',
     'valid_through'    => 'Ce devis est valable jusqu\'au :date.',
 ];

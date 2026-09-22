@@ -185,7 +185,7 @@
             <div class="ob-field" :class="{ 'ob-field--error': v$.country.$error }">
               <label class="ob-label" for="ob-country">Country <span class="ob-req">*</span></label>
               <select id="ob-country" class="ob-input ob-select"
-                v-model="form.country"
+                v-model="form.country" @change="selectCountry"
                 @blur="v$.country.$touch"
                 autocomplete="country-name"
               >
@@ -200,7 +200,20 @@
             <!-- Section: Business details -->
             <div class="ob-section-label">Business details</div>
 
-            <div class="ob-row-2">
+            <!-- Morocco: ICE only (primary identifier). IF/RC are completed
+                 later in Settings - Morocco Phase 1B, docs/morocco-phase-1b-identity.md §6. -->
+            <div class="ob-row-2" v-if="isMorocco">
+              <div class="ob-field">
+                <label class="ob-label" for="ob-ice">ICE <span class="ob-opt">(optional)</span></label>
+                <input id="ob-ice" type="text" class="ob-input"
+                  placeholder="001234567000089"
+                  v-model="form.ice"
+                />
+              </div>
+            </div>
+
+            <!-- Spain / everyone else: unchanged -->
+            <div class="ob-row-2" v-else>
               <div class="ob-field">
                 <label class="ob-label" for="ob-taxid">Tax ID / NIF <span class="ob-opt">(optional)</span></label>
                 <input id="ob-taxid" type="text" class="ob-input"
@@ -222,7 +235,7 @@
               <div class="ob-field">
                 <label class="ob-label" for="ob-phone">Phone <span class="ob-opt">(optional)</span></label>
                 <input id="ob-phone" type="tel" class="ob-input"
-                  placeholder="+34 600 000 000"
+                  :placeholder="isMorocco ? '+212' : '+34'"
                   v-model="form.phone"
                   autocomplete="tel"
                 />
@@ -326,11 +339,24 @@ const form = reactive({
   city:          '',
   postal_code:   '',
   country:       '',
+  country_code:  store.company.country || 'MA',
   tax_id:        '',
   vat_number:    '',
+  ice:           '',
   phone:         '',
-  currency:      '',
+  // Morocco is now the default market (Morocco Phase 1A) - Spain and other
+  // countries/currencies remain fully selectable in the dropdowns below.
+  currency:      store.company.currency,
 });
+
+// Morocco Phase 1B (docs/morocco-phase-1b-identity.md §6) - which fiscal
+// field to show (ICE vs NIF/VAT) depends on the tenant's own
+// provisioning-time country, fetched explicitly here rather than read
+// from the Pinia store: this is the very first authenticated screen a
+// new tenant sees, so the store's company context may not have loaded
+// yet (see OnboardingController::show()).
+const countryDefaults = ref({});
+const isMorocco = computed(() => form.country_code === 'MA');
 
 const rules = computed(() => ({
   owner_name:    { required },
@@ -346,12 +372,32 @@ const v$ = useVuelidate(rules, form);
 
 onMounted(async () => {
   try {
-    const res = await axios.get('countries');
-    countries.value = res.data.countries ?? res.data;
+    const [countryResponse, onboardingResponse] = await Promise.all([
+      axios.get('countries'), axios.get('onboarding'),
+    ]);
+    countries.value = countryResponse.data.countries ?? countryResponse.data;
+    const data = onboardingResponse.data;
+    const context = data.company_context;
+    store.setCompanyContext(context);
+    countryDefaults.value = data.country_defaults ?? {};
+    form.country_code = context.country;
+    form.country = data.profile?.country || countries.value.find(c => c.code === context.country)?.name || context.country_name;
+    form.currency = data.profile?.currency || context.currency;
+    for (const field of ['owner_name', 'trade_name', 'legal_name', 'address_line1', 'city', 'postal_code', 'tax_id', 'vat_number', 'ice', 'phone']) {
+      if (data.profile?.[field] != null) form[field] = data.profile[field];
+    }
   } catch {
-    // Fallback: empty list - user can still type
+    errorMessage.value = 'Unable to load company settings. Please reload.';
   }
 });
+
+function selectCountry() {
+  const country = countries.value.find(c => c.name === form.country);
+  if (!country) return;
+  form.country_code = country.code;
+  const defaults = countryDefaults.value[country.code];
+  if (defaults) form.currency = defaults.currency;
+}
 
 function onLogoChange(e) {
   const file = e.target.files[0];
@@ -386,6 +432,9 @@ async function onSubmit() {
     const userRes = await axios.get('user');
     if (userRes.data.billing) {
       store.setBillingStatus(userRes.data.billing);
+    }
+    if (userRes.data.company_context) {
+      store.setCompanyContext(userRes.data.company_context);
     }
 
     router.push({ name: 'backend-dashboard' });

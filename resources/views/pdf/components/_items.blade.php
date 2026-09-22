@@ -7,7 +7,7 @@
             </th>
             @if(!empty($design['show_tax_column']))
                 <th class="text-center" style="width:10%;">
-                    {{ $docType === 'quote' ? __('quote.tax') : __('invoice.tax') }}
+                    {{ $taxName }}
                 </th>
             @endif
             @if(!empty($design['show_discount']))
@@ -41,7 +41,7 @@
                     @endif
                 </td>
                 @if(!empty($design['show_tax_column']))
-                    <td class="text-center">{{ $cart->vta ?? 0 }}%</td>
+                    <td class="text-center">{{ ($cart->tax_treatment ?? 'taxable') === 'taxable' ? ($cart->vta ?? 0) . '%' : $taxLabel($cart->vta ?? 0, $cart->tax_treatment) }}</td>
                 @endif
                 @if(!empty($design['show_discount']))
                     <td class="text-center">

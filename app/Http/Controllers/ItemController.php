@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Http\Requests\ItemRequest;
 use App\Services\PlanService;
+use App\Services\Tax\TaxTreatment;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -27,6 +28,7 @@ class ItemController extends Controller
                 'sales_price' => $item->sales_price,
                 'purchase_price' => $item->purchase_price,
                 'vta' => $item->vta,
+                'tax_treatment' => $item->tax_treatment,
                 'currency' => $item->currency,
                 'active' => $item->active,
                 'reference' => $item->reference,
@@ -78,7 +80,8 @@ class ItemController extends Controller
             'sales_price' => $request->sales_price,
             'unite' => $request->unite,
             'purchase_price' => $request->purchase_price,
-            'vta' => $request->vta ?? 0,
+            'vta' => $request->vta,
+            'tax_treatment' => $request->tax_treatment,
             'currency' => $request->currency,
             'active' => $request->boolean('active', true),
             'description' => $request->description,
@@ -111,6 +114,7 @@ class ItemController extends Controller
             'sales_price' => $item->sales_price,
             'purchase_price' => $item->purchase_price,
             'vta' => $item->vta,
+            'tax_treatment' => $item->tax_treatment,
             'currency' => $item->currency,
             'active' => $item->active,
             'description' => $item->description,
@@ -135,6 +139,7 @@ class ItemController extends Controller
             'sales_price' => $request->sales_price,
             'purchase_price' => $request->purchase_price,
             'vta' => $request->input('vta', $item->vta),
+            'tax_treatment' => ($request->tax_treatment ?? $item->tax_treatment ?? TaxTreatment::TAXABLE),
             'currency' => $request->input('currency', $item->currency),
             'active' => $request->boolean('active', $item->active),
             'description' => $request->description,

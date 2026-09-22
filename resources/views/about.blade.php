@@ -25,7 +25,7 @@
             'title'      => __('site.about.banner_title'),
             'paragraphs' => [__('site.about.banner_p1'), __('site.about.banner_p2', ['days' => config('billing.trial_days')])],
             'cta_text'   => __('site.about.banner_cta', ['days' => config('billing.trial_days')]),
-            'cta_url'    => url('/free-trial'),
+            'cta_url'    => url('/register'),
         ])
 
         <!--===========================-->
@@ -106,7 +106,7 @@
 
                             <div class="description wow pixFadeUp" data-wow-delay="0.7s">
                                 <p>{{ __('site.about.editor_p') }}</p>
-                                <a href="{{ url('/free-trial') }}" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">
+                                <a href="{{ url('/register') }}" class="pix-btn wow pixFadeUp" data-wow-delay="0.9s">
                                     {{ __('site.about.editor_cta') }}
                                 </a>
                             </div>
@@ -177,7 +177,7 @@
 
                     <p>{{ __('site.about.cta_p') }}</p>
 
-                    <a href="{{ url('/free-trial') }}" class="pix-btn btn-light">{{ __('site.about.cta_btn') }}</a>
+                    <a href="{{ url('/register') }}" class="pix-btn btn-light">{{ __('site.about.cta_btn') }}</a>
                 </div>
                 <!-- /.action-content -->
             </div>

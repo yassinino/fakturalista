@@ -152,7 +152,7 @@
                 <a href="{{ url('/blog') }}" class="back-link">
                     <i class="fas fa-arrow-left"></i> {{ __('site.blog.all_articles') }}
                 </a>
-                <a href="{{ url('/free-trial') }}" class="pix-btn">{{ __('site.blog.try_cta') }}</a>
+                <a href="{{ url('/register') }}" class="pix-btn">{{ __('site.blog.try_cta') }}</a>
             </div>
 
         </article>

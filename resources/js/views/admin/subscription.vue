@@ -133,12 +133,12 @@
 
           <!-- Price -->
           <div class="sub-card-price">
-            <span class="sub-price-currency">€</span>
+            <span class="sub-price-currency">{{ plan.currency }}</span>
             <span class="sub-price-amount">{{ displayPrice(plan) }}</span>
             <span class="sub-price-period">{{ $t('subscription.billing.perMonth') }}</span>
           </div>
           <p v-if="cycle === 'yearly'" class="sub-price-billed">
-            {{ $t('subscription.billing.billedYearly', { total: yearlyTotal(plan) }) }}
+            {{ yearlyTotal(plan) }} {{ plan.currency }} / year
           </p>
 
           <!-- Divider -->

@@ -17,6 +17,8 @@ return [
     'discount'         => 'Descuento',
     'total'            => 'Total',
     'tax_line'         => 'IVA (:rate%)',
+    'exempt'           => 'Exento',
+    'total_tax'        => 'Total IVA',
     'notes'            => 'Notas',
     'valid_through'    => 'Este presupuesto es válido hasta el :date.',
 ];

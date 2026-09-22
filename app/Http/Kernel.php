@@ -76,5 +76,6 @@ class Kernel extends HttpKernel
         'set.locale'          => \App\Http\Middleware\SetLocale::class,
         'require.onboarding'  => \App\Http\Middleware\RequireOnboarding::class,
         'enforce.subscription'=> \App\Http\Middleware\EnforceSubscription::class,
+        'require.spain'       => \App\Http\Middleware\RequireSpainCountry::class,
     ];
 }

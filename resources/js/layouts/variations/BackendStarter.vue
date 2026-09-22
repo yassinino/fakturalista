@@ -1,5 +1,5 @@
 <template>
-  <BaseLayout>
+  <BaseLayout v-if="contextReady">
     <!-- Billing banners (trial countdown + read-only notice) -->
     <template #page-top-content>
       <BillingBanners />
@@ -29,6 +29,10 @@
     <!-- Header slots intentionally empty - Header.vue handles all content directly -->
 
   </BaseLayout>
+  <div v-else class="content py-5" role="status">
+    <p v-if="contextError">{{ contextError }} <button type="button" class="btn btn-primary" @click="loadContext">Retry</button></p>
+    <span v-else class="spinner-border" aria-label="Loading"></span>
+  </div>
 </template>
 
 <script setup>
@@ -38,7 +42,6 @@ import BaseLayout from "@/layouts/BaseLayout.vue";
 import BaseNavigation from "@/components/BaseNavigation.vue";
 import BillingBanners from "@/views/admin/layouts/BillingBanners.vue";
 
-import axios from 'axios'
 import { ref, onMounted } from "vue";
 
 // Main store
@@ -47,16 +50,20 @@ const store = useTemplateStore();
 import menu from "@/data/menu";
 
 const navigation = menu.main;
-const user = ref()
+const contextReady = ref(false);
+const contextError = ref('');
 
-onMounted(async () => {
-  const response = await axios.get('/user');
-  user.value = response.data.user;
-  if (response.data.billing) {
-    store.setBillingStatus(response.data.billing);
+async function loadContext() {
+  contextError.value = '';
+  try {
+    await store.refreshSession();
+    contextReady.value = true;
+  } catch {
+    contextReady.value = false;
+    contextError.value = 'Unable to load company settings.';
   }
-});
-
+}
+onMounted(loadContext);
 
 // Set default elements for this layout
 store.setLayout({

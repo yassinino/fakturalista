@@ -3,13 +3,21 @@
 namespace App\Providers;
 
 use App\Models\TenantDomainVisit;
+use App\Services\Verifactu\Auth\AeatAuthenticationProvider;
+use App\Services\Verifactu\Auth\CustomerCertificateProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        // Fakturalista V1's only AEAT authentication strategy - see
+        // docs/verifactu-aeat-connectivity.md §2 for why AeatVerifactuClient
+        // depends on the interface, not this class, directly.
+        $this->app->bind(AeatAuthenticationProvider::class, CustomerCertificateProvider::class);
+    }
 
     public function boot(): void
     {

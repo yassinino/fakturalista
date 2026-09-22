@@ -11,6 +11,8 @@ use App\Http\Requests\QuoteRequest;
 use App\Services\PlanService;
 use App\Services\QuotePdfService;
 use App\Services\QuoteToInvoiceService;
+use App\Services\Tax\DocumentCalculationService;
+use App\Services\Tax\TaxTreatment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,7 +24,29 @@ use Illuminate\Support\Str;
 
 class QuoteController extends Controller
 {
-    public function __construct(private PlanService $planService) {}
+    public function __construct(
+        private PlanService $planService,
+        private DocumentCalculationService $calculator,
+    ) {}
+
+    /**
+     * @param array<int, array<string, mixed>> $carts raw cart rows as
+     *        submitted by the client (qty/price/discount/vta) - shared
+     *        with InvoiceController's own private copy rather than a new
+     *        cross-controller dependency, since it's a 4-line mapping,
+     *        not shared logic (the actual calculation itself always goes
+     *        through the one shared DocumentCalculationService).
+     */
+    private function buildCalculationLines(array $carts): array
+    {
+        return array_map(fn (array $cart) => [
+            'quantity'   => $cart['qty'] ?? 0,
+            'unit_price' => $cart['price'] ?? 0,
+            'discount'   => $cart['discount'] ?? 0,
+            'tax_rate'   => $cart['vta'] ?? 0,
+            'treatment'  => $cart['tax_treatment'] ?? TaxTreatment::TAXABLE,
+        ], array_values($carts));
+    }
 
     public function index(): JsonResponse
     {
@@ -75,6 +99,15 @@ class QuoteController extends Controller
         $last      = Quote::orderBy('id', 'desc')->lockForUpdate()->first();
         $n         = isset($last) ? $last->id + 1 : 1;
 
+        // Morocco Phase 1C.1 - same authoritative calculator as invoices;
+        // sub_total/discount_amount/vta/total are computed server-side,
+        // never trusted verbatim from the client.
+        $carts       = $request->carts ?? [];
+        $calculation = $this->calculator->calculate(
+            $this->buildCalculationLines($carts),
+            (float) ($request->discount_rate ?? 0)
+        );
+
         $new_quote = Quote::create([
             'uuid'            => Str::uuid()->toString(),
             'reference'       => 'QUO-' . $n,
@@ -83,28 +116,28 @@ class QuoteController extends Controller
             'status'          => $request->status,
             'expiration_date' => $request->expiration_date,
             'payment_terms'   => $request->payment_terms,
-            'sub_total'       => $request->sub_total,
+            'sub_total'       => $calculation->subTotal,
             'discount_rate'   => $request->discount_rate,
-            'discount_amount' => $request->discount_amount,
-            'vta'             => $request->vta,
-            'total'           => $request->total,
+            'discount_amount' => $calculation->discountAmount,
+            'vta'             => $calculation->totalTax,
+            'total'           => $calculation->grandTotal,
             'note'            => $request->note,
         ]);
 
-        if (count($request->carts ?? []) > 0) {
-            foreach ($request->carts as $cart) {
-                Cart::create([
-                    'cartable_type' => 'App\Models\Quote',
-                    'cartable_id'   => $new_quote->id,
-                    'description'   => $cart['description'] ?? null,
-                    'qty'           => $cart['qty'] ?? 1,
-                    'price'         => $cart['price'] ?? 0,
-                    'unite'         => $cart['unite'] ?? 'pc',
-                    'discount'      => $cart['discount'] ?? 0,
-                    'total'         => $cart['total'] ?? 0,
-                    'vta'           => $cart['vta'] ?? 0,
-                ]);
-            }
+        foreach (array_values($carts) as $index => $cart) {
+            Cart::create([
+                'cartable_type' => 'App\Models\Quote',
+                'cartable_id'   => $new_quote->id,
+                'item_id' => $cart['item_id'] ?? null,
+                'description'   => $cart['description'] ?? null,
+                'qty'           => $cart['qty'] ?? 1,
+                'price'         => $cart['price'] ?? 0,
+                'unite'         => $cart['unite'] ?? 'pc',
+                'discount'      => $cart['discount'] ?? 0,
+                'total'         => $calculation->lines[$index]['taxable_base'] ?? 0,
+                'vta'           => $cart['vta'] ?? 0,
+                'tax_treatment' => $cart['tax_treatment'] ?? TaxTreatment::TAXABLE,
+            ]);
         }
 
         return response()->json(['message' => 'Quote created successfully.'], 200);
@@ -152,36 +185,59 @@ class QuoteController extends Controller
     {
         $customer = Customer::where('uuid', $request->customer_id)->firstOrFail();
 
+        $carts = $request->carts ?? [];
+
+        // Existing behavior (unchanged): an update with no cart lines
+        // leaves the quote's existing lines untouched (see the
+        // count($carts) > 0 guard below) - so the authoritative
+        // recalculation must be based on whichever lines will actually
+        // remain true after this request, not on an empty submitted
+        // array, or totals would be wrongly zeroed while the real line
+        // items stayed exactly as they were.
+        $calculationSource = count($carts) > 0
+            ? $carts
+            : $quote->carts()->get()->map(fn (Cart $cart) => [
+                'qty' => $cart->qty, 'price' => $cart->price, 'discount' => $cart->discount, 'vta' => $cart->vta,
+                'tax_treatment' => $cart->tax_treatment ?? TaxTreatment::TAXABLE,
+            ])->all();
+
+        $calculation = $this->calculator->calculate(
+            $this->buildCalculationLines($calculationSource),
+            (float) ($request->discount_rate ?? 0)
+        );
+
         Quote::where('id', $quote->id)->update([
             'customer_id'     => $customer->id,
             'date'            => $request->date,
             'status'          => $request->status,
             'expiration_date' => $request->expiration_date,
             'payment_terms'   => $request->payment_terms,
-            'sub_total'       => $request->sub_total,
+            'sub_total'       => $calculation->subTotal,
             'discount_rate'   => $request->discount_rate,
-            'discount_amount' => $request->discount_amount,
-            'vta'             => $request->vta,
-            'total'           => $request->total,
+            'discount_amount' => $calculation->discountAmount,
+            'vta'             => $calculation->totalTax,
+            'total'           => $calculation->grandTotal,
             'note'            => $request->note,
         ]);
 
-        if (count($request->carts ?? []) > 0) {
+        if (count($carts) > 0) {
             Cart::where('cartable_type', 'App\Models\Quote')
                 ->where('cartable_id', $quote->id)
                 ->delete();
 
-            foreach ($request->carts as $cart) {
+            foreach (array_values($carts) as $index => $cart) {
                 Cart::create([
                     'cartable_type' => 'App\Models\Quote',
                     'cartable_id'   => $quote->id,
+                    'item_id' => $cart['item_id'] ?? null,
                     'description'   => $cart['description'] ?? null,
                     'qty'           => $cart['qty'] ?? 1,
                     'price'         => $cart['price'] ?? 0,
                     'unite'         => $cart['unite'] ?? 'pc',
                     'discount'      => $cart['discount'] ?? 0,
-                    'total'         => $cart['total'] ?? 0,
+                    'total'         => $calculation->lines[$index]['taxable_base'] ?? 0,
                     'vta'           => $cart['vta'] ?? 0,
+                    'tax_treatment' => $cart['tax_treatment'] ?? TaxTreatment::TAXABLE,
                 ]);
             }
         }
@@ -245,6 +301,7 @@ class QuoteController extends Controller
                     'discount'      => $cart->discount,
                     'total'         => $cart->total,
                     'vta'           => $cart->vta,
+                    'tax_treatment' => $cart->tax_treatment ?? TaxTreatment::TAXABLE,
                 ]);
             }
 
