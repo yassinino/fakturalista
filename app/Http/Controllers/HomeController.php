@@ -44,17 +44,36 @@ class HomeController extends Controller
         return view('verifactu');
     }
 
-    public function pricing()
+    public function pricing(Request $request)
     {
         $locale = app()->getLocale();
 
+        // Market is independent of locale - a French-speaking visitor is
+        // NOT assumed to be in Spain. Defaults to Morocco (the primary
+        // market); a visitor can switch via ?market=ES, remembered in
+        // their session for the rest of the visit. No hardcoded price/
+        // currency anywhere here - resolved per plan below via the same
+        // plan_prices/priceFor() architecture as PlanController and
+        // SubscriptionController use for the authenticated tenant app.
+        $market = strtoupper((string) $request->query('market', ''));
+        if (in_array($market, ['MA', 'ES'], true)) {
+            $request->session()->put('public_market', $market);
+        } else {
+            $market = $request->session()->get('public_market', 'MA');
+        }
+
         $plans = Plan::on('mysql')
             ->where('active', true)
-            ->with(['limits', 'marketingItems' => fn ($q) => $q->orderBy('sort_order')])
+            ->with([
+                'limits',
+                'features',
+                'marketingItems' => fn ($q) => $q->orderBy('sort_order'),
+                'prices',
+            ])
             ->orderBy('sort_order')
             ->get();
 
-        return view('pricing', compact('plans', 'locale'));
+        return view('pricing', compact('plans', 'locale', 'market'));
     }
 
     public function sendContact(Request $request)

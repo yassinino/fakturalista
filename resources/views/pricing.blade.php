@@ -273,6 +273,16 @@
 
 <div class="pr-page">
 
+    {{-- ── Market switch (independent of language - French does not
+         imply EUR) - default public market is Morocco/MAD ─────────── --}}
+    <div style="text-align:center;margin-bottom:24px;">
+        @if ($market === 'ES')
+            <a href="{{ url('/pricing?market=MA') }}" style="font-size:.85rem;color:var(--pr-muted);text-decoration:underline;">{{ __('site.pricing.switch_to_morocco') }}</a>
+        @else
+            <a href="{{ url('/pricing?market=ES') }}" style="font-size:.85rem;color:var(--pr-muted);text-decoration:underline;">{{ __('site.pricing.switch_to_spain') }}</a>
+        @endif
+    </div>
+
     {{-- ── Plans grid ──────────────────────────────────────── --}}
     <div class="pr-grid">
         @forelse ($plans as $plan)
@@ -282,8 +292,54 @@
                 $shortDesc  = $plan->translate('short_description', $locale);
                 $btnText    = $plan->translate('button_text', $locale) ?: __('site.pricing.default_cta');
                 $btnUrl     = $plan->button_url ? url(parse_url($plan->button_url, PHP_URL_PATH) ?: '/register') : url('/register');
-                $price      = number_format($plan->monthly_price / 100, 2, ',', '');
-                $currency   = strtoupper($plan->currency ?? 'EUR') === 'EUR' ? '€' : strtoupper($plan->currency ?? 'EUR');
+
+                // Price/currency - resolved for the current public market
+                // via the SAME plan_prices/priceFor() architecture the
+                // authenticated app uses (PlanController, SubscriptionController).
+                // Never a static column, never hardcoded, never converted.
+                $planPrice    = $plan->priceFor($market, 'monthly');
+                $price        = $planPrice ? number_format($planPrice->amount / 100, 2, ',', '') : null;
+                $currencyCode = $planPrice->currency ?? 'MAD';
+                $currency     = $currencyCode === 'EUR' ? '€' : $currencyCode;
+
+                // Limits - fresh from plan_limits on every render. Changing
+                // a value in Filament ("Limites du plan") changes this
+                // immediately, no code/deploy needed.
+                $limitLines = [];
+
+                $invoices = $plan->getLimit('invoices_per_month');
+                $limitLines[] = $invoices === null
+                    ? __('site.pricing.limit_invoices_unlimited')
+                    : __('site.pricing.limit_invoices', ['count' => $invoices]);
+
+                $customers = $plan->getLimit('customers');
+                $limitLines[] = $customers === null
+                    ? __('site.pricing.limit_customers_unlimited')
+                    : __('site.pricing.limit_customers', ['count' => $customers]);
+
+                $users = $plan->getLimit('users');
+                if ($users === null) {
+                    $limitLines[] = __('site.pricing.limit_users_unlimited');
+                } else {
+                    $limitLines[] = __($users == 1 ? 'site.pricing.limit_users_one' : 'site.pricing.limit_users_other', ['count' => $users]);
+                }
+
+                $quotes = $plan->getLimit('quotes');
+                $limitLines[] = $quotes === null
+                    ? __('site.pricing.limit_quotes_unlimited')
+                    : __('site.pricing.limit_quotes', ['count' => $quotes]);
+
+                $products = $plan->getLimit('products');
+                $limitLines[] = $products === null
+                    ? __('site.pricing.limit_products_unlimited')
+                    : __('site.pricing.limit_products', ['count' => $products]);
+
+                // Features - real plan_features pivot (Filament
+                // "Fonctionnalités incluses" checklist) - toggling one
+                // there changes this immediately too.
+                $featureLines = $plan->features->map(
+                    fn ($f) => $f->{"name_{$locale}"} ?? $f->name_fr
+                )->all();
             @endphp
             <div class="pr-card {{ $plan->is_featured ? 'featured' : '' }}">
 
@@ -295,7 +351,11 @@
 
                 <div class="pr-price-block">
                     <div class="pr-price">
-                        <sup>{{ $currency }}</sup>{{ $price }}<span class="pr-price-period">/ {{ __('site.pricing.per_month') }}</span>
+                        @if ($price !== null)
+                            <sup>{{ $currency }}</sup>{{ $price }}<span class="pr-price-period">/ {{ __('site.pricing.per_month') }}</span>
+                        @else
+                            <span style="font-size:1.1rem;">{{ __('site.pricing.price_unavailable') }}</span>
+                        @endif
                     </div>
                     <div class="pr-commitment">{{ __('site.pricing.no_commitment') }}</div>
                 </div>
@@ -306,16 +366,20 @@
 
                 <hr class="pr-divider">
 
-                @if ($plan->marketingItems->isNotEmpty())
-                    <ul class="pr-features">
-                        @foreach ($plan->marketingItems as $item)
-                            <li class="{{ $item->is_highlighted ? 'highlighted' : '' }}">
-                                <span class="pr-feat-icon">{{ $item->icon }}</span>
-                                <span>{{ $item->{"text_{$locale}"} ?? $item->text_fr }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+                <ul class="pr-features">
+                    @foreach ($limitLines as $line)
+                        <li><span class="pr-feat-icon">✓</span><span>{{ $line }}</span></li>
+                    @endforeach
+                    @foreach ($featureLines as $line)
+                        <li><span class="pr-feat-icon">✓</span><span>{{ $line }}</span></li>
+                    @endforeach
+                    @foreach ($plan->marketingItems as $item)
+                        <li class="{{ $item->is_highlighted ? 'highlighted' : '' }}">
+                            <span class="pr-feat-icon">{{ $item->icon }}</span>
+                            <span>{{ $item->{"text_{$locale}"} ?? $item->text_fr }}</span>
+                        </li>
+                    @endforeach
+                </ul>
 
                 <a href="{{ $btnUrl }}" class="pr-btn {{ $plan->is_featured ? 'pr-btn-primary' : 'pr-btn-secondary' }}">
                     {{ $btnText }}
