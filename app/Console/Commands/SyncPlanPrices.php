@@ -5,19 +5,31 @@ namespace App\Console\Commands;
 use App\Models\Plan;
 use App\Models\PlanPrice;
 use Illuminate\Console\Command;
+use Stripe\Exception\InvalidRequestException;
 use Stripe\Price as StripePrice;
 use Stripe\Product as StripeProduct;
 use Stripe\Stripe;
 
 /**
  * Seeds/repairs `plan_prices` (Starter/Pro/Business x Morocco-MAD /
- * Spain-EUR) and creates the matching Stripe Product/Price objects
- * (test mode - config('services.stripe.secret')) for any row still
- * missing a stripe_price_id.
+ * Spain-EUR) and creates the matching Stripe Product/Price objects in
+ * whichever Stripe account config('services.stripe.secret') currently
+ * points to.
  *
- * Idempotent: a plan_prices row that already has a stripe_price_id is
- * left untouched and no new Stripe object is created for it - safe to
- * re-run after adding a new market/plan.
+ * A non-null stripe_price_id is NEVER trusted on its own - a Price id is
+ * only meaningful within the Stripe account it was created in, and this
+ * account can change (e.g. STRIPE_SECRET rotated to a different Stripe
+ * account) while the DB still holds the OLD account's ids. Every row with
+ * a stored id is actively re-verified against the CURRENT account
+ * (retrieve + currency/amount/interval/plan match) before being reused;
+ * a row that fails - not found, or found but wrong - is replaced with a
+ * freshly created Price in the current account. Product reuse is the
+ * same: never assume a cached/previous product id is still valid, always
+ * search the CURRENT account's products for one that actually belongs to
+ * this plan before creating a new one.
+ *
+ * Idempotent: re-running after every id is already valid in the current
+ * account verifies all 9 rows and creates nothing.
  *
  * Prices below are the real, explicitly-decided launch prices (Morocco
  * MAD figures given directly by the business owner; Spain EUR figures
@@ -28,7 +40,7 @@ class SyncPlanPrices extends Command
 {
     protected $signature = 'plans:sync-prices {--dry-run : Only print what would change, create nothing in Stripe}';
 
-    protected $description = 'Seed plan_prices (Morocco MAD / Spain EUR) and create matching Stripe Prices for any row missing one';
+    protected $description = 'Verify/repair plan_prices against the CURRENT Stripe account and (re)create Prices that are missing, stale, or belong to a different account';
 
     /**
      * @var array<string, array{monthly:int, yearly:?int}> amounts in minor units (cents)
@@ -39,6 +51,9 @@ class SyncPlanPrices extends Command
         'business' => ['monthly' => 79900, 'yearly' => null],
     ];
 
+    /** @var array<int, string> plan_id => Stripe product id, cached for this run only */
+    private array $productCache = [];
+
     public function handle(): int
     {
         $dryRun = (bool) $this->option('dry-run');
@@ -46,21 +61,22 @@ class SyncPlanPrices extends Command
         Stripe::setApiKey(config('services.stripe.secret'));
 
         $plans = Plan::on('mysql')->where('active', true)->get()->keyBy('slug');
-        $productCache = [];
+        $this->productCache = [];
 
         foreach ($plans as $slug => $plan) {
-            // ── Spain (EUR) - reuses the amounts already on the plan row ──
-            $this->ensurePrice($plan, 'ES', 'EUR', 'monthly', $plan->monthly_price, $dryRun, $productCache);
+            // ── Spain (EUR) - reuses the amounts already on the plan row,
+            // never converted/changed here ──
+            $this->ensurePrice($plan, 'ES', 'EUR', 'monthly', $plan->monthly_price, $dryRun);
             if ($plan->yearly_price) {
-                $this->ensurePrice($plan, 'ES', 'EUR', 'yearly', $plan->yearly_price, $dryRun, $productCache);
+                $this->ensurePrice($plan, 'ES', 'EUR', 'yearly', $plan->yearly_price, $dryRun);
             }
 
             // ── Morocco (MAD) - explicit launch prices, monthly only for now ──
             $ma = self::MOROCCO_MAD[$slug] ?? null;
             if ($ma) {
-                $this->ensurePrice($plan, 'MA', 'MAD', 'monthly', $ma['monthly'], $dryRun, $productCache);
+                $this->ensurePrice($plan, 'MA', 'MAD', 'monthly', $ma['monthly'], $dryRun);
                 if ($ma['yearly']) {
-                    $this->ensurePrice($plan, 'MA', 'MAD', 'yearly', $ma['yearly'], $dryRun, $productCache);
+                    $this->ensurePrice($plan, 'MA', 'MAD', 'yearly', $ma['yearly'], $dryRun);
                 }
             }
         }
@@ -70,7 +86,7 @@ class SyncPlanPrices extends Command
         return self::SUCCESS;
     }
 
-    private function ensurePrice(Plan $plan, string $countryCode, string $currency, string $interval, int $amount, bool $dryRun, array &$productCache): void
+    private function ensurePrice(Plan $plan, string $countryCode, string $currency, string $interval, int $amount, bool $dryRun): void
     {
         $row = PlanPrice::on('mysql')->firstOrNew([
             'plan_id'      => $plan->id,
@@ -82,11 +98,18 @@ class SyncPlanPrices extends Command
         $row->amount   = $amount;
 
         if ($row->stripe_price_id) {
-            $this->line("skip {$plan->slug} {$countryCode} {$interval}: already has {$row->stripe_price_id}");
-            if (!$dryRun) {
-                $row->save();
+            $verified = $this->verifyExistingPrice($row->stripe_price_id, $plan, $currency, $amount, $interval);
+
+            if ($verified) {
+                $this->line("verified {$plan->slug} {$countryCode} {$interval}: {$row->stripe_price_id} is valid in the current Stripe account");
+                if (!$dryRun) {
+                    $row->save();
+                }
+                return;
             }
-            return;
+
+            $this->warn("stale {$plan->slug} {$countryCode} {$interval}: {$row->stripe_price_id} does not resolve to a matching Price in the CURRENT Stripe account - replacing");
+            $row->stripe_price_id = null;
         }
 
         $this->line("creating {$plan->slug} {$countryCode} {$interval} {$currency} " . number_format($amount / 100, 2));
@@ -95,7 +118,7 @@ class SyncPlanPrices extends Command
             return;
         }
 
-        $productId = $productCache[$plan->id] ??= $this->ensureProduct($plan);
+        $productId = $this->productCache[$plan->id] ??= $this->ensureProduct($plan);
 
         $stripePrice = StripePrice::create([
             'product'    => $productId,
@@ -109,8 +132,61 @@ class SyncPlanPrices extends Command
         $row->save();
     }
 
+    /**
+     * Retrieves the given Price id from the CURRENT Stripe account and
+     * checks it actually matches what this row is supposed to be -
+     * currency, amount, recurring interval, and the plan it was created
+     * for (via the metadata this same command always writes on create).
+     * Returns false for "not found in this account" and for "found, but
+     * wrong" alike - both mean the id cannot be trusted.
+     */
+    private function verifyExistingPrice(string $stripePriceId, Plan $plan, string $currency, int $amount, string $interval): bool
+    {
+        try {
+            $price = StripePrice::retrieve($stripePriceId);
+        } catch (InvalidRequestException $e) {
+            // "No such price" - most commonly because the id belongs to a
+            // different Stripe account than the one currently configured.
+            return false;
+        }
+
+        if (!$price->active) {
+            return false;
+        }
+        if (strtolower($price->currency) !== strtolower($currency)) {
+            return false;
+        }
+        if ((int) $price->unit_amount !== $amount) {
+            return false;
+        }
+        $expectedInterval = $interval === 'yearly' ? 'year' : 'month';
+        if (($price->recurring->interval ?? null) !== $expectedInterval) {
+            return false;
+        }
+        // Plan ownership: the metadata this command itself always sets at
+        // creation time - a loose (==) comparison since Stripe metadata
+        // values are always strings.
+        if (($price->metadata->plan_id ?? null) != $plan->id) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Finds an existing Stripe Product that genuinely belongs to this plan
+     * IN THE CURRENT ACCOUNT (never assumed from a cached/previous id),
+     * or creates a new one. Prevents duplicate "Fakturalista - X" products
+     * from piling up across repeated runs/account changes.
+     */
     private function ensureProduct(Plan $plan): string
     {
+        foreach (StripeProduct::all(['limit' => 100])->autoPagingIterator() as $product) {
+            if ($product->active && ($product->metadata['plan_id'] ?? null) == $plan->id) {
+                return $product->id;
+            }
+        }
+
         $name = json_decode($plan->getRawOriginal('name'), true)['en'] ?? $plan->slug;
 
         $product = StripeProduct::create([
