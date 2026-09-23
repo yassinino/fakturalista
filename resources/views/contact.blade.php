@@ -32,7 +32,6 @@
     .fk-highlight {
         position: relative;
         color: #E91E63;
-        white-space: nowrap;
     }
     .fk-highlight:after {
         content: "";

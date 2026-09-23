@@ -114,12 +114,56 @@
         .fk-topbar-lang .fk-lang-label { display: none; }
     }
 
-    /* ── Header right: secondary "Connexion" link + primary CTA ──── */
-    .site-header .header-inner .site-nav .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 18px;
+    /* ── Main navbar - compact SaaS layout ───────────────────────────
+       The stock template's .site-header is `position: absolute` (meant
+       to float, transparent, over a photo hero) and its .nav-btn is a
+       white floating pill with a huge shadow (meant to stand out over
+       that photo). Fakturalista never uses that overlay look - every
+       public page already forces the nav links dark - so the absolute
+       header was instead overlapping the new top bar (both anchored at
+       top:0), which is the root cause of the "broken/oversized" header.
+       Below: the header becomes a normal in-flow bar (still switching to
+       `position:fixed` on scroll via the existing .pix-header-fixed
+       class/JS), sized and spaced for a compact, one-line desktop nav. */
+    .site-header.header_trans-fixed {
+        position: relative;
+        background: #fff;
+        border-bottom: 1px solid #eef0f3;
     }
+    .site-header.header_trans-fixed.pix-header-fixed {
+        position: fixed;
+        top: 0;
+    }
+    .site-header .site-main-menu li > a { color: #0F172A; }
+
+    /* Primary CTA - a normal compact button, not a floating card, in
+       both the resting and scrolled (.pix-header-fixed) states. */
+    .site-header .header-inner .site-nav .nav-right .nav-btn,
+    .pix-header-fixed .header-inner .site-nav .nav-right .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        padding: 0 22px;
+        background: #E91E63;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+        box-shadow: none;
+        transition: background .15s, transform .15s;
+    }
+    .site-header .header-inner .site-nav .nav-right .nav-btn:hover,
+    .pix-header-fixed .header-inner .site-nav .nav-right .nav-btn:hover {
+        background: #C2185B;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* Secondary "Connexion" - a plain text link, not a boxed button. */
     .site-header .header-inner .site-nav .nav-right .nav-login {
         color: #0F172A;
         font-weight: 600;
@@ -128,10 +172,105 @@
         transition: color .15s;
     }
     .site-header .header-inner .site-nav .nav-right .nav-login:hover { color: #E91E63; }
-    @media (max-width: 991px) {
+
+    @media (min-width: 1100px) {
+        .site-header .header-inner {
+            display: flex;
+            align-items: center;
+            min-height: 72px;
+        }
+        .site-header .header-inner .site-logo a { max-width: 172px; }
+        .site-header .header-inner .site-nav .menu-wrapper {
+            flex: 1;
+            justify-content: space-between;
+            margin-left: 44px;
+        }
+        .site-header .site-main-menu li {
+            margin: 0 14px;
+            padding: 0;
+        }
+        .site-header .site-main-menu li > a {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
         .site-header .header-inner .site-nav .nav-right {
-            gap: 14px;
-            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: 24px;
+        }
+    }
+
+    @media (max-width: 1099px) {
+        .site-header .toggle-menu {
+            position: absolute;
+            left: 0;
+            width: 26px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block;
+            height: 24px;
+        }
+        .site-header .toggle-menu .bar {
+            width: 18px;
+            height: 2px;
+            display: block;
+            float: left;
+            margin: 3px auto;
+            background: #0F172A;
+        }
+        .site-header .toggle-menu .bar:nth-child(2) { width: 24px; }
+        .site-header .header-inner { text-align: center; padding: 14px 0; }
+        .site-header .site-mobile-logo { display: block; }
+        .site-header .site-mobile-logo img { max-height: 30px; width: auto; }
+        .site-header .site-logo { display: none; }
+        .site-header .header-inner .site-nav .menu-wrapper { display: block; }
+        .site-header .site-nav {
+            position: fixed;
+            width: 320px !important;
+            height: 100vh;
+            background: #fff;
+            top: 0;
+            left: -100%;
+            display: block !important;
+            transition: all .5s ease-in-out;
+            overflow: scroll;
+            box-shadow: 0 20px 30px rgba(0,0,0,.1);
+        }
+        .site-header .site-nav .site-main-menu {
+            display: block;
+            width: 100%;
+            padding-bottom: 20px;
+            text-align: left;
+        }
+        .site-header .site-nav .site-main-menu li {
+            margin: 0;
+            padding: 0;
+            border-bottom: 1px solid #f1f2f3;
+        }
+        .site-header .site-nav .site-main-menu li:first-child { border-top: 1px solid #f1f2f3; }
+        .site-header .site-nav .site-main-menu li > a {
+            display: block;
+            padding: 14px 24px;
+            font-weight: 500;
+            color: #344054;
+        }
+        .site-header .site-nav .site-main-menu li > a:after { display: none; }
+        .site-header .header-inner .site-nav .nav-right {
+            display: block;
+            margin: 16px 24px 20px;
+            padding: 0;
+        }
+        .site-header .header-inner .site-nav .nav-right .nav-login {
+            display: block;
+            padding: 10px 0;
+            text-align: left;
+        }
+        .site-header .header-inner .site-nav .nav-right .nav-btn {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
         }
     }
 

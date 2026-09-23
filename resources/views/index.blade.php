@@ -157,7 +157,12 @@ html { scroll-behavior: smooth; }
    HERO
    ========================================================================= */
 .fk-hero {
-    padding: 176px 0 120px;
+    /* Top padding is intentionally small: the top bar + navbar now sit
+       in normal flow above this section (see layouts/master.blade.php's
+       header fix) and already provide ~108px of breathing room, unlike
+       before when the absolutely-positioned header overlaid the hero
+       and this padding alone had to clear it. */
+    padding: 72px 0 120px;
     background:
         radial-gradient(60% 55% at 82% 8%, rgba(233,30,99,.06), transparent 70%),
         #fff;
@@ -751,7 +756,7 @@ html { scroll-behavior: smooth; }
    RESPONSIVE
    ========================================================================= */
 @media (max-width: 991px) {
-    .fk-hero { padding: 150px 0 90px; }
+    .fk-hero { padding: 56px 0 90px; }
     .fk-benefits { grid-template-columns: 1fr; }
     .fk-show-row { grid-template-columns: 1fr; gap: 40px; padding: 60px 0; }
     .fk-show-row--rev .fk-show-text,
