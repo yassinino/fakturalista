@@ -67,5 +67,12 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('login-finder', function (Request $request) {
             return Limit::perMinutes(10, 10)->by($request->ip());
         });
+
+        // Public contact form (routes/web.php POST /contact) - a realistic
+        // spam target now that it's linked from the header/footer on every
+        // page, on top of the existing math captcha and honeypot field.
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinutes(10, 5)->by('contact-ip:' . $request->ip());
+        });
     }
 }

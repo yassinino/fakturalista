@@ -85,13 +85,48 @@ class HomeController extends Controller
         return view('pricing', compact('cards', 'locale', 'market'));
     }
 
+    /**
+     * Fixed subject options for the /contact form's "Sujet" select -
+     * validated server-side against this exact list (see Section 7 of
+     * the contact page spec). Keys are the values posted by the form;
+     * values are the translation keys for the human-readable label used
+     * in the notification email's subject line.
+     */
+    private const CONTACT_SUBJECTS = [
+        'general' => 'site.contact.subject_general',
+        'pricing' => 'site.contact.subject_pricing',
+        'support' => 'site.contact.subject_support',
+        'billing' => 'site.contact.subject_billing',
+        'partnership' => 'site.contact.subject_partnership',
+        'other' => 'site.contact.subject_other',
+    ];
+
     public function sendContact(Request $request)
     {
+        // Honeypot: a hidden field no real visitor can see or fill. Any
+        // value here means a bot blindly filled every field - pretend
+        // success without sending mail, rather than telling it what it
+        // got wrong.
+        if (filled($request->input('company_website'))) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 0,
+                    'message' => __('site.contact.status_success'),
+                    'captcha' => MathCaptchaService::generate(),
+                ]);
+            }
+
+            return back()->with('status', __('site.contact.status_success'));
+        }
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:120',
+            'first_name' => 'required|string|max:80',
+            'last_name' => 'required|string|max:80',
             'email' => 'required|email|max:255',
-            'subject' => 'nullable|string|max:150',
-            'content' => 'required|string|max:2000',
+            'phone' => 'nullable|string|max:30',
+            'company' => 'nullable|string|max:150',
+            'subject' => 'required|string|in:' . implode(',', array_keys(self::CONTACT_SUBJECTS)),
+            'message' => 'required|string|max:2000',
             'recaptcha_response' => 'nullable|string|max:2000',
             'captcha_answer' => 'required',
         ]);
@@ -116,14 +151,16 @@ class HomeController extends Controller
         }
 
         $validated = $validator->validated();
-        $subject = $validated['subject'] ?: 'Nuevo mensaje de contacto';
+        $subjectLine = __(self::CONTACT_SUBJECTS[$validated['subject']]);
 
         try {
-            Mail::to('contact@fakturalista.com')->send(new ContactMessage([
-                'name' => $validated['name'],
+            Mail::to(config('fakturalista.contact_email'))->send(new ContactMessage([
+                'name' => trim($validated['first_name'] . ' ' . $validated['last_name']),
                 'email' => $validated['email'],
-                'subject' => $subject,
-                'content' => $validated['content'],
+                'phone' => $validated['phone'] ?? null,
+                'company' => $validated['company'] ?? null,
+                'subject' => $subjectLine,
+                'content' => $validated['message'],
                 'locale' => app()->getLocale(),
                 'ip' => $request->ip(),
                 'user_agent' => (string) $request->userAgent(),

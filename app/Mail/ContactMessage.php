@@ -12,6 +12,8 @@ class ContactMessage extends Mailable
 
     public string $name;
     public string $email;
+    public ?string $phone;
+    public ?string $company;
     public string $subjectLine;
     public string $content;
     public string $messageLocale;
@@ -19,12 +21,14 @@ class ContactMessage extends Mailable
     public string $userAgent;
 
     /**
-     * @param array{name:string,email:string,subject:string,content:string,locale:string,ip:string,user_agent:string} $data
+     * @param array{name:string,email:string,phone:?string,company:?string,subject:string,content:string,locale:string,ip:string,user_agent:string} $data
      */
     public function __construct(array $data)
     {
         $this->name = $data['name'];
         $this->email = $data['email'];
+        $this->phone = $data['phone'] ?? null;
+        $this->company = $data['company'] ?? null;
         $this->subjectLine = $data['subject'];
         $this->content = $data['content'];
         $this->messageLocale = $data['locale'];

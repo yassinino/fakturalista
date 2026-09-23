@@ -55,6 +55,86 @@
     </script>
 
     <style>
+    /* ── Top sales bar - slim, above the main nav, same on every page ── */
+    .fk-topbar {
+        background: #fff;
+        border-bottom: 1px solid #eef0f3;
+        position: relative;
+        z-index: 1001;
+    }
+    .fk-topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 36px;
+        font-size: 13px;
+    }
+    .fk-topbar-phone {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #4b5563;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: color .15s;
+    }
+    .fk-topbar-phone i { color: #E91E63; font-size: 11px; }
+    .fk-topbar-phone:hover,
+    .fk-topbar-phone:hover .fk-topbar-phone-num { color: #E91E63; }
+    .fk-topbar-phone-num { font-weight: 700; color: #0F172A; transition: color .15s; }
+    .fk-topbar-right { display: flex; align-items: center; gap: 12px; }
+    .fk-topbar-market {
+        font-weight: 600;
+        color: #6b7280;
+        letter-spacing: .02em;
+        white-space: nowrap;
+    }
+    .fk-topbar-sep { color: #d1d5db; }
+    .fk-topbar-lang .fk-lang-btn {
+        background: transparent;
+        border-color: rgba(15,23,42,.14);
+        color: #4b5563;
+        padding: 3px 9px 3px 7px;
+        font-size: 12.5px;
+    }
+    .fk-topbar-lang .fk-lang-btn:hover,
+    .fk-topbar-lang .fk-lang-btn[aria-expanded="true"] {
+        background: #f9fafb;
+        border-color: rgba(15,23,42,.28);
+        color: #0F172A;
+    }
+    @media (max-width: 575px) {
+        .fk-topbar-help-label,
+        .fk-topbar-market,
+        .fk-topbar-sep { display: none; }
+        .fk-topbar-inner { min-height: 34px; font-size: 12.5px; }
+    }
+    @media (max-width: 400px) {
+        .fk-topbar-lang .fk-lang-label { display: none; }
+    }
+
+    /* ── Header right: secondary "Connexion" link + primary CTA ──── */
+    .site-header .header-inner .site-nav .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .site-header .header-inner .site-nav .nav-right .nav-login {
+        color: #0F172A;
+        font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
+        transition: color .15s;
+    }
+    .site-header .header-inner .site-nav .nav-right .nav-login:hover { color: #E91E63; }
+    @media (max-width: 991px) {
+        .site-header .header-inner .site-nav .nav-right {
+            gap: 14px;
+            margin-top: 14px;
+        }
+    }
+
     /* ── Language switcher - fully custom, position:fixed panel ── */
     .fk-lang-switcher { display: inline-flex; align-items: center; }
 
@@ -420,6 +500,33 @@
     <div id="main_content">
 
         <!--=========================-->
+        <!--=       Top bar         =-->
+        <!--=========================-->
+        @php
+            $fkContactPhoneDisplay = config('fakturalista.contact_phone_display');
+            $fkContactPhoneLink    = config('fakturalista.contact_phone_link');
+            $fkMarketCurrency      = session('public_market', 'MA') === 'ES' ? 'EUR' : 'MAD';
+        @endphp
+        <div class="fk-topbar">
+            <div class="container">
+                <div class="fk-topbar-inner">
+                    <a href="{{ $fkContactPhoneLink }}" class="fk-topbar-phone">
+                        <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                        <span class="fk-topbar-help-label">{{ __('site.topbar.help') }}</span>
+                        <span class="fk-topbar-phone-num">{{ $fkContactPhoneDisplay }}</span>
+                    </a>
+                    <div class="fk-topbar-right">
+                        <span class="fk-topbar-market">{{ $fkMarketCurrency }}</span>
+                        <span class="fk-topbar-sep" aria-hidden="true">&middot;</span>
+                        <div class="fk-topbar-lang">
+                            @include('partials.lang-switcher')
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--=========================-->
         <!--=        Navbar         =-->
         <!--=========================-->
         <header class="site-header header_trans-fixed" data-top="992">
@@ -459,9 +566,11 @@
                                 <li><a href="{{ url('/pricing') }}">{{ __('site.nav.pricing') }}</a></li>
                                 <li><a href="{{ url('/') }}#como-funciona">{{ __('site.nav.how_it_works') }}</a></li>
                                 <li><a href="{{ url('/help-center') }}">{{ __('site.nav.resources') }}</a></li>
+                                <li><a href="{{ url('/contact') }}">{{ __('site.nav.contact') }}</a></li>
                             </ul>
 
                             <div class="nav-right">
+                                <a href="{{ url('/login') }}" class="nav-login">{{ __('site.nav.login') }}</a>
                                 <a href="{{ url('/register') }}" class="nav-btn">{{ __('site.nav.cta') }}</a>
                             </div>
                         </div>
@@ -569,36 +678,7 @@
                         </div>
 
                         <div class="fk-footer-bar-right">
-                            @php
-                                $fkLangs   = ['es' => __('site.lang.es'), 'fr' => __('site.lang.fr'), 'en' => __('site.lang.en')];
-                                $fkCurrent = app()->getLocale();
-                                $fkLabel   = $fkLangs[$fkCurrent] ?? 'Español';
-                            @endphp
-                            <div class="fk-lang-switcher">
-                                <button class="fk-lang-btn" type="button" id="fkLangBtn"
-                                        aria-expanded="false" aria-haspopup="listbox"
-                                        aria-label="{{ __('site.lang.label') }}">
-                                    <svg class="fk-lang-globe" width="14" height="14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"/></svg>
-                                    <span class="fk-lang-label">{{ $fkLabel }}</span>
-                                    <svg class="fk-lang-chevron" width="12" height="12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/></svg>
-                                </button>
-                                <div class="fk-lang-panel" id="fkLangPanel" role="listbox" aria-label="{{ __('site.lang.label') }}">
-                                    @foreach($fkLangs as $fkCode => $fkName)
-                                    <form method="POST" action="{{ url('/locale') }}" class="fk-lang-form">
-                                        @csrf
-                                        <input type="hidden" name="locale" value="{{ $fkCode }}">
-                                        <button type="submit" class="fk-lang-item {{ $fkCurrent === $fkCode ? 'fk-active' : '' }}">
-                                            @if($fkCurrent === $fkCode)
-                                                <svg class="fk-lang-chk" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                                            @else
-                                                <span class="fk-lang-chk-empty" aria-hidden="true"></span>
-                                            @endif
-                                            {{ $fkName }}
-                                        </button>
-                                    </form>
-                                    @endforeach
-                                </div>
-                            </div>
+                            @include('partials.lang-switcher')
 
                             <div class="fk-footer-socials">
                                 <a href="https://www.facebook.com/fakturalista" class="fk-footer-social-icon" aria-label="Facebook">
@@ -641,9 +721,12 @@
 
     <script>
     (function () {
-        function initFkLang() {
-            var btn   = document.getElementById('fkLangBtn');
-            var panel = document.getElementById('fkLangPanel');
+        // Scoped per-instance (not a single fixed id) so the same
+        // switcher can appear twice on one page - the top bar and the
+        // footer - without colliding.
+        function initFkLangInstance(root) {
+            var btn   = root.querySelector('.fk-lang-btn');
+            var panel = root.querySelector('.fk-lang-panel');
             if (!btn || !panel) return;
 
             function position() {
@@ -653,9 +736,10 @@
                 var vw = window.innerWidth;
                 var gap = 6;
 
-                // Prefer opening upward (footer placement); fall back to downward
-                var top = r.top - ph - gap;
-                if (top < 8) top = r.bottom + gap;
+                // Prefer opening downward (top-bar placement); fall back
+                // upward if there isn't room below (footer placement).
+                var top = r.bottom + gap;
+                if (top + ph > window.innerHeight - 8) top = r.top - ph - gap;
 
                 // Align to button left; clamp so panel stays in viewport
                 var left = r.left;
@@ -692,6 +776,10 @@
             window.addEventListener('scroll', function () {
                 if (panel.classList.contains('fk-open')) position();
             }, { passive: true });
+        }
+
+        function initFkLang() {
+            document.querySelectorAll('.fk-lang-switcher').forEach(initFkLangInstance);
         }
 
         if (document.readyState === 'loading') {

@@ -45,7 +45,9 @@ $siteRoutes = function () {
         ->middleware('throttle:login-finder')
         ->name('login.find-workspace');
     Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-    Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.send');
+    Route::post('/contact', [HomeController::class, 'sendContact'])
+        ->middleware('throttle:contact')
+        ->name('contact.send');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/faq', [HomeController::class, 'faq'])->name('faq');

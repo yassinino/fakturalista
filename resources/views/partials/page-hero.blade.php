@@ -9,7 +9,7 @@
                     {{ $eyebrow }}
                 </div>
             @endif
-            <h1 class="page-title">{{ $title }}</h1>
+            <h1 class="page-title">{!! $title_html ?? e($title) !!}</h1>
             @foreach ($paragraphs ?? [] as $para)
                 <p>{{ $para }}</p>
             @endforeach
