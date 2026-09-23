@@ -22,6 +22,7 @@ use App\Http\Controllers\VerifactuCertificateController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TaxPresetController;
 use App\Http\Controllers\UsageController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,10 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         // Customers
         Route::post('/customers/bulk-delete', [CustomerController::class, 'bulkDelete']);
         Route::resource('/customers', CustomerController::class);
+
+        // Users (team management) - seat limit enforced via PlanService,
+        // mutations restricted to admins (see UserController).
+        Route::resource('/users', UserController::class)->except(['create', 'edit']);
 
         // Quotes
         Route::post('/quotes/bulk-delete',       [QuoteController::class, 'bulkDelete']);

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
         'locale',
         'avatar_path',
     ];
@@ -63,5 +64,22 @@ class User extends Authenticatable
         }
 
         return Storage::disk('public')->url($this->avatar_path);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * The tenant's account owner (tenants.owner_email) - always an admin,
+     * and the one user who can never be removed or demoted (see
+     * UserController).
+     */
+    public function isOwner(): bool
+    {
+        $ownerEmail = tenancy()->tenant?->owner_email;
+
+        return $ownerEmail !== null && strcasecmp($this->email, $ownerEmail) === 0;
     }
 }

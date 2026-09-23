@@ -33,6 +33,7 @@ const catalogNav = [
 ];
 
 const bottomNav = [
+  { to: "backend-users",     i18nKey: "nav.users",     icon: "fa fa-user-group" },
   { to: "backend-settings",  i18nKey: "nav.settings",  icon: "fa fa-gear" },
 ];
 
@@ -55,6 +56,7 @@ const ROUTE_SECTION = {
   "backend-create-item":          "backend-items",
   "backend-edit-item":            "backend-items",
   "backend-templates":            "backend-templates",
+  "backend-users":                "backend-users",
   "backend-settings":             "backend-settings",
   "backend-profile":              "backend-settings",
   "backend-subscription":         "backend-settings",

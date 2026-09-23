@@ -151,6 +151,14 @@ class TenantProvisioningService
                     // tenant's very first login would otherwise render in
                     // Spanish. See docs/morocco-phase-1a-implementation.md.
                     'locale'   => $data['language'],
+                    // The account owner must always be an admin (team
+                    // management - Users page). Explicit here because this
+                    // user is created AFTER the tenant DB's migrations run,
+                    // so the 'role' column's own migration-time backfill
+                    // (which only helps pre-existing tenants) never sees
+                    // this row - the column default ('member') would
+                    // otherwise apply to every brand-new tenant's owner.
+                    'role'     => 'admin',
                 ]);
             } finally {
                 try {

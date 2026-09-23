@@ -46,6 +46,7 @@ const Items      = () => import("@/views/admin/items/index.vue");
 const CreateItem = () => import("@/views/admin/items/create.vue");
 const EditItem   = () => import("@/views/admin/items/edit.vue");
 const Profile = () => import("@/views/admin/profile.vue");
+const Users = () => import("@/views/admin/users.vue");
 const Settings = () => import("@/views/admin/settings.vue");
 const Templates = () => import("@/views/admin/templates.vue");
 const Dashboard = () => import("@/views/admin/dashboard.vue");
@@ -206,6 +207,14 @@ const routes = [
       {
         path: "settings/verifactu",
         redirect: { name: 'backend-settings', hash: '#verifactu' },
+      },
+      {
+        path: "users",
+        name: "backend-users",
+        component: Users,
+        meta: {
+          requiresAuth: true
+        }
       },
       {
         path: "settings",
