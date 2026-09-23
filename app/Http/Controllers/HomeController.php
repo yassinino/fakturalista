@@ -17,17 +17,40 @@ use App\Services\PlanPricingPresenter;
 class HomeController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $locale = app()->getLocale();
 
+        // Same market resolution as pricing() below - market is
+        // independent of locale, defaults to Morocco, and is remembered
+        // in the session so it stays consistent while browsing the site.
+        $market = strtoupper((string) $request->query('market', ''));
+        if (in_array($market, ['MA', 'ES'], true)) {
+            $request->session()->put('public_market', $market);
+        } else {
+            $market = $request->session()->get('public_market', 'MA');
+        }
+
         $plans = Plan::on('mysql')
             ->where('active', true)
-            ->with(['marketingItems' => fn ($q) => $q->orderBy('sort_order')])
+            ->with([
+                'limits',
+                'features',
+                'marketingItems' => fn ($q) => $q->orderBy('sort_order'),
+                'prices',
+            ])
             ->orderBy('sort_order')
             ->get();
 
-        return view('index', compact('plans', 'locale'));
+        // Same presentation layer as pricing() below - the homepage and
+        // /pricing must never disagree on what a plan costs or includes
+        // (see PlanPricingPresenter's own docblock).
+        $baselineFeatureSlugs = PlanPricingPresenter::baselineFeatureSlugs($plans);
+        $cards = $plans->map(
+            fn (Plan $plan) => PlanPricingPresenter::present($plan, $locale, $market, $baselineFeatureSlugs)
+        );
+
+        return view('index', compact('cards', 'locale', 'market'));
     }
 
     public function contact()

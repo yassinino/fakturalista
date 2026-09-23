@@ -172,7 +172,7 @@ return [
         // Pricing (preview)
         'pricing_title'       => 'A plan for every stage of your business',
         'pricing_text'        => 'Start for free and upgrade whenever you need to. No hidden costs.',
-        'pricing_trial_note'  => '14-day free trial',
+        'pricing_trial_note'  => ':days-day free trial',
         'pricing_cta_secondary' => 'View plans',
 
         // Spain / VERI*FACTU (teaser section, links to /verifactu)

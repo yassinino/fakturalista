@@ -608,7 +608,16 @@ html { scroll-behavior: smooth; }
 .fk-plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
 .fk-plan-price .amount { font-size: 34px; font-weight: 700; color: var(--fk-ink); }
 .fk-plan-price .period { font-size: 14px; color: var(--fk-muted); }
-.fk-plan-trial { font-size: 12.5px; color: var(--fk-muted); margin: 0 0 24px; }
+.fk-plan-trial { font-size: 12.5px; color: var(--fk-muted); margin: 0 0 16px; }
+.fk-plan-capacity {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fk-ink);
+    background: var(--fk-pink-soft);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 0 18px;
+}
 .fk-plan-items { list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 10px; flex: 1; }
 .fk-plan-items li { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: var(--fk-ink); }
 .fk-plan-items svg { flex-shrink: 0; color: var(--fk-pink); margin-top: 3px; }
@@ -1152,35 +1161,42 @@ document.addEventListener('click', function (e) {
             </div>
 
             <div class="fk-pricing-grid fk-reveal">
-                @foreach ($plans as $plan)
-                    @php
-                        $planName  = $plan->translate('name', $locale);
-                        $planDesc  = $plan->translate('short_description', $locale);
-                        $planBadge = $plan->translate('badge', $locale);
-                        $items     = $plan->marketingItems->take(4);
-                    @endphp
-                    <div class="fk-plan-card {{ $plan->is_featured ? 'fk-plan-card--featured' : '' }}">
-                        @if ($planBadge)
-                            <span class="fk-plan-badge">{{ $planBadge }}</span>
+                {{-- Each $card is fully pre-computed by PlanPricingPresenter from
+                     Plan/PlanLimit/PlanPrice/Feature - the SAME presenter and the
+                     SAME $cards shape /pricing uses, so this section can never
+                     drift from the main pricing page (see HomeController::index()). --}}
+                @foreach ($cards as $card)
+                    <div class="fk-plan-card {{ $card['is_featured'] ? 'fk-plan-card--featured' : '' }}">
+                        @if ($card['badge'])
+                            <span class="fk-plan-badge">{{ $card['badge'] }}</span>
                         @endif
-                        <p class="fk-plan-name">{{ $planName }}</p>
-                        <p class="fk-plan-desc">{{ $planDesc }}</p>
+                        <p class="fk-plan-name">{{ $card['name'] }}</p>
+                        <p class="fk-plan-desc">{{ $card['description'] }}</p>
                         <div class="fk-plan-price">
-                            <span class="amount">{{ $plan->formattedPrice() }}&nbsp;{{ strtoupper($plan->currency) }}</span>
-                            <span class="period">{{ __('site.pricing.period') }}</span>
+                            @if ($card['price'] !== null)
+                                <span class="amount">{{ $card['price'] }}&nbsp;{{ $card['currency'] }}</span>
+                                <span class="period">{{ __('site.pricing.period') }}</span>
+                            @else
+                                <span class="amount">{{ __('site.pricing.price_unavailable') }}</span>
+                            @endif
                         </div>
-                        @if ($plan->trial_days)
-                            <p class="fk-plan-trial">{{ __('site.home.pricing_trial_note') }}</p>
+                        @if ($card['trial_days'])
+                            <p class="fk-plan-trial">{{ __('site.home.pricing_trial_note', ['days' => $card['trial_days']]) }}</p>
                         @endif
+                        <p class="fk-plan-capacity">{{ $card['capacity_line'] }}</p>
                         <ul class="fk-plan-items">
-                            @foreach ($items as $item)
+                            @foreach ($card['benefits'] as $benefit)
                                 <li>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    {{ $item->text($locale) }}
+                                    {{ $benefit }}
                                 </li>
                             @endforeach
                         </ul>
-                        <a href="{{ url('/register') }}" class="fk-plan-btn {{ $plan->is_featured ? 'fk-plan-btn--primary' : '' }}">
+                        {{-- Homepage teaser deliberately uses one uniform CTA label
+                             (unlike /pricing's per-plan button text) - the target
+                             URL still comes from the shared presenter, so it's
+                             never a second registration route. --}}
+                        <a href="{{ $card['button_url'] }}" class="fk-plan-btn {{ $card['is_featured'] ? 'fk-plan-btn--primary' : '' }}">
                             {{ __('site.nav.cta') }}
                         </a>
                     </div>

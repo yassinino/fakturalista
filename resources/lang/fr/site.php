@@ -172,7 +172,7 @@ return [
         // Tarifs (aperçu)
         'pricing_title'       => 'Un plan pour chaque étape de votre activité',
         'pricing_text'        => 'Commencez gratuitement et évoluez quand vous en avez besoin. Sans coûts cachés.',
-        'pricing_trial_note'  => 'Essai gratuit de 14 jours',
+        'pricing_trial_note'  => 'Essai gratuit de :days jours',
         'pricing_cta_secondary' => 'Voir les tarifs',
 
         // Espagne / VERI*FACTU (section teaser, lien vers /verifactu)

@@ -172,7 +172,7 @@ return [
         // Precios (preview)
         'pricing_title'       => 'Un plan para cada etapa de tu negocio',
         'pricing_text'        => 'Empieza gratis y actualiza cuando lo necesites. Sin costes ocultos.',
-        'pricing_trial_note'  => 'Prueba gratuita de 14 días',
+        'pricing_trial_note'  => 'Prueba gratuita de :days días',
         'pricing_cta_secondary' => 'Ver planes',
 
         // España / VERI*FACTU (teaser section, links to /verifactu)

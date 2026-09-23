@@ -82,6 +82,11 @@ class PlanPricingPresenter
             'currency'      => $planPrice ? ($planPrice->currency === 'EUR' ? '€' : $planPrice->currency) : null,
             'capacity_line' => self::capacityLine($plan->getLimit('invoices_per_month')),
             'benefits'      => self::benefits($plan, $locale, $baselineFeatureSlugs),
+            // Database-driven, never a second hardcoded "14 days" - both
+            // /pricing's reassurance strip and the homepage's per-card
+            // trial note must reflect whatever Filament actually has
+            // configured for this plan.
+            'trial_days'    => $plan->trial_days,
         ];
     }
 
