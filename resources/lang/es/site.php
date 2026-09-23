@@ -102,6 +102,9 @@ return [
         'show2_image_alt'=> 'Vista de un presupuesto convirtiéndose en factura',
         'show2_mock_status_accepted' => 'Aceptado',
         'show2_mock_status_sent'     => 'Enviada',
+        'show2_mock_quote_number'    => 'Presupuesto #0032',
+        'show2_mock_invoice_number'  => 'Factura #0045',
+        'show2_mock_client'          => 'Estudio Creativo S.L.',
 
         // Showcase - Clientes / pagos / servicios
         'show3_title'    => 'Clientes, pagos y servicios. Todo organizado.',
@@ -111,6 +114,12 @@ return [
         'show3_bullet_3' => 'Pagos online y seguimiento de cobros',
         'show3_image_alt'=> 'Panel de clientes y catálogo de servicios de Fakturalista',
         'show3_mock_payment_received' => 'Pago recibido — Factura #0041',
+        'show3_mock_client1_initials' => 'MG',
+        'show3_mock_client1_name'     => 'María García',
+        'show3_mock_client1_sub'      => '8 facturas',
+        'show3_mock_client2_initials' => 'TC',
+        'show3_mock_client2_name'     => 'Taller Creativo S.L.',
+        'show3_mock_client2_sub'      => '3 presupuestos',
 
         // Showcase - Informes
         'show4_title'    => 'Entiende tu negocio de un vistazo',
@@ -260,6 +269,16 @@ return [
         'error_msg'        => 'Por favor revisa los campos e inténtalo de nuevo.',
         'already_processing' => 'Ya estamos procesando una solicitud para este email. Espera unos segundos e inténtalo de nuevo.',
         'provisioning_failed' => 'No hemos podido crear tu cuenta en este momento. Inténtalo de nuevo.',
+        'validation' => [
+            'name_required'     => 'Indica tu nombre completo.',
+            'email_required'    => 'Indica tu email.',
+            'email_invalid'     => 'Introduce un email válido.',
+            'password_required' => 'Elige una contraseña.',
+            'password_min'      => 'La contraseña debe tener al menos 8 caracteres.',
+            'captcha_required'  => 'Resuelve la comprobación de seguridad.',
+            'captcha_incorrect' => 'La respuesta no es correcta. Inténtalo de nuevo.',
+            'email_already_used'=> 'Ya existe una cuenta con este email. Inicia sesión en su lugar.',
+        ],
     ],
 
     'loginFinder' => [
@@ -738,6 +757,13 @@ return [
         'what_p1'    => 'La normativa española establece nuevos requisitos para los programas y sistemas informáticos que se utilizan para facturar, con el objetivo de garantizar que los registros de facturación sean íntegros, trazables e inalterables.',
         'what_p2'    => 'VERI*FACTU es el modo bajo el que estos sistemas pueden remitir los registros de facturación a la Agencia Tributaria (AEAT), de acuerdo con las especificaciones técnicas establecidas por la normativa.',
         'what_p3'    => 'En la práctica, esto afecta sobre todo a cómo deben comportarse los programas de facturación por dentro, no solo al aspecto de las facturas que ya conoces.',
+        'flow_aria_label'   => 'Flujo: factura, registro de facturación, envío a la AEAT',
+        'flow_invoice_label'=> 'Factura',
+        'flow_invoice_sub'  => 'Tu operación de venta',
+        'flow_record_label' => 'Registro de facturación',
+        'flow_record_sub'   => 'Íntegro, trazable e inalterable',
+        'flow_aeat_label'   => 'Agencia Tributaria (AEAT)',
+        'flow_aeat_sub'     => 'Bajo el modo VERI*FACTU',
 
         // ¿Por qué está cambiando la facturación?
         'why_title'   => '¿Por qué está cambiando la facturación?',
@@ -756,8 +782,10 @@ return [
         // Fechas
         'dates_title' => '¿Cuándo entran en vigor los nuevos requisitos?',
         'dates_intro' => 'Los plazos aplicables dependen del tipo de contribuyente:',
+        'date_1_badge' => '1 ENE<br>2027',
         'date_1_label' => 'Antes del 1 de enero de 2027',
         'date_1_text'  => 'Contribuyentes incluidos en el artículo 3.1.a) del Real Decreto 1007/2023.',
+        'date_2_badge' => '1 JUL<br>2027',
         'date_2_label' => 'Antes del 1 de julio de 2027',
         'date_2_text'  => 'El resto de contribuyentes incluidos en el artículo 3.1.',
         'dates_note'   => 'Las fechas y obligaciones pueden variar según la situación fiscal del contribuyente. Consulta siempre la información oficial de la Agencia Tributaria.',

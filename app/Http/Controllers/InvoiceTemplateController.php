@@ -37,12 +37,20 @@ class InvoiceTemplateController extends Controller
             $template->save();
             $template->refresh();
             $status  = 200;
-            $message = 'Plantilla actualizada correctamente.';
+            $message = match (app()->getLocale()) {
+                'fr'    => 'Modèle mis à jour avec succès.',
+                'es'    => 'Plantilla actualizada correctamente.',
+                default => 'Template updated successfully.',
+            };
         } else {
             $template = InvoiceTemplate::create($data);
             $template->refresh();
             $status  = 201;
-            $message = 'Plantilla creada correctamente.';
+            $message = match (app()->getLocale()) {
+                'fr'    => 'Modèle créé avec succès.',
+                'es'    => 'Plantilla creada correctamente.',
+                default => 'Template created successfully.',
+            };
         }
 
         return response()->json([
@@ -82,7 +90,11 @@ class InvoiceTemplateController extends Controller
         $invoiceTemplate->refresh();
 
         return response()->json([
-            'message'  => 'Plantilla actualizada correctamente.',
+            'message'  => match (app()->getLocale()) {
+                'fr'    => 'Modèle mis à jour avec succès.',
+                'es'    => 'Plantilla actualizada correctamente.',
+                default => 'Template updated successfully.',
+            },
             'template' => $invoiceTemplate,
         ], 200);
     }
@@ -92,7 +104,11 @@ class InvoiceTemplateController extends Controller
         $invoiceTemplate->delete();
 
         return response([
-            'message' => 'Plantilla eliminada.',
+            'message' => match (app()->getLocale()) {
+                'fr'    => 'Modèle supprimé.',
+                'es'    => 'Plantilla eliminada.',
+                default => 'Template deleted.',
+            },
         ], 200);
     }
 

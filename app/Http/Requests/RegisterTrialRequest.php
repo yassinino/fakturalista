@@ -63,12 +63,12 @@ class RegisterTrialRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'      => 'Indica tu nombre completo.',
-            'email.required'     => 'Indica tu email.',
-            'email.email'        => 'Introduce un email válido.',
-            'password.required'  => 'Elige una contraseña.',
-            'password.min'       => 'La contraseña debe tener al menos 8 caracteres.',
-            'captcha_answer.required' => 'Resuelve la comprobación de seguridad.',
+            'name.required'      => __('site.register.validation.name_required'),
+            'email.required'     => __('site.register.validation.email_required'),
+            'email.email'        => __('site.register.validation.email_invalid'),
+            'password.required'  => __('site.register.validation.password_required'),
+            'password.min'       => __('site.register.validation.password_min'),
+            'captcha_answer.required' => __('site.register.validation.captcha_required'),
         ];
     }
 
@@ -91,12 +91,12 @@ class RegisterTrialRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if (!MathCaptchaService::verify($this->input('captcha_answer'))) {
-                $validator->errors()->add('captcha_answer', 'La respuesta no es correcta. Inténtalo de nuevo.');
+                $validator->errors()->add('captcha_answer', __('site.register.validation.captcha_incorrect'));
             }
 
             $email = $this->input('email');
             if ($email && Tenant::where('owner_email', $email)->exists()) {
-                $validator->errors()->add('email', 'Ya existe una cuenta con este email. Inicia sesión en su lugar.');
+                $validator->errors()->add('email', __('site.register.validation.email_already_used'));
             }
         });
     }

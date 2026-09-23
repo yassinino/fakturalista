@@ -73,15 +73,21 @@ class VerifactuCertificateService
         $ok     = @openssl_pkcs12_read($pkcs12Bytes, $parsed, $passphrase);
 
         if (!$ok || empty($parsed['cert'])) {
-            throw new VerifactuCertificateException(
-                'El archivo no es un certificado PKCS#12 válido, o la contraseña indicada es incorrecta.'
-            );
+            throw new VerifactuCertificateException(match (app()->getLocale()) {
+                'fr'    => 'Le fichier n\'est pas un certificat PKCS#12 valide, ou le mot de passe indiqué est incorrect.',
+                'es'    => 'El archivo no es un certificado PKCS#12 válido, o la contraseña indicada es incorrecta.',
+                default => 'The file is not a valid PKCS#12 certificate, or the provided password is incorrect.',
+            });
         }
 
         $info = openssl_x509_parse($parsed['cert']);
 
         if (!$info) {
-            throw new VerifactuCertificateException('No se pudo leer la información del certificado.');
+            throw new VerifactuCertificateException(match (app()->getLocale()) {
+                'fr'    => 'Impossible de lire les informations du certificat.',
+                'es'    => 'No se pudo leer la información del certificado.',
+                default => 'Unable to read the certificate information.',
+            });
         }
 
         return [

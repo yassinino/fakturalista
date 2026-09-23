@@ -266,14 +266,14 @@
                 <p>{{ __('site.verifactu.what_p2') }}</p>
                 <p>{{ __('site.verifactu.what_p3') }}</p>
             </div>
-            <div class="fk-vf-flow fk-reveal" role="img" aria-label="Flujo: factura, registro de facturación, envío a la AEAT">
+            <div class="fk-vf-flow fk-reveal" role="img" aria-label="{{ __('site.verifactu.flow_aria_label') }}">
                 <div class="fk-vf-flow-step">
                     <div class="fk-vf-flow-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 3h10a1 1 0 011 1v16l-3-2-2 2-2-2-2 2-3-2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                     </div>
                     <div>
-                        <p class="fk-vf-flow-label">Factura</p>
-                        <p class="fk-vf-flow-sub">Tu operación de venta</p>
+                        <p class="fk-vf-flow-label">{{ __('site.verifactu.flow_invoice_label') }}</p>
+                        <p class="fk-vf-flow-sub">{{ __('site.verifactu.flow_invoice_sub') }}</p>
                     </div>
                 </div>
                 <div class="fk-vf-flow-connector"></div>
@@ -282,8 +282,8 @@
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                     </div>
                     <div>
-                        <p class="fk-vf-flow-label">Registro de facturación</p>
-                        <p class="fk-vf-flow-sub">Íntegro, trazable e inalterable</p>
+                        <p class="fk-vf-flow-label">{{ __('site.verifactu.flow_record_label') }}</p>
+                        <p class="fk-vf-flow-sub">{{ __('site.verifactu.flow_record_sub') }}</p>
                     </div>
                 </div>
                 <div class="fk-vf-flow-connector"></div>
@@ -292,8 +292,8 @@
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                     </div>
                     <div>
-                        <p class="fk-vf-flow-label">Agencia Tributaria (AEAT)</p>
-                        <p class="fk-vf-flow-sub">Bajo el modo VERI*FACTU</p>
+                        <p class="fk-vf-flow-label">{{ __('site.verifactu.flow_aeat_label') }}</p>
+                        <p class="fk-vf-flow-sub">{{ __('site.verifactu.flow_aeat_sub') }}</p>
                     </div>
                 </div>
             </div>
@@ -346,12 +346,12 @@
             </div>
             <div class="fk-vf-timeline fk-reveal">
                 <div class="fk-vf-milestone">
-                    <div class="fk-vf-milestone-dot">1 ENE<br>2027</div>
+                    <div class="fk-vf-milestone-dot">{!! __('site.verifactu.date_1_badge') !!}</div>
                     <h3>{{ __('site.verifactu.date_1_label') }}</h3>
                     <p>{{ __('site.verifactu.date_1_text') }}</p>
                 </div>
                 <div class="fk-vf-milestone">
-                    <div class="fk-vf-milestone-dot">1 JUL<br>2027</div>
+                    <div class="fk-vf-milestone-dot">{!! __('site.verifactu.date_2_badge') !!}</div>
                     <h3>{{ __('site.verifactu.date_2_label') }}</h3>
                     <p>{{ __('site.verifactu.date_2_text') }}</p>
                 </div>

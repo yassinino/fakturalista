@@ -1079,6 +1079,16 @@ export default {
       tableHeaderBg: "Cabecera tabla (fondo)",
       tableHeaderText: "Cabecera tabla (texto)",
       tableBorder: "Borde de tabla",
+      presets: {
+        pink: "Rosa · Fakturalista",
+        blue: "Azul profesional",
+        skyBlue: "Celeste",
+        violet: "Violeta",
+        emerald: "Verde esmeralda",
+        amber: "Ámbar",
+        red: "Rojo",
+        graphite: "Grafito",
+      },
     },
     typography: {
       fontFamily: "Fuente",
@@ -1130,6 +1140,8 @@ export default {
       paymentTermsRow: "Términos de pago",
       grandTotal: "Total",
       paymentInfo: "Información de pago",
+      customerNumber: "Cliente #",
+      paymentTermsSample: "Neto 30 días",
     },
   },
 

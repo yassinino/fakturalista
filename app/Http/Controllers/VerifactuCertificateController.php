@@ -45,7 +45,11 @@ class VerifactuCertificateController extends Controller
         $company = CompanyProfile::first();
         if (empty($company?->tax_id)) {
             return response()->json([
-                'message' => 'Configura primero el NIF/CIF de tu empresa en Ajustes antes de subir un certificado.',
+                'message' => match (app()->getLocale()) {
+                    'fr'    => 'Configurez d\'abord le NIF/CIF de votre entreprise dans les Paramètres avant de charger un certificat.',
+                    'es'    => 'Configura primero el NIF/CIF de tu empresa en Ajustes antes de subir un certificado.',
+                    default => 'First configure your company\'s Tax ID (NIF/CIF) in Settings before uploading a certificate.',
+                },
             ], 422);
         }
 
@@ -60,7 +64,11 @@ class VerifactuCertificateController extends Controller
         }
 
         return response()->json([
-            'message'     => 'Certificado guardado correctamente.',
+            'message'     => match (app()->getLocale()) {
+                'fr'    => 'Certificat enregistré avec succès.',
+                'es'    => 'Certificado guardado correctamente.',
+                default => 'Certificate saved successfully.',
+            },
             'certificate' => $this->formatCertificate($certificate),
         ]);
     }
@@ -72,7 +80,11 @@ class VerifactuCertificateController extends Controller
             $this->certificates->delete(trim($company->tax_id));
         }
 
-        return response()->json(['message' => 'Certificado eliminado.']);
+        return response()->json(['message' => match (app()->getLocale()) {
+            'fr'    => 'Certificat supprimé.',
+            'es'    => 'Certificado eliminado.',
+            default => 'Certificate deleted.',
+        }]);
     }
 
     private function formatCertificate(VerifactuCertificate $certificate): array

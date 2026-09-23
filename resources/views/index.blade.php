@@ -919,8 +919,8 @@ document.addEventListener('click', function (e) {
                         <div class="fk-app-body">
                             <div class="fk-mock-row">
                                 <div>
-                                    <p class="fk-mock-doc-num">Presupuesto #0032</p>
-                                    <p class="fk-mock-doc-client">Estudio Creativo S.L.</p>
+                                    <p class="fk-mock-doc-num">{{ __('site.home.show2_mock_quote_number') }}</p>
+                                    <p class="fk-mock-doc-client">{{ __('site.home.show2_mock_client') }}</p>
                                 </div>
                                 <span class="fk-badge fk-badge--accepted">{{ __('site.home.show2_mock_status_accepted') }}</span>
                             </div>
@@ -929,8 +929,8 @@ document.addEventListener('click', function (e) {
                             </div>
                             <div class="fk-mock-row">
                                 <div>
-                                    <p class="fk-mock-doc-num">Factura #0045</p>
-                                    <p class="fk-mock-doc-client">Estudio Creativo S.L.</p>
+                                    <p class="fk-mock-doc-num">{{ __('site.home.show2_mock_invoice_number') }}</p>
+                                    <p class="fk-mock-doc-client">{{ __('site.home.show2_mock_client') }}</p>
                                 </div>
                                 <span class="fk-badge fk-badge--sent">{{ __('site.home.show2_mock_status_sent') }}</span>
                             </div>
@@ -956,17 +956,17 @@ document.addEventListener('click', function (e) {
                         <div class="fk-app-body">
                             <div class="fk-mock-clients">
                                 <div class="fk-mock-client">
-                                    <span class="fk-mock-avatar">MG</span>
+                                    <span class="fk-mock-avatar">{{ __('site.home.show3_mock_client1_initials') }}</span>
                                     <div>
-                                        <p class="fk-mock-client-name">María García</p>
-                                        <p class="fk-mock-client-sub">8 facturas</p>
+                                        <p class="fk-mock-client-name">{{ __('site.home.show3_mock_client1_name') }}</p>
+                                        <p class="fk-mock-client-sub">{{ __('site.home.show3_mock_client1_sub') }}</p>
                                     </div>
                                 </div>
                                 <div class="fk-mock-client">
-                                    <span class="fk-mock-avatar">TC</span>
+                                    <span class="fk-mock-avatar">{{ __('site.home.show3_mock_client2_initials') }}</span>
                                     <div>
-                                        <p class="fk-mock-client-name">Taller Creativo S.L.</p>
-                                        <p class="fk-mock-client-sub">3 presupuestos</p>
+                                        <p class="fk-mock-client-name">{{ __('site.home.show3_mock_client2_name') }}</p>
+                                        <p class="fk-mock-client-sub">{{ __('site.home.show3_mock_client2_sub') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -996,14 +996,21 @@ document.addEventListener('click', function (e) {
                     <div class="fk-app-card" role="img" aria-label="{{ __('site.home.show4_image_alt') }}">
                         <div class="fk-app-bar"><span></span><span></span><span></span></div>
                         <div class="fk-app-body">
+                            @php
+                                // Country/market drives currency, never display locale
+                                // (see layouts/master.blade.php's top bar for the same
+                                // session('public_market') pattern) - a French-speaking
+                                // Spain visitor must still see EUR, not MAD.
+                                $fkMockCurrency = session('public_market', 'MA') === 'ES' ? 'EUR' : 'MAD';
+                            @endphp
                             <div class="fk-mock-stats">
                                 <div class="fk-mock-stat">
                                     <p class="fk-mock-stat-label">{{ __('site.home.show4_mock_collected') }}</p>
-                                    <p class="fk-mock-stat-value">3.240,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
+                                    <p class="fk-mock-stat-value">3.240,00&nbsp;{{ $fkMockCurrency }}</p>
                                 </div>
                                 <div class="fk-mock-stat">
                                     <p class="fk-mock-stat-label">{{ __('site.home.show4_mock_pending') }}</p>
-                                    <p class="fk-mock-stat-value">860,00&nbsp;{{ app()->getLocale() === 'es' ? 'EUR' : 'MAD' }}</p>
+                                    <p class="fk-mock-stat-value">860,00&nbsp;{{ $fkMockCurrency }}</p>
                                 </div>
                             </div>
                             <div class="fk-mock-chart" aria-hidden="true">

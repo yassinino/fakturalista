@@ -1079,6 +1079,16 @@ export default {
       tableHeaderBg: "Table header (bg)",
       tableHeaderText: "Table header (text)",
       tableBorder: "Table border",
+      presets: {
+        pink: "Pink · Fakturalista",
+        blue: "Professional blue",
+        skyBlue: "Sky blue",
+        violet: "Violet",
+        emerald: "Emerald green",
+        amber: "Amber",
+        red: "Red",
+        graphite: "Graphite",
+      },
     },
     typography: {
       fontFamily: "Font",
@@ -1130,6 +1140,8 @@ export default {
       paymentTermsRow: "Payment terms",
       grandTotal: "Total",
       paymentInfo: "Payment info",
+      customerNumber: "Customer #",
+      paymentTermsSample: "Net 30 days",
     },
   },
 

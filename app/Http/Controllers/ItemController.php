@@ -87,7 +87,7 @@ class ItemController extends Controller
             'description' => $request->description,
         ]);
 
-        return response()->json(['message' => '¡Producto añadido!'], 201);
+        return response()->json(['message' => 'Item added!'], 201);
     }
 
     /**
@@ -145,7 +145,7 @@ class ItemController extends Controller
             'description' => $request->description,
         ]);
 
-        return response(['message' => '¡Producto actualizado!'], 200);
+        return response(['message' => 'Item updated!'], 200);
     }
 
     /**
@@ -155,7 +155,7 @@ class ItemController extends Controller
     {
         Item::where('uuid', $item->uuid)->delete();
 
-        return response(['message' => '¡Producto eliminado!'], 200);
+        return response(['message' => 'Item deleted!'], 200);
     }
 
     public function bulkDelete(Request $request)

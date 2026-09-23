@@ -103,7 +103,7 @@
                     <div class="col-lg-6 pix-order-one">
                         <div class="section-title style-two">
                             <h2 class="title wow pixFadeUp">
-                                Genera informes <br>completos con un solo
+                                Generate <br>complete reports with a single click
                             </h2>
 
                             <p class="wow pixFadeUp" data-wow-delay="0.3s">

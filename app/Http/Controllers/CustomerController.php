@@ -265,7 +265,7 @@ class CustomerController extends Controller
     {
         Customer::where('id', $customer->id)->delete();
 
-        return response(['message' => 'Cliente eliminado!'], 200);
+        return response(['message' => 'Customer deleted!'], 200);
     }
 
     public function bulkDelete(Request $request)

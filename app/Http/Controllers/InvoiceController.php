@@ -174,7 +174,7 @@ class InvoiceController extends Controller
         });
 
         return response()->json([
-            'message' => '¡Factura añadida!',
+            'message' => __('invoice.actions.created'),
             // Authoritative values, for a caller that wants to display them
             // immediately instead of waiting for the next show()/edit() -
             // the frontend's own totals remain a preview only (Morocco
@@ -237,7 +237,7 @@ class InvoiceController extends Controller
     {
         if ($invoice->isLocked()) {
             return response()->json([
-                'message' => 'Esta factura ya ha sido emitida y no se puede modificar. Usa "Duplicar" para crear una versión editable.',
+                'message' => __('invoice.actions.locked_cannot_edit'),
             ], 403);
         }
 
@@ -271,7 +271,7 @@ class InvoiceController extends Controller
         $this->persistTaxBreakdown($invoice, $calculation);
 
         return response()->json([
-            'message' => '¡Factura actualizada!',
+            'message' => __('invoice.actions.updated'),
             'invoice' => $this->calculationResponse($invoice->fresh(), $calculation),
         ], 200);
     }
@@ -287,7 +287,7 @@ class InvoiceController extends Controller
         }
 
         return response()->json([
-            'message'   => '¡Factura emitida!',
+            'message'   => __('invoice.actions.issued'),
             'reference' => $invoice->reference,
             'status'    => $invoice->status,
             'issued_at' => $invoice->issued_at,
@@ -298,7 +298,7 @@ class InvoiceController extends Controller
     {
         if (!$invoice->isIssued()) {
             return response()->json([
-                'message' => "Solo se pueden marcar como pagadas las facturas emitidas (estado actual: '{$invoice->status}').",
+                'message' => __('invoice.actions.mark_paid_requires_issued', ['status' => $invoice->status]),
             ], 422);
         }
 
@@ -307,7 +307,7 @@ class InvoiceController extends Controller
 
         $invoice->logHistory(InvoiceHistory::ACTION_PAID);
 
-        return response()->json(['message' => '¡Factura marcada como pagada!', 'status' => $invoice->status], 200);
+        return response()->json(['message' => __('invoice.actions.marked_paid'), 'status' => $invoice->status], 200);
     }
 
     /**
@@ -322,11 +322,11 @@ class InvoiceController extends Controller
     public function cancel(Invoice $invoice, Request $request): JsonResponse
     {
         if ($invoice->isCancelled()) {
-            return response()->json(['message' => 'La factura ya está cancelada.'], 422);
+            return response()->json(['message' => __('invoice.actions.already_cancelled')], 422);
         }
 
         if ($invoice->isDraft()) {
-            return response()->json(['message' => 'Un borrador se elimina, no se cancela.'], 422);
+            return response()->json(['message' => __('invoice.actions.draft_deleted_not_cancelled')], 422);
         }
 
         $validated = $request->validate([
@@ -345,16 +345,14 @@ class InvoiceController extends Controller
 
         if ($mechanism === InvoiceRectificationService::MECHANISM_REQUIRES_REVIEW) {
             return response()->json([
-                'message' => 'No podemos determinar automáticamente si este motivo requiere una anulación o una '
-                    . 'factura rectificativa. Indica explícitamente el mecanismo a aplicar.',
+                'message' => __('invoice.actions.requires_review'),
                 'requires_review' => true,
             ], 422);
         }
 
         if ($mechanism !== InvoiceRectificationService::MECHANISM_ANULACION) {
             return response()->json([
-                'message' => 'Este motivo corresponde a una factura rectificativa, no a una anulación. '
-                    . 'Usa la opción "Crear rectificativa" en su lugar.',
+                'message' => __('invoice.actions.suggests_rectify'),
                 'suggested_mechanism' => $mechanism,
             ], 422);
         }
@@ -365,7 +363,7 @@ class InvoiceController extends Controller
 
         $invoice->logHistory(InvoiceHistory::ACTION_CANCELLED, ['reason' => $validated['reason']]);
 
-        return response()->json(['message' => '¡Factura cancelada!', 'status' => $invoice->status], 200);
+        return response()->json(['message' => __('invoice.actions.cancelled'), 'status' => $invoice->status], 200);
     }
 
     /**
@@ -396,16 +394,14 @@ class InvoiceController extends Controller
 
         if ($mechanism === InvoiceRectificationService::MECHANISM_REQUIRES_REVIEW) {
             return response()->json([
-                'message' => 'No podemos determinar automáticamente si este motivo requiere una anulación o una '
-                    . 'factura rectificativa. Indica explícitamente el mecanismo ("mode") a aplicar.',
+                'message' => __('invoice.actions.requires_review'),
                 'requires_review' => true,
             ], 422);
         }
 
         if ($mechanism !== InvoiceRectificationService::MECHANISM_RECTIFICATIVA) {
             return response()->json([
-                'message' => 'Este motivo corresponde a una anulación, no a una factura rectificativa. '
-                    . 'Usa la opción "Cancelar / anular" en su lugar.',
+                'message' => __('invoice.actions.suggests_cancel'),
                 'suggested_mechanism' => $mechanism,
             ], 422);
         }
@@ -422,7 +418,7 @@ class InvoiceController extends Controller
         }
 
         return response()->json([
-            'message'             => '¡Factura rectificativa creada! Revisa los datos y emítela cuando esté lista.',
+            'message'             => __('invoice.actions.rectification_created'),
             'rectification_uuid'  => $rectification->uuid,
             'reference'           => $rectification->reference,
         ], 200);
@@ -506,7 +502,7 @@ class InvoiceController extends Controller
         });
 
         return response()->json([
-            'message'        => '¡Factura duplicada! Se ha creado un nuevo borrador.',
+            'message'        => __('invoice.actions.duplicated'),
             'duplicate_uuid' => $duplicate->uuid,
             'reference'      => $duplicate->reference,
         ], 200);
@@ -528,13 +524,13 @@ class InvoiceController extends Controller
 
         if ($invoice->isCancelled()) {
             return response()->json([
-                'message' => "Impossible d'envoyer une facture annulée.",
+                'message' => __('invoice.actions.cannot_send_cancelled'),
             ], 422);
         }
 
         if (empty($customer?->email)) {
             return response()->json([
-                'message' => "Ce client n'a pas d'adresse e-mail. Ajoutez-en une sur sa fiche avant d'envoyer.",
+                'message' => __('invoice.actions.customer_missing_email'),
             ], 422);
         }
 
@@ -573,7 +569,7 @@ class InvoiceController extends Controller
             ));
         } catch (\Exception $e) {
             return response()->json([
-                'message' => "La facture a été émise, mais l'e-mail n'a pas pu être envoyé. Réessayez.",
+                'message' => __('invoice.actions.email_send_failed'),
                 'status'  => $invoice->status,
             ], 500);
         }
@@ -582,7 +578,7 @@ class InvoiceController extends Controller
         $invoice->logHistory(InvoiceHistory::ACTION_SENT, ['to' => $customer->email]);
 
         return response()->json([
-            'message' => "Facture envoyée à {$customer->email}.",
+            'message' => __('invoice.actions.sent_to', ['email' => $customer->email]),
             'status'  => $invoice->status,
             'sent_to' => $customer->email,
             'sent_at' => $sentAt,
@@ -607,13 +603,13 @@ class InvoiceController extends Controller
 
         if ($invoice->isCancelled()) {
             return response()->json([
-                'message' => "Impossible de partager une facture annulée.",
+                'message' => __('invoice.actions.cannot_share_cancelled'),
             ], 422);
         }
 
         if (empty($customer?->phone)) {
             return response()->json([
-                'message' => "Ce client n'a pas de numéro de téléphone. Ajoutez-en un sur sa fiche.",
+                'message' => __('invoice.actions.customer_missing_phone'),
             ], 422);
         }
 
@@ -638,12 +634,16 @@ class InvoiceController extends Controller
         $companyName = $company?->trade_name ?: ($company?->legal_name ?: config('app.name'));
 
         $phone   = $this->normalizeWhatsAppNumber($customer->phone);
-        $message = "Bonjour, veuillez trouver votre facture {$invoice->reference} de {$companyName} à ce lien : {$pdfUrl}. Merci !";
+        $message = __('invoice.actions.whatsapp_message', [
+            'reference' => $invoice->reference,
+            'company'   => $companyName,
+            'link'      => $pdfUrl,
+        ]);
 
         // Append payment link if Stripe is configured
         if (!empty(config('services.stripe.secret'))) {
             $payLink  = request()->getSchemeAndHttpHost() . '/pay/' . $invoice->uuid;
-            $message .= " 💳 Payer en ligne : {$payLink}";
+            $message .= __('invoice.actions.whatsapp_pay_online_suffix', ['link' => $payLink]);
         }
         $waLink  = 'https://wa.me/' . $phone . '?text=' . rawurlencode($message);
 
@@ -675,7 +675,7 @@ class InvoiceController extends Controller
         Storage::disk('public')->put($filePath, $pdfContent);
 
         return response()->json([
-            'message' => 'Factura imprimida!',
+            'message' => __('invoice.actions.printed'),
             'pdf_url' => Storage::url($filePath),
         ], 200);
     }
@@ -692,14 +692,13 @@ class InvoiceController extends Controller
     {
         if (!$invoice->isDraft()) {
             return response()->json([
-                'message' => 'Esta factura ya ha sido emitida y no se puede eliminar. '
-                    . 'Usa "Rectificar" o "Cancelar" según corresponda.',
+                'message' => __('invoice.actions.locked_cannot_delete'),
             ], 403);
         }
 
         Invoice::where('uuid', $invoice->uuid)->delete();
 
-        return response()->json(['message' => '¡Factura eliminada!'], 200);
+        return response()->json(['message' => __('invoice.actions.deleted')], 200);
     }
 
     /**
@@ -723,8 +722,12 @@ class InvoiceController extends Controller
             Invoice::whereIn('id', $deletable->pluck('id'))->delete();
         }
 
+        $message = $skipped->isNotEmpty()
+            ? __('invoice.actions.bulk_deleted_with_skipped', ['count' => $deletable->count(), 'skipped' => $skipped->count()])
+            : __('invoice.actions.bulk_deleted', ['count' => $deletable->count()]);
+
         return response()->json([
-            'message'      => "{$deletable->count()} invoice(s) deleted." . ($skipped->isNotEmpty() ? " {$skipped->count()} skipped (already issued)." : ''),
+            'message'      => $message,
             'deleted'      => $deletable->pluck('uuid')->values(),
             'skipped'      => $skipped->pluck('uuid')->values(),
         ]);
@@ -744,7 +747,7 @@ class InvoiceController extends Controller
     private function issueInvoice(Invoice $invoice): void
     {
         if (!$invoice->isDraft()) {
-            throw new \RuntimeException("No se puede emitir: la factura ya tiene el estado '{$invoice->status}'.");
+            throw new \RuntimeException(__('invoice.actions.issue_invalid_state', ['status' => $invoice->status]));
         }
 
         $company  = CompanyProfile::first();
@@ -757,9 +760,7 @@ class InvoiceController extends Controller
         // Scoped to Spain only, same boundary as the F1/customer-NIF check
         // below (Morocco Phase 1A.1/1B).
         if ($this->tenantContext->isSpain() && empty($company?->tax_id)) {
-            throw new \RuntimeException(
-                'Tu empresa no tiene un NIF/CIF configurado. Complétalo en Ajustes antes de emitir facturas.'
-            );
+            throw new \RuntimeException(__('invoice.actions.spain_company_missing_tax_id'));
         }
 
         // Fakturalista only issues complete invoices (F1) by default today
@@ -773,9 +774,7 @@ class InvoiceController extends Controller
         // concern for Phase 1B - this is not a stand-in for them.
         $resolvedType = $invoice->invoice_type ?: Invoice::TYPE_F1;
         if ($resolvedType === Invoice::TYPE_F1 && $this->tenantContext->isSpain() && empty($customer?->tax_id)) {
-            throw new \RuntimeException(
-                'Este cliente no tiene NIF/CIF registrado. Añádelo en su ficha antes de emitir esta factura.'
-            );
+            throw new \RuntimeException(__('invoice.actions.spain_customer_missing_tax_id'));
         }
 
         DB::transaction(function () use ($invoice, $company, $customer) {

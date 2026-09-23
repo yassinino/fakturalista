@@ -102,6 +102,9 @@ return [
         'show2_image_alt'=> 'A quote being converted into an invoice',
         'show2_mock_status_accepted' => 'Accepted',
         'show2_mock_status_sent'     => 'Sent',
+        'show2_mock_quote_number'    => 'Quote #0032',
+        'show2_mock_invoice_number'  => 'Invoice #0045',
+        'show2_mock_client'          => 'Creative Studio LLC',
 
         // Showcase - Clients / payments / services
         'show3_title'    => 'Clients, payments and services. All organized.',
@@ -111,6 +114,12 @@ return [
         'show3_bullet_3' => 'Online payments and payment tracking',
         'show3_image_alt'=> 'Fakturalista clients and service catalog panel',
         'show3_mock_payment_received' => 'Payment received — Invoice #0041',
+        'show3_mock_client1_initials' => 'JD',
+        'show3_mock_client1_name'     => 'Jane Doe',
+        'show3_mock_client1_sub'      => '8 invoices',
+        'show3_mock_client2_initials' => 'CW',
+        'show3_mock_client2_name'     => 'Creative Workshop LLC',
+        'show3_mock_client2_sub'      => '3 quotes',
 
         // Showcase - Reports
         'show4_title'    => 'Understand your business at a glance',
@@ -260,6 +269,16 @@ return [
         'error_msg'        => 'Please review the fields and try again.',
         'already_processing' => "We're already processing a request for this email. Wait a few seconds and try again.",
         'provisioning_failed' => "We couldn't create your account right now. Please try again.",
+        'validation' => [
+            'name_required'     => 'Please enter your full name.',
+            'email_required'    => 'Please enter your email.',
+            'email_invalid'     => 'Please enter a valid email address.',
+            'password_required' => 'Please choose a password.',
+            'password_min'      => 'Your password must be at least 8 characters long.',
+            'captcha_required'  => 'Please solve the security check.',
+            'captcha_incorrect' => "That answer isn't correct. Please try again.",
+            'email_already_used'=> 'An account already exists with this email. Please sign in instead.',
+        ],
     ],
 
     'loginFinder' => [
@@ -738,6 +757,13 @@ return [
         'what_p1'    => 'Spanish regulation sets new requirements for the software and computer systems used for invoicing, aiming to guarantee that invoicing records are complete, traceable and unalterable.',
         'what_p2'    => 'VERI*FACTU is the mode under which these systems can send invoicing records to the Tax Agency (AEAT), in line with the technical specifications set out in the regulation.',
         'what_p3'    => 'In practice, this mostly affects how invoicing software behaves internally, not just the look of the invoices you already know.',
+        'flow_aria_label'   => 'Flow: invoice, billing record, submission to the AEAT',
+        'flow_invoice_label'=> 'Invoice',
+        'flow_invoice_sub'  => 'Your sale transaction',
+        'flow_record_label' => 'Billing record',
+        'flow_record_sub'   => 'Complete, traceable, and unalterable',
+        'flow_aeat_label'   => 'Tax Agency (AEAT)',
+        'flow_aeat_sub'     => 'Under VERI*FACTU mode',
 
         // Why is invoicing changing?
         'why_title'   => 'Why is invoicing changing?',
@@ -756,8 +782,10 @@ return [
         // Dates
         'dates_title' => 'When do the new requirements take effect?',
         'dates_intro' => 'The applicable deadlines depend on the type of taxpayer:',
+        'date_1_badge' => '1 JAN<br>2027',
         'date_1_label' => 'Before 1 January 2027',
         'date_1_text'  => 'Taxpayers covered by article 3.1.a) of Royal Decree 1007/2023.',
+        'date_2_badge' => '1 JUL<br>2027',
         'date_2_label' => 'Before 1 July 2027',
         'date_2_text'  => 'The other taxpayers covered by article 3.1.',
         'dates_note'   => 'Dates and obligations can vary depending on the taxpayer\'s tax situation. Always check the official information from the Spanish Tax Agency.',

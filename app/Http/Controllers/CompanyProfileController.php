@@ -116,7 +116,11 @@ class CompanyProfileController extends Controller
         $profile->save();
 
         return response([
-            'message' => 'Ajustes guardados correctamente.',
+            'message' => match (app()->getLocale()) {
+                'fr'    => 'Paramètres enregistrés avec succès.',
+                'es'    => 'Ajustes guardados correctamente.',
+                default => 'Settings saved successfully.',
+            },
             'settings' => $this->formatProfile($profile),
             'company_context' => app(TenantContextService::class)->toArray(),
         ], 200);

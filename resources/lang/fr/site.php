@@ -102,6 +102,9 @@ return [
         'show2_image_alt'=> 'Un devis en cours de conversion en facture',
         'show2_mock_status_accepted' => 'Accepté',
         'show2_mock_status_sent'     => 'Envoyée',
+        'show2_mock_quote_number'    => 'Devis #0032',
+        'show2_mock_invoice_number'  => 'Facture #0045',
+        'show2_mock_client'          => 'Studio Créatif SARL',
 
         // Showcase - Clients / paiements / services
         'show3_title'    => 'Clients, paiements et services. Tout organisé.',
@@ -111,6 +114,12 @@ return [
         'show3_bullet_3' => 'Paiements en ligne et suivi des encaissements',
         'show3_image_alt'=> 'Panneau clients et catalogue de services Fakturalista',
         'show3_mock_payment_received' => 'Paiement reçu — Facture #0041',
+        'show3_mock_client1_initials' => 'MD',
+        'show3_mock_client1_name'     => 'Marie Dupont',
+        'show3_mock_client1_sub'      => '8 factures',
+        'show3_mock_client2_initials' => 'AC',
+        'show3_mock_client2_name'     => 'Atelier Créatif SARL',
+        'show3_mock_client2_sub'      => '3 devis',
 
         // Showcase - Rapports
         'show4_title'    => 'Comprenez votre activité en un coup d\'œil',
@@ -260,6 +269,16 @@ return [
         'error_msg'        => 'Veuillez vérifier les champs et réessayer.',
         'already_processing' => 'Nous traitons déjà une demande pour cet e-mail. Patientez quelques secondes et réessayez.',
         'provisioning_failed' => 'Impossible de créer votre compte pour le moment. Veuillez réessayer.',
+        'validation' => [
+            'name_required'     => 'Indiquez votre nom complet.',
+            'email_required'    => 'Indiquez votre e-mail.',
+            'email_invalid'     => 'Saisissez une adresse e-mail valide.',
+            'password_required' => 'Choisissez un mot de passe.',
+            'password_min'      => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'captcha_required'  => 'Résolvez la vérification de sécurité.',
+            'captcha_incorrect' => 'La réponse est incorrecte. Réessayez.',
+            'email_already_used'=> 'Un compte existe déjà avec cet e-mail. Connectez-vous à la place.',
+        ],
     ],
 
     'loginFinder' => [
@@ -740,6 +759,13 @@ return [
         'what_p1'    => 'La réglementation espagnole établit de nouvelles exigences pour les logiciels et systèmes informatiques utilisés pour facturer, dans le but de garantir que les registres de facturation soient intègres, traçables et inaltérables.',
         'what_p2'    => 'VERI*FACTU est le mode selon lequel ces systèmes peuvent transmettre les registres de facturation à l\'administration fiscale (AEAT), conformément aux spécifications techniques établies par la réglementation.',
         'what_p3'    => 'En pratique, cela concerne surtout le fonctionnement interne des logiciels de facturation, pas seulement l\'apparence des factures que vous connaissez déjà.',
+        'flow_aria_label'   => 'Flux : facture, registre de facturation, envoi à l\'AEAT',
+        'flow_invoice_label'=> 'Facture',
+        'flow_invoice_sub'  => 'Votre opération de vente',
+        'flow_record_label' => 'Registre de facturation',
+        'flow_record_sub'   => 'Intègre, traçable et inaltérable',
+        'flow_aeat_label'   => 'Agence fiscale (AEAT)',
+        'flow_aeat_sub'     => 'Sous le mode VERI*FACTU',
 
         // Pourquoi la facturation évolue-t-elle ?
         'why_title'   => 'Pourquoi la facturation évolue-t-elle ?',
@@ -758,8 +784,10 @@ return [
         // Dates
         'dates_title' => 'Quand les nouvelles exigences entrent-elles en vigueur ?',
         'dates_intro' => 'Les délais applicables dépendent du type de contribuable :',
+        'date_1_badge' => '1 JAN<br>2027',
         'date_1_label' => 'Avant le 1er janvier 2027',
         'date_1_text'  => 'Contribuables relevant de l\'article 3.1.a) du Real Decreto 1007/2023.',
+        'date_2_badge' => '1 JUIL<br>2027',
         'date_2_label' => 'Avant le 1er juillet 2027',
         'date_2_text'  => 'Les autres contribuables relevant de l\'article 3.1.',
         'dates_note'   => 'Les dates et obligations peuvent varier selon la situation fiscale du contribuable. Consultez toujours les informations officielles de l\'administration fiscale espagnole.',

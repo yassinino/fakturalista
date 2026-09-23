@@ -186,7 +186,7 @@
                         <td :style="{ width: design.show_shipping_address ? '50%' : '100%', verticalAlign: 'top' }">
                           <div class="tb-addr-label" :style="addrLabelStyle">{{ $t('templates.preview.billingAddress') }}</div>
                           <div :style="addrNameStyle">MISC CUSTOMER</div>
-                          <div v-if="design.show_customer_number" :style="addrSubStyle">Cliente #C-001</div>
+                          <div v-if="design.show_customer_number" :style="addrSubStyle">{{ $t('templates.preview.customerNumber') }}C-001</div>
                           <div :style="addrSubStyle">ait melloul, agadir 68602</div>
                           <div v-if="design.show_customer_phone" :style="addrSubStyle">Tel: 657 985 633</div>
                         </td>
@@ -196,7 +196,7 @@
                         <td :style="{ width: design.show_shipping_address ? '50%' : '100%', paddingRight: design.show_shipping_address ? '20px' : '0', verticalAlign: 'top' }">
                           <div class="tb-addr-label" :style="addrLabelStyle">{{ $t('templates.preview.billingAddress') }}</div>
                           <div :style="addrNameStyle">MISC CUSTOMER</div>
-                          <div v-if="design.show_customer_number" :style="addrSubStyle">Cliente #C-001</div>
+                          <div v-if="design.show_customer_number" :style="addrSubStyle">{{ $t('templates.preview.customerNumber') }}C-001</div>
                           <div :style="addrSubStyle">ait melloul, agadir 68602</div>
                           <div v-if="design.show_customer_phone" :style="addrSubStyle">Tel: 657 985 633</div>
                         </td>
@@ -253,7 +253,7 @@
                             </tr>
                             <tr v-if="design.show_payment_terms">
                               <td :style="totalLabelStyle">{{ $t('templates.preview.paymentTermsRow') }}</td>
-                              <td :style="totalValueStyle">{{ sample.paymentTerms }}</td>
+                              <td :style="totalValueStyle">{{ $t('templates.preview.paymentTermsSample') }}</td>
                             </tr>
                             <tr>
                               <td :style="totalFinalLabelStyle">{{ $t('templates.preview.grandTotal') }}</td>
@@ -705,17 +705,17 @@ const fontSizes = computed(() => [
   { v: "large",  l: t("templates.typography.large") },
 ]);
 
-// ── Color presets ──────────────────────────────────────────
-const colorPresets = [
-  { primary: "#E91E63", name: "Rosa · Fakturalista" },
-  { primary: "#2563eb", name: "Azul profesional" },
-  { primary: "#0ea5e9", name: "Celeste" },
-  { primary: "#7c3aed", name: "Violeta" },
-  { primary: "#059669", name: "Verde esmeralda" },
-  { primary: "#d97706", name: "Ámbar" },
-  { primary: "#dc2626", name: "Rojo" },
-  { primary: "#374151", name: "Grafito" },
-];
+// ── Color presets (reactive for i18n) ───────────────────────
+const colorPresets = computed(() => [
+  { primary: "#E91E63", name: t("templates.colors.presets.pink") },
+  { primary: "#2563eb", name: t("templates.colors.presets.blue") },
+  { primary: "#0ea5e9", name: t("templates.colors.presets.skyBlue") },
+  { primary: "#7c3aed", name: t("templates.colors.presets.violet") },
+  { primary: "#059669", name: t("templates.colors.presets.emerald") },
+  { primary: "#d97706", name: t("templates.colors.presets.amber") },
+  { primary: "#dc2626", name: t("templates.colors.presets.red") },
+  { primary: "#374151", name: t("templates.colors.presets.graphite") },
+]);
 
 // ── Logo upload ────────────────────────────────────────────
 const logoInput       = ref(null);
@@ -962,12 +962,6 @@ const totalFinalValueStyle = computed(() => ({
   padding:    "8px 10px 5px",
 }));
 
-// ── Sample data ────────────────────────────────────────────
-const sample = {
-  customerPhone:  "657 985 633",
-  customerNumber: "C-001",
-  paymentTerms:   "Neto 30 días",
-};
 const currentDate = new Date().toLocaleDateString(templateStore.company.locale);
 
 // ── Color helpers ──────────────────────────────────────────
@@ -1041,7 +1035,7 @@ async function loadTemplate() {
     // Skip gallery - user has a saved template, go straight to editor
     phase.value = "editor";
   } catch (error) {
-    console.error("No se pudo cargar plantilla", error);
+    console.error("Failed to load template", error);
   }
 }
 
