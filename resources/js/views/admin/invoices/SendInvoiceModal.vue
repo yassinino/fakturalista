@@ -14,7 +14,7 @@
         <!-- Header -->
         <div class="sim-header">
           <h3 class="sim-title" id="sim-title">
-            <i class="fa fa-paper-plane me-2" style="color:#E91E63"></i>{{ isQuote ? $t('sendModal.titleQuote') : $t('sendModal.titleInvoice') }}
+            <i class="fa fa-paper-plane me-2" style="color:var(--brand-primary)"></i>{{ isQuote ? $t('sendModal.titleQuote') : $t('sendModal.titleInvoice') }}
           </h3>
           <button class="sim-close" @click="$emit('close')" :aria-label="$t('common.close')">&times;</button>
         </div>
@@ -208,7 +208,7 @@ function handleSend() {
 }
 
 .sim-email-icon {
-  color: #E91E63;
+  color: var(--brand-primary);
   font-size: 13px;
 }
 
@@ -237,7 +237,7 @@ function handleSend() {
 }
 .sim-textarea:focus {
   outline: none;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.08);
 }
 .sim-textarea:disabled {
@@ -292,13 +292,13 @@ function handleSend() {
 }
 
 .sim-btn-send {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .sim-btn-send:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }

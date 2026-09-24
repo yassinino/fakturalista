@@ -637,7 +637,7 @@ import { useTenantCountry } from '@/composables/useTenantCountry';
 <style scoped>
 :global(.customer-form-card) {
   overflow: hidden;
-  border-top: 3px solid #E91E63 !important;
+  border-top: 3px solid var(--brand-primary) !important;
 }
 
 .ctc-edit-hint {

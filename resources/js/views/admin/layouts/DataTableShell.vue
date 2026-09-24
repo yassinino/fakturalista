@@ -311,7 +311,7 @@ function onPerPageChange(val) {
    SHELL ROOT
 ══════════════════════════════════════════════════════════════ */
 .dt-shell {
-  --dt-brand:              #E91E63;
+  --dt-brand:              var(--brand-primary);
   --dt-brand-light:        rgba(233, 30, 99, 0.08);
   --dt-border:             rgba(0, 0, 0, 0.06);
   --dt-thead-bg:           #f8f9fb;
@@ -769,6 +769,6 @@ function onPerPageChange(val) {
    the curve; overflow:hidden clips any child overflow cleanly.  */
 :global(.block:has(.dt-shell)) {
   overflow: hidden;
-  border-top: 3px solid #E91E63 !important;
+  border-top: 3px solid var(--brand-primary) !important;
 }
 </style>

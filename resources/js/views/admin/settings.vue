@@ -1340,8 +1340,8 @@ function saveSignature() {
   --sp-text:      #111827;
   --sp-muted:     #64708A;
   --sp-field-bg:  #F8F9FE;
-  --sp-accent:    #E91E63;
-  --sp-accent2:   #c2185b;
+  --sp-accent:    var(--brand-primary);
+  --sp-accent2:   var(--brand-primary-hover);
   --sp-nav-bg:    #1A1D2E;
   --sp-nav-text:  rgba(255,255,255,.55);
   --sp-nav-hover: rgba(255,255,255,.08);
@@ -1548,7 +1548,7 @@ function saveSignature() {
 }
 
 .sc-tag--warn {
-  color: #b45309;
+  color: #d97706;
 }
 
 .vf-cert-card, .vf-cert-upload {
@@ -1583,7 +1583,7 @@ function saveSignature() {
 }
 
 .vf-cert-badge--ok { background: #dcfce7; color: #16a34a; }
-.vf-cert-badge--expiring_soon { background: #fef3c7; color: #b45309; }
+.vf-cert-badge--expiring_soon { background: #fef3c7; color: #d97706; }
 .vf-cert-badge--expired, .vf-cert-badge--invalid { background: #fee2e2; color: #dc2626; }
 
 .vf-cert-hint {
@@ -1659,14 +1659,14 @@ function saveSignature() {
 .sr-inp   { min-width: 0; }
 
 /* ─────────────────────────────────────────────────────────────
-   Form controls (scoped override of global border-radius: 2px)
+   Form controls (colors only - radius now inherits the app-wide
+   .form-control/.form-select token instead of overriding it)
 ───────────────────────────────────────────────────────────── */
 .sr-inp .form-control,
 .sr-inp .form-select {
   background: var(--sp-field-bg);
   border-color: var(--sp-border);
   color: var(--sp-text);
-  border-radius: 7px !important;
   font-size: 0.875rem;
   transition: border-color .15s, box-shadow .15s, background .15s;
 }
@@ -2081,9 +2081,9 @@ function saveSignature() {
 
 /* Connect button */
 .stripe-connect-btn {
-  background: #E91E63 !important;
+  background: var(--brand-primary) !important;
   color: #fff !important;
-  border: 1px solid #E91E63 !important;
+  border: 1px solid var(--brand-primary) !important;
   border-radius: 10px !important;
   font-weight: 500 !important;
   font-size: 0.875rem !important;
@@ -2092,8 +2092,8 @@ function saveSignature() {
               box-shadow .15s ease-in-out, transform .15s ease-in-out !important;
 }
 .stripe-connect-btn:hover:not(.disabled) {
-  background: #c2185b !important;
-  border-color: #c2185b !important;
+  background: var(--brand-primary-hover) !important;
+  border-color: var(--brand-primary-hover) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
   color: #fff !important;

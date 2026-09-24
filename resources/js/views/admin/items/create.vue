@@ -529,10 +529,10 @@ async function handleSave() {
    DESIGN TOKENS
 ───────────────────────────────────────────── */
 .itc {
-  --accent:        #E91E63;
+  --accent:        var(--brand-primary);
   --accent-bg:     rgba(233, 30, 99, 0.07);
   --accent-ring:   rgba(233, 30, 99, 0.15);
-  --accent-hover:  #c2185b;
+  --accent-hover:  var(--brand-primary-hover);
 
   --bg:            #ffffff;
   --bg-subtle:     #f8fafc;
@@ -952,7 +952,7 @@ async function handleSave() {
   display: inline-block;
   transition: background 0.2s;
 }
-.itc-dot--on { background: #22c55e; }
+.itc-dot--on { background: #16a34a; }
 
 /* Link-style button (create new category) */
 .itc-link-btn {
@@ -1031,7 +1031,7 @@ async function handleSave() {
   transition: background 0.2s;
   flex-shrink: 0;
 }
-.itc-preview__status-dot--on { background: #22c55e; }
+.itc-preview__status-dot--on { background: #16a34a; }
 .itc-preview__name {
   font-size: 0.95rem;
   font-weight: 600;
@@ -1085,7 +1085,7 @@ async function handleSave() {
   font-weight: 600;
   color: var(--text-dim);
 }
-.itc-preview__status-label--on { color: #22c55e; }
+.itc-preview__status-label--on { color: #16a34a; }
 
 /* ─────────────────────────────────────────────
    BUTTONS

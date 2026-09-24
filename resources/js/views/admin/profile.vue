@@ -452,8 +452,8 @@ const submitPassword = async () => {
   --pf-text:     #111827;
   --pf-muted:    #64708A;
   --pf-field-bg: #F8F9FE;
-  --pf-accent:   #E91E63;
-  --pf-accent-h: #c2185b;
+  --pf-accent:   var(--brand-primary);
+  --pf-accent-h: var(--brand-primary-hover);
   --pf-radius:   10px;
   --pf-row-px:   2rem;
   --pf-row-py:   1.375rem;

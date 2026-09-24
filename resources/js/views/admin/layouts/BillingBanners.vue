@@ -59,7 +59,7 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
 }
 
 .bb-banner--readonly {
-  background: linear-gradient(90deg, #E91E6314, #c2185b0a);
+  background: linear-gradient(90deg, var(--brand-primary)14, var(--brand-primary-hover)0a);
   border-bottom: 1px solid rgba(233,30,99,0.2);
   color: #9d1c4a;
 }
@@ -86,7 +86,7 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
   font-weight: 700;
   font-size: 13px;
   text-decoration: none;
-  color: #E91E63;
+  color: var(--brand-primary);
   padding: 6px 14px;
   border: 1.5px solid rgba(233,30,99,0.35);
   border-radius: 8px;
@@ -98,6 +98,6 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
 }
 
 .bb-cta--white {
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 </style>

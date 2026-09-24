@@ -418,7 +418,7 @@ const handleSave = async () => {
 .inv-card {
   background: #fff;
   border: 1.5px solid #e8eaed;
-  border-top: 3px solid #E91E63;
+  border-top: 3px solid var(--brand-primary);
   border-radius: 16px;
   padding: 24px 28px;
   margin-bottom: 16px;
@@ -457,7 +457,7 @@ const handleSave = async () => {
 
 .inv-label-req::after {
   content: " *";
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 .inv-input {
@@ -475,7 +475,7 @@ const handleSave = async () => {
 }
 
 .inv-input:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -495,7 +495,7 @@ const handleSave = async () => {
 }
 
 .inv-select:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -513,7 +513,7 @@ const handleSave = async () => {
 }
 
 .inv-textarea:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -535,7 +535,7 @@ const handleSave = async () => {
 }
 
 .inv-addr-preview i {
-  color: #E91E63;
+  color: var(--brand-primary);
   margin-right: 4px;
 }
 
@@ -562,7 +562,7 @@ const handleSave = async () => {
   transition: color 0.15s;
 }
 
-.inv-more-btn:hover { color: #E91E63; }
+.inv-more-btn:hover { color: var(--brand-primary); }
 
 .inv-adv-panel {
   margin-top: 12px;
@@ -661,8 +661,8 @@ const handleSave = async () => {
 }
 
 .inv-add-line:hover {
-  border-color: #E91E63;
-  color: #E91E63;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 .inv-del-btn {
@@ -710,7 +710,7 @@ const handleSave = async () => {
 
 .inv-tot-grand       { padding: 4px 0; }
 .inv-tot-grand-label { font-size: 1rem; font-weight: 700; color: #0f172a; }
-.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: #E91E63; }
+.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); }
 
 /* ── Buttons ── */
 .inv-btn {
@@ -732,13 +732,13 @@ const handleSave = async () => {
 }
 
 .inv-btn-primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff !important;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .inv-btn-primary:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
@@ -789,7 +789,7 @@ const handleSave = async () => {
 }
 
 :deep(.vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -806,7 +806,7 @@ const handleSave = async () => {
 }
 
 :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   background: #fff;
 }
 

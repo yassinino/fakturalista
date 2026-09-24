@@ -406,8 +406,8 @@ async function printInvoice() {
 /* Status-specific badge colors - soft, muted */
 .ib-badge--draft     { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
 .ib-badge--issued    { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
-.ib-badge--paid      { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-.ib-badge--cancelled { background: #fff1f2; color: #9f1239; border-color: #fecdd3; }
+.ib-badge--paid      { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; }
+.ib-badge--cancelled { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
 .ib-badge--sent      { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
 .ib-badge--stripe    { background: #eef2ff; color: #3730a3; border-color: #c7d2fe; }
 
@@ -455,13 +455,13 @@ async function printInvoice() {
 
 /* PRIMARY */
 .ib-btn--primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .ib-btn--primary:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }

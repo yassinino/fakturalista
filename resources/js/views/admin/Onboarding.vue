@@ -400,8 +400,8 @@ async function onSubmit() {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  --brand:        #E91E63;
-  --brand-dark:   #c2185b;
+  --brand:        var(--brand-primary);
+  --brand-dark:   var(--brand-primary-hover);
   --hero-bg:      #0d1117;
   --hero-muted:   rgba(255,255,255,0.5);
   --panel-bg:     #f5f6fa;
@@ -412,7 +412,7 @@ async function onSubmit() {
   --text-muted:   #64748b;
   --input-bg:     #f8fafc;
   --input-border: #e2e8f0;
-  --input-focus:  #E91E63;
+  --input-focus:  var(--brand-primary);
   --section-lbl:  #94a3b8;
   --divider:      #e2e8f0;
 }
@@ -454,7 +454,7 @@ async function onSubmit() {
 
 .ob-blob-1 {
   width: 420px; height: 420px;
-  background: radial-gradient(circle, #E91E63, #9c27b0);
+  background: radial-gradient(circle, var(--brand-primary), #9c27b0);
   top: -80px; left: -80px;
 }
 
@@ -512,7 +512,7 @@ async function onSubmit() {
 }
 
 .ob-headline-accent {
-  background: linear-gradient(135deg, #E91E63, #f472b6);
+  background: linear-gradient(135deg, var(--brand-primary), #f472b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -576,7 +576,7 @@ async function onSubmit() {
 }
 
 .ob-step--active .ob-step-dot {
-  background: linear-gradient(135deg, #E91E63, #c2185b);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
   border-color: transparent;
   color: #fff;
   box-shadow: 0 0 0 4px rgba(233,30,99,0.2);
@@ -876,9 +876,9 @@ async function onSubmit() {
   width: 100%;
   margin-top: 24px;
   padding: 10px 24px;
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
-  border: 1px solid #E91E63;
+  border: 1px solid var(--brand-primary);
   border-radius: 10px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -900,15 +900,15 @@ async function onSubmit() {
 }
 
 .ob-btn-submit:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
 
 .ob-btn-submit:active:not(:disabled) {
-  background: #ad1457;
-  border-color: #ad1457;
+  background: var(--brand-primary-active);
+  border-color: var(--brand-primary-active);
   transform: none;
   box-shadow: none;
 }

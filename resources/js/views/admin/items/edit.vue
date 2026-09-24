@@ -489,7 +489,7 @@ async function handleSave() {
 .inv-card {
   background: #fff;
   border: 1.5px solid #e8eaed;
-  border-top: 3px solid #E91E63;
+  border-top: 3px solid var(--brand-primary);
   border-radius: 16px;
   padding: 24px 28px;
   margin-bottom: 16px;
@@ -530,7 +530,7 @@ async function handleSave() {
 
 .inv-label-req::after {
   content: " *";
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 .inv-input {
@@ -548,7 +548,7 @@ async function handleSave() {
 }
 
 .inv-input:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -570,7 +570,7 @@ async function handleSave() {
 }
 
 .inv-select:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -588,7 +588,7 @@ async function handleSave() {
 }
 
 .inv-textarea:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -623,12 +623,12 @@ async function handleSave() {
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
-.items-type-btn:hover { border-color: #E91E63; color: #E91E63; }
+.items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
 
 .items-type-btn--active {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   background: rgba(233, 30, 99, 0.06);
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 /* ── Status switch ── */
@@ -681,13 +681,13 @@ async function handleSave() {
 }
 
 .inv-btn-primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff !important;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .inv-btn-primary:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
@@ -738,7 +738,7 @@ async function handleSave() {
 }
 
 :deep(.vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 

@@ -191,7 +191,7 @@ onBeforeUnmount(() => {
 
 .cs-icon { font-size: 44px; margin-bottom: 16px; }
 .cs-icon--success { color: #10b981; }
-.cs-icon--pending { color: #E91E63; }
+.cs-icon--pending { color: var(--brand-primary); }
 
 .cs-title {
   font-size: 20px;
@@ -236,9 +236,9 @@ onBeforeUnmount(() => {
 .cs-btn-primary {
   width: 100%;
   padding: 11px 20px;
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
-  border: 1px solid #E91E63;
+  border: 1px solid var(--brand-primary);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -246,7 +246,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: background .15s, border-color .15s, transform .15s;
 }
-.cs-btn-primary:hover { background: #c2185b; border-color: #c2185b; transform: translateY(-1px); }
+.cs-btn-primary:hover { background: var(--brand-primary-hover); border-color: var(--brand-primary-hover); transform: translateY(-1px); }
 
 .cs-btn-link {
   display: block;
@@ -261,5 +261,5 @@ onBeforeUnmount(() => {
   font-family: inherit;
   cursor: pointer;
 }
-.cs-btn-link:hover { color: #E91E63; }
+.cs-btn-link:hover { color: var(--brand-primary); }
 </style>

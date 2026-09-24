@@ -813,7 +813,7 @@ const handleSave = async () => {
 .inv-card {
   background: #fff;
   border: 1.5px solid #e8eaed;
-  border-top: 3px solid #E91E63;
+  border-top: 3px solid var(--brand-primary);
   border-radius: 16px;
   padding: 24px 28px;
   margin-bottom: 16px;
@@ -858,7 +858,7 @@ const handleSave = async () => {
 
 .inv-label-req::after {
   content: " *";
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 .inv-input {
@@ -876,7 +876,7 @@ const handleSave = async () => {
 }
 
 .inv-input:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -898,7 +898,7 @@ const handleSave = async () => {
 }
 
 .inv-select:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -916,7 +916,7 @@ const handleSave = async () => {
 }
 
 .inv-textarea:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -938,7 +938,7 @@ const handleSave = async () => {
 }
 
 .inv-addr-preview i {
-  color: #E91E63;
+  color: var(--brand-primary);
   margin-right: 4px;
 }
 
@@ -966,7 +966,7 @@ const handleSave = async () => {
 }
 
 .inv-more-btn:hover {
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 .inv-adv-panel {
@@ -1076,8 +1076,8 @@ const handleSave = async () => {
 }
 
 .inv-add-line:hover {
-  border-color: #E91E63;
-  color: #E91E63;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 /* Delete button */
@@ -1159,7 +1159,7 @@ const handleSave = async () => {
 .inv-tot-grand-val {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 /* ── Buttons ── */
@@ -1182,14 +1182,14 @@ const handleSave = async () => {
 }
 
 .inv-btn-primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff !important;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 
 .inv-btn-primary:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
@@ -1242,7 +1242,7 @@ const handleSave = async () => {
 }
 
 :deep(.vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -1276,7 +1276,7 @@ const handleSave = async () => {
 }
 
 :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   background: #fff;
 }
 
@@ -1297,13 +1297,13 @@ const handleSave = async () => {
 }
 
 .ai-bar-inner:focus-within {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.08);
 }
 
 .ai-bar-icon {
   flex-shrink: 0;
-  color: #E91E63;
+  color: var(--brand-primary);
   display: flex;
   align-items: center;
 }
@@ -1342,14 +1342,14 @@ const handleSave = async () => {
 }
 
 .ai-bar-mic:hover {
-  border-color: #E91E63;
-  color: #E91E63;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
   background: #fdf2f8;
 }
 
 .ai-bar-mic--listening {
-  background: #E91E63;
-  border-color: #E91E63;
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
   color: #fff;
   animation: ai-pulse 1.2s ease-in-out infinite;
 }
@@ -1362,7 +1362,7 @@ const handleSave = async () => {
 .ai-bar-btn {
   flex-shrink: 0;
   padding: 8px 20px;
-  background: linear-gradient(135deg, #E91E63 0%, #c2185b 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
   color: #fff;
   border: none;
   border-radius: 13px;
@@ -1392,7 +1392,7 @@ const handleSave = async () => {
 }
 
 .ai-bar-link {
-  color: #E91E63;
+  color: var(--brand-primary);
   font-weight: 600;
   text-decoration: underline;
   margin-left: 4px;
@@ -1425,7 +1425,7 @@ const handleSave = async () => {
   margin-top: 5px;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #E91E63;
+  color: var(--brand-primary);
   background: #fdf2f8;
   border-radius: 6px;
   padding: 2px 7px;

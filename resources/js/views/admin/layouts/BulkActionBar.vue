@@ -45,7 +45,7 @@ defineEmits(['delete', 'clear']);
 .bab-label {
   font-size: 14px;
   font-weight: 500;
-  color: #c2185b;
+  color: var(--brand-primary-hover);
 }
 
 .bab-actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -73,7 +73,7 @@ defineEmits(['delete', 'clear']);
 .bab-btn-clear:hover:not(:disabled) { background: #f3f4f6; border-color: #9ca3af; }
 
 .bab-btn-delete {
-  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
   color: #fff;
 }
 .bab-btn-delete:hover:not(:disabled) {

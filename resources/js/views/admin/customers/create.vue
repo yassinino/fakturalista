@@ -496,10 +496,10 @@ async function onSubmit() {
    DESIGN TOKENS  (mirrors items/create token system)
 ───────────────────────────────────────────── */
 .ctc {
-  --accent:       #E91E63;
+  --accent:       var(--brand-primary);
   --accent-bg:    rgba(233, 30, 99, 0.07);
   --accent-ring:  rgba(233, 30, 99, 0.15);
-  --accent-hover: #c2185b;
+  --accent-hover: var(--brand-primary-hover);
 
   --bg:           #ffffff;
   --bg-subtle:    #f8fafc;

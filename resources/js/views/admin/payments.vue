@@ -818,8 +818,8 @@ function methodLabel(method) {
 }
 .pay-kpi:hover .pay-kpi-icon-wrap { transform: scale(1.07); }
 
-.pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .08);   color: #e91e63; }
-.pay-kpi-icon-wrap--green  { background: rgba(0, 168, 84, .09);    color: #00a854; }
+.pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .08);   color: var(--brand-primary); }
+.pay-kpi-icon-wrap--green  { background: rgba(22, 163, 74, .09);    color: #16a34a; }
 .pay-kpi-icon-wrap--blue   { background: rgba(37, 99, 235, .09);   color: #2563eb; }
 .pay-kpi-icon-wrap--orange { background: rgba(224, 123, 0, .09);   color: #e07b00; }
 .pay-kpi-icon-wrap--muted  { background: rgba(107, 114, 128, .09); color: #6b7280; }
@@ -866,7 +866,7 @@ function methodLabel(method) {
   color: #8b96a8;
 }
 .pay-kpi-meta--neutral { color: #8b96a8; }
-.pay-kpi-meta--green   { color: #00a854; }
+.pay-kpi-meta--green   { color: #16a34a; }
 .pay-kpi-meta--blue    { color: #2563eb; }
 .pay-kpi-meta--orange  { color: #e07b00; }
 
@@ -993,7 +993,7 @@ function methodLabel(method) {
 }
 
 .pay-modal-dialog .form-label .text-danger {
-  color: #E91E63 !important;
+  color: var(--brand-primary) !important;
 }
 
 /* ── Inputs & selects ─────────────────────────────────────────── */
@@ -1011,7 +1011,7 @@ function methodLabel(method) {
 
 .pay-modal-dialog .form-control:focus,
 .pay-modal-dialog .form-select:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.10);
   outline: none;
 }
@@ -1026,7 +1026,7 @@ function methodLabel(method) {
 }
 
 .pay-modal-dialog textarea.form-control:focus {
-  border-color: #E91E63 !important;
+  border-color: var(--brand-primary) !important;
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.10) !important;
 }
 
@@ -1051,11 +1051,11 @@ function methodLabel(method) {
 }
 
 .pay-modal-dialog .input-group:focus-within > .input-group-text {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 
 .pay-modal-dialog .input-group > .form-control:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: none !important;
 }
 
@@ -1095,13 +1095,13 @@ function methodLabel(method) {
 }
 
 .pay-modal-btn-save {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .pay-modal-btn-save:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
@@ -1141,7 +1141,7 @@ function methodLabel(method) {
   .pay-kpi--alert { border-color: rgba(224, 123, 0, .35); }
 
   .pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .14); }
-  .pay-kpi-icon-wrap--green  { background: rgba(0, 168, 84, .14);  }
+  .pay-kpi-icon-wrap--green  { background: rgba(22, 163, 74, .14);  }
   .pay-kpi-icon-wrap--blue   { background: rgba(37, 99, 235, .14); }
   .pay-kpi-icon-wrap--orange { background: rgba(224, 123, 0, .14); }
   .pay-kpi-icon-wrap--muted  { background: rgba(107, 114, 128, .14); color: #8b949e; }

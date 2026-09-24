@@ -720,8 +720,8 @@ onMounted(() => {
   --db-text-1:      #0d1117;
   --db-text-2:      #445066;
   --db-text-3:      #8b96a8;
-  --db-pink:        #E91E63;
-  --db-pink-dk:     #c2185b;
+  --db-pink:        var(--brand-primary);
+  --db-pink-dk:     var(--brand-primary-hover);
   --db-pink-bg:     rgba(233, 30, 99, 0.08);
   --db-green:       #00a854;
   --db-green-bg:    rgba(0, 168, 84, 0.09);
@@ -866,11 +866,11 @@ onMounted(() => {
 }
 
 .db-btn--primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff;
 }
 .db-btn--primary:hover {
-  background: #c2185b;
+  background: var(--brand-primary-hover);
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);

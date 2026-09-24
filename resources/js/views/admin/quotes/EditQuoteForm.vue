@@ -525,7 +525,7 @@ const handleModalSend = async (message) => {
 .inv-card {
   background: #fff;
   border: 1.5px solid #e8eaed;
-  border-top: 3px solid #E91E63;
+  border-top: 3px solid var(--brand-primary);
   border-radius: 16px;
   padding: 24px 28px;
   margin-bottom: 16px;
@@ -564,7 +564,7 @@ const handleModalSend = async (message) => {
 
 .inv-label-req::after {
   content: " *";
-  color: #E91E63;
+  color: var(--brand-primary);
 }
 
 .inv-input {
@@ -582,7 +582,7 @@ const handleModalSend = async (message) => {
 }
 
 .inv-input:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -600,7 +600,7 @@ const handleModalSend = async (message) => {
 }
 
 .inv-select:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -618,7 +618,7 @@ const handleModalSend = async (message) => {
 }
 
 .inv-textarea:focus {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -639,7 +639,7 @@ const handleModalSend = async (message) => {
   line-height: 1.5;
 }
 
-.inv-addr-preview i { color: #E91E63; margin-right: 4px; }
+.inv-addr-preview i { color: var(--brand-primary); margin-right: 4px; }
 
 /* ── Dates ── */
 .inv-date-row {
@@ -664,7 +664,7 @@ const handleModalSend = async (message) => {
   transition: color 0.15s;
 }
 
-.inv-more-btn:hover { color: #E91E63; }
+.inv-more-btn:hover { color: var(--brand-primary); }
 
 .inv-adv-panel {
   margin-top: 12px;
@@ -769,8 +769,8 @@ const handleModalSend = async (message) => {
 }
 
 .inv-add-line:hover {
-  border-color: #E91E63;
-  color: #E91E63;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 .inv-del-btn {
@@ -818,7 +818,7 @@ const handleModalSend = async (message) => {
 
 .inv-tot-grand       { padding: 4px 0; }
 .inv-tot-grand-label { font-size: 1rem; font-weight: 700; color: #0f172a; }
-.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: #E91E63; }
+.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); }
 
 /* ── Buttons ── */
 .inv-btn {
@@ -840,13 +840,13 @@ const handleModalSend = async (message) => {
 }
 
 .inv-btn-primary {
-  background: #E91E63;
+  background: var(--brand-primary);
   color: #fff !important;
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
 }
 .inv-btn-primary:hover:not(:disabled) {
-  background: #c2185b;
-  border-color: #c2185b;
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
@@ -923,7 +923,7 @@ const handleModalSend = async (message) => {
 }
 
 :deep(.vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
@@ -940,7 +940,7 @@ const handleModalSend = async (message) => {
 }
 
 :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) {
-  border-color: #E91E63;
+  border-color: var(--brand-primary);
   background: #fff;
 }
 

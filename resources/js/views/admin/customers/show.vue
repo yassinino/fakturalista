@@ -251,7 +251,7 @@
    clips to rounded corners. :global() is safe - class is unique. */
 :global(.sh-inv-table-block) {
   overflow: hidden;
-  border-top: 3px solid #E91E63 !important;
+  border-top: 3px solid var(--brand-primary) !important;
 }
 </style>
     

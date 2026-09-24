@@ -16,6 +16,18 @@
   border-radius: 8px;
 }
 
+// ── Brand accent, exposed as CSS custom properties ──────────────────────
+// $primary (and its hover/active shades below) is the one source of truth
+// for the Fakturalista pink used throughout .btn-primary etc. below. Many
+// page-level <style scoped> blocks (plain CSS, not SCSS) can't reference a
+// SCSS variable directly, so it's also exposed here as a custom property -
+// same single value, just reachable from scoped CSS via var(--brand-*).
+:root {
+  --brand-primary:        #{$primary};
+  --brand-primary-hover:  #c2185b;
+  --brand-primary-active: #ad1457;
+}
+
 // ── Fakturalista button design system ─────────────────────────────────
 // Flat colors, no gradients. Subtle lift + shadow on hover.
 // Size/radius/weight are set via $btn-* SCSS variables in _variables.scss.
