@@ -250,7 +250,7 @@ class HomeController extends Controller
         $validated = $validator->validated();
 
         try {
-            Mail::to('contact@fakturalista.com')->send(new FreeTrialRequest([
+            Mail::to('aittouijar.yassine@gmail.com')->send(new FreeTrialRequest([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'company' => $validated['company'],
