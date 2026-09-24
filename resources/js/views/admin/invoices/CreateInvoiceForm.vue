@@ -17,7 +17,7 @@
             ref="aiInputRef"
             v-model="aiPrompt"
             class="ai-bar-input"
-            :placeholder="'Web development 5000 ' + templateStore.company.currency"
+            :placeholder="$t('invoices.form.aiPlaceholder')"
             :disabled="aiLoading"
             @keydown.enter.prevent="generateInvoice"
           />
@@ -50,11 +50,34 @@
             {{ $t('invoices.form.aiAddClientLink') }}
           </router-link>
         </p>
+        <p v-else-if="aiUnmatchedClientName" class="ai-bar-error">
+          <i class="fa fa-exclamation-triangle me-1"></i>
+          {{ $t('invoices.form.aiClientNotFound', { name: aiUnmatchedClientName }) }}
+          <button
+            type="button"
+            class="ai-bar-link ai-bar-link-btn"
+            :disabled="aiCreatingClient"
+            @click="createClientFromAi"
+          >
+            <i v-if="aiCreatingClient" class="fa fa-spinner fa-spin"></i>
+            <template v-else>{{ $t('invoices.form.aiCreateClientBtn', { name: aiUnmatchedClientName }) }}</template>
+          </button>
+        </p>
         <p v-else-if="aiError" class="ai-bar-error">
           <i class="fa fa-exclamation-triangle me-1"></i>{{ aiError }}
         </p>
         <p v-if="aiSuccess" class="ai-bar-success">
           <i class="fa fa-check-circle me-1"></i>{{ aiSuccess }}
+        </p>
+        <p v-if="aiPaymentAmount" class="ai-bar-info">
+          <i class="fa fa-info-circle me-1"></i>
+          {{ $t('invoices.form.aiPaymentDetected', {
+            amount: $toCurrency(aiPaymentAmount),
+            method: aiPaymentMethod || $t('invoices.form.aiPaymentMethodUnknown'),
+          }) }}
+        </p>
+        <p v-if="aiCurrencyNote" class="ai-bar-info">
+          <i class="fa fa-info-circle me-1"></i>{{ aiCurrencyNote }}
         </p>
       </div>
 
@@ -185,7 +208,7 @@
                       :placeholder="$t('invoices.form.descSubPlaceholder')"
                       @keydown.enter.prevent="addNewItem"
                     />
-                    <span v-if="aiCustomLineIndex === index" class="inv-ai-custom-badge">
+                    <span v-if="aiCustomLineIndexes.includes(index)" class="inv-ai-custom-badge">
                       <i class="fa fa-magic"></i> {{ $t('invoices.form.aiCustomItemBadge') }}
                     </span>
                   </td>
@@ -427,7 +450,7 @@ const selectProduct = (index, value) => {
     ...taxFields(value),
     total: value.sales_price,
   };
-  if (aiCustomLineIndex.value === index) aiCustomLineIndex.value = null;
+  aiCustomLineIndexes.value = aiCustomLineIndexes.value.filter((i) => i !== index);
 };
 
 const addNewItem = () => {
@@ -442,14 +465,13 @@ const addNewItem = () => {
     ...defaultTax(),
     total: 0,
   });
-  aiCustomLineIndex.value = null;
 };
 
 const removeCart = (cart) => {
   if (state.carts.length === 1) return;
   if (confirm(t("documents.removeConfirm")))
     state.carts = state.carts.filter((c) => c !== cart);
-  aiCustomLineIndex.value = null;
+  aiCustomLineIndexes.value = [];
 };
 
 // ── Computed totals (same logic as CreateDocument) ────────
@@ -495,16 +517,21 @@ const rules = computed(() => ({
 }));
 const v$ = useVuelidate(rules, state);
 
-// ── AI invoice generation ─────────────────────────────────
-const aiPrompt          = ref('');
-const aiLoading         = ref(false);
-const aiError           = ref('');
-const aiSuccess         = ref('');
-const aiNoClients       = ref(false);
-const aiCustomLineIndex = ref(null); // index of the cart line AI filled with a non-catalog item
-const aiInputRef        = ref(null);
-const aiListening       = ref(false);
-let   speechRecognition = null;
+// ── AI invoice generation ──────────────────────────────────
+const aiPrompt             = ref('');
+const aiLoading            = ref(false);
+const aiError              = ref('');
+const aiSuccess            = ref('');
+const aiNoClients          = ref(false);
+const aiCustomLineIndexes  = ref([]); // indexes of cart lines AI filled with a non-catalog item
+const aiUnmatchedClientName = ref(''); // client name AI found but couldn't match - offers "create client"
+const aiCreatingClient     = ref(false);
+const aiPaymentAmount      = ref(null);
+const aiPaymentMethod      = ref('');
+const aiCurrencyNote       = ref('');
+const aiInputRef           = ref(null);
+const aiListening          = ref(false);
+let   speechRecognition    = null;
 
 function findCustomerByName(name) {
   if (!name) return null;
@@ -526,14 +553,57 @@ function findItemByDescription(description) {
   );
 }
 
+// Build one cart line from an AI-extracted item, matching against the
+// product catalog when possible (same behaviour as manual product pick).
+function buildCartLineFromAiItem(aiItem) {
+  const description = (aiItem.description || '').trim();
+  const qty          = aiItem.quantity != null ? (parseFloat(aiItem.quantity) || 1) : 1;
+  const productMatch = findItemByDescription(description);
+
+  if (productMatch) {
+    return {
+      isCustom: false,
+      cart: {
+        item_id: productMatch.id,
+        description: productMatch.description,
+        qty,
+        unite: productMatch.unite,
+        price: aiItem.unit_price != null ? (parseFloat(aiItem.unit_price) || 0) : productMatch.sales_price,
+        discount: 0,
+        ...taxFields(productMatch),
+        total: 0,
+      },
+    };
+  }
+
+  return {
+    isCustom: true,
+    cart: {
+      item_id: '',
+      name: '',
+      description,
+      qty,
+      unite: 'pc',
+      price: aiItem.unit_price != null ? (parseFloat(aiItem.unit_price) || 0) : 0,
+      discount: 0,
+      ...defaultTax(),
+      total: 0,
+    },
+  };
+}
+
 async function generateInvoice() {
   const text = aiPrompt.value.trim();
   if (!text || aiLoading.value) return;
 
-  aiError.value           = '';
-  aiSuccess.value         = '';
-  aiNoClients.value       = false;
-  aiCustomLineIndex.value = null;
+  aiError.value               = '';
+  aiSuccess.value              = '';
+  aiNoClients.value            = false;
+  aiUnmatchedClientName.value  = '';
+  aiCustomLineIndexes.value    = [];
+  aiPaymentAmount.value        = null;
+  aiPaymentMethod.value        = '';
+  aiCurrencyNote.value         = '';
 
   // Nothing to attach the invoice to - stop before calling the AI at all.
   if (customers.value.length === 0) {
@@ -554,36 +624,56 @@ async function generateInvoice() {
     const parsed = data.data;
 
     // Populate client - fuzzy match against loaded customers.
-    // Never auto-create a client: if there's no match, tell the user instead.
-    if (parsed.client) {
-      const match = findCustomerByName(parsed.client);
+    // Never auto-create a client: offer to create one instead.
+    if (parsed.client_name) {
+      const match = findCustomerByName(parsed.client_name);
       if (match) {
         state.customer_id = match.uuid;
         state.address     = match.address_billing || '';
       } else {
-        aiError.value = t('invoices.form.aiClientNotFound', { name: parsed.client });
+        aiUnmatchedClientName.value = parsed.client_name;
       }
     }
 
-    // Populate first line item. If the description doesn't match anything
-    // in the catalog, keep it as a free-text line but flag it as custom.
-    if (parsed.description) {
-      state.carts[0].description = parsed.description;
-      const productMatch = findItemByDescription(parsed.description);
-      if (productMatch) {
-        selectProduct(0, productMatch);
-      } else {
-        state.carts[0].item_id  = '';
-        aiCustomLineIndex.value = 0;
+    // Populate line items - one cart line per AI-extracted item. Items
+    // that don't match the product catalog stay as free-text lines,
+    // flagged with the "new item" badge.
+    if (Array.isArray(parsed.items) && parsed.items.length > 0) {
+      const built = parsed.items.map(buildCartLineFromAiItem);
+      state.carts = built.map(b => b.cart);
+      aiCustomLineIndexes.value = built
+        .map((b, index) => (b.isCustom ? index : null))
+        .filter(index => index !== null);
+
+      // Apply the AI-detected tax rate to every line (never invented -
+      // only when the AI actually found one in the text).
+      if (parsed.tax_rate !== null && parsed.tax_rate !== undefined) {
+        for (const cart of state.carts) {
+          cart.vta = Number(parsed.tax_rate);
+          cart.tax_treatment = 'taxable';
+        }
       }
     }
-    if (parsed.unit_price) {
-      state.carts[0].price = parseFloat(parsed.unit_price) || 0;
-    }
-    state.carts[0].qty = parsed.quantity ? (parseFloat(parsed.quantity) || 1) : 1;
 
-    if (!aiError.value) {
-      const filled = [parsed.client, parsed.description, parsed.unit_price].filter(Boolean).length;
+    // Payment info - the invoice creation form has no payment fields
+    // (payments are recorded separately, after issuing), so we surface
+    // what the AI found instead of discarding it.
+    if (parsed.payment_amount !== null && parsed.payment_amount !== undefined) {
+      aiPaymentAmount.value = parseFloat(parsed.payment_amount) || 0;
+      aiPaymentMethod.value = parsed.payment_method || '';
+    }
+
+    // Currency sanity check - informational only, never blocks anything.
+    const tenantCurrency = (templateStore.company.currency || '').toUpperCase();
+    if (parsed.currency && tenantCurrency && parsed.currency !== tenantCurrency) {
+      aiCurrencyNote.value = t('invoices.form.aiCurrencyMismatch', {
+        currency: parsed.currency,
+        tenantCurrency,
+      });
+    }
+
+    if (!aiUnmatchedClientName.value) {
+      const filled = [parsed.client_name, parsed.items?.length, parsed.tax_rate].filter(Boolean).length;
       aiSuccess.value = filled > 0
         ? t('invoices.form.aiSuccessPartial')
         : t('invoices.form.aiSuccessEmpty');
@@ -595,6 +685,35 @@ async function generateInvoice() {
     aiError.value = msg || t('invoices.form.aiConnectionError');
   } finally {
     aiLoading.value = false;
+  }
+}
+
+// Quick-create the client AI couldn't match, without losing the rest of
+// the AI-filled draft (unlike navigating away to the full "new client" page).
+async function createClientFromAi() {
+  const name = aiUnmatchedClientName.value.trim();
+  if (!name || aiCreatingClient.value) return;
+
+  aiCreatingClient.value = true;
+  aiError.value = '';
+
+  try {
+    await axios.post('/customers', { name, type: 1, contacts: [] });
+    const { data } = await axios.get('/customers');
+    customers.value = data.customers;
+
+    const created = findCustomerByName(name);
+    if (created) {
+      state.customer_id = created.uuid;
+      state.address     = created.address_billing || '';
+    }
+
+    aiUnmatchedClientName.value = '';
+    aiSuccess.value = t('invoices.form.aiClientCreated', { name });
+  } catch (err) {
+    aiError.value = err.response?.data?.message || t('invoices.form.aiError');
+  } finally {
+    aiCreatingClient.value = false;
   }
 }
 
@@ -1277,6 +1396,25 @@ const handleSave = async () => {
   font-weight: 600;
   text-decoration: underline;
   margin-left: 4px;
+}
+
+.ai-bar-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.ai-bar-link-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ai-bar-info {
+  margin: 7px 0 0 4px;
+  font-size: 0.78rem;
+  color: #6b7280;
 }
 
 /* ── AI custom-item badge (line item not matched to catalog) ── */

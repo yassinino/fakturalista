@@ -630,13 +630,28 @@ class InvoiceController extends Controller
         Storage::disk('public')->put($filePath, $pdfContent);
         $pdfUrl = request()->getSchemeAndHttpHost() . Storage::url($filePath);
 
-        $company     = CompanyProfile::first();
-        $companyName = $company?->trade_name ?: ($company?->legal_name ?: config('app.name'));
+        $locale        = app()->getLocale();
+        $formatter     = app(\App\Services\CurrencyFormatter::class);
+        $formattedTotal = $formatter->format((float) $invoice->total, $this->tenantContext->currency(), $locale);
+
+        // Amount paid / remaining balance - invoices here are binary
+        // paid/not-paid (no partial-payment tracking exists in this app),
+        // so "paid" means the full total, "not paid" means the full total
+        // is still owed. See InvoicePaymentsController for the same model.
+        $balanceLine = $invoice->isPaid()
+            ? __('invoice.actions.whatsapp_balance_paid')
+            : __('invoice.actions.whatsapp_balance_due', ['balance' => $formattedTotal]);
+
+        $greetingName = ($customer->isIndividual() && $customer->first_name)
+            ? $customer->first_name
+            : $customer->name;
 
         $phone   = $this->normalizeWhatsAppNumber($customer->phone);
         $message = __('invoice.actions.whatsapp_message', [
+            'client'    => $greetingName,
             'reference' => $invoice->reference,
-            'company'   => $companyName,
+            'total'     => $formattedTotal,
+            'balance'   => $balanceLine,
             'link'      => $pdfUrl,
         ]);
 

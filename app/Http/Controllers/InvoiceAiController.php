@@ -13,7 +13,7 @@ class InvoiceAiController extends Controller
 
     public function parseInvoice(Request $request): JsonResponse
     {
-        $request->validate(['text' => 'required|string|max:500']);
+        $request->validate(['text' => 'required|string|max:1000']);
 
         try {
             $data = $this->aiService->parseInvoice(trim($request->input('text')));
