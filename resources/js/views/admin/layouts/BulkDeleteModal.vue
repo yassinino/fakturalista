@@ -113,23 +113,16 @@ defineEmits(['confirm', 'cancel']);
   box-shadow: 0 4px 12px rgba(239,68,68,0.3);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .bdm-modal   { background: #1e2235; }
-  .bdm-header  { border-color: #2d3250; }
-  .bdm-title   { color: #f1f5f9; }
-  .bdm-close   { color: #6b7280; }
-  .bdm-close:hover:not(:disabled) { color: #9ca3af; }
-  .bdm-message { color: #cbd5e1; }
-  .bdm-footer  { border-color: #2d3250; }
-  .bdm-btn-cancel { background: #2d3250; color: #94a3b8; }
-  .bdm-btn-cancel:hover:not(:disabled) { background: #374168; }
-}
-:root[data-theme="dark"] .bdm-modal   { background: #1e2235; }
-:root[data-theme="dark"] .bdm-header  { border-color: #2d3250; }
-:root[data-theme="dark"] .bdm-title   { color: #f1f5f9; }
-:root[data-theme="dark"] .bdm-message { color: #cbd5e1; }
-:root[data-theme="dark"] .bdm-footer  { border-color: #2d3250; }
-:root[data-theme="dark"] .bdm-btn-cancel { background: #2d3250; color: #94a3b8; }
-:root[data-theme="dark"] .bdm-btn-cancel:hover:not(:disabled) { background: #374168; }
+/* Dark mode - the app's real toggle (.dark-mode class on #page-container),
+   not prefers-color-scheme/data-theme which don't reflect the in-app
+   toggle state. */
+:global(.dark-mode) .bdm-modal   { background: var(--dark-surface-elevated); }
+:global(.dark-mode) .bdm-header  { border-color: var(--dark-border); }
+:global(.dark-mode) .bdm-title   { color: var(--dark-text); }
+:global(.dark-mode) .bdm-close   { color: var(--dark-text-disabled); }
+:global(.dark-mode) .bdm-close:hover:not(:disabled) { color: var(--dark-text-muted); }
+:global(.dark-mode) .bdm-message { color: var(--dark-text-secondary); }
+:global(.dark-mode) .bdm-footer  { border-color: var(--dark-border); }
+:global(.dark-mode) .bdm-btn-cancel { background: var(--dark-border); color: var(--dark-text-muted); }
+:global(.dark-mode) .bdm-btn-cancel:hover:not(:disabled) { background: var(--dark-border); }
 </style>

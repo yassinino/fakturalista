@@ -741,38 +741,18 @@ onMounted(() => {
   --db-ease:        cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Tokens: Dark ──────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  .db-wrap {
-    --db-bg:        #0d1117;
-    --db-surface:   #161b22;
-    --db-surface-2: #1c2230;
-    --db-border:    #29323f;
-    --db-border-2:  #3b4758;
-    --db-text-1:    #e6edf3;
-    --db-text-2:    #8b949e;
-    --db-text-3:    #606b79;
-    --db-pink-bg:   rgba(233, 30, 99, 0.14);
-    --db-green-bg:  rgba(0, 168, 84, 0.14);
-    --db-blue-bg:   rgba(37, 99, 235, 0.14);
-    --db-orange-bg: rgba(224, 123, 0, 0.14);
-    --db-red-bg:    rgba(220, 38, 38, 0.14);
-    --db-purple-bg: rgba(124, 58, 237, 0.14);
-    --db-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --db-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
-    --db-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
-  }
-}
-
-:root[data-theme="dark"] .db-wrap {
-  --db-bg:        #0d1117;
-  --db-surface:   #161b22;
-  --db-surface-2: #1c2230;
-  --db-border:    #29323f;
-  --db-border-2:  #3b4758;
-  --db-text-1:    #e6edf3;
-  --db-text-2:    #8b949e;
-  --db-text-3:    #606b79;
+/* ── Tokens: Dark - the app's real toggle (.dark-mode class on
+   #page-container), not prefers-color-scheme/data-theme which don't
+   reflect the in-app toggle state. ─────────────────────────────── */
+:global(.dark-mode) .db-wrap {
+  --db-bg:        var(--dark-bg);
+  --db-surface:   var(--dark-surface);
+  --db-surface-2: var(--dark-surface-elevated);
+  --db-border:    var(--dark-border-subtle);
+  --db-border-2:  var(--dark-border);
+  --db-text-1:    var(--dark-text);
+  --db-text-2:    var(--dark-text-muted);
+  --db-text-3:    var(--dark-text-disabled);
   --db-pink-bg:   rgba(233, 30, 99, 0.14);
   --db-green-bg:  rgba(0, 168, 84, 0.14);
   --db-blue-bg:   rgba(37, 99, 235, 0.14);
@@ -782,26 +762,6 @@ onMounted(() => {
   --db-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
   --db-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
   --db-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-:root[data-theme="light"] .db-wrap {
-  --db-bg:          #f3f5f8;
-  --db-surface:     #ffffff;
-  --db-surface-2:   #f8fafc;
-  --db-border:      #e6eaef;
-  --db-border-2:    #ccd2db;
-  --db-text-1:      #0d1117;
-  --db-text-2:      #445066;
-  --db-text-3:      #8b96a8;
-  --db-pink-bg:     rgba(233, 30, 99, 0.08);
-  --db-green-bg:    rgba(0, 168, 84, 0.09);
-  --db-blue-bg:     rgba(37, 99, 235, 0.09);
-  --db-orange-bg:   rgba(224, 123, 0, 0.09);
-  --db-red-bg:      rgba(220, 38, 38, 0.09);
-  --db-purple-bg:   rgba(124, 58, 237, 0.09);
-  --db-shadow-xs:   0 1px 2px rgba(13, 17, 23, 0.05);
-  --db-shadow-sm:   0 1px 4px rgba(13, 17, 23, 0.06), 0 2px 8px rgba(13, 17, 23, 0.05);
-  --db-shadow-md:   0 4px 16px rgba(13, 17, 23, 0.10), 0 1px 4px rgba(13, 17, 23, 0.05);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */

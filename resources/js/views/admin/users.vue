@@ -330,13 +330,9 @@ function deleteUser(user) {
   border-top: 1px solid #f0f0f0;
 }
 
-@media (prefers-color-scheme: dark) {
-  .usr-modal { background: #1e2235; }
-  .usr-modal__header, .usr-modal__footer { border-color: #2d3250; }
-  .usr-modal__title { color: #f1f5f9; }
-}
-:root[data-theme="dark"] .usr-modal { background: #1e2235; }
-:root[data-theme="dark"] .usr-modal__header,
-:root[data-theme="dark"] .usr-modal__footer { border-color: #2d3250; }
-:root[data-theme="dark"] .usr-modal__title { color: #f1f5f9; }
+/* Dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. */
+:global(.dark-mode) .usr-modal { background: var(--dark-surface-elevated); }
+:global(.dark-mode) .usr-modal__header, :global(.dark-mode) .usr-modal__footer { border-color: var(--dark-border); }
+:global(.dark-mode) .usr-modal__title { color: var(--dark-text); }
 </style>

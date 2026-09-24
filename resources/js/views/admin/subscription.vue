@@ -1201,66 +1201,27 @@ details[open] .sub-faq-q { color: #fa7070; }
   to   { transform: rotate(360deg); }
 }
 
-/* ── Dark mode ────────────────────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  .sub-heading, .sub-card-name, .sub-status-name, .sub-modal-title, .sub-faq-title { color: #f9fafb; }
-  .sub-card, .sub-status-card, .sub-modal { background: #1f2937; border-color: #374151; }
-  .sub-card--current { background: #111827; }
-  .sub-subheading, .sub-card-desc, .sub-faq-a, .sub-modal-body { color: #9ca3af; }
-  .sub-feature { color: #d1d5db; }
-  .sub-price-currency, .sub-price-amount { color: #f9fafb; }
-  .sub-price-period, .sub-price-billed { color: #6b7280; }
-  .sub-capacity { color: #f9fafb; background: rgba(250,112,112,.16); }
-  .sub-card-divider { background: #374151; }
-  .sub-toggle-wrap { background: #111827; }
-  .sub-cycle-btn--active { background: #1f2937; color: #f9fafb; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
-  .sub-faq-item, .sub-faq-item:first-child { border-color: #374151; }
-  .sub-faq-q { color: #f9fafb; }
-  .sub-trust-row { border-color: #374151; }
-  .sub-modal-meta { background: #111827; border-color: #374151; }
-  .sub-modal-meta-row span:last-child { color: #f9fafb; }
-  .sub-modal-close { background: #374151; color: #9ca3af; }
-  .sub-modal-close:hover { background: #4b5563; color: #f9fafb; }
-  .sub-modal-cancel { background: #1f2937; border-color: #374151; color: #d1d5db; }
-  .sub-modal-cancel:hover:not(:disabled) { background: #374151; }
-  .sub-skeleton-card { background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%); }
-}
-
-:root[data-theme="dark"] .sub-heading,
-:root[data-theme="dark"] .sub-card-name,
-:root[data-theme="dark"] .sub-status-name,
-:root[data-theme="dark"] .sub-modal-title,
-:root[data-theme="dark"] .sub-faq-title { color: #f9fafb; }
-
-:root[data-theme="dark"] .sub-card,
-:root[data-theme="dark"] .sub-status-card,
-:root[data-theme="dark"] .sub-modal { background: #1f2937; border-color: #374151; }
-
-:root[data-theme="dark"] .sub-card--current { background: #111827; }
-
-:root[data-theme="dark"] .sub-subheading,
-:root[data-theme="dark"] .sub-card-desc,
-:root[data-theme="dark"] .sub-faq-a,
-:root[data-theme="dark"] .sub-modal-body { color: #9ca3af; }
-
-:root[data-theme="dark"] .sub-feature    { color: #d1d5db; }
-:root[data-theme="dark"] .sub-price-currency,
-:root[data-theme="dark"] .sub-price-amount { color: #f9fafb; }
-:root[data-theme="dark"] .sub-price-period,
-:root[data-theme="dark"] .sub-price-billed { color: #6b7280; }
-:root[data-theme="dark"] .sub-capacity { color: #f9fafb; background: rgba(250,112,112,.16); }
-:root[data-theme="dark"] .sub-card-divider { background: #374151; }
-:root[data-theme="dark"] .sub-toggle-wrap { background: #111827; }
-:root[data-theme="dark"] .sub-cycle-btn--active { background: #1f2937; color: #f9fafb; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
-:root[data-theme="dark"] .sub-faq-item,
-:root[data-theme="dark"] .sub-faq-item:first-child { border-color: #374151; }
-:root[data-theme="dark"] .sub-faq-q { color: #f9fafb; }
-:root[data-theme="dark"] .sub-trust-row { border-color: #374151; }
-:root[data-theme="dark"] .sub-modal-meta { background: #111827; border-color: #374151; }
-:root[data-theme="dark"] .sub-modal-meta-row span:last-child { color: #f9fafb; }
-:root[data-theme="dark"] .sub-modal-close { background: #374151; color: #9ca3af; }
-:root[data-theme="dark"] .sub-modal-close:hover { background: #4b5563; color: #f9fafb; }
-:root[data-theme="dark"] .sub-modal-cancel { background: #1f2937; border-color: #374151; color: #d1d5db; }
-:root[data-theme="dark"] .sub-modal-cancel:hover:not(:disabled) { background: #374151; }
-:root[data-theme="dark"] .sub-skeleton-card { background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%); }
+/* ── Dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. ────────────── */
+:global(.dark-mode) .sub-heading, :global(.dark-mode) .sub-card-name, :global(.dark-mode) .sub-status-name, :global(.dark-mode) .sub-modal-title, :global(.dark-mode) .sub-faq-title { color: var(--dark-text); }
+:global(.dark-mode) .sub-card, :global(.dark-mode) .sub-status-card, :global(.dark-mode) .sub-modal { background: var(--dark-surface); border-color: var(--dark-border); }
+:global(.dark-mode) .sub-card--current { background: var(--dark-bg); }
+:global(.dark-mode) .sub-subheading, :global(.dark-mode) .sub-card-desc, :global(.dark-mode) .sub-faq-a, :global(.dark-mode) .sub-modal-body { color: var(--dark-text-muted); }
+:global(.dark-mode) .sub-feature { color: var(--dark-text-secondary); }
+:global(.dark-mode) .sub-price-currency, :global(.dark-mode) .sub-price-amount { color: var(--dark-text); }
+:global(.dark-mode) .sub-price-period, :global(.dark-mode) .sub-price-billed { color: var(--dark-text-muted); }
+:global(.dark-mode) .sub-capacity { color: var(--dark-text); background: rgba(250,112,112,.16); }
+:global(.dark-mode) .sub-card-divider { background: var(--dark-border); }
+:global(.dark-mode) .sub-toggle-wrap { background: var(--dark-bg); }
+:global(.dark-mode) .sub-cycle-btn--active { background: var(--dark-surface); color: var(--dark-text); box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+:global(.dark-mode) .sub-faq-item, :global(.dark-mode) .sub-faq-item:first-child { border-color: var(--dark-border); }
+:global(.dark-mode) .sub-faq-q { color: var(--dark-text); }
+:global(.dark-mode) .sub-trust-row { border-color: var(--dark-border); }
+:global(.dark-mode) .sub-modal-meta { background: var(--dark-bg); border-color: var(--dark-border); }
+:global(.dark-mode) .sub-modal-meta-row span:last-child { color: var(--dark-text); }
+:global(.dark-mode) .sub-modal-close { background: var(--dark-border); color: var(--dark-text-muted); }
+:global(.dark-mode) .sub-modal-close:hover { background: var(--dark-border); color: var(--dark-text); }
+:global(.dark-mode) .sub-modal-cancel { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text-secondary); }
+:global(.dark-mode) .sub-modal-cancel:hover:not(:disabled) { background: var(--dark-border); }
+:global(.dark-mode) .sub-skeleton-card { background: linear-gradient(90deg, var(--dark-surface) 25%, var(--dark-border) 50%, var(--dark-surface) 75%); }
 </style>

@@ -1350,37 +1350,17 @@ function saveSignature() {
   --sp-row-py:    1.375rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .settings-page {
-    --sp-page:     #0C0E1C;
-    --sp-surface:  #13162A;
-    --sp-border:   rgba(255,255,255,.07);
-    --sp-shadow:   0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
-    --sp-text:     #E1E5FA;
-    --sp-muted:    #8290B8;
-    --sp-field-bg: #191C30;
-    --sp-nav-bg:   #090B17;
-  }
-}
-:root[data-theme="dark"]  .settings-page {
-  --sp-page:     #0C0E1C;
-  --sp-surface:  #13162A;
-  --sp-border:   rgba(255,255,255,.07);
+/* Dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. */
+:global(.dark-mode) .settings-page {
+  --sp-page:     var(--dark-bg);
+  --sp-surface:  var(--dark-surface);
+  --sp-border:   var(--dark-border-subtle);
   --sp-shadow:   0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
-  --sp-text:     #E1E5FA;
-  --sp-muted:    #8290B8;
-  --sp-field-bg: #191C30;
-  --sp-nav-bg:   #090B17;
-}
-:root[data-theme="light"] .settings-page {
-  --sp-page:     #F0F2FA;
-  --sp-surface:  #FFFFFF;
-  --sp-border:   #E3E6F3;
-  --sp-shadow:   0 1px 2px rgba(14,18,50,.04), 0 4px 14px rgba(14,18,50,.06);
-  --sp-text:     #111827;
-  --sp-muted:    #64708A;
-  --sp-field-bg: #F8F9FE;
-  --sp-nav-bg:   #1A1D2E;
+  --sp-text:     var(--dark-text);
+  --sp-muted:    var(--dark-text-muted);
+  --sp-field-bg: var(--dark-input);
+  --sp-nav-bg:   var(--dark-sidebar);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1978,25 +1958,17 @@ function saveSignature() {
   background: rgba(34,197,94,.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  .stripe-block--connected {
-    background: rgba(34,197,94,.07);
-    border-color: rgba(34,197,94,.18);
-  }
+:global(.dark-mode) .stripe-block--connected {
+  background: var(--dark-success-bg);
+  border-color: rgba(34,197,94,.3);
 }
-:root[data-theme="dark"]  .stripe-block--connected { background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.18); }
-:root[data-theme="light"] .stripe-block--connected { background: rgba(34,197,94,.04); border-color: rgba(34,197,94,.25); }
 
 .stripe-block--warn {
   border-color: rgba(245,158,11,.3);
   background: rgba(245,158,11,.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  .stripe-block--warn { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); }
-}
-:root[data-theme="dark"]  .stripe-block--warn { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); }
-:root[data-theme="light"] .stripe-block--warn { background: rgba(245,158,11,.05); border-color: rgba(245,158,11,.3); }
+:global(.dark-mode) .stripe-block--warn { background: var(--dark-warning-bg); border-color: rgba(245,158,11,.3); }
 
 /* Status badges */
 .stripe-badge {
@@ -2019,12 +1991,8 @@ function saveSignature() {
   color: #d97706;
 }
 
-@media (prefers-color-scheme: dark) {
-  .stripe-badge--green { color: #4ade80; }
-  .stripe-badge--amber { color: #fbbf24; }
-}
-:root[data-theme="dark"] .stripe-badge--green { color: #4ade80; }
-:root[data-theme="dark"] .stripe-badge--amber { color: #fbbf24; }
+:global(.dark-mode) .stripe-badge--green { color: var(--dark-success-text); }
+:global(.dark-mode) .stripe-badge--amber { color: var(--dark-warning-text); }
 
 /* Capability pills */
 .stripe-caps {
@@ -2043,12 +2011,8 @@ function saveSignature() {
 .stripe-cap-item--ok  { color: #16a34a; }
 .stripe-cap-item--no  { color: #dc2626; }
 
-@media (prefers-color-scheme: dark) {
-  .stripe-cap-item--ok { color: #4ade80; }
-  .stripe-cap-item--no { color: #f87171; }
-}
-:root[data-theme="dark"] .stripe-cap-item--ok { color: #4ade80; }
-:root[data-theme="dark"] .stripe-cap-item--no { color: #f87171; }
+:global(.dark-mode) .stripe-cap-item--ok { color: var(--dark-success-text); }
+:global(.dark-mode) .stripe-cap-item--no { color: var(--dark-danger-text); }
 
 /* Action row */
 .stripe-actions {

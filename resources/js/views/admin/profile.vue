@@ -459,34 +459,16 @@ const submitPassword = async () => {
   --pf-row-py:   1.375rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .pf-page {
-    --pf-page:     #0C0E1C;
-    --pf-surface:  #13162A;
-    --pf-border:   rgba(255,255,255,.07);
-    --pf-shadow:   0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
-    --pf-text:     #E1E5FA;
-    --pf-muted:    #8290B8;
-    --pf-field-bg: #191C30;
-  }
-}
-:root[data-theme="dark"]  .pf-page {
-  --pf-page:     #0C0E1C;
-  --pf-surface:  #13162A;
-  --pf-border:   rgba(255,255,255,.07);
+/* Dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. */
+:global(.dark-mode) .pf-page {
+  --pf-page:     var(--dark-bg);
+  --pf-surface:  var(--dark-surface);
+  --pf-border:   var(--dark-border-subtle);
   --pf-shadow:   0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
-  --pf-text:     #E1E5FA;
-  --pf-muted:    #8290B8;
-  --pf-field-bg: #191C30;
-}
-:root[data-theme="light"] .pf-page {
-  --pf-page:     #F0F2FA;
-  --pf-surface:  #FFFFFF;
-  --pf-border:   #E3E6F3;
-  --pf-shadow:   0 1px 2px rgba(14,18,50,.04), 0 4px 14px rgba(14,18,50,.06);
-  --pf-text:     #111827;
-  --pf-muted:    #64708A;
-  --pf-field-bg: #F8F9FE;
+  --pf-text:     var(--dark-text);
+  --pf-muted:    var(--dark-text-muted);
+  --pf-field-bg: var(--dark-input);
 }
 
 /* ── Page wrapper ──────────────────────────────────────────────── */

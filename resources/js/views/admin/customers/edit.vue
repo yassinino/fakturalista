@@ -645,4 +645,6 @@ import { useTenantCountry } from '@/composables/useTenantCountry';
   font-size: 0.8rem;
   color: #6b7280;
 }
+
+:global(.dark-mode) .ctc-edit-hint { color: var(--dark-text-muted); }
 </style>

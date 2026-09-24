@@ -495,4 +495,36 @@ async function printInvoice() {
   .ib-btn--ghost span { display: none; }
   .ib-btn--ghost { padding: 8px 10px; }
 }
+
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .ib-header { border-bottom-color: var(--dark-border); }
+:global(.dark-mode) .ib-ref { color: var(--dark-text); }
+:global(.dark-mode) .ib-sep { background: var(--dark-border); }
+
+:global(.dark-mode) .ib-badge--draft     { background: rgba(148, 163, 184, 0.18); color: var(--dark-text-muted); border-color: rgba(148, 163, 184, 0.3); }
+:global(.dark-mode) .ib-badge--issued    { background: rgba(37, 99, 235, 0.18);   color: var(--dark-info-text); border-color: rgba(37, 99, 235, 0.3); }
+:global(.dark-mode) .ib-badge--paid      { background: rgba(22, 163, 74, 0.18);   color: var(--dark-success-text); border-color: rgba(22, 163, 74, 0.3); }
+:global(.dark-mode) .ib-badge--cancelled { background: rgba(220, 38, 38, 0.18);   color: var(--dark-danger-text); border-color: rgba(220, 38, 38, 0.3); }
+:global(.dark-mode) .ib-badge--sent      { background: rgba(5, 150, 105, 0.18);   color: #34d399; border-color: rgba(5, 150, 105, 0.3); }
+:global(.dark-mode) .ib-badge--stripe    { background: rgba(79, 70, 229, 0.18);   color: #a5b4fc; border-color: rgba(79, 70, 229, 0.3); }
+
+:global(.dark-mode) .ib-btn--ghost {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+:global(.dark-mode) .ib-btn--ghost:hover:not(:disabled) {
+  background: #0f172a;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+:global(.dark-mode) .ib-btn--danger {
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.35);
+}
+:global(.dark-mode) .ib-btn--danger:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.5);
+}
 </style>

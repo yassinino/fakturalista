@@ -262,4 +262,24 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 .cs-btn-link:hover { color: var(--brand-primary); }
+
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .cs-root { background: var(--dark-bg); }
+:global(.dark-mode) .cs-card {
+  background: var(--dark-surface);
+  border-color: var(--dark-border-subtle);
+}
+:global(.dark-mode) .cs-logo-name,
+:global(.dark-mode) .cs-title,
+:global(.dark-mode) .cs-summary-value { color: var(--dark-text); }
+:global(.dark-mode) .cs-subtitle,
+:global(.dark-mode) .cs-summary-label,
+:global(.dark-mode) .cs-btn-link { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .cs-summary {
+  background: var(--dark-input);
+  border-color: var(--dark-border-subtle);
+}
+:global(.dark-mode) .cs-summary-row { border-bottom-color: var(--dark-border-subtle); }
 </style>

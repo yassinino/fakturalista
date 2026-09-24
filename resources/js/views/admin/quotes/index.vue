@@ -611,4 +611,28 @@ async function confirmConvert() {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(22, 163, 74, 0.22);
 }
+
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .cq-modal { background: var(--dark-surface-elevated); }
+:global(.dark-mode) .cq-header,
+:global(.dark-mode) .cq-footer { border-color: var(--dark-border); }
+:global(.dark-mode) .cq-title { color: var(--dark-text); }
+:global(.dark-mode) .cq-close { color: var(--dark-text-disabled); }
+:global(.dark-mode) .cq-close:hover:not(:disabled) { color: var(--dark-text); }
+:global(.dark-mode) .cq-message { color: var(--dark-text-secondary); }
+:global(.dark-mode) .cq-hint {
+  color: var(--dark-text-muted);
+  background: var(--dark-input);
+}
+:global(.dark-mode) .cq-btn-cancel {
+  background: var(--dark-surface);
+  border-color: var(--dark-border);
+  color: var(--dark-text-muted);
+}
+:global(.dark-mode) .cq-btn-cancel:hover:not(:disabled) {
+  background: var(--dark-input);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
 </style>

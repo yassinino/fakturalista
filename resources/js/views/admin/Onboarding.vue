@@ -418,16 +418,16 @@ async function onSubmit() {
 }
 
 .ob-dark {
-  --panel-bg:     #0d1117;
-  --card-bg:      #161b22;
-  --card-border:  rgba(255,255,255,0.06);
+  --panel-bg:     var(--dark-bg);
+  --card-bg:      var(--dark-surface);
+  --card-border:  var(--dark-border-subtle);
   --card-shadow:  0 4px 6px -1px rgba(0,0,0,0.4), 0 24px 60px -12px rgba(0,0,0,0.5);
-  --text-primary: #f0f6fc;
-  --text-muted:   #8b949e;
-  --input-bg:     #0d1117;
-  --input-border: rgba(255,255,255,0.1);
-  --section-lbl:  #4d5968;
-  --divider:      rgba(255,255,255,0.08);
+  --text-primary: var(--dark-text);
+  --text-muted:   var(--dark-text-muted);
+  --input-bg:     var(--dark-input);
+  --input-border: var(--dark-border);
+  --section-lbl:  var(--dark-text-disabled);
+  --divider:      var(--dark-border-subtle);
 }
 
 /* ══════════════════════════════════════════════════════════════

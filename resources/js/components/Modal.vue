@@ -106,4 +106,9 @@
       }
     }
   }
+
+  :global(.dark-mode) .modal-inner {
+    background-color: var(--dark-surface-elevated);
+    color: var(--dark-text-secondary);
+  }
   </style>

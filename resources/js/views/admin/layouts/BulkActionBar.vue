@@ -81,17 +81,12 @@ defineEmits(['delete', 'clear']);
   box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .bab-bar { background: rgba(233, 30, 99, 0.08); border-color: rgba(233, 30, 99, 0.25); }
-  .bab-label { color: #f48fb1; }
-  .bab-btn-clear { border-color: #4b5563; color: #9ca3af; }
-  .bab-btn-clear:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: #6b7280; }
-}
-:root[data-theme="dark"] .bab-bar { background: rgba(233, 30, 99, 0.08); border-color: rgba(233, 30, 99, 0.25); }
-:root[data-theme="dark"] .bab-label { color: #f48fb1; }
-:root[data-theme="dark"] .bab-btn-clear { border-color: #4b5563; color: #9ca3af; }
-:root[data-theme="dark"] .bab-btn-clear:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: #6b7280; }
+/* Dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. */
+:global(.dark-mode) .bab-bar { background: rgba(233, 30, 99, 0.08); border-color: rgba(233, 30, 99, 0.25); }
+:global(.dark-mode) .bab-label { color: #f48fb1; }
+:global(.dark-mode) .bab-btn-clear { border-color: var(--dark-border); color: var(--dark-text-muted); }
+:global(.dark-mode) .bab-btn-clear:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: var(--dark-border); }
 
 /* Transition */
 .bab-enter-active,

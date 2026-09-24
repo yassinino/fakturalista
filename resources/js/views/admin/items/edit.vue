@@ -749,6 +749,59 @@ async function handleSave() {
 :deep(.vs__placeholder) { font-size: 0.875rem; color: #9ca3af; }
 :deep(.vs__actions) { padding-right: 4px; }
 
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .inv-page-title { color: var(--dark-text); }
+
+:global(.dark-mode) .inv-page-hint,
+:global(.dark-mode) .inv-section-label,
+:global(.dark-mode) .items-required-note,
+:global(.dark-mode) .items-field-hint,
+:global(.dark-mode) .inv-footer-hint,
+:global(.dark-mode) .inv-label,
+:global(.dark-mode) .items-switch-label { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .items-back-btn {
+  border-color: #334155;
+  color: #94a3b8;
+}
+:global(.dark-mode) .items-back-btn:hover { background: var(--dark-surface); border-color: var(--dark-border); }
+
+:global(.dark-mode) .inv-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark-mode) .inv-input,
+:global(.dark-mode) .inv-select,
+:global(.dark-mode) .inv-textarea,
+:global(.dark-mode) .items-type-btn {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(.dark-mode) .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
+
+:global(.dark-mode) .items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+:global(.dark-mode) .items-type-btn--active {
+  background: rgba(233, 30, 99, 0.12);
+  color: var(--brand-primary);
+}
+
+:global(.dark-mode) .inv-sticky-footer {
+  background: rgba(15, 23, 42, 0.92);
+  border-top-color: #334155;
+}
+
+:global(.dark-mode) :deep(.vs__dropdown-toggle) {
+  background: #0f172a;
+  border-color: #334155;
+}
+:global(.dark-mode) :deep(.vs__search),
+:global(.dark-mode) :deep(.vs__selected) { color: var(--dark-text-secondary); }
+:global(.dark-mode) :deep(.vs__placeholder) { color: var(--dark-text-muted); }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .inv-topbar       { flex-direction: column; align-items: flex-start; }

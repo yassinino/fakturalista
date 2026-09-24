@@ -518,13 +518,13 @@ async function onSubmit() {
 }
 
 :global(.dark-mode) .ctc {
-  --bg:         #1e2433;
-  --bg-subtle:  #252d3d;
-  --border:     rgba(255,255,255,0.09);
-  --text:       #e2e8f0;
-  --text-body:  #94a3b8;
-  --text-muted: #64748b;
-  --text-dim:   #3d4762;
+  --bg:         var(--dark-surface);
+  --bg-subtle:  var(--dark-surface-elevated);
+  --border:     var(--dark-border-subtle);
+  --text:       var(--dark-text);
+  --text-body:  var(--dark-text-secondary);
+  --text-muted: var(--dark-text-muted);
+  --text-dim:   var(--dark-text-disabled);
   --shadow-sm:  0 1px 2px rgba(0,0,0,0.3);
 }
 
@@ -785,7 +785,7 @@ async function onSubmit() {
   border-top: 1px solid var(--border);
   padding: 12px 0;
 }
-:global(.dark-mode) .ctc-footer { background: rgba(30,36,51,0.93); }
+:global(.dark-mode) .ctc-footer { background: var(--dark-surface); }
 .ctc-footer__inner {
   max-width: 1320px;
   margin: 0 auto;

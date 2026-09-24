@@ -216,6 +216,24 @@ app.directive('decimal', {
 // ..and finally mount it!
 app.mount("#app");
 
+// Flatpickr appends its calendar popup as a direct child of <body> by
+// default (not inside #page-container, where .dark-mode is applied), so
+// plain CSS can never reach it via an ancestor selector without changing
+// where/how it mounts - which risks breaking its positioning. Instead,
+// tag each calendar with a class reflecting the app's real dark-mode
+// state the moment it's created; resources/js/assets/scss/vendor/_flatpickr.scss
+// styles off that class instead of prefers-color-scheme.
+new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeType === 1 && node.classList?.contains("flatpickr-calendar")) {
+        const isDark = document.getElementById("page-container")?.classList.contains("dark-mode");
+        node.classList.toggle("fp-dark-mode", !!isDark);
+      }
+    }
+  }
+}).observe(document.body, { childList: true });
+
 const store = useTemplateStore();
 
  

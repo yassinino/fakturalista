@@ -196,49 +196,48 @@ function selectTax(event) {
   box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
-/* Dark mode - this admin panel's own .dark-mode class toggle isn't wired
-   up anywhere in the app yet, so OS-level scheme is the only thing that
-   actually activates today; kept self-contained since sibling fields on
-   the page don't have dark-mode styles of their own to match against. */
-@media (prefers-color-scheme: dark) {
-  .tax-select {
-    color: #e2e8f0;
-    background-color: #1e293b;
-    border-color: #334155;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  }
+/* Dark mode - uses the app's real dark-mode toggle (Header/Sidebar ->
+   Pinia store -> .dark-mode class on #page-container, see BaseLayout.vue),
+   not prefers-color-scheme - that only reflects the OS, which can desync
+   from the in-app toggle and leave this select light while everything
+   else around it is dark (or vice versa). */
+:global(.dark-mode) .tax-select {
+  color: var(--dark-text-secondary);
+  background-color: var(--dark-input);
+  border-color: var(--dark-border);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 
-  .tax-select:hover:not(:disabled) {
-    border-color: #ad4a70;
-  }
+:global(.dark-mode) .tax-select:hover:not(:disabled) {
+  border-color: var(--brand-primary-active);
+}
 
-  .tax-select:focus {
-    border-color: #E91E63;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23E91E63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  }
+:global(.dark-mode) .tax-select:focus {
+  border-color: var(--brand-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23E91E63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 
-  .tax-select:disabled {
-    background-color: #0f172a;
-    opacity: 0.5;
-  }
+:global(.dark-mode) .tax-select:disabled {
+  background-color: var(--dark-surface);
+  opacity: 0.5;
+}
 
-  .tax-select option {
-    color: #e2e8f0;
-    background-color: #1e293b;
-  }
+:global(.dark-mode) .tax-select option {
+  color: var(--dark-text-secondary);
+  background-color: var(--dark-surface-elevated);
+}
 
-  .tax-select-custom-input {
-    color: #e2e8f0;
-    background-color: #1e293b;
-    border-color: #334155;
-  }
+:global(.dark-mode) .tax-select-custom-input {
+  color: var(--dark-text-secondary);
+  background-color: var(--dark-input);
+  border-color: var(--dark-border);
+}
 
-  .tax-select-custom-input:hover:not(:disabled) {
-    border-color: #ad4a70;
-  }
+:global(.dark-mode) .tax-select-custom-input:hover:not(:disabled) {
+  border-color: var(--brand-primary-active);
+}
 
-  .tax-select-custom-input:focus {
-    border-color: #E91E63;
-  }
+:global(.dark-mode) .tax-select-custom-input:focus {
+  border-color: var(--brand-primary);
 }
 </style>

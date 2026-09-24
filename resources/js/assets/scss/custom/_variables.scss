@@ -10,6 +10,19 @@
 // For example, changing the primary color
 // $primary: #a48ad4;
 
+// Note: $primary-darker was considered as a single override point for the
+// dark theme's base surface tone (.card/.block/.dropdown-menu/.table/
+// .modal-content/.form-control all derive from it in
+// oneui/mixins/_theme-dark.scss). Deliberately NOT overridden here though -
+// it's also consumed well outside any .dark-mode gate: .btn-alt-secondary
+// and .nav-main-submenu inside the *light-mode* default dark sidebar
+// (oneui/_buttons.scss, oneui/_nav-main.scss - sidebarDark defaults to
+// true), the ungated .bg-primary-darker/.text-primary-darker/
+// .bg-default-darker utility classes, and the default (non-sidebar)
+// simplebar scrollbar color. Changing it would repaint parts of light
+// mode. custom/_main.scss instead applies the new palette via explicit
+// .dark-mode-scoped selectors on the specific elements that need it.
+
 // ── Premium button sizing ──────────────────────────────────────────────
 // Defined WITHOUT !default so they always win over oneui/variables-bootstrap
 // and bootstrap/scss/variables, which both use !default.

@@ -1896,6 +1896,75 @@ onMounted(() => { loadTemplate(); });
 }
 .tb-textarea:focus { outline: none; border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(233,30,99,0.08); }
 
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only.
+   Deliberately NOT applied to tb-paper, tb-mini-doc, tb-header-table,
+   tb-meta, tb-addrs-table, tb-inv-table, tb-totals and tb-inv-note -
+   those render the actual invoice/PDF document being designed, which
+   must keep showing its true (light) paper colors regardless of the
+   admin app's own theme. ─────────────────────────────────────────── */
+:global(.dark-mode) .tb-gallery-title,
+:global(.dark-mode) .tb-preset-name,
+:global(.dark-mode) .tb-topbar-preset-name,
+:global(.dark-mode) .tb-setting-label { color: var(--dark-text); }
+
+:global(.dark-mode) .tb-gallery-sub,
+:global(.dark-mode) .tb-preset-desc,
+:global(.dark-mode) .tb-tpl-desc,
+:global(.dark-mode) .tb-range-ends { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .tb-preset-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark-mode) .tb-panel-left,
+:global(.dark-mode) .tb-panel-right {
+  background: #1e293b;
+  border-color: #334155;
+}
+:global(.dark-mode) .tb-panel-left-head,
+:global(.dark-mode) .tb-topbar,
+:global(.dark-mode) .tb-setting-block { border-color: var(--dark-border); }
+
+:global(.dark-mode) .tb-panel-center { background: var(--dark-input); }
+
+:global(.dark-mode) .tb-tpl-thumb:hover { background: var(--dark-surface-elevated); }
+:global(.dark-mode) .tb-tpl-thumb--active { background: rgba(233, 30, 99, 0.15); }
+:global(.dark-mode) .tb-tpl-name { color: var(--dark-text-secondary); }
+
+:global(.dark-mode) .tb-topbar-back,
+:global(.dark-mode) .tb-btn--ghost {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+:global(.dark-mode) .tb-topbar-back:hover,
+:global(.dark-mode) .tb-btn--ghost:hover:not(:disabled) {
+  background: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+:global(.dark-mode) .tb-select,
+:global(.dark-mode) .tb-cpicker,
+:global(.dark-mode) .tb-hex,
+:global(.dark-mode) .tb-textarea {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(.dark-mode) .tb-logo-drop {
+  background: #0f172a;
+  border-color: #334155;
+}
+:global(.dark-mode) .tb-logo-drop--has { background: var(--dark-surface); border-color: var(--dark-border); }
+:global(.dark-mode) .tb-logo-placeholder { color: var(--dark-text-disabled); }
+:global(.dark-mode) .tb-logo-placeholder span { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .tb-swatch--active { outline-color: var(--dark-text-secondary); }
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .tb-panel-left { display: none; }

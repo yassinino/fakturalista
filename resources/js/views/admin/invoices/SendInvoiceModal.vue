@@ -302,4 +302,48 @@ function handleSend() {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(233, 30, 99, 0.22);
 }
+
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .sim-modal { background: var(--dark-surface); }
+:global(.dark-mode) .sim-header,
+:global(.dark-mode) .sim-footer { border-color: var(--dark-border); }
+:global(.dark-mode) .sim-title { color: var(--dark-text); }
+:global(.dark-mode) .sim-close { color: var(--dark-text-disabled); }
+:global(.dark-mode) .sim-close:hover { color: var(--dark-text-secondary); }
+:global(.dark-mode) .sim-label,
+:global(.dark-mode) .sim-hint { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .sim-email-display {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(.dark-mode) .sim-no-email {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+:global(.dark-mode) .sim-textarea {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+:global(.dark-mode) .sim-textarea:disabled {
+  background: #1e293b;
+  color: #64748b;
+}
+
+:global(.dark-mode) .sim-btn-cancel {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+:global(.dark-mode) .sim-btn-cancel:hover:not(:disabled) {
+  background: #0f172a;
+  border-color: #475569;
+  color: #e2e8f0;
+}
 </style>

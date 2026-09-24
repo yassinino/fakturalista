@@ -48,3 +48,45 @@
 .flatpickr-months .flatpickr-next-month:hover svg {
   fill: $primary;
 }
+
+// Dark mode - .fp-dark-mode instead of prefers-color-scheme. Flatpickr
+// appends its calendar to document.body by default (not inside
+// #page-container, where .dark-mode/its CSS vars live), so an
+// ancestor-based selector can't reach it without changing how/where the
+// calendar mounts. Instead, main.js tags each calendar with .fp-dark-mode
+// the moment it's created, reflecting the app's real dark-mode toggle -
+// no positioning/mounting change, so this responds to the actual in-app
+// state instead of just the OS preference.
+.flatpickr-calendar.fp-dark-mode {
+  background: var(--dark-surface-elevated);
+  border-color: var(--dark-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.35);
+
+  &.arrowTop:before,
+  &.arrowTop:after { border-bottom-color: var(--dark-surface-elevated); }
+  &.arrowBottom:before,
+  &.arrowBottom:after { border-top-color: var(--dark-surface-elevated); }
+
+  .flatpickr-months .flatpickr-month,
+  .flatpickr-current-month,
+  .flatpickr-current-month input.cur-year { color: var(--dark-text); }
+
+  .flatpickr-months .flatpickr-prev-month svg,
+  .flatpickr-months .flatpickr-next-month svg { fill: var(--dark-text-muted); }
+
+  .flatpickr-weekday { color: var(--dark-text-muted); }
+
+  .flatpickr-day { color: var(--dark-text-secondary); }
+  .flatpickr-day.flatpickr-disabled,
+  .flatpickr-day.flatpickr-disabled:hover,
+  .flatpickr-day.prevMonthDay,
+  .flatpickr-day.nextMonthDay { color: var(--dark-text-disabled); }
+  .flatpickr-day:hover,
+  .flatpickr-day:focus { background: var(--dark-border); border-color: var(--dark-border); }
+  .flatpickr-day.today { border-color: var(--dark-text-muted); }
+
+  .numInputWrapper span { border-color: var(--dark-border); }
+  .numInputWrapper span:hover { background: var(--dark-border); }
+  .numInputWrapper span.arrowUp:after { border-bottom-color: var(--dark-text-muted); }
+  .numInputWrapper span.arrowDown:after { border-top-color: var(--dark-text-muted); }
+}

@@ -658,15 +658,15 @@ onUnmounted(() => {
 /* ── Tokens: dark (OneUI's .dark-mode on #page-container) ─── */
 :global(.dark-mode) .hdr-root,
 :global(.page-header-dark) .hdr-root {
-  --hdr-bg:         rgba(13, 17, 23, 0.92);
-  --hdr-border:     rgba(255, 255, 255, 0.07);
+  --hdr-bg:         rgba(15, 20, 32, 0.92); /* var(--dark-header) #0F1420, kept translucent for the header's existing frosted-glass blur */
+  --hdr-border:     var(--dark-border);
   --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
-  --hdr-text:       #e6edf3;
-  --hdr-text-2:     #8b949e;
-  --hdr-text-3:     #484f58;
-  --hdr-surface:    #161b25;
-  --hdr-surface-2:  #1c2333;
-  --hdr-border-2:   #30363d;
+  --hdr-text:       var(--dark-text);
+  --hdr-text-2:     var(--dark-text-muted);
+  --hdr-text-3:     var(--dark-text-disabled);
+  --hdr-surface:    var(--dark-surface-elevated);
+  --hdr-surface-2:  var(--dark-surface);
+  --hdr-border-2:   var(--dark-border-subtle);
   --hdr-pink-bg:    rgba(233, 30, 99, 0.14);
   --hdr-hover:      rgba(255, 255, 255, 0.06);
   --hdr-icon-btn-bg:rgba(255, 255, 255, 0.0);
@@ -674,17 +674,21 @@ onUnmounted(() => {
 }
 
 /* System dark preference */
+/* Kept in sync with the .dark-mode block above (same values) - a user
+   whose OS is dark but who explicitly switched the app to light mode
+   would otherwise still see this fire, since it isn't gated on the
+   actual in-app toggle the way .dark-mode is. */
 @media (prefers-color-scheme: dark) {
   .hdr-root {
-    --hdr-bg:         rgba(13, 17, 23, 0.92);
-    --hdr-border:     rgba(255, 255, 255, 0.07);
+    --hdr-bg:         rgba(15, 20, 32, 0.92);
+    --hdr-border:     var(--dark-border);
     --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
-    --hdr-text:       #e6edf3;
-    --hdr-text-2:     #8b949e;
-    --hdr-text-3:     #484f58;
-    --hdr-surface:    #161b25;
-    --hdr-surface-2:  #1c2333;
-    --hdr-border-2:   #30363d;
+    --hdr-text:       var(--dark-text);
+    --hdr-text-2:     var(--dark-text-muted);
+    --hdr-text-3:     var(--dark-text-disabled);
+    --hdr-surface:    var(--dark-surface-elevated);
+    --hdr-surface-2:  var(--dark-surface);
+    --hdr-border-2:   var(--dark-border-subtle);
     --hdr-pink-bg:    rgba(233, 30, 99, 0.14);
     --hdr-hover:      rgba(255, 255, 255, 0.06);
     --hdr-icon-btn-bg:rgba(255, 255, 255, 0.0);

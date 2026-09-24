@@ -64,14 +64,10 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
   color: #9d1c4a;
 }
 
-/* dark mode */
-@media (prefers-color-scheme: dark) {
-  .bb-banner--trial   { color: #fbbf24; background: rgba(245,158,11,0.08); }
-  .bb-banner--readonly { color: #f472b6; background: rgba(233,30,99,0.08); }
-}
-
-:root[data-theme="dark"] .bb-banner--trial   { color: #fbbf24; background: rgba(245,158,11,0.08); }
-:root[data-theme="dark"] .bb-banner--readonly { color: #f472b6; background: rgba(233,30,99,0.08); }
+/* dark mode - the app's real toggle (.dark-mode class), not
+   prefers-color-scheme/data-theme which don't reflect it. */
+:global(.dark-mode) .bb-banner--trial   { color: var(--dark-warning-text); background: rgba(245,158,11,0.08); }
+:global(.dark-mode) .bb-banner--readonly { color: #f472b6; background: rgba(233,30,99,0.08); }
 
 .bb-icon {
   font-size: 16px;

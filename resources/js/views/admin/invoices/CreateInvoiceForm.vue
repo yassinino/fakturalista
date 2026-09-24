@@ -1437,6 +1437,86 @@ const handleSave = async () => {
   color: #16a34a;
 }
 
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container, see BaseLayout.vue), additive overrides only. ──── */
+:global(.dark-mode) .inv-page-title,
+:global(.dark-mode) .inv-td-rowtotal,
+:global(.dark-mode) .inv-tot-val,
+:global(.dark-mode) .inv-tot-grand-label { color: var(--dark-text); }
+
+:global(.dark-mode) .inv-page-hint,
+:global(.dark-mode) .inv-section-label,
+:global(.dark-mode) .inv-field-hint,
+:global(.dark-mode) .inv-more-btn,
+:global(.dark-mode) .inv-th,
+:global(.dark-mode) .inv-desc-sub,
+:global(.dark-mode) .inv-add-line,
+:global(.dark-mode) .inv-tot-label,
+:global(.dark-mode) .inv-footer-hint,
+:global(.dark-mode) .ai-bar-mic,
+:global(.dark-mode) .ai-bar-info,
+:global(.dark-mode) .inv-label { color: var(--dark-text-muted); }
+
+:global(.dark-mode) .inv-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+:global(.dark-mode) .inv-input,
+:global(.dark-mode) .inv-select,
+:global(.dark-mode) .inv-textarea {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:global(.dark-mode) .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
+
+:global(.dark-mode) .inv-addr-preview,
+:global(.dark-mode) .inv-adv-panel {
+  background: #0f172a;
+  color: #94a3b8;
+}
+
+:global(.dark-mode) .inv-th { border-bottom-color: var(--dark-border); }
+:global(.dark-mode) .inv-td { border-bottom-color: var(--dark-border-subtle); }
+
+:global(.dark-mode) .inv-add-line { border-color: var(--dark-border); }
+:global(.dark-mode) .inv-add-line:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+
+:global(.dark-mode) .inv-del-btn:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); }
+
+:global(.dark-mode) .inv-tot-divider { border-top-color: var(--dark-border); }
+
+:global(.dark-mode) .inv-sticky-footer {
+  background: rgba(15, 23, 42, 0.92);
+  border-top-color: #334155;
+}
+
+:global(.dark-mode) :deep(.vs__dropdown-toggle) {
+  background: #0f172a;
+  border-color: #334155;
+}
+:global(.dark-mode) :deep(.vs__search),
+:global(.dark-mode) :deep(.vs__selected) { color: var(--dark-text-secondary); }
+:global(.dark-mode) :deep(.vs__placeholder) { color: var(--dark-text-muted); }
+:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle) { background: var(--dark-input); }
+:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) { background: var(--dark-input); }
+
+:global(.dark-mode) .ai-bar-inner {
+  background: #1e293b;
+  border-color: #334155;
+}
+:global(.dark-mode) .ai-bar-input { color: var(--dark-text-secondary); }
+:global(.dark-mode) .ai-bar-input::placeholder,
+:global(.dark-mode) .ai-bar-input:disabled { color: var(--dark-text-disabled); }
+:global(.dark-mode) .ai-bar-mic {
+  background: #0f172a;
+  border-color: #334155;
+}
+:global(.dark-mode) .ai-bar-mic:hover { background: rgba(233, 30, 99, 0.12); }
+:global(.dark-mode) .inv-ai-custom-badge { background: rgba(233, 30, 99, 0.15); }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .inv-topbar {

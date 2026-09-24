@@ -28,6 +28,177 @@
   --brand-primary-active: #ad1457;
 }
 
+// ── Dark theme, centralized ─────────────────────────────────────────────
+// Single source of truth for every dark-mode color in the app. Page-level
+// <style scoped> blocks (plain CSS) read these via var(--dark-*) instead
+// of hardcoding hex - they inherit through the DOM from .dark-mode on
+// #page-container (see BaseLayout.vue) regardless of Vue's CSS scoping.
+// Layered surfaces (bg -> sidebar/header -> card -> elevated -> input) give
+// visible depth instead of one flat dark color everywhere.
+.dark-mode {
+  --dark-bg:               #0B0F19; // main app background
+  --dark-sidebar:          #080B12;
+  --dark-header:           #0F1420;
+  --dark-surface:          #121826; // primary cards / panels
+  --dark-surface-elevated: #182131; // dropdowns, modals, popovers
+  --dark-input:            #0F1623; // inputs, selects, textareas
+  --dark-border:           #263244; // main borders
+  --dark-border-subtle:    #1D2736; // dividers, table row separators
+
+  --dark-text:             #F8FAFC; // primary
+  --dark-text-secondary:   #CBD5E1;
+  --dark-text-muted:       #94A3B8;
+  --dark-text-disabled:    #64748B;
+
+  // Status tints - dark-tinted background + readable saturated text,
+  // reused everywhere instead of each page inventing its own badge colors.
+  --dark-success-bg:   rgba(34, 197, 94, 0.16);
+  --dark-success-text: #4ADE80;
+  --dark-warning-bg:   rgba(245, 158, 11, 0.16);
+  --dark-warning-text: #FBBF24;
+  --dark-danger-bg:    rgba(239, 68, 68, 0.16);
+  --dark-danger-text:  #F87171;
+  --dark-info-bg:      rgba(59, 130, 246, 0.16);
+  --dark-info-text:    #60A5FA;
+}
+
+// ── Core theme: exact-palette overrides ─────────────────────────────────
+// oneui/mixins/_theme-dark.scss derives its dark colors from $primary-darker
+// via lighten()/darken(), but that variable is also consumed outside any
+// .dark-mode gate elsewhere in the core theme (see custom/_variables.scss),
+// so it's left untouched. These generic classes - used directly by several
+// pages without any page-local override - get their dark styling here
+// instead, each scoped under .dark-mode so light mode is never affected.
+.dark-mode {
+  &,
+  #side-overlay,
+  #page-loader {
+    background-color: var(--dark-bg);
+  }
+
+  .card {
+    background-color: var(--dark-surface);
+
+    &:not(.card-borderless),
+    > .card-header { border-color: var(--dark-border-subtle); }
+
+    > .card-header:not(.bg-transparent),
+    > .card-footer:not(.bg-transparent) {
+      background-color: var(--dark-surface-elevated);
+    }
+  }
+
+  .block {
+    background-color: var(--dark-surface);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    &.block-bordered { border-color: var(--dark-border-subtle); }
+
+    .block-header-default { background-color: var(--dark-surface-elevated) !important; }
+  }
+
+  .table {
+    color: var(--dark-text-secondary);
+    border-color: var(--dark-border-subtle);
+    --#{$variable-prefix}table-striped-bg: var(--dark-surface);
+    --#{$variable-prefix}table-hover-bg: var(--dark-border-subtle);
+    --#{$variable-prefix}table-active-bg: var(--dark-surface-elevated);
+
+    thead { color: var(--dark-text-muted); }
+  }
+
+  .table > :not(:last-child) > :last-child > * { border-bottom-color: var(--dark-border-subtle); }
+
+  .form-control,
+  .form-select {
+    background-color: var(--dark-input);
+    border-color: var(--dark-border);
+    color: var(--dark-text-secondary);
+
+    &:focus {
+      background-color: var(--dark-input);
+      border-color: var(--brand-primary);
+      color: var(--dark-text);
+      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
+    }
+
+    &::placeholder { color: var(--dark-text-disabled); }
+
+    &:disabled {
+      background-color: var(--dark-surface);
+      border-color: var(--dark-border-subtle);
+      color: var(--dark-text-disabled);
+    }
+  }
+
+  .dropdown-menu {
+    background-color: var(--dark-surface-elevated);
+    border-color: var(--dark-border);
+    color: var(--dark-text-secondary);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+
+    .dropdown-item {
+      color: var(--dark-text-secondary);
+
+      &:hover,
+      &:focus {
+        background-color: var(--dark-border-subtle);
+        color: var(--dark-text);
+      }
+
+      &.active,
+      &:active {
+        background-color: rgba(233, 30, 99, 0.16);
+        color: var(--brand-primary);
+      }
+
+      &.disabled,
+      &:disabled { color: var(--dark-text-disabled); }
+    }
+
+    .dropdown-divider { border-color: var(--dark-border-subtle); }
+    .dropdown-item-text { color: var(--dark-text-secondary); }
+    .dropdown-header { color: var(--dark-text-disabled) !important; }
+  }
+
+  .modal-content {
+    background: var(--dark-surface-elevated);
+    border-color: var(--dark-border);
+  }
+
+  // Sidebar / header background - oneui/_layout-variations.scss paints
+  // these from $sidebar-dark-bg/$header-dark-bg, which are also used by a
+  // *separate*, light-mode-only "dark sidebar/header" preference
+  // (sidebarDark defaults to true - it's the app's normal light
+  // appearance), so those SCSS variables can't be touched globally.
+  // Descendant selector here has the same specificity as the core rule
+  // but loads later, so it wins - and .dark-mode is never present without
+  // the real toggle, so light mode is never affected.
+  #sidebar { background-color: var(--dark-sidebar); }
+  #page-header { background-color: var(--dark-header); }
+
+  // Sidebar active item - the core .sidebar-dark rule (shared with the
+  // separate light-mode "dark sidebar" toggle, so it can't be touched
+  // directly) only turns active-link text white with no background at
+  // all. Scoped to real dark mode only, so the light-mode dark-sidebar
+  // option is untouched.
+  #sidebar .nav-main-link {
+    &.active {
+      background-color: rgba(233, 30, 99, 0.14);
+      color: #fff;
+      border-radius: 8px;
+
+      > .nav-main-link-icon { color: var(--brand-primary); }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--dark-border-subtle);
+      border-radius: 8px;
+    }
+  }
+}
+
 // ── Fakturalista button design system ─────────────────────────────────
 // Flat colors, no gradients. Subtle lift + shadow on hover.
 // Size/radius/weight are set via $btn-* SCSS variables in _variables.scss.

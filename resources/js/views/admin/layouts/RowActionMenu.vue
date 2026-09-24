@@ -204,47 +204,47 @@ onBeforeUnmount(() => {
   margin: 4px 0 !important;
 }
 
-/* ── Dark mode ──────────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  .dt-action-btn:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: #e6edf3;
-  }
+/* ── Dark mode - the app's real toggle (.dark-mode class on
+   #page-container), not prefers-color-scheme which doesn't reflect the
+   in-app toggle state. ──────────────────────────────────────────── */
+:global(.dark-mode) .dt-action-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e6edf3;
+}
 
-  .ram-menu {
-    background: #1e293b;
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.45),
-      0 1px 4px  rgba(0, 0, 0, 0.35);
-  }
+:global(.dark-mode) .ram-menu {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    0 1px 4px  rgba(0, 0, 0, 0.35);
+}
 
-  :deep(.dropdown-item) {
-    color: #cbd5e1 !important;
-  }
+:global(.dark-mode) :deep(.dropdown-item) {
+  color: #cbd5e1 !important;
+}
 
-  :deep(.dropdown-item:hover),
-  :deep(.dropdown-item:focus) {
-    background: rgba(255, 255, 255, 0.07) !important;
-    color: #f1f5f9 !important;
-  }
+:global(.dark-mode) :deep(.dropdown-item:hover),
+:global(.dark-mode) :deep(.dropdown-item:focus) {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #f1f5f9 !important;
+}
 
-  :deep(.dropdown-item.text-danger) {
-    color: #f87171 !important;
-  }
+:global(.dark-mode) :deep(.dropdown-item.text-danger) {
+  color: #f87171 !important;
+}
 
-  :deep(.dropdown-item.text-danger:hover),
-  :deep(.dropdown-item.text-danger:focus) {
-    background: rgba(239, 68, 68, 0.13) !important;
-    color: #fca5a5 !important;
-  }
+:global(.dark-mode) :deep(.dropdown-item.text-danger:hover),
+:global(.dark-mode) :deep(.dropdown-item.text-danger:focus) {
+  background: rgba(239, 68, 68, 0.13) !important;
+  color: #fca5a5 !important;
+}
 
-  :deep(.dropdown-item.text-muted) {
-    color: #64748b !important;
-  }
+:global(.dark-mode) :deep(.dropdown-item.text-muted) {
+  color: #64748b !important;
+}
 
-  :deep(.dropdown-divider) {
-    border-top-color: rgba(255, 255, 255, 0.07) !important;
-  }
+:global(.dark-mode) :deep(.dropdown-divider) {
+  border-top-color: rgba(255, 255, 255, 0.07) !important;
 }
 </style>
