@@ -1135,7 +1135,7 @@ document.addEventListener('click', function (e) {
 
             <div class="fk-ai-example fk-reveal">
                 <span class="fk-ai-example-label">{{ __('site.home.ai_example_label') }}</span>
-                <p class="fk-ai-example-text">&ldquo;{{ __('site.home.ai_example_text') }}&rdquo;</p>
+                <p class="fk-ai-example-text">&ldquo;{{ $market === 'ES' ? __('site.home.ai_example_text') : __('site.home.ai_example_text_ma') }}&rdquo;</p>
             </div>
 
             <div class="fk-how-cta fk-reveal">

@@ -153,6 +153,7 @@ return [
         'ai_step3_text'     => 'Revisas y ajustas si es necesario. Nada se crea automáticamente: siempre confirmas tú.',
         'ai_example_label'  => 'Ejemplo',
         'ai_example_text'   => 'Factura a Carlos 3 horas de desarrollo web a 50€/h con IVA del 21%.',
+        'ai_example_text_ma'=> 'Factura a Youssef 3 horas de desarrollo web a 500 DH/h con IVA del 20%.',
         'ai_cta'            => 'Probar la facturación con IA',
 
         // Funciones (grid)

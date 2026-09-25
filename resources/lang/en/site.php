@@ -153,6 +153,7 @@ return [
         'ai_step3_text'     => 'You review and adjust if needed. Nothing is created automatically - you always confirm it.',
         'ai_example_label'  => 'Example',
         'ai_example_text'   => 'Invoice Carlos for 3 hours of web development at €50/h with 21% VAT.',
+        'ai_example_text_ma'=> 'Invoice Youssef for 3 hours of web development at 500 DH/h with 20% VAT.',
         'ai_cta'            => 'Try AI invoicing',
 
         // Features (grid)
