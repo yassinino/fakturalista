@@ -55,12 +55,21 @@
     </script>
 
     <style>
-    /* ── Top sales bar - slim, above the main nav, same on every page ── */
+    /* ── Top sales bar - slim, above the main nav, same on every page ──
+       z-index is deliberately higher than .site-header (9999) and its
+       scrolled .pix-header-fixed state (999999, see app.css). .fk-topbar
+       establishes its own stacking context (position:relative + z-index),
+       so its position:fixed .fk-lang-panel child is stacked WITHIN that
+       context, not against the page root - a z-index set on the panel
+       itself can't let it escape and out-rank .site-header, which is a
+       sibling further down in the DOM. Without this, the main nav painted
+       over the top of the topbar's language dropdown when it opened,
+       leaving only its last row visible. */
     .fk-topbar {
         background: #fff;
         border-bottom: 1px solid #eef0f3;
         position: relative;
-        z-index: 1001;
+        z-index: 1000000;
     }
     .fk-topbar-inner {
         display: flex;
