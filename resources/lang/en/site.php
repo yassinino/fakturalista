@@ -72,6 +72,7 @@ return [
         'hero_image_alt'    => 'Invoice creation screen in Fakturalista',
         'hero_float_paid'   => 'Invoice paid',
         'hero_float_amount' => '€1,250.00',
+        'hero_ai_mention'   => 'Also create your invoices in seconds with AI',
 
         // Problem → solution
         'solution_kicker'  => 'Everything you need to invoice without the hassle',
@@ -140,6 +141,20 @@ return [
         'how_step3_title' => 'Create and send your first invoice',
         'how_step3_text'  => 'Generate your first professional invoice and send it straight from Fakturalista.',
 
+        // AI-assisted invoicing
+        'ai_kicker'         => 'AI invoicing',
+        'ai_title'          => 'Describe it. AI prepares it. You check it.',
+        'ai_subtitle'       => 'Write your invoice in one sentence, Fakturalista fills in the rest. You\'re always in control before it\'s confirmed.',
+        'ai_step1_title'    => 'Describe',
+        'ai_step1_text'     => 'Write what you want to invoice, in one simple sentence, just like you\'d say it out loud.',
+        'ai_step2_title'    => 'AI prepares it',
+        'ai_step2_text'     => 'Fakturalista automatically fills in the client, line items, amounts and VAT from the information available.',
+        'ai_step3_title'    => 'You check it',
+        'ai_step3_text'     => 'You review and adjust if needed. Nothing is created automatically - you always confirm it.',
+        'ai_example_label'  => 'Example',
+        'ai_example_text'   => 'Invoice Carlos for 3 hours of web development at €50/h with 21% VAT.',
+        'ai_cta'            => 'Try AI invoicing',
+
         // Features (grid)
         'features_title'          => 'Everything your business needs',
         'feature_invoices_title'  => 'Invoices',
@@ -158,6 +173,8 @@ return [
         'feature_templates_text'  => 'Customize the design of your invoices and quotes.',
         'feature_multilang_title' => 'Multilingual',
         'feature_multilang_text'  => 'Available in Spanish, French and English.',
+        'feature_ai_title'        => 'AI-assisted invoicing',
+        'feature_ai_text'         => 'Describe your invoice in one sentence, AI prepares the details, you check before confirming.',
 
         // Productivity / value
         'value_title'  => 'Your business, simplified.',

@@ -72,6 +72,7 @@ return [
         'hero_image_alt'    => 'Écran de création de facture dans Fakturalista',
         'hero_float_paid'   => 'Facture payée',
         'hero_float_amount' => '1 250,00 €',
+        'hero_ai_mention'   => 'Créez aussi vos factures en quelques secondes avec l\'IA',
 
         // Problème → solution
         'solution_kicker'  => 'Tout ce qu\'il vous faut pour facturer sans vous compliquer la vie',
@@ -140,6 +141,20 @@ return [
         'how_step3_title' => 'Créez et envoyez votre première facture',
         'how_step3_text'  => 'Générez votre première facture professionnelle et envoyez-la directement depuis Fakturalista.',
 
+        // Facturation assistée par IA
+        'ai_kicker'         => 'Facturation avec IA',
+        'ai_title'          => 'Décrivez. L\'IA prépare. Vous vérifiez.',
+        'ai_subtitle'       => 'Écrivez votre facture en une phrase, Fakturalista remplit le reste. Vous gardez toujours le contrôle avant de valider.',
+        'ai_step1_title'    => 'Décrivez',
+        'ai_step1_text'     => 'Écrivez ce que vous voulez facturer, en une phrase simple, comme vous le diriez à voix haute.',
+        'ai_step2_title'    => 'L\'IA prépare',
+        'ai_step2_text'     => 'Fakturalista remplit automatiquement le client, les lignes, les montants et la TVA à partir des informations disponibles.',
+        'ai_step3_title'    => 'Vous vérifiez',
+        'ai_step3_text'     => 'Vous relisez et ajustez si besoin. Rien n\'est créé automatiquement : c\'est toujours vous qui validez.',
+        'ai_example_label'  => 'Exemple',
+        'ai_example_text'   => 'Facture à Carlos 3 heures de développement web à 50€/h avec TVA 21%.',
+        'ai_cta'            => 'Essayer la facturation avec IA',
+
         // Fonctionnalités (grille)
         'features_title'          => 'Tout ce dont votre activité a besoin',
         'feature_invoices_title'  => 'Factures',
@@ -158,6 +173,8 @@ return [
         'feature_templates_text'  => 'Personnalisez le design de vos factures et devis.',
         'feature_multilang_title' => 'Multilingue',
         'feature_multilang_text'  => 'Disponible en espagnol, français et anglais.',
+        'feature_ai_title'        => 'Facturation assistée par IA',
+        'feature_ai_text'         => 'Décrivez votre facture en une phrase, l\'IA prépare les informations, vous vérifiez avant de valider.',
 
         // Productivité / valeur
         'value_title'  => 'Votre activité, plus simple.',

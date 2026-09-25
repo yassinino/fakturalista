@@ -199,6 +199,13 @@ html { scroll-behavior: smooth; }
     gap: 6px;
 }
 .fk-hero-micro svg { flex-shrink: 0; color: var(--fk-pink); }
+.fk-hero-micro--ai { margin-top: 4px; }
+.fk-hero-micro--ai a {
+    color: var(--fk-pink);
+    font-weight: 600;
+    text-decoration: none;
+}
+.fk-hero-micro--ai a:hover { text-decoration: underline; }
 
 .fk-hero-visual {
     position: relative;
@@ -496,6 +503,36 @@ html { scroll-behavior: smooth; }
 .fk-step h3 { font-size: 19px; font-weight: 700; margin: 0 0 8px; }
 .fk-step p { font-size: 15px; line-height: 1.6; margin: 0; }
 .fk-how-cta { text-align: center; margin-top: 56px; }
+
+/* =========================================================================
+   AI INVOICING
+   ========================================================================= */
+.fk-ai-invoicing { padding: 110px 0; }
+.fk-ai-example {
+    max-width: 560px;
+    margin: 48px auto 0;
+    padding: 22px 28px;
+    background: var(--fk-pink-soft);
+    border: 1px solid var(--fk-pink-border);
+    border-radius: var(--fk-radius-md);
+    text-align: center;
+}
+.fk-ai-example-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--fk-pink);
+    margin-bottom: 8px;
+}
+.fk-ai-example-text {
+    margin: 0;
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--fk-ink);
+}
 
 /* =========================================================================
    FEATURES GRID
@@ -824,6 +861,9 @@ document.addEventListener('click', function (e) {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 {{ __('site.home.hero_microcopy') }}
             </p>
+            <p class="fk-hero-micro fk-hero-micro--ai fk-reveal">
+                <a href="{{ url('/') }}#facturation-ia">✨ {{ __('site.home.hero_ai_mention') }}</a>
+            </p>
         </div>
 
         <div class="fk-container">
@@ -1066,6 +1106,44 @@ document.addEventListener('click', function (e) {
         </div>
     </section>
 
+    {{-- ============================ AI INVOICING ============================ --}}
+    <section class="fk-ai-invoicing" id="facturation-ia">
+        <div class="fk-container">
+            <div class="fk-section-head fk-reveal">
+                <span class="fk-kicker">✨ {{ __('site.home.ai_kicker') }}</span>
+                <h2>{{ __('site.home.ai_title') }}</h2>
+                <p>{{ __('site.home.ai_subtitle') }}</p>
+            </div>
+
+            <div class="fk-steps">
+                <div class="fk-step fk-reveal">
+                    <div class="fk-step-num">01</div>
+                    <h3>{{ __('site.home.ai_step1_title') }}</h3>
+                    <p>{{ __('site.home.ai_step1_text') }}</p>
+                </div>
+                <div class="fk-step fk-reveal">
+                    <div class="fk-step-num">02</div>
+                    <h3>{{ __('site.home.ai_step2_title') }}</h3>
+                    <p>{{ __('site.home.ai_step2_text') }}</p>
+                </div>
+                <div class="fk-step fk-reveal">
+                    <div class="fk-step-num">03</div>
+                    <h3>{{ __('site.home.ai_step3_title') }}</h3>
+                    <p>{{ __('site.home.ai_step3_text') }}</p>
+                </div>
+            </div>
+
+            <div class="fk-ai-example fk-reveal">
+                <span class="fk-ai-example-label">{{ __('site.home.ai_example_label') }}</span>
+                <p class="fk-ai-example-text">&ldquo;{{ __('site.home.ai_example_text') }}&rdquo;</p>
+            </div>
+
+            <div class="fk-how-cta fk-reveal">
+                <a href="{{ url('/register') }}" class="fk-btn fk-btn-primary fk-btn-lg">{{ __('site.home.ai_cta') }}</a>
+            </div>
+        </div>
+    </section>
+
     {{-- ============================ FEATURES GRID ============================ --}}
     <section class="fk-features">
         <div class="fk-container">
@@ -1112,6 +1190,11 @@ document.addEventListener('click', function (e) {
                     <svg class="fk-feature-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3a14 14 0 010 18 14 14 0 010-18z" stroke="currentColor" stroke-width="1.6"/></svg>
                     <h3>{{ __('site.home.feature_multilang_title') }}</h3>
                     <p>{{ __('site.home.feature_multilang_text') }}</p>
+                </div>
+                <div class="fk-feature-cell">
+                    <svg class="fk-feature-icon" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M19 15l.8 1.9L21.7 17.7l-1.9.8L19 20.4l-.8-1.9-1.9-.8 1.9-.8L19 15z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                    <h3>{{ __('site.home.feature_ai_title') }}</h3>
+                    <p>{{ __('site.home.feature_ai_text') }}</p>
                 </div>
             </div>
         </div>
