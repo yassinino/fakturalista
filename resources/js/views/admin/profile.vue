@@ -127,8 +127,8 @@
                         v-model="profileForm.locale"
                         :disabled="isSavingProfile">
                   <option value="fr">🇫🇷 {{ $t('languages.fr') }}</option>
+                  <option value="ar">🇲🇦 {{ $t('languages.ar') }}</option>
                   <option value="en">🇬🇧 {{ $t('languages.en') }}</option>
-                  <option value="es">🇪🇸 {{ $t('languages.es') }}</option>
                 </select>
                 <svg class="pf-select-chevron" viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true">
                   <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 011.06 0L8 8.94l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 7.28a.75.75 0 010-1.06z" clip-rule="evenodd"/>

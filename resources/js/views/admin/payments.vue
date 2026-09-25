@@ -903,6 +903,10 @@ function methodLabel(method) {
   display: flex;
   flex-direction: column;
 }
+:global(.rtl-support) .pay-panel {
+  border-left: none;
+  border-right: 1px solid var(--bs-border-color);
+}
 .pay-panel-header {
   display: flex;
   align-items: center;

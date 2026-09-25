@@ -1,7 +1,10 @@
 @php
-    $fkLangs   = ['es' => __('site.lang.es'), 'fr' => __('site.lang.fr'), 'en' => __('site.lang.en')];
+    // Only visible_locales are offered in the picker - es stays fully
+    // supported server-side (routes, session, __() files) but is hidden
+    // from selection so it can be re-enabled later without any data loss.
+    $fkLangs   = ['fr' => __('site.lang.fr'), 'ar' => __('site.lang.ar'), 'en' => __('site.lang.en')];
     $fkCurrent = app()->getLocale();
-    $fkLabel   = $fkLangs[$fkCurrent] ?? 'Español';
+    $fkLabel   = $fkLangs[$fkCurrent] ?? $fkLangs['fr'];
 @endphp
 <div class="fk-lang-switcher">
     <button class="fk-lang-btn" type="button"

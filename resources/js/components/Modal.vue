@@ -107,6 +107,11 @@
     }
   }
 
+  :global(.rtl-support) .modal-inner i {
+    right: auto;
+    left: 15px;
+  }
+
   :global(.dark-mode) .modal-inner {
     background-color: var(--dark-surface-elevated);
     color: var(--dark-text-secondary);

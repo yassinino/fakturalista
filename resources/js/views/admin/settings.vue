@@ -755,8 +755,8 @@
               </div>
               <div class="sr-inp">
                 <select id="lang-select" class="form-select" style="max-width:220px;" v-model="userLocale" @change="saveLocale" :disabled="langSaving">
-                  <option value="es">{{ $t('languages.es') }}</option>
                   <option value="fr">{{ $t('languages.fr') }}</option>
+                  <option value="ar">{{ $t('languages.ar') }}</option>
                   <option value="en">{{ $t('languages.en') }}</option>
                 </select>
               </div>
@@ -1844,6 +1844,10 @@ function saveSignature() {
   gap: 0.875rem;
   z-index: 950;
 }
+:global(.rtl-support) .sp-savebar {
+  right: auto;
+  left: 1.75rem;
+}
 
 .sp-saved {
   display: inline-flex;
@@ -2041,6 +2045,10 @@ function saveSignature() {
   font-size: 1rem;
   flex-shrink: 0;
   margin-right: 0.75rem;
+}
+:global(.rtl-support) .stripe-warn-icon {
+  margin-right: 0;
+  margin-left: 0.75rem;
 }
 
 /* Connect button */

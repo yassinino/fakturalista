@@ -662,6 +662,10 @@ async function onSubmit() {
 .ctc-seg__btn + .ctc-seg__btn {
   border-left: 1.5px solid var(--border);
 }
+:global(.rtl-support) .ctc-seg__btn + .ctc-seg__btn {
+  border-left: none;
+  border-right: 1.5px solid var(--border);
+}
 .ctc-seg__btn:hover:not(.ctc-seg__btn--on) {
   color: var(--text-body);
   background: var(--bg);

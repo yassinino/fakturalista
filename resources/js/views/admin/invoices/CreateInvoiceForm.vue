@@ -1029,6 +1029,10 @@ const handleSave = async () => {
 .inv-td-desc {
   padding-left: 0;
 }
+:global(.rtl-support) .inv-td-desc {
+  padding-left: 8px;
+  padding-right: 0;
+}
 
 .inv-td-rowtotal {
   text-align: right;
@@ -1139,6 +1143,10 @@ const handleSave = async () => {
 .inv-tot-tax .inv-tot-label {
   font-size: 0.82rem;
   padding-left: 8px;
+}
+:global(.rtl-support) .inv-tot-tax .inv-tot-label {
+  padding-left: 0;
+  padding-right: 8px;
 }
 
 .inv-tot-divider {

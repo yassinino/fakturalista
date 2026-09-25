@@ -771,4 +771,28 @@ function onPerPageChange(val) {
   overflow: hidden;
   border-top: 3px solid var(--brand-primary) !important;
 }
+
+/* ── RTL (Arabic) ─────────────────────────────────────────────
+   Cell text-align already flips for free (inherited from
+   #page-container.rtl-support's text-align: right); only the
+   icon/positional pieces below need a manual mirror. */
+:global(.rtl-support) .dt-search-icon {
+  left: auto;
+  right: 10px;
+}
+:global(.rtl-support) .dt-search {
+  padding: 0 30px 0 12px;
+}
+:global(.rtl-support) .dt-perpage {
+  padding: 0 10px 0 28px;
+  background-position: left 9px center;
+}
+:global(.rtl-support .dt-table .dt-cb-col) {
+  padding-left: 8px;
+  padding-right: 12px;
+}
+:global(.rtl-support .dt-table .dt-ac-col) {
+  padding-left: 12px;
+  padding-right: 8px;
+}
 </style>

@@ -184,4 +184,143 @@
       }
     }
   }
+
+  // ── Bootstrap utilities ──────────────────────────────────────
+  // This project doesn't run the rtlcss post-processor, so Bootstrap's
+  // *-start/*-end utilities (and the legacy left/right ones still used
+  // in places) compile to physical left/right and need a manual mirror
+  // here. Spacer values match Bootstrap 5's default $spacers map.
+  $rtl-spacer-values: (
+    0: 0,
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 3rem,
+  );
+
+  @each $key, $value in $rtl-spacer-values {
+    .ms-#{$key} { margin-left: 0 !important; margin-right: $value !important; }
+    .me-#{$key} { margin-right: 0 !important; margin-left: $value !important; }
+    .ps-#{$key} { padding-left: 0 !important; padding-right: $value !important; }
+    .pe-#{$key} { padding-right: 0 !important; padding-left: $value !important; }
+  }
+  .ms-auto { margin-left: 0 !important; margin-right: auto !important; }
+  .me-auto { margin-right: 0 !important; margin-left: auto !important; }
+
+  .text-start { text-align: right !important; }
+  .text-end   { text-align: left !important; }
+  .text-left  { text-align: right !important; }
+  .text-right { text-align: left !important; }
+
+  .float-start,
+  .float-left  { float: right !important; }
+  .float-end,
+  .float-right { float: left !important; }
+
+  .border-start { border-left: 0 !important; border-right: 1px solid; }
+  .border-end   { border-right: 0 !important; border-left: 1px solid; }
+
+  .rounded-start {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 0.375rem !important;
+    border-bottom-right-radius: 0.375rem !important;
+  }
+  .rounded-end {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 0.375rem !important;
+    border-bottom-left-radius: 0.375rem !important;
+  }
+
+  // ── Dropdowns ───────────────────────────────────────────────
+  .dropdown-menu {
+    text-align: right;
+    left: auto;
+    right: 0;
+  }
+  .dropdown-menu-end {
+    right: auto;
+    left: 0;
+  }
+  .dropdown-item {
+    text-align: inherit;
+  }
+
+  // ── Forms ───────────────────────────────────────────────────
+  .form-check {
+    padding-left: 0;
+    padding-right: 1.5em;
+  }
+  .form-check .form-check-input {
+    margin-left: 0;
+    margin-right: -1.5em;
+  }
+  .form-select {
+    background-position: left 0.75rem center;
+    padding-right: 0.75rem;
+    padding-left: 2.25rem;
+  }
+  .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .input-group > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  // ── Alerts / dismiss buttons ────────────────────────────────
+  .alert-dismissible {
+    padding-right: 1rem;
+    padding-left: 3rem;
+  }
+  .alert-dismissible .btn-close {
+    right: auto;
+    left: 0;
+  }
+  .btn-close {
+    margin-left: 0;
+  }
+
+  // ── Modals ──────────────────────────────────────────────────
+  .modal-header .btn-close {
+    margin: -0.5rem auto -0.5rem -0.5rem;
+  }
+  .modal-footer {
+    justify-content: flex-start;
+  }
+
+  // ── Pagination ──────────────────────────────────────────────
+  .pagination {
+    .page-item:first-child .page-link {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 0.375rem;
+      border-bottom-right-radius: 0.375rem;
+    }
+    .page-item:last-child .page-link {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-top-left-radius: 0.375rem;
+      border-bottom-left-radius: 0.375rem;
+    }
+  }
+
+  // ── Tables ──────────────────────────────────────────────────
+  .table th,
+  .table td {
+    text-align: right;
+  }
+
+  // ── Cards / block helpers ───────────────────────────────────
+  .block-header,
+  .card-header {
+    text-align: right;
+  }
 }

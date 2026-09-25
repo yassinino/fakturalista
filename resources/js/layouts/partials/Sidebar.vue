@@ -551,4 +551,50 @@ onMounted(async () => {
 :global(#sidebar .content-side) {
   padding: 0 !important;
 }
+
+/* ════════════════════════════════
+   RTL (Arabic)
+   #page-container.rtl-support also gets .sidebar-r forced on it (see
+   BaseLayout.vue), which makes OneUI's own core CSS (_sidebar.scss)
+   physically move #sidebar to the right edge already - the overrides
+   below only mirror this component's OWN skin details that core CSS
+   doesn't know about (border side, accent stripe, gradient, spacing).
+   ════════════════════════════════ */
+:global(.rtl-support #sidebar),
+:global(.rtl-support #sidebar .content-header) {
+  border-right: 0 !important;
+  border-left: 1px solid var(--sk-border) !important;
+}
+
+:global(.rtl-support) .sk-hd {
+  padding: 0 22px 0 16px;
+}
+
+:global(.rtl-support) .sk-hd::after {
+  background: linear-gradient(
+    to left,
+    var(--sk-accent) 0%,
+    rgba(233, 30, 99, 0.18) 45%,
+    transparent 100%
+  );
+}
+
+:global(.rtl-support) .sk-logo {
+  margin-left: 0;
+  margin-right: -6px;
+}
+
+:global(.rtl-support) .sk-sec-label {
+  margin: 0 10px 5px 0;
+}
+
+:global(.rtl-support) .sk-link--on {
+  box-shadow: inset -3px 0 0 var(--sk-accent);
+}
+
+@media (max-width: 991px) {
+  :global(.rtl-support) .sk-hd {
+    padding: 0 16px 0 14px;
+  }
+}
 </style>

@@ -824,6 +824,39 @@ html { scroll-behavior: smooth; }
     .fk-feature-grid { grid-template-columns: 1fr; }
     .fk-section-head, .fk-solution-head, .fk-value-inner { margin-bottom: 40px; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+   ══════════════════════════════════════════════════════════════ */
+html[dir="rtl"] .fk-float-card--paid {
+    left: auto;
+    right: -4%;
+}
+html[dir="rtl"] .fk-float-card--amount {
+    right: auto;
+    left: -3%;
+}
+html[dir="rtl"] .fk-step {
+    text-align: right;
+}
+html[dir="rtl"] .fk-value-visual .fk-app-card {
+    text-align: right;
+}
+html[dir="rtl"] .fk-value-chip--1 {
+    left: auto;
+    right: -4%;
+}
+html[dir="rtl"] .fk-value-chip--2 {
+    right: auto;
+    left: -6%;
+}
+html[dir="rtl"] .fk-value-chip--3 {
+    left: auto;
+    right: 18%;
+}
+html[dir="rtl"] .fk-faq-q {
+    text-align: right;
+}
 </style>
 
 <script>

@@ -259,6 +259,10 @@ function deleteUser(user) {
   margin-right: 14px;
   white-space: nowrap;
 }
+:global(.rtl-support) .usr-usage {
+  margin-right: 0;
+  margin-left: 14px;
+}
 
 .usr-banner {
   display: flex;

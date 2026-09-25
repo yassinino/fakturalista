@@ -769,6 +769,10 @@ async function handleSave() {
   user-select: none;
   letter-spacing: 0.04em;
 }
+:global(.rtl-support) .itc-prefix {
+  border-right: none;
+  border-left: 1.5px solid var(--border);
+}
 .itc-input--no-border {
   border: none;
   border-radius: 0;

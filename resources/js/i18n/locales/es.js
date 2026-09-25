@@ -767,9 +767,10 @@ export default {
     passwordUpdateError: "No se pudo actualizar la contrase\u00f1a.",
   },
   languages: {
-    es: "ES - Espa\u00f1ol",
-    en: "EN - English",
-    fr: "FR - Fran\u00e7ais",
+    es: "Espa\u00f1ol",
+    en: "English",
+    fr: "Fran\u00e7ais",
+    ar: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
   },
   payments: {
     title: "Pagos",

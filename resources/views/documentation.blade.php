@@ -171,6 +171,29 @@
         .dc-nav-link { border-left: none; border-bottom: 2px solid transparent; padding: 6px 12px; font-size: .85rem; }
         .dc-nav-link:hover, .dc-nav-link.active { border-left-color: transparent; border-bottom-color: #fa7070; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .dc-nav-list {
+        border-left: none;
+        border-right: 2px solid #e5e7eb;
+    }
+    html[dir="rtl"] .dc-nav-link {
+        border-left: none;
+        border-right: 2px solid transparent;
+        margin-left: 0;
+        margin-right: -2px;
+    }
+    html[dir="rtl"] .dc-nav-link:hover,
+    html[dir="rtl"] .dc-nav-link.active {
+        border-right-color: #fa7070;
+    }
+    @media (max-width: 768px) {
+        html[dir="rtl"] .dc-nav-list { border-right: none; }
+        html[dir="rtl"] .dc-nav-link { border-right: none; }
+        html[dir="rtl"] .dc-nav-link:hover, html[dir="rtl"] .dc-nav-link.active { border-right-color: transparent; }
+    }
 </style>
 
 @php

@@ -1705,4 +1705,20 @@ onMounted(() => {
   .db-sk-cash-label,
   .db-sk-cash-track { animation: none; }
 }
+
+/* ── RTL (Arabic) ─────────────────────────────────────────────
+   Physical left/right positioning that direction:rtl alone can't
+   fix (absolute-positioned spine line, and a border used as a
+   divider between flex-reversed siblings). */
+:global(.rtl-support) .db-tl-spine {
+  left: auto;
+  right: 11px;
+}
+:global(.rtl-support) .db-stat {
+  border-right: none;
+  border-left: 1px solid var(--db-border);
+}
+:global(.rtl-support) .db-stat:last-child {
+  border-left: none;
+}
 </style>

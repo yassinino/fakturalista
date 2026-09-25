@@ -169,6 +169,13 @@
         .fq-body-inner { padding: 0 18px 18px; }
         .fq-cta { padding: 48px 16px 64px; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .fq-btn {
+        text-align: right;
+    }
 </style>
 
 @php

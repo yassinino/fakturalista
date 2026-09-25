@@ -1313,6 +1313,10 @@ onMounted(() => { loadTemplate(); });
   font-size: 10px;
   box-shadow: 0 2px 6px rgba(233,30,99,0.35);
 }
+:global(.rtl-support) .tb-preset-check {
+  right: auto;
+  left: 10px;
+}
 
 /* ════════════════════════════════════════
    EDITOR PHASE
@@ -1431,6 +1435,10 @@ onMounted(() => { loadTemplate(); });
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #e5e7eb transparent;
+}
+:global(.rtl-support) .tb-panel-left {
+  border-right: none;
+  border-left: 1px solid #f0f0f0;
 }
 .tb-panel-left::-webkit-scrollbar { width: 3px; }
 .tb-panel-left::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
@@ -1599,6 +1607,10 @@ onMounted(() => { loadTemplate(); });
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+:global(.rtl-support) .tb-panel-right {
+  border-left: none;
+  border-right: 1px solid #f0f0f0;
 }
 .tb-settings-scroll {
   flex: 1;
@@ -1882,6 +1894,11 @@ onMounted(() => { loadTemplate(); });
 }
 .tb-toggle input:checked + .tb-toggle-track { background: var(--brand-primary); }
 .tb-toggle input:checked + .tb-toggle-track::after { transform: translateX(16px); }
+:global(.rtl-support) .tb-toggle-track::after {
+  left: auto;
+  right: 2px;
+}
+:global(.rtl-support) .tb-toggle input:checked + .tb-toggle-track::after { transform: translateX(-16px); }
 
 .tb-textarea {
   width: 100%;

@@ -86,6 +86,13 @@
         font-family: 'Courier New', monospace;
         white-space: nowrap;
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .lp-table thead th {
+        text-align: right;
+    }
 </style>
 
 @include('partials.page-hero', [

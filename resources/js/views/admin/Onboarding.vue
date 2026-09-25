@@ -544,6 +544,10 @@ async function onSubmit() {
   background: rgba(255,255,255,0.1);
   z-index: 0;
 }
+:global(.rtl-support) .ob-steps::before {
+  left: auto;
+  right: 15px;
+}
 
 .ob-step {
   display: flex;
@@ -761,6 +765,11 @@ async function onSubmit() {
   padding-right: 38px;
   cursor: pointer;
 }
+:global(.rtl-support) .ob-select {
+  background-position: left 14px center;
+  padding-right: 12px;
+  padding-left: 38px;
+}
 
 .ob-field--error .ob-input {
   border-color: #ef4444;
@@ -857,6 +866,10 @@ async function onSubmit() {
   font-size: 11px;
   cursor: pointer;
   transition: background 0.15s;
+}
+:global(.rtl-support) .ob-logo-remove {
+  right: auto;
+  left: 8px;
 }
 
 .ob-logo-remove:hover { background: rgba(239,68,68,0.22); }

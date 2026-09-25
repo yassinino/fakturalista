@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(app()->getLocale(), config('app.rtl_locales', []), true) ? 'rtl' : 'ltr' }}">
 
 <head>
     <!-- Meta Data -->
@@ -602,6 +602,114 @@
             font-size: 20px;
         }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) - public site
+       This <style> block loads after bootstrap.min.css and app.css
+       (see the <link> tags above), so same-specificity rules here
+       win in the cascade without needing !important. Scope is the
+       "pragmatic global" mirror agreed for this task: shared layout
+       (nav, mobile drawer, lang switcher, footer) plus the common
+       Bootstrap utility classes used across the marketing pages -
+       not a per-page pixel audit.
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] body {
+        direction: rtl;
+        text-align: right;
+    }
+
+    /* Desktop nav */
+    html[dir="rtl"] .site-header .header-inner .site-nav .menu-wrapper {
+        margin-left: 0;
+        margin-right: 44px;
+    }
+    html[dir="rtl"] .site-header .header-inner .site-nav .nav-right {
+        margin-left: 0;
+        margin-right: 24px;
+    }
+
+    /* Mobile hamburger + off-canvas drawer */
+    html[dir="rtl"] .site-header .toggle-menu {
+        left: auto;
+        right: 0;
+    }
+    html[dir="rtl"] .site-header .toggle-menu .bar {
+        float: right;
+    }
+    html[dir="rtl"] .site-header .site-nav {
+        left: auto;
+        right: -100%;
+    }
+    html[dir="rtl"] .sidebar-open .site-header .site-nav {
+        left: auto;
+        right: 0;
+    }
+    html[dir="rtl"] .site-header .site-nav .site-main-menu {
+        text-align: right;
+    }
+    html[dir="rtl"] .site-header .header-inner .site-nav .nav-right .nav-login {
+        text-align: right;
+    }
+
+    /* Language switcher */
+    html[dir="rtl"] .fk-lang-btn {
+        padding: 5px 8px 5px 10px;
+    }
+    html[dir="rtl"] .fk-topbar-lang .fk-lang-btn {
+        padding: 3px 7px 3px 9px;
+    }
+    html[dir="rtl"] .fk-lang-item {
+        text-align: right;
+    }
+
+    /* Bootstrap utilities (bootstrap.min.css ships LTR-only; no rtlcss
+       step in this project's build, so the common ones are mirrored
+       by hand here). Values match Bootstrap 5's default $spacers map. */
+    html[dir="rtl"] .ms-0 { margin-left: 0 !important; margin-right: 0 !important; }
+    html[dir="rtl"] .ms-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+    html[dir="rtl"] .ms-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+    html[dir="rtl"] .ms-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+    html[dir="rtl"] .ms-4 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+    html[dir="rtl"] .ms-5 { margin-left: 0 !important; margin-right: 3rem !important; }
+    html[dir="rtl"] .ms-auto { margin-left: 0 !important; margin-right: auto !important; }
+    html[dir="rtl"] .me-0 { margin-right: 0 !important; margin-left: 0 !important; }
+    html[dir="rtl"] .me-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+    html[dir="rtl"] .me-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+    html[dir="rtl"] .me-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+    html[dir="rtl"] .me-4 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+    html[dir="rtl"] .me-5 { margin-right: 0 !important; margin-left: 3rem !important; }
+    html[dir="rtl"] .me-auto { margin-right: 0 !important; margin-left: auto !important; }
+    html[dir="rtl"] .ps-0 { padding-left: 0 !important; padding-right: 0 !important; }
+    html[dir="rtl"] .ps-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+    html[dir="rtl"] .ps-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+    html[dir="rtl"] .ps-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+    html[dir="rtl"] .ps-4 { padding-left: 0 !important; padding-right: 1.5rem !important; }
+    html[dir="rtl"] .ps-5 { padding-left: 0 !important; padding-right: 3rem !important; }
+    html[dir="rtl"] .pe-0 { padding-right: 0 !important; padding-left: 0 !important; }
+    html[dir="rtl"] .pe-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+    html[dir="rtl"] .pe-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+    html[dir="rtl"] .pe-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+    html[dir="rtl"] .pe-4 { padding-right: 0 !important; padding-left: 1.5rem !important; }
+    html[dir="rtl"] .pe-5 { padding-right: 0 !important; padding-left: 3rem !important; }
+    html[dir="rtl"] .text-start { text-align: right !important; }
+    html[dir="rtl"] .text-end   { text-align: left !important; }
+    html[dir="rtl"] .float-start { float: right !important; }
+    html[dir="rtl"] .float-end   { float: left !important; }
+    html[dir="rtl"] .dropdown-menu { text-align: right; left: auto; right: 0; }
+    html[dir="rtl"] .dropdown-menu-end { right: auto; left: 0; }
+    html[dir="rtl"] .form-check { padding-left: 0; padding-right: 1.5em; }
+    html[dir="rtl"] .form-check .form-check-input { margin-left: 0; margin-right: -1.5em; }
+    html[dir="rtl"] .modal-header .btn-close { margin: -0.5rem auto -0.5rem -0.5rem; }
+    html[dir="rtl"] .alert-dismissible { padding-right: 1rem; padding-left: 3rem; }
+    html[dir="rtl"] .alert-dismissible .btn-close { right: auto; left: 0; }
+
+    /* Keep naturally-LTR content readable inside the RTL interface */
+    html[dir="rtl"] .fk-ltr,
+    html[dir="rtl"] a[href^="mailto:"],
+    html[dir="rtl"] a[href^="tel:"] {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
     </style>
 
 </head>
@@ -874,14 +982,17 @@
                 var ph = panel.offsetHeight || 130;
                 var vw = window.innerWidth;
                 var gap = 6;
+                var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
 
                 // Prefer opening downward (top-bar placement); fall back
                 // upward if there isn't room below (footer placement).
                 var top = r.bottom + gap;
                 if (top + ph > window.innerHeight - 8) top = r.top - ph - gap;
 
-                // Align to button left; clamp so panel stays in viewport
-                var left = r.left;
+                // Align to the button's leading edge - left edge in LTR,
+                // right edge in RTL - then clamp so the panel stays in
+                // the viewport either way.
+                var left = isRtl ? (r.right - pw) : r.left;
                 if (left + pw > vw - 8) left = vw - pw - 8;
                 if (left < 8) left = 8;
 

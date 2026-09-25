@@ -100,7 +100,11 @@ return [
     */
 
     'fallback_locale' => 'fr',
-    'supported_locales' => ['es', 'fr', 'en'],
+    // es stays supported (never delete Spanish data/routes), it's just
+    // not offered in language selectors anymore - see 'visible_locales'.
+    'supported_locales' => ['es', 'fr', 'en', 'ar'],
+    'visible_locales'   => ['fr', 'ar', 'en'],
+    'rtl_locales'        => ['ar'],
 
     /*
     |--------------------------------------------------------------------------

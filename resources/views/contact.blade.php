@@ -162,6 +162,26 @@
         .ct-form-card { padding: 30px 22px; }
         .ct-info-col { padding-left: 0; margin-top: 40px; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .ct-select {
+        background-position: left 12px center;
+        padding-right: 14px;
+        padding-left: 38px;
+    }
+    html[dir="rtl"] .ct-hp {
+        left: auto;
+        right: -9999px;
+    }
+    html[dir="rtl"] .ct-info-col {
+        padding-left: 0;
+        padding-right: 12px;
+    }
+    @media (max-width: 991px) {
+        html[dir="rtl"] .ct-info-col { padding-right: 0; }
+    }
 </style>
 
 @include('partials.page-hero', [

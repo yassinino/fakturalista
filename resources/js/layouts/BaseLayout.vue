@@ -1,6 +1,8 @@
 <script setup>
 import { computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useTemplateStore } from "@/stores/template";
+import { rtlLocales } from "@/i18n";
 
 // Import all layout partials
 import BaseHeader from "@/layouts/partials/Header.vue";
@@ -19,6 +21,7 @@ defineProps({
 
 // Main store
 const store = useTemplateStore();
+const { locale } = useI18n();
 
 // Set default color theme
 store.setColorTheme({
@@ -28,7 +31,9 @@ store.setColorTheme({
 // Render main classes based on store options
 const classContainer = computed(() => {
   return {
-    "sidebar-r": store.layout.sidebar && !store.settings.sidebarLeft,
+    "sidebar-r":
+      store.layout.sidebar &&
+      (!store.settings.sidebarLeft || rtlLocales.includes(locale.value)),
     "sidebar-mini": store.layout.sidebar && store.settings.sidebarMini,
     "sidebar-o": store.layout.sidebar && store.settings.sidebarVisibleDesktop,
     "sidebar-o-xs": store.layout.sidebar && store.settings.sidebarVisibleMobile,
@@ -49,7 +54,7 @@ const classContainer = computed(() => {
       !store.settings.darkMode,
     "main-content-boxed": store.settings.mainContent === "boxed",
     "main-content-narrow": store.settings.mainContent === "narrow",
-    "rtl-support": store.settings.rtlSupport,
+    "rtl-support": rtlLocales.includes(locale.value),
     "side-trans-enabled": store.settings.sideTransitions,
     "side-scroll": true,
     "sidebar-dark page-header-dark dark-mode": store.settings.darkMode,

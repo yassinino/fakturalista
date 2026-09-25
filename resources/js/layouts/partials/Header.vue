@@ -1352,4 +1352,50 @@ onUnmounted(() => {
   .hdr-sr-leave-active { animation: none; transition: none; }
   .hdr-loader-fill { animation: none; }
 }
+
+/* ── RTL (Arabic) ─────────────────────────────────────────────
+   Mirrors the physical left/right rules above. Uses :global(.rtl-support)
+   the same way dark mode uses :global(.dark-mode) above, since #page-container
+   (not this component's own root) carries the toggled class. */
+:global(.rtl-support) .hdr-search-icon-left {
+  left: auto;
+  right: 12px;
+}
+:global(.rtl-support) .hdr-search-input {
+  padding: 0 36px 0 80px;
+}
+:global(.rtl-support) .hdr-search-spin,
+:global(.rtl-support) .hdr-search-clear,
+:global(.rtl-support) .hdr-search-kbd {
+  right: auto;
+  left: 10px;
+}
+:global(.rtl-support) .hdr-sr-item {
+  text-align: right;
+}
+:global(.rtl-support) .hdr-right {
+  margin-left: 0;
+  margin-right: auto;
+}
+:global(.rtl-support) .hdr-dd-item {
+  text-align: right;
+}
+:global(.rtl-support) .hdr-toggle {
+  margin-left: 0;
+  margin-right: auto;
+}
+:global(.rtl-support) .hdr-toggle-knob {
+  left: auto;
+  right: 2px;
+}
+:global(.rtl-support) .hdr-toggle--on .hdr-toggle-knob {
+  transform: translateX(-14px);
+}
+:global(.rtl-support) .hdr-mobile-search .hdr-search-input {
+  padding-left: 80px;
+  padding-right: 32px;
+}
+:global(.rtl-support) .hdr-profile-chevron--open {
+  transform: rotate(180deg);
+}
 </style>

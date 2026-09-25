@@ -161,6 +161,30 @@
         .cl-date-col { width: auto; text-align: left; }
         .cl-dot-col { display: none; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .cl-entry:not(:last-child)::before {
+        left: auto;
+        right: 119px;
+    }
+    html[dir="rtl"] .cl-date-col {
+        text-align: left;
+    }
+    html[dir="rtl"] .cl-items li {
+        padding: 4px 18px 4px 0;
+    }
+    html[dir="rtl"] .cl-items li::before {
+        left: auto;
+        right: 0;
+    }
+    @media (max-width: 600px) {
+        html[dir="rtl"] .cl-entry:not(:last-child)::before { left: auto; right: 103px; }
+    }
+    @media (max-width: 480px) {
+        html[dir="rtl"] .cl-date-col { text-align: right; }
+    }
 </style>
 
 @php

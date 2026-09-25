@@ -229,6 +229,13 @@
     @media (max-width: 400px) {
         .hc-cards { grid-template-columns: 1fr; }
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .hc-faq .fq-btn {
+        text-align: right;
+    }
 </style>
 
 @php

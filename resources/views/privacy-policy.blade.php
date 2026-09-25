@@ -69,6 +69,17 @@
         color: #fa7070;
         font-weight: 700;
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       RTL (Arabic) mirror - see master.blade.php for pattern/rationale
+       ══════════════════════════════════════════════════════════════ */
+    html[dir="rtl"] .lp-rights-list li {
+        padding: 8px 36px 8px 12px;
+    }
+    html[dir="rtl"] .lp-rights-list li::before {
+        left: auto;
+        right: 12px;
+    }
 </style>
 
 @include('partials.page-hero', [
