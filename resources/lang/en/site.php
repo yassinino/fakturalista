@@ -55,6 +55,7 @@ return [
         'es'    => 'Español',
         'fr'    => 'Français',
         'en'    => 'English',
+        'ar'    => 'العربية',
     ],
 
     'home' => [
