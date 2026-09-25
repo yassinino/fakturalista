@@ -11,6 +11,7 @@ class TenantReminderLog extends Model
 
     protected $fillable = [
         'tenant_id',
+        'invoice_uuid',
         'reminder_type',
         'period_ends_at',
         'sent_at',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CompanyProfile;
 use App\Models\Country;
+use App\Services\NotificationPreferencesService;
 use App\Services\TenantContextService;
 use App\Services\Tax\TaxPresetService;
 use Illuminate\Http\Request;
@@ -74,6 +75,11 @@ class CompanyProfileController extends Controller
             'swift' => 'nullable|string|max:255',
             'logo' => 'nullable|image|max:2048',
             'stamp' => 'nullable|image|max:2048',
+            // Sent as a JSON string alongside the rest of this multipart
+            // form (see settings.vue saveAll()). Unknown keys/out-of-range
+            // day values are dropped, not rejected - NotificationPreferencesService::resolve()
+            // only ever keeps the known, allowed shape.
+            'notification_preferences' => 'nullable|json',
         ]);
 
         // Trim identifier fields - accidental leading/trailing whitespace
@@ -91,6 +97,11 @@ class CompanyProfileController extends Controller
         if ($validated['country_code'] !== $profile->country_code && !$request->filled('default_tax_code')) {
             $validated['default_tax_code'] = null;
         }
+
+        // Decode + sanitize before assignment - the `array` cast would
+        // otherwise double-encode this already-JSON-string request field.
+        $validated['notification_preferences'] = app(NotificationPreferencesService::class)
+            ->resolve(json_decode($validated['notification_preferences'] ?? 'null', true));
 
         // Actualizar campos simples
         $profile->fill($validated);
@@ -144,6 +155,12 @@ class CompanyProfileController extends Controller
         $data['logo_path'] = $profile->logo_path
             ? Storage::url($profile->logo_path)
             : null;
+
+        // Always the full shape (every key, sensible value) even for an
+        // existing tenant whose column is still null - the frontend never
+        // has to guess a default itself.
+        $data['notification_preferences'] = app(NotificationPreferencesService::class)
+            ->resolve($profile->notification_preferences);
 
         $data['stamp_path'] = $profile->stamp_path
             ? Storage::url($profile->stamp_path)

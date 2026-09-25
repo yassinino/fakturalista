@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Invoice;
+use App\Models\Quote;
 use App\Models\TenantDomainVisit;
+use App\Observers\InvoiceObserver;
+use App\Observers\QuoteObserver;
 use App\Services\Verifactu\Auth\AeatAuthenticationProvider;
 use App\Services\Verifactu\Auth\CustomerCertificateProvider;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerTenantNotFoundHandler();
+
+        // Settings > Notifications - "Invoice paid" / "Quote converted".
+        // See App\Observers\{InvoiceObserver,QuoteObserver} for why this is
+        // a model observer rather than a change in the controllers that
+        // actually save these models.
+        Invoice::observe(InvoiceObserver::class);
+        Quote::observe(QuoteObserver::class);
     }
 
     private function registerTenantNotFoundHandler(): void

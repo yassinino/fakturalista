@@ -49,6 +49,10 @@ class CompanyProfile extends Model
         'timezone',
         'locale',
         'currency',
+        // Settings > Notifications (App\Services\NotificationPreferencesService
+        // resolves this against sensible defaults - null/partial here is
+        // expected and safe for every existing tenant).
+        'notification_preferences',
         'bank_name',
         'iban',
         'swift',
@@ -64,12 +68,13 @@ class CompanyProfile extends Model
     ];
 
     protected $casts = [
-        'invoice_next_number'     => 'integer',
-        'onboarding_completed'    => 'boolean',
-        'charges_enabled'         => 'boolean',
-        'payouts_enabled'         => 'boolean',
-        'stripe_connected_at'     => 'datetime',
-        'onboarding_completed_at' => 'datetime',
+        'invoice_next_number'       => 'integer',
+        'onboarding_completed'      => 'boolean',
+        'charges_enabled'           => 'boolean',
+        'payouts_enabled'           => 'boolean',
+        'stripe_connected_at'       => 'datetime',
+        'onboarding_completed_at'   => 'datetime',
+        'notification_preferences' => 'array',
     ];
 
     /**

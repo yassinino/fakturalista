@@ -17,6 +17,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('billing:send-reminders')
             ->dailyAt('08:00')
             ->withoutOverlapping();
+
+        // Settings > Notifications - per-invoice due-soon/overdue reminders.
+        // Same daily scheduler, a separate command (see
+        // SendInvoiceRemindersCommand's docblock for why), staggered a few
+        // minutes later purely to avoid two commands touching every
+        // tenant's database at the exact same moment.
+        $schedule->command('invoices:send-reminders')
+            ->dailyAt('08:15')
+            ->withoutOverlapping();
     }
 
     /**

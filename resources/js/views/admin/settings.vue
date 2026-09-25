@@ -733,12 +733,129 @@
               <h2 class="sc-title">{{ $t('settings.notifications.title') }}</h2>
               <p class="sc-desc">{{ $t('settings.notifications.desc') }}</p>
             </div>
-            <div class="soon-block">
-              <div class="soon-icon">
-                <i class="fa fa-bell"></i>
+
+            <!-- Master switch -->
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.masterLabel') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.masterHint') }}</span>
               </div>
-              <div class="soon-title">{{ $t('settings.comingSoon') }}</div>
-              <p class="soon-desc">{{ $t('settings.notifications.soonDesc') }}</p>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.email_notifications_enabled" :disabled="isSaving" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <!-- Group: Invoices & payments -->
+            <div class="nt-group-head">{{ $t('settings.notifications.groupInvoices') }}</div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.invoiceDueSoon') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.invoiceDueSoonHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.invoice_due_soon" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+                <div v-if="form.notifications.invoice_due_soon" class="nt-days">
+                  <span class="nt-days-label">{{ $t('settings.notifications.remindBefore') }}</span>
+                  <label class="nt-chip" v-for="d in [1,3,7]" :key="'before-' + d">
+                    <input type="checkbox" :value="d" v-model="form.notifications.invoice_due_soon_days" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                    <span>{{ $t('settings.notifications.days' + d + 'Before') }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.invoiceOverdue') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.invoiceOverdueHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.invoice_overdue" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+                <div v-if="form.notifications.invoice_overdue" class="nt-days">
+                  <span class="nt-days-label">{{ $t('settings.notifications.remindAfter') }}</span>
+                  <label class="nt-chip" v-for="d in [0,1,3,7]" :key="'after-' + d">
+                    <input type="checkbox" :value="d" v-model="form.notifications.invoice_overdue_days" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                    <span>{{ d === 0 ? $t('settings.notifications.dayOfDue') : $t('settings.notifications.days' + d + 'After') }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.invoicePaid') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.invoicePaidHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.invoice_paid" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <!-- Group: Account & subscription -->
+            <div class="nt-group-head">{{ $t('settings.notifications.groupAccount') }}</div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.trialEnding') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.trialEndingHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.trial_ending" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.subscriptionIssue') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.subscriptionIssueHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <span class="nt-required">{{ $t('settings.notifications.requiredBadge') }}</span>
+              </div>
+            </div>
+
+            <div class="sc-line"></div>
+
+            <!-- Group: Activity -->
+            <div class="nt-group-head">{{ $t('settings.notifications.groupActivity') }}</div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.quoteConverted') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.quoteConvertedHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.quote_converted" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+              </div>
             </div>
           </section>
 
@@ -1042,6 +1159,19 @@ const form = reactive({
   bank_name:             '',
   iban:                  '',
   swift:                 '',
+  // Settings > Notifications - a nested object, not a flat field like the
+  // rest of `form`; saveAll() below JSON-stringifies it into one FormData
+  // entry instead of looping it like the flat fields above.
+  notifications: {
+    email_notifications_enabled: true,
+    invoice_due_soon:            true,
+    invoice_due_soon_days:       [3],
+    invoice_overdue:             true,
+    invoice_overdue_days:        [0, 3],
+    invoice_paid:                true,
+    trial_ending:                true,
+    quote_converted:             true,
+  },
 });
 
 // ── Computed ───────────────────────────────────────────────────
@@ -1102,6 +1232,13 @@ function fillForm(data = {}) {
   Object.keys(form).forEach(key => {
     if (data[key] !== undefined && data[key] !== null) form[key] = data[key];
   });
+  // Backend key is notification_preferences (CompanyProfile column); always
+  // sent fully-resolved (every key present) by CompanyProfileController,
+  // but merge over the current defaults anyway so a still-loading/failed
+  // fetch never leaves form.notifications with missing keys the template binds to.
+  if (data.notification_preferences) {
+    Object.assign(form.notifications, data.notification_preferences);
+  }
   if (data.logo_path)  logoPreview.value  = data.logo_path;
   if (data.stamp_path) stampPreview.value = data.stamp_path;
   fillStripeStatus(data);
@@ -1123,8 +1260,11 @@ async function saveAll() {
   try {
     const payload = new FormData();
     payload.append('_method', 'put');
-    Object.entries(form).forEach(([k, v]) => payload.append(k,
-      k === 'default_tax_code' && form.country_code !== taxCountry.value ? '' : (v ?? '')));
+    Object.entries(form).forEach(([k, v]) => {
+      if (k === 'notifications') return; // appended as JSON below, not looped
+      payload.append(k, k === 'default_tax_code' && form.country_code !== taxCountry.value ? '' : (v ?? ''));
+    });
+    payload.append('notification_preferences', JSON.stringify(form.notifications));
     if (logoFile.value)  payload.append('logo',  logoFile.value);
     if (stampFile.value) payload.append('stamp', stampFile.value);
 
@@ -1791,36 +1931,98 @@ function saveSignature() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Coming soon (notifications)
+   Notifications
 ───────────────────────────────────────────────────────────── */
-.soon-block {
-  text-align: center;
-  padding: 3rem 2rem;
+.nt-group-head {
+  padding: 1rem var(--sp-row-px) 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sp-muted);
 }
-.soon-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 14px;
-  background: rgba(233,30,99,.08);
+
+/* Toggle switch - same visual language as templates.vue's .tb-toggle */
+.nt-toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.nt-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.nt-toggle input:disabled { cursor: not-allowed; }
+.nt-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+.nt-toggle-track::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.nt-toggle input:checked + .nt-toggle-track { background: var(--sp-accent); }
+.nt-toggle input:checked + .nt-toggle-track::after { transform: translateX(16px); }
+.nt-toggle input:disabled + .nt-toggle-track { opacity: 0.5; }
+
+/* Required badge (non-toggleable, critical notifications) */
+.nt-required {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--sp-accent);
-  margin-bottom: 1rem;
-}
-.soon-title {
-  font-size: 0.95rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(16,185,129,.1);
+  color: #059669;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--sp-text);
-  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
 }
-.soon-desc {
-  font-size: 0.82rem;
+
+/* Day-of-reminder chips shown under a toggle once it's enabled */
+.nt-days {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.nt-days-label {
+  font-size: 0.74rem;
   color: var(--sp-muted);
-  max-width: 340px;
-  margin: 0 auto;
+  margin-right: 0.25rem;
 }
+.nt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--sp-border);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  color: var(--sp-text);
+  cursor: pointer;
+  background: var(--sp-field-bg);
+  transition: border-color .15s, background .15s, color .15s;
+}
+.nt-chip input { accent-color: var(--sp-accent); }
+.nt-chip:has(input:checked) {
+  border-color: var(--sp-accent);
+  background: rgba(233,30,99,.08);
+  color: var(--sp-accent);
+  font-weight: 600;
+}
+.nt-chip input:disabled { cursor: not-allowed; }
 
 /* ─────────────────────────────────────────────────────────────
    Account row
@@ -1936,7 +2138,7 @@ function saveSignature() {
   .int-shell    { padding: 1.125rem; }
   .acct-row     { padding: 1.125rem; flex-wrap: wrap; gap: 0.75rem; }
   .sp-savebar   { bottom: 1rem; right: 1rem; left: 1rem; justify-content: flex-end; }
-  .soon-block   { padding: 2rem 1.25rem; }
+  .nt-days-label { width: 100%; margin-bottom: 0.15rem; }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -2049,6 +2251,20 @@ function saveSignature() {
 :global(.rtl-support) .stripe-warn-icon {
   margin-right: 0;
   margin-left: 0.75rem;
+}
+
+/* Notifications toggle - mirrors the same knob-position pattern already
+   used for .hdr-toggle (Header.vue) and .tb-toggle (templates.vue). */
+:global(.rtl-support) .nt-toggle-track::after {
+  left: auto;
+  right: 2px;
+}
+:global(.rtl-support) .nt-toggle input:checked + .nt-toggle-track::after {
+  transform: translateX(-16px);
+}
+:global(.rtl-support) .nt-days-label {
+  margin-right: 0;
+  margin-left: 0.25rem;
 }
 
 /* Connect button */

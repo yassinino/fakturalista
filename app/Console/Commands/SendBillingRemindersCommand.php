@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Mail\SubscriptionEndingReminderMail;
 use App\Mail\TrialEndingReminderMail;
+use App\Models\CompanyProfile;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\TenantReminderLog;
+use App\Services\NotificationPreferencesService;
 use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -64,6 +66,21 @@ class SendBillingRemindersCommand extends Command
             $daysLeft = $tenant->trialDaysLeft();
 
             if (!in_array($daysLeft, [3, 1], true) || empty($tenant->owner_email)) {
+                continue;
+            }
+
+            // Settings > Notifications - "Free trial ending" toggle. Only
+            // this one optional trial/subscription reminder is gated by a
+            // preference; the trial has no cycle so it only needs a quick
+            // switch into the tenant's own DB to read CompanyProfile, not
+            // a whole invoice-style per-item sweep.
+            $enabled = $tenant->run(function () {
+                $profile = CompanyProfile::first();
+
+                return app(NotificationPreferencesService::class)->isEnabled($profile?->notification_preferences, 'trial_ending');
+            });
+
+            if (!$enabled) {
                 continue;
             }
 
