@@ -217,6 +217,7 @@ const pageMeta = computed(() => {
     "backend-items":           { crumb: [bc],            title: t('header.pageTitle.products') },
     "backend-edit-item":       { crumb: [bc, prod],      title: t('header.pageTitle.editProduct') },
     "backend-payments":        { crumb: [bc],            title: t('header.pageTitle.payments') },
+    "backend-reports":         { crumb: [bc],            title: t('header.pageTitle.reports') },
     "backend-profile":         { crumb: [bc],            title: t('header.pageTitle.myProfile') },
     "backend-settings":        { crumb: [bc],            title: t('header.pageTitle.settings') },
     "backend-templates":       { crumb: [bc],            title: t('header.pageTitle.templates') },

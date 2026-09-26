@@ -24,7 +24,7 @@ const mainNav = [
 
 const businessNav = [
   { to: "backend-payments",  i18nKey: "nav.payments",  icon: "fa fa-credit-card" },
-  { to: "backend-dashboard", i18nKey: "nav.reports",   icon: "fa fa-chart-bar", placeholder: true },
+  { to: "backend-reports",   i18nKey: "nav.reports",   icon: "fa fa-chart-bar" },
 ];
 
 const catalogNav = [
@@ -52,6 +52,7 @@ const ROUTE_SECTION = {
   "backend-create-quote":         "backend-quotes",
   "backend-edit-quote":           "backend-quotes",
   "backend-payments":             "backend-payments",
+  "backend-reports":              "backend-reports",
   "backend-items":                "backend-items",
   "backend-create-item":          "backend-items",
   "backend-edit-item":            "backend-items",
@@ -65,7 +66,7 @@ const ROUTE_SECTION = {
 const activeSection = computed(() => ROUTE_SECTION[route.name] ?? null);
 
 function isActive(item) {
-  if (item.placeholder) return false;        // "Reports" is a placeholder
+  if (item.placeholder) return false;        // reserved for future "Soon" nav items
   return activeSection.value === item.to;
 }
 

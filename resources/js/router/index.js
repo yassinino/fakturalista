@@ -52,6 +52,7 @@ const Templates = () => import("@/views/admin/templates.vue");
 const Dashboard = () => import("@/views/admin/dashboard.vue");
 const Subscription = () => import("@/views/admin/subscription.vue");
 const Payments = () => import("@/views/admin/payments.vue");
+const Reports = () => import("@/views/admin/reports.vue");
 
 // Set all routes
 const routes = [
@@ -244,6 +245,14 @@ const routes = [
         path: "payments",
         name: "backend-payments",
         component: Payments,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: "reports",
+        name: "backend-reports",
+        component: Reports,
         meta: {
           requiresAuth: true
         }
