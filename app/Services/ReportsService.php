@@ -285,7 +285,17 @@ class ReportsService
 
     private function topClients(Carbon $start, Carbon $end): array
     {
-        $rows = Invoice::whereIn('status', self::REVENUE_STATUSES)
+        return $this->clientsBreakdown($start, $end, 5);
+    }
+
+    /**
+     * Same per-client aggregation as topClients(), without the top-5 cap -
+     * used by the Excel/PDF report export, which (unlike the on-screen
+     * card) has room for every client invoiced in the period.
+     */
+    public function clientsBreakdown(Carbon $start, Carbon $end, int $limit = 0): array
+    {
+        $query = Invoice::whereIn('status', self::REVENUE_STATUSES)
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->whereNotNull('customer_id')
             ->selectRaw('customer_id,
@@ -296,13 +306,15 @@ class ReportsService
             )
             ->groupBy('customer_id')
             ->orderByDesc('invoiced')
-            ->limit(5)
             // `name` on Customer is a computed accessor, not a real column -
             // select the real columns it's built from instead.
-            ->with('customer:id,first_name,last_name,company_name')
-            ->get();
+            ->with('customer:id,first_name,last_name,company_name');
 
-        return $rows->map(function ($row) {
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+
+        return $query->get()->map(function ($row) {
             // Customer::name concatenates first/last name and can come back
             // as a blank/whitespace-only string for a company-only contact
             // (no personal name on file) - trim before falling back to the

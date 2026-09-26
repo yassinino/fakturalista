@@ -427,9 +427,6 @@ export default {
   reportsPage: {
     title: "التقارير",
     subtitle: "حلّل أداء نشاطك التجاري",
-    export: "تصدير",
-    exporting: "جارٍ التصدير…",
-    exportError: "تعذر تصدير التقرير.",
     periods: {
       this_month: "هذا الشهر",
       last_month: "الشهر الماضي",
@@ -492,6 +489,15 @@ export default {
     errors: {
       load: "تعذر تحميل التقارير.",
     },
+  },
+  exportMenu: {
+    label: "تصدير",
+    exporting: "جارٍ التصدير…",
+    pdf: "تصدير بصيغة PDF",
+    excel: "تصدير بصيغة Excel (.xlsx)",
+    csv: "تصدير بصيغة CSV",
+    success: "تم تنزيل الملف المصدَّر بنجاح.",
+    error: "تعذر إنشاء الملف المصدَّر.",
   },
   billingBanner: {
     daysLeftInTrial: "يوم (أيام) متبقية في فترتك التجريبية المجانية.",

@@ -4,6 +4,9 @@
     <BaseBlock :title="$t('quotes.title')">
       <template #options>
         <div class="block-options-item">
+          <ExportMenu endpoint="/quotes/export" :params="exportParams" prefix="quotes" />
+        </div>
+        <div class="block-options-item">
           <router-link to="quotes/new" class="btn btn-primary">
             {{ $t("quotes.newTitle") }}
           </router-link>
@@ -18,6 +21,7 @@
       />
 
       <DataTableShell
+        ref="dtRef"
         :rows="quotes"
         :server-side="false"
         :status-options="statusOptions"
@@ -251,6 +255,7 @@ import RowActionMenu    from "@/views/admin/layouts/RowActionMenu.vue";
 import SendInvoiceModal from "@/views/admin/invoices/SendInvoiceModal.vue";
 import BulkActionBar    from "@/views/admin/layouts/BulkActionBar.vue";
 import BulkDeleteModal  from "@/views/admin/layouts/BulkDeleteModal.vue";
+import ExportMenu       from "@/components/ExportMenu.vue";
 
 const { t }   = useI18n();
 const router  = useRouter();
@@ -259,6 +264,11 @@ const toaster = createToaster();
 // ── Data ──────────────────────────────────────────────────
 const quotes      = ref([]);
 const companyName = ref('');
+
+// DataTableShell filters client-side (see its own currentFilters) - read
+// it here so "Export" always matches exactly what's on screen.
+const dtRef = ref(null);
+const exportParams = computed(() => dtRef.value?.currentFilters ?? {});
 
 const showBulkDeleteModal = ref(false);
 const bulkDeleting        = ref(false);

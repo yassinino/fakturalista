@@ -4,6 +4,9 @@
     <BaseBlock :title="$t('customers.title')">
       <template #options>
         <div class="block-options-item">
+          <ExportMenu endpoint="/customers/export" :params="exportParams" :filename="exportFilename" />
+        </div>
+        <div class="block-options-item">
           <router-link to="customers/new" class="btn btn-primary">
             {{ $t("customers.newTitle") }}
           </router-link>
@@ -18,6 +21,7 @@
       />
 
       <DataTableShell
+        ref="dtRef"
         :rows="customers"
         :server-side="false"
         :status-options="[]"
@@ -103,11 +107,20 @@ import DataTableShell  from '@/views/admin/layouts/DataTableShell.vue';
 import BulkActionBar   from '@/views/admin/layouts/BulkActionBar.vue';
 import BulkDeleteModal from '@/views/admin/layouts/BulkDeleteModal.vue';
 import RowActionMenu   from '@/views/admin/layouts/RowActionMenu.vue';
+import ExportMenu      from '@/components/ExportMenu.vue';
 import { createToaster } from '@meforma/vue-toaster';
 
 const toaster   = createToaster();
 const { t }     = useI18n();
 const customers = ref([]);
+
+// DataTableShell filters client-side (see its own currentFilters) - read
+// it here so "Export" always matches exactly what's on screen. Clients
+// aren't period-scoped, so the filename uses today's full date rather
+// than the invoices/quotes/payments "current month" convention.
+const dtRef = ref(null);
+const exportParams = computed(() => dtRef.value?.currentFilters ?? {});
+const exportFilename = computed(() => `clients-${new Date().toISOString().slice(0, 10)}`);
 
 const showBulkDeleteModal = ref(false);
 const bulkDeleting        = ref(false);

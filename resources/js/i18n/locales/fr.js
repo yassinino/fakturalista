@@ -427,9 +427,6 @@ export default {
   reportsPage: {
     title: "Rapports",
     subtitle: "Analysez la performance de votre activité",
-    export: "Exporter",
-    exporting: "Export en cours…",
-    exportError: "Impossible d'exporter le rapport.",
     periods: {
       this_month: "Ce mois-ci",
       last_month: "Le mois dernier",
@@ -492,6 +489,15 @@ export default {
     errors: {
       load: "Impossible de charger les rapports.",
     },
+  },
+  exportMenu: {
+    label: "Exporter",
+    exporting: "Export en cours…",
+    pdf: "Exporter en PDF",
+    excel: "Exporter en Excel (.xlsx)",
+    csv: "Exporter en CSV",
+    success: "Export téléchargé avec succès.",
+    error: "Impossible de générer l'export.",
   },
   billingBanner: {
     daysLeftInTrial: "jour(s) restant(s) dans votre essai gratuit.",

@@ -7,9 +7,12 @@
         <h2 class="fw-bold mb-1">{{ $t('payments.title') }}</h2>
         <p class="text-muted mb-0 fs-sm">{{ $t('payments.subtitle') }}</p>
       </div>
-      <button class="btn btn-primary" @click="openRecordModal">
-        <i class="fa fa-plus me-1"></i>{{ $t('payments.recordPayment') }}
-      </button>
+      <div class="d-flex gap-2">
+        <ExportMenu endpoint="/payments/export" :params="filters" prefix="payments" />
+        <button class="btn btn-primary" @click="openRecordModal">
+          <i class="fa fa-plus me-1"></i>{{ $t('payments.recordPayment') }}
+        </button>
+      </div>
     </div>
 
     <!-- ── Summary Cards ────────────────────────────────────────── -->
@@ -434,6 +437,7 @@ import { createToaster } from '@meforma/vue-toaster';
 import { useI18n } from 'vue-i18n';
 import DataTableShell from '@/views/admin/layouts/DataTableShell.vue';
 import RowActionMenu  from '@/views/admin/layouts/RowActionMenu.vue';
+import ExportMenu     from '@/components/ExportMenu.vue';
 
 const toaster = createToaster();
 const { t }   = useI18n();

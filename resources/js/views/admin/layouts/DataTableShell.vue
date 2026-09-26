@@ -304,6 +304,20 @@ function onPerPageChange(val) {
   clientPerPage.value = val;
   if (props.serverSide) emit('perPage', val);
 }
+
+// Read-only snapshot of the active filters, for a parent that has no other
+// way to know them (client-side mode never emits 'filter') - e.g. the
+// Export menu, which must export exactly what's currently displayed.
+defineExpose({
+  currentFilters: computed(() => ({
+    search:    searchValue.value,
+    status:    activeStatus.value,
+    date_from: dateFrom.value,
+    date_to:   dateTo.value,
+    sort_by:   sortField.value,
+    sort_dir:  sortDir.value,
+  })),
+});
 </script>
 
 <style scoped>

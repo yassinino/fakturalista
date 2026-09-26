@@ -11,6 +11,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\CompanyProfileController;
@@ -65,6 +66,13 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         // Reports page (Sidebar > Reports)
         Route::get('/reports/summary', [ReportsController::class, 'summary']);
         Route::get('/reports/export',  [ReportsController::class, 'export']);
+
+        // Exports (Invoices/Quotes/Payments/Clients) - format=pdf|xlsx|csv,
+        // same filters as each page's own listing endpoint.
+        Route::get('/invoices/export', [ExportController::class, 'invoices']);
+        Route::get('/quotes/export',   [ExportController::class, 'quotes']);
+        Route::get('/payments/export', [ExportController::class, 'payments']);
+        Route::get('/customers/export', [ExportController::class, 'clients']);
 
         // Morocco Phase 1C.2 (docs/morocco-phase-1c2-tax-configuration.md) -
         // the one central source of the current tenant's tax options.

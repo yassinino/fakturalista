@@ -22,11 +22,11 @@
             {{ $t('reportsPage.apply') }}
           </button>
         </div>
-        <button type="button" class="rp-btn rp-btn--ghost" :disabled="isExporting || isLoading" @click="exportCsv">
-          <i class="fa fa-arrow-down-to-line rp-btn-icon" v-if="!isExporting"></i>
-          <i class="fa fa-spinner fa-spin rp-btn-icon" v-else></i>
-          {{ isExporting ? $t('reportsPage.exporting') : $t('reportsPage.export') }}
-        </button>
+        <ExportMenu
+          endpoint="/reports/export"
+          :params="exportParams"
+          :filename="exportFilename"
+        />
       </div>
     </div>
 
@@ -50,7 +50,7 @@
 
     <!-- ── ERROR STATE ─────────────────────────────────────────── -->
     <div v-else-if="loadError" class="rp-state-card">
-      <i class="fa fa-triangle-exclamation rp-state-icon"></i>
+      <i class="fa fa-exclamation-triangle rp-state-icon"></i>
       <p class="rp-state-title">{{ $t('reportsPage.errors.load') }}</p>
       <button type="button" class="rp-btn rp-btn--ghost rp-btn--sm" @click="fetchReports">{{ $t('common.retry') }}</button>
     </div>
@@ -191,7 +191,7 @@ import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
 import { useTemplateStore } from "@/stores/template";
-import { createToaster } from "@meforma/vue-toaster";
+import ExportMenu from "@/components/ExportMenu.vue";
 import { Line } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -208,7 +208,6 @@ ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip,
 
 const { t, locale } = useI18n();
 const store = useTemplateStore();
-const toaster = createToaster();
 
 const localeMap = { es: "es-ES", en: "en-US", fr: "fr-FR", ar: "ar-MA" };
 
@@ -222,7 +221,6 @@ const appliedTo = ref("");
 
 const isLoading = ref(true);
 const loadError = ref(false);
-const isExporting = ref(false);
 const report = ref(null);
 
 const isDark = computed(() => store.settings.darkMode);
@@ -256,31 +254,24 @@ function applyCustom() {
   fetchReports();
 }
 
-async function exportCsv() {
-  isExporting.value = true;
-  try {
-    const params = { period: period.value };
-    if (period.value === "custom" && appliedFrom.value && appliedTo.value) {
-      params.from = appliedFrom.value;
-      params.to = appliedTo.value;
-    }
-    const response = await axios.get("/reports/export", { params, responseType: "blob" });
-    const url = URL.createObjectURL(new Blob([response.data], { type: "text/csv" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `fakturalista-report-${period.value}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch {
-    toaster.error(t("reportsPage.exportError"));
-  } finally {
-    isExporting.value = false;
-  }
-}
-
 onMounted(fetchReports);
+
+// Passed to <ExportMenu> - kept in sync with whatever's currently on
+// screen (period + resolved date range) so an export can never silently
+// return a different period than the one being viewed.
+const exportParams = computed(() => {
+  const params = { period: period.value };
+  if (period.value === "custom" && appliedFrom.value && appliedTo.value) {
+    params.from = appliedFrom.value;
+    params.to = appliedTo.value;
+  }
+  return params;
+});
+
+const exportFilename = computed(() => {
+  if (!report.value) return "business-report";
+  return `business-report-${report.value.period.start}-to-${report.value.period.end}`;
+});
 
 const isEmpty = computed(() =>
   !!report.value && report.value.kpis.invoices_count.value === 0 && report.value.kpis.revenue.value === 0
@@ -324,8 +315,8 @@ const kpiCards = computed(() => {
   const k = report.value.kpis;
 
   return [
-    { key: "revenue",        icon: "fa fa-sack-dollar",    color: "pink",   label: t("reportsPage.kpis.revenue"),       value: formatCurrency(k.revenue.value),        changePct: k.revenue.change_pct,        trend: k.revenue.trend },
-    { key: "collected",      icon: "fa fa-circle-check",   color: "green",  label: t("reportsPage.kpis.collected"),     value: formatCurrency(k.collected.value),      changePct: k.collected.change_pct,      trend: k.collected.trend },
+    { key: "revenue",        icon: "fa fa-money-bill-wave", color: "pink",   label: t("reportsPage.kpis.revenue"),       value: formatCurrency(k.revenue.value),        changePct: k.revenue.change_pct,        trend: k.revenue.trend },
+    { key: "collected",      icon: "fa fa-check-circle",    color: "green",  label: t("reportsPage.kpis.collected"),     value: formatCurrency(k.collected.value),      changePct: k.collected.change_pct,      trend: k.collected.trend },
     { key: "outstanding",    icon: "fa fa-hourglass-half", color: "orange", label: t("reportsPage.kpis.outstanding"),   value: formatCurrency(k.outstanding.value),    changePct: k.outstanding.change_pct,    trend: k.outstanding.trend },
     { key: "invoices_count", icon: "fa fa-file-invoice",   color: "blue",   label: t("reportsPage.kpis.invoicesCount"), value: String(k.invoices_count.value),         changePct: k.invoices_count.change_pct, trend: k.invoices_count.trend },
   ];

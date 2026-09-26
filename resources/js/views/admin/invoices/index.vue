@@ -4,6 +4,9 @@
     <BaseBlock :title="$t('invoices.title')">
       <template #options>
         <div class="block-options-item">
+          <ExportMenu endpoint="/invoices/export" :params="filterParams" prefix="invoices" />
+        </div>
+        <div class="block-options-item">
           <router-link to="invoices/new" class="btn btn-primary">
             {{ $t("invoices.newTitle") }}
           </router-link>
@@ -153,6 +156,7 @@ import BulkActionBar   from '@/views/admin/layouts/BulkActionBar.vue';
 import BulkDeleteModal from '@/views/admin/layouts/BulkDeleteModal.vue';
 import RowActionMenu   from '@/views/admin/layouts/RowActionMenu.vue';
 import SendInvoiceModal from './SendInvoiceModal.vue';
+import ExportMenu from '@/components/ExportMenu.vue';
 import { createToaster } from '@meforma/vue-toaster';
 import { useI18n } from "vue-i18n";
 
