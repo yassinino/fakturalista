@@ -111,6 +111,14 @@
                 <a v-if="invoice.status !== 'draft'" class="dropdown-item" href="javascript:void(0)" @click.prevent="printInvoice(invoice)">
                   <i class="fa fa-file-pdf fa-fw me-1"></i>{{ $t("invoices.document") }}
                 </a>
+                <a
+                  class="dropdown-item"
+                  href="javascript:void(0)"
+                  :title="$t('invoices.exportUblHelp')"
+                  @click.prevent="exportUbl(invoice)"
+                >
+                  <i class="fa fa-file-code fa-fw me-1"></i>{{ $t("invoices.actionExportUbl") }}
+                </a>
                 <div class="dropdown-divider"></div>
                 <a v-if="invoice.status !== 'cancelled'" class="dropdown-item text-danger" href="javascript:void(0)" @click.prevent="cancelInvoice(invoice)">
                   <i class="fa fa-ban fa-fw me-1"></i>{{ $t("invoices.actionCancel") }}
@@ -327,6 +335,37 @@ async function cancelInvoice(invoice) {
     invoice.status = res.data.status;
   } catch (e) {
     toaster.error(e.response?.data?.message ?? t('invoices.errorGeneric'));
+  }
+}
+
+/**
+ * Downloads this invoice's UBL 2.1 XML (App\Http\Controllers\InvoiceController::exportUbl()).
+ * The endpoint returns the file bytes directly (not a stored-file URL
+ * like printInvoice()), so this follows the same
+ * axios responseType:'blob' + synthetic <a download> pattern already
+ * used by ExportMenu.vue for Invoices/Quotes/Payments/Clients exports.
+ */
+async function exportUbl(invoice) {
+  try {
+    const res = await axios.get('/invoices/' + invoice.uuid + '/export/ubl', {
+      responseType: 'blob',
+    });
+
+    const disposition = res.headers['content-disposition'] || '';
+    const match = disposition.match(/filename="?([^"]+)"?/);
+    const filename = match ? match[1] : (invoice.reference + '.xml');
+
+    const blob = new Blob([res.data], { type: 'application/xml' });
+    const url  = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    toaster.error(t('invoices.ublExportError'));
   }
 }
 

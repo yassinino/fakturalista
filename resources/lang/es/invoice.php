@@ -66,5 +66,6 @@ return [
         'whatsapp_pay_online_suffix'    => ' 💳 Pagar en línea: :link',
         'bulk_deleted'                  => ':count factura(s) eliminada(s).',
         'bulk_deleted_with_skipped'     => ':count factura(s) eliminada(s). :skipped omitida(s) (ya emitidas).',
+        'ubl_export_failed'             => 'La exportación UBL ha fallado. Inténtalo de nuevo o contacta con soporte si el problema persiste.',
     ],
 ];

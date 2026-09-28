@@ -85,6 +85,8 @@ return [
         'benefit_2_text'   => 'Toda la información de tus clientes, presupuestos y facturas en un mismo lugar.',
         'benefit_3_title'  => 'Tu negocio bajo control',
         'benefit_3_text'   => 'Consulta qué facturas están pendientes, pagadas o vencidas de un solo vistazo.',
+        'benefit_4_title'  => 'Facturación preparada para el futuro',
+        'benefit_4_text'   => 'Exporta tus facturas en formato electrónico estructurado UBL 2.1, un estándar internacional diseñado para facilitar el intercambio automatizado de datos de facturación.',
 
         // Showcase - Facturas
         'show1_title'    => 'Facturas profesionales en segundos',
@@ -176,6 +178,8 @@ return [
         'feature_multilang_text'  => 'Disponible en español, francés e inglés.',
         'feature_ai_title'        => 'Facturación asistida por IA',
         'feature_ai_text'         => 'Describe tu factura en una frase, la IA prepara los datos, tú verificas antes de confirmar.',
+        'feature_ubl_title'       => 'Exportación UBL 2.1',
+        'feature_ubl_text'        => 'Genera y exporta tus facturas en un formato electrónico estructurado basado en el estándar internacional UBL 2.1.',
 
         // Productividad / valor
         'value_title'  => 'Tu negocio, más simple.',

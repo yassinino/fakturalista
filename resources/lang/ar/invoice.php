@@ -67,5 +67,6 @@ return [
         'whatsapp_pay_online_suffix'    => ' 💳 الدفع عبر الإنترنت: :link',
         'bulk_deleted'                  => 'تم حذف :count فاتورة.',
         'bulk_deleted_with_skipped'     => 'تم حذف :count فاتورة. تم تجاهل :skipped (تم إصدارها مسبقًا).',
+        'ubl_export_failed'             => 'فشل تصدير UBL. حاول مرة أخرى أو تواصل مع الدعم إذا استمرت المشكلة.',
     ],
 ];

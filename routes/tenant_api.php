@@ -126,6 +126,8 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
         Route::post('/invoices/{invoice}/whatsapp',         [InvoiceController::class, 'whatsapp']);
         Route::post('/invoices/{invoice}/create-payment-link', [PaymentController::class, 'getOrCreatePaymentLink']);
         Route::get('/invoices/{invoice}/history',           [InvoiceController::class, 'history']);
+        // UBL 2.1 export (Step 4 - see App\Http\Controllers\InvoiceController::exportUbl()).
+        Route::get('/invoices/{invoice}/export/ubl',        [InvoiceController::class, 'exportUbl']);
         Route::resource('/invoices', InvoiceController::class);
         Route::post('/invoices/print', [InvoiceController::class, 'print_invoice']);
 

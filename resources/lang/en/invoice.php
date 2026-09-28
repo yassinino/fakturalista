@@ -66,5 +66,6 @@ return [
         'whatsapp_pay_online_suffix'    => ' 💳 Pay online: :link',
         'bulk_deleted'                  => ':count invoice(s) deleted.',
         'bulk_deleted_with_skipped'     => ':count invoice(s) deleted. :skipped skipped (already issued).',
+        'ubl_export_failed'             => 'UBL export failed. Try again or contact support if the problem persists.',
     ],
 ];

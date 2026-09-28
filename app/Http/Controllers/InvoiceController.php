@@ -10,6 +10,9 @@ use App\Models\Cart;
 use App\Models\CompanyProfile;
 use App\Http\Requests\InvoiceRequest;
 use App\Mail\InvoiceEmail;
+use App\Services\EInvoicing\EInvoiceProfileRegistry;
+use App\Services\EInvoicing\InvoiceMapper;
+use App\Services\EInvoicing\Ubl\UblValidationError;
 use App\Services\InvoiceNumberingService;
 use App\Services\InvoiceRectificationService;
 use App\Services\Pdf\TemplateRendererService;
@@ -20,7 +23,9 @@ use App\Services\Tax\TaxTreatment;
 use App\Services\TenantContextService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -673,6 +678,84 @@ class InvoiceController extends Controller
             'phone'    => $phone,
             'status'   => $invoice->status,
         ], 200);
+    }
+
+    // ── UBL 2.1 export ─────────────────────────────────────
+
+    /**
+     * Download this invoice as a UBL 2.1 Invoice XML document.
+     *
+     * Pipeline: Invoice -> InvoiceMapper -> EInvoiceData ->
+     * EInvoiceProfileRegistry -> the configured profile's own
+     * build()/validateOutput() (GenericUbl21Profile - UblInvoiceBuilder +
+     * UblValidator::validateXsd() - today; see
+     * docs/einvoicing-morocco-readiness.md for what plugs in here later).
+     * This controller never couples to a concrete builder/validator - only
+     * to the profile contract, via the registry (Step 5). The XML is only
+     * ever returned once it has passed validation - a failure at any step
+     * is logged with technical detail server-side and answered with a
+     * generic message, never raw libxml/exception output.
+     *
+     * Authorization/tenancy: identical to every other single-invoice
+     * action on this controller - {invoice} resolves via
+     * Invoice::getRouteKeyName() (uuid) against the current tenant's own
+     * database only (stancl/tenancy, one database per tenant), so this
+     * can never resolve another tenant's invoice. No separate policy
+     * check is added here, matching issue()/cancel()/rectify()/etc.
+     * above, none of which add one either.
+     */
+    public function exportUbl(
+        Invoice $invoice,
+        InvoiceMapper $mapper,
+        EInvoiceProfileRegistry $profiles
+    ): JsonResponse|Response {
+        $invoice->loadMissing(['customer', 'carts', 'taxLines']);
+
+        try {
+            $dto     = $mapper->map($invoice);
+            $profile = $profiles->get();
+            $xml     = $profile->build($dto);
+            $result  = $profile->validateOutput($xml);
+        } catch (\Throwable $e) {
+            Log::error('UBL 2.1 export failed while building XML', [
+                'invoice_uuid' => $invoice->uuid,
+                'exception'    => $e->getMessage(),
+            ]);
+
+            return response()->json(['message' => __('invoice.actions.ubl_export_failed')], 500);
+        }
+
+        if (!$result->valid) {
+            Log::error('UBL 2.1 export produced XML that failed the official UBL 2.1 XSD', [
+                'invoice_uuid' => $invoice->uuid,
+                'errors'       => array_map(fn (UblValidationError $e) => $e->toArray(), $result->errors),
+            ]);
+
+            return response()->json(['message' => __('invoice.actions.ubl_export_failed')], 500);
+        }
+
+        $filename = $this->sanitizeUblFilename($dto->invoiceNumber) . '.xml';
+
+        return response($xml, 200, [
+            'Content-Type'        => 'application/xml; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Length'      => (string) strlen($xml),
+        ]);
+    }
+
+    /**
+     * Keeps only characters safe in a filename across OSes/browsers -
+     * the invoice number (e.g. "FAC-2026-001" or a draft reference) is
+     * Fakturalista-generated, not raw user input, but this is a
+     * user-downloaded file name, so it is sanitized defensively rather
+     * than trusted verbatim.
+     */
+    private function sanitizeUblFilename(string $value): string
+    {
+        $safe = preg_replace('/[^A-Za-z0-9._-]+/', '-', $value) ?? '';
+        $safe = trim($safe, '-');
+
+        return $safe !== '' ? $safe : 'invoice';
     }
 
     // ── PDF ────────────────────────────────────────────────

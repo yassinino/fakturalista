@@ -86,6 +86,8 @@ return [
         'benefit_2_text'   => 'Toutes les informations de vos clients, devis et factures au même endroit.',
         'benefit_3_title'  => 'Votre activité sous contrôle',
         'benefit_3_text'   => 'Consultez en un coup d\'œil les factures en attente, payées ou en retard.',
+        'benefit_4_title'  => 'Facturation prête pour demain',
+        'benefit_4_text'   => 'Exportez vos factures au format électronique structuré UBL 2.1, un standard international conçu pour faciliter l\'échange automatisé des données de facturation.',
 
         // Showcase - Factures
         'show1_title'    => 'Des factures professionnelles en quelques secondes',
@@ -177,6 +179,8 @@ return [
         'feature_multilang_text'  => 'Disponible en espagnol, français et anglais.',
         'feature_ai_title'        => 'Facturation assistée par IA',
         'feature_ai_text'         => 'Décrivez votre facture en une phrase, l\'IA prépare les informations, vous vérifiez avant de valider.',
+        'feature_ubl_title'       => 'Export UBL 2.1',
+        'feature_ubl_text'        => 'Générez et exportez vos factures dans un format électronique structuré basé sur le standard international UBL 2.1.',
 
         // Productivité / valeur
         'value_title'  => 'Votre activité, plus simple.',
@@ -206,6 +210,19 @@ return [
         'spain_card_badge' => 'VERI*FACTU',
         'spain_card_text'  => 'VERI*FACTU fait partie du nouveau cadre applicable aux systèmes informatiques de facturation en Espagne et permet l\'envoi des registres de facturation à l\'administration fiscale dans les conditions prévues par la réglementation.',
         'spain_card_cta'   => 'Découvrir VERI*FACTU',
+
+        // Morocco / electronic invoicing readiness. UBL 2.1 export exists
+        // today (see the e-invoicing groundwork); no official Moroccan
+        // DGI specification exists yet, so this section describes UBL 2.1
+        // export readiness only - never a DGI compliance/certification
+        // claim. French-only for now (Morocco is the default market for
+        // this locale) - not translated to ES/EN.
+        'morocco_badge'      => 'Facturation au Maroc',
+        'morocco_title'      => 'Préparez votre entreprise à l\'évolution de la facturation',
+        'morocco_text_1'     => 'La facturation électronique évolue au Maroc. Fakturalista vous permet déjà de structurer votre facturation et d\'exporter vos factures au format standard UBL 2.1.',
+        'morocco_text_2'     => 'Nous suivons les évolutions réglementaires et techniques afin de faire évoluer Fakturalista lorsque les spécifications officielles seront publiées.',
+        'morocco_card_badge' => 'UBL 2.1',
+        'morocco_cta'        => 'Découvrir la facturation électronique',
 
         // FAQ
         'faq_title' => 'Questions fréquentes',

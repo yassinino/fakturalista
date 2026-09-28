@@ -123,6 +123,13 @@ class Customer extends Model
             'city_billing'        => $this->city_billing,
             'post_code_billing'   => $this->post_code_billing,
             'country'             => $this->billingCountry?->name,
+            // ISO code from the same countries table/relation Fakturalista
+            // already trusts elsewhere (Country::$code) - added here so a
+            // customer_snapshot taken from this point on can carry it, the
+            // same way CompanyProfile::identitySnapshot() already does for
+            // the seller. A snapshot taken before this existed simply has
+            // no such key - see InvoiceMapper::mapCustomer().
+            'country_code'        => $this->billingCountry?->code,
         ];
     }
 

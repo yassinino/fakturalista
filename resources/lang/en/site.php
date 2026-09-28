@@ -86,6 +86,8 @@ return [
         'benefit_2_text'   => 'All your clients\' information, quotes and invoices in one place.',
         'benefit_3_title'  => 'Your business under control',
         'benefit_3_text'   => 'See which invoices are pending, paid or overdue at a glance.',
+        'benefit_4_title'  => 'Future-ready invoicing',
+        'benefit_4_text'   => 'Export your invoices in structured UBL 2.1 electronic format, an international standard designed for automated invoice data exchange.',
 
         // Showcase - Invoices
         'show1_title'    => 'Professional invoices in seconds',
@@ -177,6 +179,8 @@ return [
         'feature_multilang_text'  => 'Available in Spanish, French and English.',
         'feature_ai_title'        => 'AI-assisted invoicing',
         'feature_ai_text'         => 'Describe your invoice in one sentence, AI prepares the details, you check before confirming.',
+        'feature_ubl_title'       => 'UBL 2.1 Export',
+        'feature_ubl_text'        => 'Generate and export invoices in a structured electronic format based on the international UBL 2.1 standard.',
 
         // Productivity / value
         'value_title'  => 'Your business, simplified.',

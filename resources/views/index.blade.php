@@ -958,6 +958,14 @@ document.addEventListener('click', function (e) {
                     <h3>{{ __('site.home.benefit_3_title') }}</h3>
                     <p>{{ __('site.home.benefit_3_text') }}</p>
                 </div>
+                <div class="fk-benefit-card fk-reveal">
+                    <div class="fk-benefit-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 2v6h6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 13l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="fk-badge fk-badge--sent" style="margin-bottom:12px;">UBL 2.1</span>
+                    <h3>{{ __('site.home.benefit_4_title') }}</h3>
+                    <p>{{ __('site.home.benefit_4_text') }}</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1229,6 +1237,11 @@ document.addEventListener('click', function (e) {
                     <h3>{{ __('site.home.feature_ai_title') }}</h3>
                     <p>{{ __('site.home.feature_ai_text') }}</p>
                 </div>
+                <div class="fk-feature-cell">
+                    <svg class="fk-feature-icon" viewBox="0 0 24 24" fill="none"><path d="M13 2H7a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-6-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 2v6h6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 13l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <h3>{{ __('site.home.feature_ubl_title') }}</h3>
+                    <p>{{ __('site.home.feature_ubl_text') }}</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1396,6 +1409,40 @@ document.addEventListener('click', function (e) {
                         <p class="fk-spain-card-text">{{ __('site.home.spain_card_text') }}</p>
                         <a href="{{ url('/verifactu') }}" class="fk-spain-card-link">
                             {{ __('site.home.spain_card_cta') }}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{--
+        Morocco is the default market (French locale) - a generic UBL 2.1
+        export exists today (Steps 1-5 of the e-invoicing groundwork); no
+        official Moroccan DGI e-invoicing specification exists yet, so
+        this section only describes UBL 2.1 export readiness, never a DGI
+        compliance/certification claim. Gated to fr like the Spain panel
+        above is gated to es - not shown to es/en visitors since no
+        translated copy for this section was written for them.
+    --}}
+    @if(app()->getLocale() === 'fr')
+    <section class="fk-spain" id="facturation-maroc">
+        <div class="fk-container">
+            <div class="fk-spain-panel fk-reveal">
+                <div class="fk-spain-grid">
+                    <div class="fk-spain-text">
+                        <span class="fk-kicker">{{ __('site.home.morocco_badge') }}</span>
+                        <h2>{{ __('site.home.morocco_title') }}</h2>
+                        <p>{{ __('site.home.morocco_text_1') }}</p>
+                        <p>{{ __('site.home.morocco_text_2') }}</p>
+                    </div>
+
+                    <div class="fk-spain-card">
+                        <span class="fk-spain-card-badge">{{ __('site.home.morocco_card_badge') }}</span>
+                        <a href="{{ route('blog.index') }}" class="fk-spain-card-link">
+                            {{ __('site.home.morocco_cta') }}
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
                     </div>
