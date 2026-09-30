@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\CompanyProfile;
 use App\Models\Invoice;
+use App\Models\StripeConnectAccount;
+use App\Models\Tenant;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +15,16 @@ use Stripe\Stripe;
 
 class StripeConnectService
 {
+    // syncCentralMapping() results (Step 6C)
+    public const MAP_CREATED   = 'created';
+    public const MAP_UNCHANGED = 'unchanged';
+    public const MAP_UPDATED   = 'updated';   // stale row of a tenant that no longer holds the account
+    public const MAP_REMOVED   = 'removed';   // tenant has no account any more
+    public const MAP_CONFLICT  = 'conflict';  // account still held by ANOTHER tenant - left untouched
+    public const MAP_SKIPPED   = 'skipped';   // no tenant context / nothing to map
+
+    public const ACCOUNT_IN_USE_MESSAGE = 'This Stripe account is already connected to another Fakturalista workspace. Disconnect it there first, or connect a different Stripe account.';
+
     private const OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize';
     private const OAUTH_TOKEN_URL     = 'https://connect.stripe.com/oauth/token';
     private const OAUTH_DEAUTH_URL    = 'https://connect.stripe.com/oauth/deauthorize';
@@ -66,6 +78,19 @@ class StripeConnectService
             throw new \RuntimeException('No stripe_user_id in OAuth response.');
         }
 
+        // Step 6C - one Stripe account belongs to one workspace. Refuse
+        // BEFORE touching this tenant's profile, so the existing owner's
+        // mapping (and this tenant's current settings) stay exactly as they were.
+        $currentTenantId = tenancy()->tenant?->getTenantKey();
+        if ($currentTenantId && ($owner = $this->otherOwnerOf($stripeAccountId, $currentTenantId))) {
+            Log::warning('Stripe Connect: account already linked to another tenant - link refused', [
+                'account_id'   => $stripeAccountId,
+                'owner_tenant' => $owner,
+                'tenant'       => $currentTenantId,
+            ]);
+            throw new \RuntimeException(self::ACCOUNT_IN_USE_MESSAGE);
+        }
+
         // Retrieve full account info
         $account = Account::retrieve($stripeAccountId);
 
@@ -80,6 +105,7 @@ class StripeConnectService
 
         $profile = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
         $profile->update($data);
+        $this->syncCentralMapping($profile);
 
         Log::info('Stripe Connect: account linked', [
             'account_id'           => $stripeAccountId,
@@ -124,6 +150,7 @@ class StripeConnectService
             'payouts_enabled'          => false,
             'stripe_connected_at'      => null,
         ]);
+        $this->syncCentralMapping($profile);
     }
 
     /**
@@ -131,6 +158,10 @@ class StripeConnectService
      */
     public function refreshAccountStatus(CompanyProfile $profile): void
     {
+        // Backfills the central map for tenants linked before it existed -
+        // this runs on every Settings > Payments status call.
+        $this->syncCentralMapping($profile);
+
         if (!$profile->stripe_account_id) {
             return;
         }
@@ -150,6 +181,122 @@ class StripeConnectService
                 'error'      => $e->getMessage(),
             ]);
         }
+    }
+
+    // ── Central account -> tenant map (Step 6A.1) ─────────────────────
+
+    /**
+     * Keeps the central stripe_connect_accounts row for the CURRENT tenant
+     * in line with its CompanyProfile, so the central Connect webhook can
+     * find this tenant from a signed event's `account` alone. Called after
+     * every link / refresh / disconnect and by stripe:backfill-connect-accounts;
+     * must run inside tenant context. Idempotent.
+     *
+     * Step 6C: an account still held by ANOTHER tenant is never silently
+     * moved - the existing mapping is kept and MAP_CONFLICT returned.
+     */
+    public function syncCentralMapping(CompanyProfile $profile): string
+    {
+        $tenantId = tenancy()->tenant?->getTenantKey();
+
+        if (!$tenantId) {
+            return self::MAP_SKIPPED;
+        }
+
+        $accountId = $profile->stripe_account_id;
+
+        $removed = StripeConnectAccount::where('tenant_id', $tenantId)
+            ->when($accountId, fn ($q) => $q->where('stripe_account_id', '!=', $accountId))
+            ->delete();
+
+        if (!$accountId) {
+            return $removed ? self::MAP_REMOVED : self::MAP_SKIPPED;
+        }
+
+        $existing = StripeConnectAccount::where('stripe_account_id', $accountId)->first();
+
+        if (!$existing) {
+            StripeConnectAccount::create(['stripe_account_id' => $accountId, 'tenant_id' => $tenantId]);
+            return self::MAP_CREATED;
+        }
+
+        if ($existing->tenant_id === $tenantId) {
+            return self::MAP_UNCHANGED;
+        }
+
+        if ($owner = $this->otherOwnerOf($accountId, $tenantId)) {
+            Log::warning('Stripe Connect: account is mapped to another tenant that still uses it - mapping NOT changed', [
+                'account_id'   => $accountId,
+                'owner_tenant' => $owner,
+                'tenant'       => $tenantId,
+            ]);
+            return self::MAP_CONFLICT;
+        }
+
+        Log::info('Stripe Connect: stale mapping (previous tenant no longer uses this account) reassigned', [
+            'account_id'      => $accountId,
+            'previous_tenant' => $existing->tenant_id,
+            'tenant'          => $tenantId,
+        ]);
+        $existing->update(['tenant_id' => $tenantId]);
+
+        return self::MAP_UPDATED;
+    }
+
+    /**
+     * The id of ANOTHER tenant that the central map says owns this account
+     * and whose own profile still holds it - or null when the account is
+     * free (unmapped, mapped to $tenantId, or a stale row). A single
+     * targeted lookup of the mapped tenant, never a scan. When the owner
+     * can't be checked it is assumed to still own the account (fail safe).
+     */
+    public function otherOwnerOf(string $accountId, string $tenantId): ?string
+    {
+        $mapping = StripeConnectAccount::where('stripe_account_id', $accountId)->first();
+
+        if (!$mapping || $mapping->tenant_id === $tenantId) {
+            return null;
+        }
+
+        $owner = Tenant::find($mapping->tenant_id);
+
+        if (!$owner) {
+            return null; // tenant gone (the FK normally cascades this row away)
+        }
+
+        $stillHeld = $owner->run(function () use ($accountId) {
+            try {
+                return CompanyProfile::where('stripe_account_id', $accountId)->exists();
+            } catch (\Throwable $e) {
+                Log::warning('Stripe Connect: could not verify the mapped owner of an account', ['account_id' => $accountId, 'error' => $e->getMessage()]);
+                return true;
+            }
+        });
+
+        return $stillHeld ? $mapping->tenant_id : null;
+    }
+
+    /**
+     * Applies a Stripe `account.updated` payload to this tenant's profile
+     * (moved from the retired tenant-domain StripeConnectController webhook).
+     * Must run inside the tenant that owns the account.
+     */
+    public function applyAccountUpdate(object $account): bool
+    {
+        $profile = CompanyProfile::where('stripe_account_id', $account->id ?? null)->first();
+
+        if (!$profile) {
+            return false;
+        }
+
+        $profile->update([
+            'stripe_connection_status' => !empty($account->details_submitted) ? 'connected' : 'incomplete',
+            'onboarding_completed'     => (bool) ($account->details_submitted ?? false),
+            'charges_enabled'          => (bool) ($account->charges_enabled ?? false),
+            'payouts_enabled'          => (bool) ($account->payouts_enabled ?? false),
+        ]);
+
+        return true;
     }
 
     // ── Validation ────────────────────────────────────────────────────

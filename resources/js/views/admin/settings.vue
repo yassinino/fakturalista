@@ -857,6 +857,19 @@
                 </label>
               </div>
             </div>
+
+            <div class="sr">
+              <div class="sr-lbl">
+                <span class="sr-name">{{ $t('settings.notifications.quoteDecision') }}</span>
+                <span class="sr-hint">{{ $t('settings.notifications.quoteDecisionHint') }}</span>
+              </div>
+              <div class="sr-inp">
+                <label class="nt-toggle">
+                  <input type="checkbox" v-model="form.notifications.quote_decision" :disabled="isSaving || !form.notifications.email_notifications_enabled" />
+                  <span class="nt-toggle-track"></span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <!-- ═══ Language ═══════════════════════════════════════ -->
@@ -1171,6 +1184,7 @@ const form = reactive({
     invoice_paid:                true,
     trial_ending:                true,
     quote_converted:             true,
+    quote_decision:              true,
   },
 });
 

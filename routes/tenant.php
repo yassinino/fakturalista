@@ -48,6 +48,16 @@ Route::middleware([
     Route::get('/pay/{uuid}/success', [PaymentController::class, 'paymentSuccess'])->name('invoice.pay.success');
     Route::get('/pay/{uuid}/cancel',  [PaymentController::class, 'paymentCancel'])->name('invoice.pay.cancel');
 
+    // Client Portal (Step 2 - the standalone Vue page; the actual data
+    // comes from GET /api/portal/{token}, see routes/tenant_api.php's
+    // public section). No admin layout - resources/js/router/index.js's
+    // top-level 'client-portal' route renders it with no parent Layout
+    // component, same 'view(app)' shell as /admin/{any} below, just at a
+    // different URL so a customer never has to know/type /admin.
+    Route::get('/portal/{token}', function () {
+        return view('app');
+    })->name('client-portal.page');
+
     // Tenant-level Stripe webhook (invoice payment events)
     Route::post('/payment/webhook', [PaymentController::class, 'stripeWebhook'])
         ->name('invoice.payment.webhook')
@@ -61,11 +71,10 @@ Route::middleware([
     Route::post('/settings/payments/stripe/disconnect', [StripeConnectController::class, 'disconnect'])
         ->name('stripe.disconnect');
 
-    // Stripe Connect webhook (platform-level Connect events from all connected accounts)
-    // Register this URL in Stripe Dashboard → Webhooks as a "Connect webhook"
-    Route::post('/connect/webhook', [StripeConnectController::class, 'handleWebhook'])
-        ->name('stripe.connect.webhook')
-        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+    // The tenant-domain Stripe Connect webhook (/connect/webhook) was retired
+    // in Step 6A.1: Stripe sends Connect events for ALL connected accounts to
+    // one URL, which a tenant domain can't serve. The canonical endpoint is
+    // the central POST /stripe/connect/webhook (routes/web.php).
 
     Route::get('/', function () {
         return redirect('/admin/login');

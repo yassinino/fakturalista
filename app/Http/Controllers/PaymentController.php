@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CompanyProfile;
 use App\Models\Invoice;
-use App\Models\InvoiceHistory;
+use App\Services\ClientPortal\PortalInvoicePaymentService;
+use App\Services\ClientPortal\PortalPaymentException;
 use App\Services\StripeConnectService;
 use Illuminate\Http\Request;
-use Stripe\Checkout\Session as StripeSession;
+use Illuminate\Support\Facades\Log;
 use Stripe\Exception\ApiErrorException;
-use Stripe\Stripe;
 
+/**
+ * The /pay/{uuid} invoice payment link (emails, PDFs, WhatsApp).
+ *
+ * Step 6A.1: Checkout Sessions are created by the same
+ * PortalInvoicePaymentService the Client Portal uses (purpose
+ * PURPOSE_PAY_LINK) - always on the seller's connected account, amount
+ * and currency decided server-side, settled only by the verified central
+ * Connect webhook. The old createSession() fallback that charged on
+ * Fakturalista's OWN Stripe account when the seller's Connect account
+ * wasn't ready is gone: without a usable Connect account a payment now
+ * fails safely instead.
+ */
 class PaymentController extends Controller
 {
     // ── Helpers ───────────────────────────────────────────────────────
-
-    private function initStripe(): void
-    {
-        Stripe::setApiKey(config('services.stripe.secret'));
-    }
 
     private function isStripeConfigured(): bool
     {
@@ -30,85 +36,14 @@ class PaymentController extends Controller
         return request()->getSchemeAndHttpHost() . '/pay/' . $invoice->uuid;
     }
 
-    /**
-     * Create a Stripe Checkout Session.
-     *
-     * If the tenant has a fully connected and enabled Stripe account (via Connect),
-     * the payment goes directly to that account.
-     * If not, fall back to the platform key (funds go to platform - legacy behaviour).
-     *
-     * @throws ApiErrorException
-     */
-    private function createSession(Invoice $invoice): StripeSession
+    private function startCheckout(Invoice $invoice): string
     {
-        $this->initStripe();
-
-        $tenantContext = app(\App\Services\TenantContextService::class);
-        $company       = $tenantContext->ensureCompanyProfile();
-        $companyName   = $company->trade_name ?: $company->legal_name ?: config('app.name');
-        $currency      = strtolower($company->currency ?: 'eur');
-        $host          = request()->getSchemeAndHttpHost();
-
-        // Morocco Phase 2A: this was hardcoded 'Factura' (Spanish) regardless
-        // of tenant - a Moroccan customer paying via Stripe Checkout saw
-        // Spanish wording on the payment page. Same document-type wording
-        // already used tenant-locale-aware in the PDF header
-        // (resources/views/pdf/components/_header.blade.php).
-        $documentWord = match ($tenantContext->locale()) {
-            'fr'    => 'Facture',
-            'es'    => 'Factura',
-            default => 'Invoice',
-        };
-
-        $sessionData = [
-            'payment_method_types' => ['card'],
-            'line_items'           => [[
-                'price_data' => [
-                    'currency'     => $currency,
-                    'unit_amount'  => (int) round(($invoice->total ?? 0) * 100),
-                    'product_data' => [
-                        'name'        => $documentWord . ' ' . $invoice->reference,
-                        'description' => $companyName,
-                    ],
-                ],
-                'quantity' => 1,
-            ]],
-            'mode'        => 'payment',
-            'metadata'    => [
-                'invoice_uuid' => $invoice->uuid,
-                'tenant_id'    => tenancy()->tenant?->id ?? '',
-            ],
-            'success_url' => $host . '/pay/' . $invoice->uuid . '/success',
-            'cancel_url'  => $host . '/pay/' . $invoice->uuid . '/cancel',
-            'expires_at'  => now()->addHours(23)->timestamp,
-        ];
-
-        // Route to the connected account if available and able to charge.
-        // This is the core of Stripe Connect - the `stripe_account` option
-        // tells Stripe to execute this API call on behalf of the connected account,
-        // so the payment goes directly into their balance.
-        $requestOptions = [];
-        $connectService = app(StripeConnectService::class);
-        if ($connectService->canAcceptPayments($company)) {
-            $requestOptions['stripe_account'] = $company->stripe_account_id;
-        }
-
-        $session = StripeSession::create($sessionData, $requestOptions ?: null);
-
-        $invoice->update([
-            'stripe_session_id'         => $session->id,
-            'stripe_payment_url'        => $session->url,
-            'stripe_session_expires_at' => now()->addHours(23),
-        ]);
-
-        return $session;
-    }
-
-    private function sessionIsValid(Invoice $invoice): bool
-    {
-        return $invoice->stripe_session_id !== null
-            && $invoice->stripe_session_expires_at !== null
-            && $invoice->stripe_session_expires_at->gt(now()->addMinutes(10));
+        return app(PortalInvoicePaymentService::class)->startCheckout(
+            $invoice,
+            $this->stablePayUrl($invoice) . '/success',
+            $this->stablePayUrl($invoice) . '/cancel',
+            PortalInvoicePaymentService::PURPOSE_PAY_LINK,
+        );
     }
 
     // ── Authenticated: admin creates / retrieves a payment link ───────
@@ -139,14 +74,12 @@ class PaymentController extends Controller
             return response()->json(['message' => $message], 422);
         }
 
-        if ($this->sessionIsValid($invoice)) {
-            return response()->json([
-                'payment_url' => $this->stablePayUrl($invoice),
-            ]);
-        }
-
+        // Prepares (or reuses) the Checkout Session up front, as before, so
+        // a Stripe problem surfaces here rather than to the customer.
         try {
-            $this->createSession($invoice);
+            $this->startCheckout($invoice);
+        } catch (PortalPaymentException $e) {
+            return response()->json(['message' => __('invoice.portal_payment.' . $e->reason)], $e->status === 503 ? 422 : $e->status);
         } catch (ApiErrorException $e) {
             return response()->json(['message' => 'Stripe error: ' . $e->getMessage()], 502);
         }
@@ -174,26 +107,17 @@ class PaymentController extends Controller
             return view('payment.cancel', ['invoice' => $invoice, 'cancelled' => true]);
         }
 
-        if (!$this->isStripeConfigured()) {
-            abort(503, 'Online payment is not available.');
-        }
-
-        $company        = app(\App\Services\TenantContextService::class)->ensureCompanyProfile();
-        $connectService = app(StripeConnectService::class);
-
-        if (!$connectService->canAcceptPayments($company)) {
-            abort(503, 'Online payment is not currently available for this account.');
-        }
-
-        // Use cached session if still valid; otherwise create a fresh one
-        if ($this->sessionIsValid($invoice) && $invoice->stripe_payment_url) {
-            return redirect($invoice->stripe_payment_url);
-        }
-
         try {
-            $session = $this->createSession($invoice);
-            return redirect($session->url);
-        } catch (ApiErrorException $e) {
+            return redirect($this->startCheckout($invoice));
+        } catch (PortalPaymentException $e) {
+            return match ($e->reason) {
+                'already_paid' => view('payment.paid', compact('invoice')),
+                'not_payable'  => abort(404),
+                'in_progress'  => abort(409, 'A payment is already in progress for this invoice. Please try again in a few minutes.'),
+                default        => abort(503, 'Online payment is not currently available for this account.'),
+            };
+        } catch (\Throwable $e) {
+            Log::error('/pay Checkout creation failed', ['invoice_uuid' => $invoice->uuid, 'error' => $e->getMessage()]);
             abort(503, 'Unable to initiate payment. Please try again later.');
         }
     }
@@ -213,45 +137,38 @@ class PaymentController extends Controller
     // ── Tenant-level Stripe webhook ───────────────────────────────────
 
     /**
-     * Handles invoice payment webhook events from the tenant's Stripe account.
-     * This fires when the Checkout Session is on the platform key (legacy / fallback).
-     *
-     * For Connect payments, events are handled by StripeConnectController::handleWebhook.
+     * Legacy tenant-domain PLATFORM-account webhook (/payment/webhook).
+     * Nothing creates seller-invoice sessions on the platform account any
+     * more (Step 6A.1); this stays only so a session from the old fallback
+     * completing during the rollover is still settled - and, like
+     * everything else now, only after signature verification and
+     * PortalInvoicePaymentService::settleLegacySession()'s checks.
      */
     public function stripeWebhook(Request $request)
     {
-        $payload   = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
-        $secret    = config('services.stripe.webhook_secret');
+        $secret = config('services.stripe.webhook_secret');
+
+        if (empty($secret)) {
+            Log::error('Tenant payment webhook: STRIPE_WEBHOOK_SECRET is not configured - event refused');
+            return response('Webhook not configured', 503);
+        }
 
         try {
-            $event = $secret
-                ? \Stripe\Webhook::constructEvent($payload, $sigHeader, $secret)
-                : json_decode($payload);
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            $event = \Stripe\Webhook::constructEvent($request->getContent(), (string) $request->header('Stripe-Signature'), $secret);
+        } catch (\Throwable $e) {
             return response('Invalid signature', 400);
         }
 
-        if ($event->type === 'checkout.session.completed') {
-            $session     = $event->data->object;
-            $invoiceUuid = $session->metadata->invoice_uuid ?? null;
+        if (in_array($event->type, ['checkout.session.completed', 'checkout.session.async_payment_succeeded'], true)) {
+            $session = $event->data->object;
 
-            if (!$invoiceUuid) {
-                return response('OK', 200);
-            }
-
-            $invoice = Invoice::where('uuid', $invoiceUuid)->first();
-
-            if ($invoice && !$invoice->isPaid()) {
-                $invoice->update([
-                    'status'  => Invoice::STATUS_PAID,
-                    'paid_at' => now(),
-                    'paid_via'=> 'stripe',
-                ]);
-                $invoice->logHistory(InvoiceHistory::ACTION_PAID, [
-                    'via'        => 'stripe',
-                    'session_id' => $session->id,
-                ]);
+            // Portal / pay-link attempts are settled only by the central
+            // Connect webhook; a session for another tenant is never
+            // touched from this tenant's domain.
+            if (!empty($session->metadata->invoice_uuid)
+                && empty($session->metadata->purpose)
+                && ($session->metadata->tenant_id ?? null) === tenancy()->tenant?->getTenantKey()) {
+                app(PortalInvoicePaymentService::class)->settleLegacySession($session, $event->account ?? null);
             }
         }
 

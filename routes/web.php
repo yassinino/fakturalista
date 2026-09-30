@@ -20,6 +20,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
     ->name('stripe.webhook');
 
+// The canonical Stripe *Connect* webhook (register in Stripe as a Connect
+// webhook, signed with STRIPE_CONNECT_WEBHOOK_SECRET): invoice payments
+// (Client Portal + /pay links) and account.updated for every connected
+// account. Central on purpose - Connect events from all connected accounts
+// arrive at this one URL. Replaces the retired tenant-domain /connect/webhook.
+Route::post('/stripe/connect/webhook', [\App\Http\Controllers\StripeConnectWebhookController::class, 'handle'])
+    ->name('stripe.connect.webhook')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class, \App\Http\Middleware\VerifyCsrfToken::class]);
+
 $siteRoutes = function () {
     Route::post('/locale', [HomeController::class, 'setLocale'])->name('locale.set');
     // Legacy manual free-trial request form - kept working (and its data,

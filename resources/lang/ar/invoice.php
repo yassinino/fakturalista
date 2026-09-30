@@ -68,5 +68,15 @@ return [
         'bulk_deleted'                  => 'تم حذف :count فاتورة.',
         'bulk_deleted_with_skipped'     => 'تم حذف :count فاتورة. تم تجاهل :skipped (تم إصدارها مسبقًا).',
         'ubl_export_failed'             => 'فشل تصدير UBL. حاول مرة أخرى أو تواصل مع الدعم إذا استمرت المشكلة.',
+        'pdf_export_failed'             => 'فشل إنشاء ملف PDF. حاول مرة أخرى أو تواصل مع الدعم إذا استمرت المشكلة.',
+    ],
+
+    // Client Portal Step 6A - online payment via Stripe Connect
+    'portal_payment' => [
+        'already_paid'         => 'تم دفع هذه الفاتورة مسبقًا.',
+        'not_payable'          => 'لا يمكن دفع هذه الفاتورة عبر الإنترنت.',
+        'currency_unsupported' => 'عملة هذه الفاتورة غير مدعومة للدفع عبر الإنترنت.',
+        'unavailable'          => 'الدفع عبر الإنترنت غير متاح حاليًا. يرجى المحاولة لاحقًا.',
+        'in_progress'          => 'هناك عملية دفع جارية لهذه الفاتورة. يرجى الانتظار بضع دقائق.',
     ],
 ];

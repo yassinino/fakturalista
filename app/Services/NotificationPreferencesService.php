@@ -26,6 +26,8 @@ class NotificationPreferencesService
         'invoice_paid'                => true,
         'trial_ending'                => true,
         'quote_converted'             => true,
+        // Client Portal Step 5 - a customer accepted/rejected a quote
+        'quote_decision'              => true,
     ];
 
     // Reminder-timing choices exposed in the UI - kept here so the
@@ -49,11 +51,38 @@ class NotificationPreferencesService
         $prefs['invoice_due_soon_days'] = $this->sanitizeDays($prefs['invoice_due_soon_days'] ?? self::DEFAULTS['invoice_due_soon_days'], self::DUE_SOON_DAYS);
         $prefs['invoice_overdue_days']  = $this->sanitizeDays($prefs['invoice_overdue_days'] ?? self::DEFAULTS['invoice_overdue_days'], self::OVERDUE_DAYS);
 
-        foreach (['email_notifications_enabled', 'invoice_due_soon', 'invoice_overdue', 'invoice_paid', 'trial_ending', 'quote_converted'] as $flag) {
+        foreach (['email_notifications_enabled', 'invoice_due_soon', 'invoice_overdue', 'invoice_paid', 'trial_ending', 'quote_converted', 'quote_decision'] as $flag) {
             $prefs[$flag] = (bool) ($prefs[$flag] ?? true);
         }
 
         return $prefs;
+    }
+
+    /**
+     * Settings PUT accepts the preferences either as an array/object (a
+     * plain JSON API body - e.g. the GET /settings payload sent straight
+     * back) or as a JSON string (settings.vue's multipart form). Returns
+     * the raw decoded array (or null for "nothing sent"), still to be run
+     * through resolve(); throws for anything else - malformed JSON, or
+     * JSON that isn't an object/array (a bare number, string or bool).
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function decodeInput(mixed $input): ?array
+    {
+        if ($input === null || is_array($input)) {
+            return $input;
+        }
+
+        if (is_string($input)) {
+            $decoded = json_decode($input, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && ($decoded === null || is_array($decoded))) {
+                return $decoded;
+            }
+        }
+
+        throw new \InvalidArgumentException('notification_preferences must be an object or a JSON-encoded object.');
     }
 
     /**

@@ -56,9 +56,8 @@
 
     </BaseBlock>
 
-        
-
-
+    <!-- Client Portal link - after the customer's details, before their invoices -->
+    <CustomerPortalAccess v-if="uuid" :customer-uuid="uuid" class="sh-inv-table-block" />
 
       <BaseBlock class="sh-inv-table-block" :title="$t('customers.invoicesTitle')">
               <template #options>
@@ -157,6 +156,7 @@
     import axios from 'axios'
     import Pagination from '@/views/admin/layouts/Pagination.vue';
     import RowActionMenu from '@/views/admin/layouts/RowActionMenu.vue';
+    import CustomerPortalAccess from './CustomerPortalAccess.vue';
     import { createToaster } from '@meforma/vue-toaster';
     const toaster = createToaster({ /* options */ });
       import { useRoute } from 'vue-router'

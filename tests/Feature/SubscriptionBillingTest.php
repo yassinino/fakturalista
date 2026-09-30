@@ -13,25 +13,39 @@ use Stripe\PaymentMethod as StripePaymentMethod;
 use Stripe\Price as StripePrice;
 use Stripe\Stripe;
 use Stripe\Subscription as StripeSubscription;
+use Tests\Support\FakeStripe;
 use Tests\TestCase;
 
 /**
  * Launch-critical Morocco/Spain subscription + Stripe billing audit.
  *
- * Uses the real Stripe TEST-mode account (config('services.stripe.secret')
- * is a sk_test_ key - see .env) for anything that must prove an actual
- * Stripe object (Checkout Session, Subscription) was created with the
- * correct currency/price, rather than mocking Stripe away. Webhook tests
- * sign their payloads with the real STRIPE_WEBHOOK_SECRET so signature
- * verification is exercised for real, never bypassed.
+ * Runs fully offline (Step 6A.1): Stripe's network layer is
+ * Tests\Support\FakeStripe, an in-memory emulator behind stripe-php's own
+ * HTTP-client hook, so the Checkout Session / Subscription objects the app
+ * creates are still built by the real SDK and read back with the currency
+ * and price they would really charge. Webhook tests sign their payloads
+ * with a test-only secret so signature verification is exercised for
+ * real, never bypassed.
  */
 class SubscriptionBillingTest extends TestCase
 {
     private array $createdTenantIds = [];
 
+    private FakeStripe $stripe;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Offline and deterministic: Stripe's network layer is the in-memory
+        // Tests\Support\FakeStripe (the real SDK still builds every request),
+        // and webhooks are signed with a test-only secret so signature
+        // verification still runs for real. No real Stripe credentials.
+        config([
+            'services.stripe.secret'         => 'sk_test_offline_fake',
+            'services.stripe.webhook_secret' => 'whsec_test_offline_billing',
+        ]);
+        $this->stripe = FakeStripe::install();
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
@@ -40,6 +54,7 @@ class SubscriptionBillingTest extends TestCase
         foreach ($this->createdTenantIds as $id) {
             Tenant::find($id)?->delete();
         }
+        FakeStripe::uninstall();
         parent::tearDown();
     }
 

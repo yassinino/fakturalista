@@ -190,6 +190,20 @@ class Invoice extends Model
         return !is_null($this->invoice_series) && !is_null($this->invoice_number);
     }
 
+    /**
+     * The number this invoice should be shown as, anywhere outside the
+     * internal admin UI - its definitive legal series/number once issued
+     * (RD 1619/2012 art. 6.5-style numbering, see hasLegalNumber()), or
+     * still just its draft reference beforehand. Never invents a number
+     * a legacy/pre-numbering row doesn't actually have.
+     */
+    public function displayNumber(): string
+    {
+        return $this->hasLegalNumber()
+            ? $this->invoice_series . '-' . $this->invoice_number
+            : (string) ($this->reference ?? '');
+    }
+
     // ── Audit helper ───────────────────────────────────────
 
     public function logHistory(string $action, array $context = []): void

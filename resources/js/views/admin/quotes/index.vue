@@ -66,7 +66,7 @@
         <template #body="{ items }">
           <tr v-for="quote in items" :key="quote.uuid">
             <td class="dt-cb-col">
-              <input type="checkbox" class="form-check-input" v-model="quote.checked">
+              <input type="checkbox" class="form-check-input" v-model="quote.checked" :disabled="quote.status === 'accepted'">
             </td>
             <td>
               <router-link :to="'quotes/edit/' + quote.uuid">{{ quote.reference }}</router-link>
@@ -80,11 +80,17 @@
                 :class="statusBadgeClass(quote.status)">
                 {{ statusLabel(quote.status) }}
               </span>
+              <small v-if="quote.status === 'accepted' && quote.accepted_at" class="text-muted d-block mt-1">
+                {{ $t('quotes.acceptedOn', { date: formatDecisionDate(quote.accepted_at) }) }}
+              </small>
+              <small v-else-if="quote.status === 'rejected' && quote.rejected_at" class="text-muted d-block mt-1">
+                {{ $t('quotes.rejectedOn', { date: formatDecisionDate(quote.rejected_at) }) }}
+              </small>
             </td>
             <td class="dt-ac-col">
               <RowActionMenu>
                 <a
-                  v-if="quote.status !== 'converted' && quote.status !== 'cancelled'"
+                  v-if="quote.status !== 'converted' && quote.status !== 'cancelled' && quote.status !== 'rejected'"
                   class="dropdown-item"
                   style="color:#16a34a;font-weight:600"
                   href="javascript:void(0)"
@@ -161,6 +167,7 @@
                 </a>
 
                 <a
+                  v-if="quote.status !== 'accepted'"
                   class="dropdown-item text-danger"
                   href="javascript:void(0)"
                   @click.prevent="deleteQuote(quote)"
@@ -257,7 +264,7 @@ import BulkActionBar    from "@/views/admin/layouts/BulkActionBar.vue";
 import BulkDeleteModal  from "@/views/admin/layouts/BulkDeleteModal.vue";
 import ExportMenu       from "@/components/ExportMenu.vue";
 
-const { t }   = useI18n();
+const { t, locale } = useI18n();
 const router  = useRouter();
 const toaster = createToaster();
 
@@ -282,6 +289,8 @@ const statusOptions = computed(() => [
   { value: 'sent',      label: t('quotes.statusSent') },
   { value: 'converted', label: t('quotes.statusConverted') },
   { value: 'cancelled', label: t('quotes.statusCancelled') },
+  { value: 'accepted',  label: t('quotes.statusAccepted') },
+  { value: 'rejected',  label: t('quotes.statusRejected') },
 ]);
 
 onMounted(async () => {
@@ -292,12 +301,20 @@ onMounted(async () => {
 
 // ── Status helpers ─────────────────────────────────────────
 
+// Client Portal decision timestamp (ISO 8601) -> localized date + time.
+function formatDecisionDate(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? iso : d.toLocaleString(locale.value, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
 function statusBadgeClass(status) {
   const map = {
     draft:     'bg-secondary-light text-secondary',
     sent:      'bg-info-light text-info',
     converted: 'bg-success-light text-success',
     cancelled: 'bg-danger-light text-danger',
+    accepted:  'bg-success-light text-success',
+    rejected:  'bg-danger-light text-danger',
   };
   return map[status] ?? 'bg-secondary-light text-secondary';
 }
@@ -308,6 +325,8 @@ function statusLabel(status) {
     sent:      t('quotes.statusSent'),
     converted: t('quotes.statusConverted'),
     cancelled: t('quotes.statusCancelled'),
+    accepted:  t('quotes.statusAccepted'),
+    rejected:  t('quotes.statusRejected'),
   };
   return map[status] ?? status;
 }
@@ -316,7 +335,8 @@ function statusLabel(status) {
 
 function clickedAll(e) {
   const checked = e.target.checked;
-  quotes.value = quotes.value.map(q => ({ ...q, checked }));
+  // Accepted quotes can't be deleted, so they're never bulk-selected.
+  quotes.value = quotes.value.map(q => ({ ...q, checked: checked && q.status !== 'accepted' }));
 }
 
 function clearSelection() {
@@ -328,10 +348,15 @@ async function bulkDelete() {
   if (!ids.length) return;
   bulkDeleting.value = true;
   try {
-    await axios.post('/quotes/bulk-delete', { ids });
-    quotes.value = quotes.value.filter(q => !ids.includes(q.uuid));
+    const res = await axios.post('/quotes/bulk-delete', { ids });
+    const deleted = res.data.deleted ?? ids;
+    quotes.value = quotes.value.filter(q => !deleted.includes(q.uuid));
     showBulkDeleteModal.value = false;
-    toaster.success(t('common.bulkDeleteSuccess', { count: ids.length }));
+    if (res.data.skipped?.length) {
+      toaster.warning(res.data.message);
+    } else {
+      toaster.success(t('common.bulkDeleteSuccess', { count: deleted.length }));
+    }
   } catch (e) {
     toaster.error(e.response?.data?.message ?? t('quotes.errorGeneric'));
   } finally {

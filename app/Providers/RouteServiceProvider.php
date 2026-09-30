@@ -74,5 +74,17 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinutes(10, 5)->by('contact-ip:' . $request->ip());
         });
+
+        // Client Portal (routes/tenant.php GET /portal/{token}) - a public,
+        // token-secured, no-CAPTCHA endpoint (Client Portal Step 1). The
+        // token itself is the real defense (a cryptographically random
+        // 64-character secret - see ClientPortalService), but this slows
+        // down brute-force guessing as defense in depth, same spirit as
+        // 'login-finder' above. Generous enough for genuine repeated use
+        // (a customer reloading their own portal) while making guessing
+        // any meaningful number of tokens per minute impractical.
+        RateLimiter::for('client-portal', function (Request $request) {
+            return Limit::perMinute(20)->by('client-portal-ip:' . $request->ip());
+        });
     }
 }

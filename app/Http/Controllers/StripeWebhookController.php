@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
-use App\Models\InvoiceHistory;
 use App\Models\Plan;
 use App\Models\PlanPrice;
 use App\Services\StripeSubscriptionHelper;
@@ -29,13 +27,17 @@ class StripeWebhookController extends Controller
         $sigHeader = $request->header('Stripe-Signature');
         $secret    = config('services.stripe.webhook_secret');
 
+        // Fails closed (Step 6A.1): never process an event whose signature
+        // can't be verified - there used to be an unsigned json_decode()
+        // fallback here when the secret was missing.
+        if (empty($secret)) {
+            Log::error('Stripe webhook: STRIPE_WEBHOOK_SECRET is not configured - event refused');
+
+            return response('Webhook not configured', 503);
+        }
+
         try {
-            if ($secret) {
-                $event = Webhook::constructEvent($payload, $sigHeader, $secret);
-            } else {
-                // pour tests sans signature (à éviter en prod)
-                $event = json_decode($payload);
-            }
+            $event = Webhook::constructEvent($payload, (string) $sigHeader, $secret);
         } catch (\Exception $e) {
             Log::error('Stripe webhook signature error', [
                 'error' => $e->getMessage(),
@@ -48,9 +50,14 @@ class StripeWebhookController extends Controller
 
         switch ($type) {
             case 'checkout.session.completed':
+                // Client Portal payments (Step 6A) are settled only by the
+                // verified Connect webhook (StripeConnectWebhookController).
+                if (in_array($event->data->object->metadata->purpose ?? null, \App\Services\ClientPortal\PortalInvoicePaymentService::PURPOSES, true)) {
+                    break;
+                }
                 // Route to invoice payment handler if invoice_uuid is in metadata
                 if (!empty($event->data->object->metadata->invoice_uuid)) {
-                    $this->handleInvoicePayment($event->data->object);
+                    $this->handleInvoicePayment($event->data->object, $event->account ?? null);
                 } else {
                     $this->handleCheckoutSessionCompleted($event->data->object);
                 }
@@ -81,57 +88,27 @@ class StripeWebhookController extends Controller
      *    (on ne gère pas le Payment ici, on le centralise dans invoice.payment_succeeded)
      */
     /**
-     * Handle invoice payment completion.
-     * Bootstraps the correct tenant DB context from metadata, then marks the invoice paid.
+     * Seller-invoice session that reached the PLATFORM webhook - only
+     * possible for a session the old /pay code created on Fakturalista's
+     * own account (that fallback was removed in Step 6A.1). Never marks an
+     * invoice paid on the metadata alone any more: the session must be the
+     * exact one stored on the invoice and be paid for the invoice's amount
+     * and currency - see PortalInvoicePaymentService::settleLegacySession().
      */
-    protected function handleInvoicePayment($session): void
+    protected function handleInvoicePayment($session, ?string $eventAccount = null): void
     {
-        $invoiceUuid = $session->metadata->invoice_uuid ?? null;
-        $tenantId    = $session->metadata->tenant_id    ?? null;
+        $tenantId = $session->metadata->tenant_id ?? null;
+        $tenant   = $tenantId ? Tenant::find($tenantId) : null;
 
-        if (!$invoiceUuid || !$tenantId) {
-            Log::warning('Invoice payment webhook: missing metadata', [
-                'invoice_uuid' => $invoiceUuid,
-                'tenant_id'    => $tenantId,
-            ]);
-            return;
-        }
-
-        $tenant = Tenant::find($tenantId);
         if (!$tenant) {
-            Log::error('Invoice payment webhook: tenant not found', ['tenant_id' => $tenantId]);
+            Log::warning('Invoice payment webhook: tenant not found', ['tenant_id' => $tenantId]);
             return;
         }
 
         tenancy()->initialize($tenant);
 
         try {
-            $invoice = Invoice::where('uuid', $invoiceUuid)->first();
-
-            if (!$invoice) {
-                Log::warning('Invoice payment webhook: invoice not found', ['uuid' => $invoiceUuid]);
-                return;
-            }
-
-            if ($invoice->isPaid()) {
-                return; // idempotent - already handled
-            }
-
-            $invoice->update([
-                'status'  => Invoice::STATUS_PAID,
-                'paid_at' => now(),
-                'paid_via'=> 'stripe',
-            ]);
-
-            $invoice->logHistory(InvoiceHistory::ACTION_PAID, [
-                'via'        => 'stripe',
-                'session_id' => $session->id,
-            ]);
-
-            Log::info('Invoice marked paid via Stripe', [
-                'invoice_uuid' => $invoiceUuid,
-                'tenant_id'    => $tenantId,
-            ]);
+            app(\App\Services\ClientPortal\PortalInvoicePaymentService::class)->settleLegacySession($session, $eventAccount);
         } catch (\Throwable $e) {
             Log::error('Error in handleInvoicePayment', [
                 'message' => $e->getMessage(),

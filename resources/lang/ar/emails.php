@@ -151,4 +151,25 @@ return [
         'footer_support' => 'الدعم',
         'footer_note'    => 'تصلك هذه الرسالة لأنك فعّلت إشعارات النشاط من الإعدادات ← الإشعارات.',
     ],
+
+    // Client Portal Step 5 - a customer accepted/rejected a quote from the portal
+    'quote_decision_notification' => [
+        'subject_accepted'  => 'قبل :client عرض السعر :reference',
+        'subject_rejected'  => 'رفض :client عرض السعر :reference',
+        'hero_title_accepted'    => 'تم قبول عرض السعر',
+        'hero_title_rejected'    => 'تم رفض عرض السعر',
+        'hero_subtitle_accepted' => 'قبل عميلك عرض السعر من بوابته.',
+        'hero_subtitle_rejected' => 'رفض عميلك عرض السعر من بوابته.',
+        'greeting_hello'    => 'مرحبًا',
+        'body_accepted'     => 'قبل :client عرض السعر :reference بتاريخ :date.',
+        'body_rejected'     => 'رفض :client عرض السعر :reference بتاريخ :date.',
+        'label_client'      => 'العميل',
+        'label_quote'       => 'عرض السعر',
+        'cta_button'        => 'عرض عرض السعر ←',
+        'help_contact'      => 'هل لديك سؤال؟ راسلنا على',
+        'help_response'     => 'وسنرد عليك خلال أقل من 24 ساعة.',
+        'footer_tagline'    => 'الفوترة للمستقلين والشركات',
+        'footer_support'    => 'الدعم',
+        'footer_note'       => 'تصلك هذه الرسالة لأنك فعّلت إشعارات النشاط من الإعدادات ← الإشعارات.',
+    ],
 ];

@@ -10,7 +10,8 @@
             {{ state.reference ? $t('quotes.editTitle', { number: state.reference }) : $t('quotes.title') }}
           </h1>
           <p class="inv-page-hint">
-            {{ $t('quotes.statusDraft') }}
+            <template v-if="locked"><i class="fa fa-lock me-1"></i>{{ $t('quotes.statusAccepted') }}</template>
+            <template v-else>{{ $t('quotes.statusDraft') }}</template>
           </p>
         </div>
         <div class="inv-topbar-actions">
@@ -21,21 +22,32 @@
             type="button"
             class="inv-btn inv-btn-send"
             @click="handleSendAndSave"
-            :disabled="sendingEmail || saving || actionBusy || !state.customer_email"
+            :disabled="locked || sendingEmail || saving || actionBusy || !state.customer_email"
             :title="!state.customer_email ? $t('quotes.noClientEmail') : ''"
           >
             <i v-if="sendingEmail" class="fa fa-spinner fa-spin me-1"></i>
             <i v-else class="fa fa-envelope me-1"></i>
             {{ $t('quotes.sendAndSave') }}
           </button>
-          <button type="button" class="inv-btn inv-btn-primary" @click="handleSave" :disabled="saving || actionBusy || sendingEmail || !taxReady">
+          <button type="button" class="inv-btn inv-btn-primary" @click="handleSave" :disabled="locked || saving || actionBusy || sendingEmail || !taxReady">
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
             {{ $t('common.save') }}
           </button>
         </div>
       </div>
 
+      <!-- Client Portal decision (Step 5) - accepted quotes are read-only -->
+      <div v-if="props.quote.status === 'accepted'" class="alert alert-success d-flex align-items-start" role="status">
+        <i class="fa fa-lock me-2 mt-1"></i>
+        <span>{{ $t('quotes.lockedAcceptedBanner', { date: formatDecisionDate(props.quote.accepted_at) }) }}</span>
+      </div>
+      <div v-else-if="props.quote.status === 'rejected'" class="alert alert-danger d-flex align-items-start" role="status">
+        <i class="fa fa-times-circle me-2 mt-1"></i>
+        <span>{{ $t('quotes.rejectedBanner', { date: formatDecisionDate(props.quote.rejected_at) }) }}</span>
+      </div>
+
       <form @submit.prevent="handleSave" novalidate>
+      <fieldset :disabled="locked" class="inv-fieldset" :class="{ 'inv-locked': locked }">
 
         <!-- ═══════════════════════════════════════
              CARD 1 - Client + Dates
@@ -51,6 +63,7 @@
                 :options="customers"
                 label="name"
                 :reduce="o => o.uuid"
+                :disabled="locked"
                 @option:selected="onClientSelect"
                 @blur="v$.customer_id.$touch"
                 :placeholder="$t('quotes.form.clientPlaceholder')"
@@ -72,6 +85,7 @@
                   <FlatPickr
                     v-model="state.date"
                     class="inv-input"
+                    :disabled="locked"
                     :config="fpConfig"
                   />
                 </div>
@@ -80,6 +94,7 @@
                   <FlatPickr
                     v-model="state.expiration_date"
                     class="inv-input"
+                    :disabled="locked"
                     :config="fpConfig"
                   />
                 </div>
@@ -120,7 +135,7 @@
                   <th class="inv-th inv-col-price">{{ $t('quotes.form.colPrice') }}</th>
                   <th class="inv-th inv-col-vta">{{ taxName }}</th>
                   <th class="inv-th inv-col-total">{{ $t('documents.total') }}</th>
-                  <th class="inv-th inv-col-del"></th>
+                  <th v-if="!locked" class="inv-th inv-col-del"></th>
                 </tr>
               </thead>
               <tbody>
@@ -135,6 +150,7 @@
                       :options="items"
                       label="name"
                       :reduce="o => o.id"
+                      :disabled="locked"
                       @option:selected="v => selectProduct(index, v)"
                       :placeholder="$t('quotes.form.productPlaceholder')"
                       class="inv-line-vs"
@@ -184,7 +200,7 @@
                     {{ $toCurrency(totalRow[index]) }}
                   </td>
 
-                  <td class="inv-td">
+                  <td v-if="!locked" class="inv-td">
                     <button
                       type="button"
                       class="inv-del-btn"
@@ -200,7 +216,7 @@
             </table>
           </div>
 
-          <button type="button" class="inv-add-line" @click="addNewItem">
+          <button v-if="!locked" type="button" class="inv-add-line" @click="addNewItem">
             <i class="fa fa-plus"></i> {{ $t('quotes.form.addLine') }}
           </button>
         </section>
@@ -238,12 +254,17 @@
 
         </section>
 
+      </fieldset>
       </form>
 
       <!-- ── STICKY FOOTER ── -->
       <div class="inv-sticky-footer">
         <div class="inv-sticky-inner">
-          <span class="inv-footer-hint">
+          <span v-if="locked" class="inv-footer-hint">
+            <i class="fa fa-lock me-1"></i>
+            {{ $t('quotes.statusAccepted') }}
+          </span>
+          <span v-else class="inv-footer-hint">
             <i class="fa fa-keyboard me-1"></i>
             {{ $t('quotes.form.footerHint') }}
           </span>
@@ -251,7 +272,7 @@
             class="inv-btn inv-btn-primary"
             type="button"
             @click="handleSave"
-            :disabled="saving || actionBusy"
+            :disabled="locked || saving || actionBusy"
           >
             <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
             {{ $t('common.save') }}
@@ -296,7 +317,16 @@ const props = defineProps({
 });
 
 const emit    = defineEmits(["saveDocument"]);
-const { t }   = useI18n();
+const { t, locale } = useI18n();
+
+// Client Portal Step 5 - the customer accepted this quote; the server
+// refuses edits too (QuoteController::update()), this just says so upfront.
+const locked = computed(() => props.quote.status === 'accepted');
+
+function formatDecisionDate(iso) {
+  const d = new Date(iso);
+  return !iso || isNaN(d) ? (iso ?? '') : d.toLocaleString(locale.value, { dateStyle: 'medium', timeStyle: 'short' });
+}
 const router  = useRouter();
 const toaster = createToaster();
 
@@ -374,10 +404,12 @@ const selectProduct = (index, value) => {
 };
 
 const addNewItem = () => {
+  if (locked.value) return;
   state.carts.push({ item_id: "", name: "", description: "", qty: 1, unite: "pc", price: 0, discount: 0, ...defaultTax(), total: 0 });
 };
 
 const removeCart = (cart) => {
+  if (locked.value) return;
   if (state.carts.length === 1) return;
   if (confirm(t("documents.removeConfirm")))
     state.carts = state.carts.filter((c) => c !== cart);
@@ -423,6 +455,7 @@ const attachTotals = () => {
 };
 
 const handleSave = async () => {
+  if (locked.value) return;
   if (!taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
@@ -446,6 +479,7 @@ const handleDuplicate = async () => {
 };
 
 const handleSendAndSave = async () => {
+  if (locked.value) return;
   if (!taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
@@ -478,6 +512,24 @@ const handleModalSend = async (message) => {
 </script>
 
 <style scoped>
+.inv-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+/* Accepted quote (Client Portal Step 5) - read-only look for every control */
+.inv-locked :is(input, select, textarea),
+.inv-locked :deep(.vs__dropdown-toggle),
+.inv-locked :deep(.tax-select) {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+.inv-locked :deep(.vs__actions) { display: none; }
+:global(.dark-mode) .inv-locked :is(input, select, textarea),
+:global(.dark-mode) .inv-locked .vs__dropdown-toggle,
+:global(.dark-mode) .inv-locked .tax-select {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #9ca3af !important;
+}
+
 /* =========================================================
    EditQuoteForm - ALL styles scoped to this component.
    Uses inv-* prefix. Mirrors EditInvoiceForm.vue.

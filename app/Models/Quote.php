@@ -15,6 +15,12 @@ class Quote extends Model
     const STATUS_SENT      = 'sent';
     const STATUS_CONVERTED = 'converted';
     const STATUS_CANCELLED = 'cancelled';
+    // Client Portal Step 4 - a customer's own decision on a sent quote.
+    // Reachable only from STATUS_SENT (see
+    // ClientPortalController::acceptQuote()/rejectQuote()) - draft,
+    // converted and cancelled quotes are never touched by this.
+    const STATUS_ACCEPTED  = 'accepted';
+    const STATUS_REJECTED  = 'rejected';
 
     protected $fillable = [
         'customer_id',
@@ -23,6 +29,8 @@ class Quote extends Model
         'uuid',
         'date',
         'status',
+        'accepted_at',
+        'rejected_at',
         'expiration_date',
         'payment_terms',
         'sub_total',
@@ -31,6 +39,11 @@ class Quote extends Model
         'vta',
         'total',
         'note',
+    ];
+
+    protected $casts = [
+        'accepted_at' => 'datetime',
+        'rejected_at' => 'datetime',
     ];
 
     public function getRouteKeyName()

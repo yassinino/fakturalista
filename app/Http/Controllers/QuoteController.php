@@ -69,6 +69,10 @@ class QuoteController extends Controller
             'total'           => $quote->total,
             'sub_total'       => $quote->sub_total,
             'vta'             => $quote->vta,
+            // Client Portal Step 4 - when the customer accepted/rejected
+            // this quote themselves, null otherwise.
+            'accepted_at'     => $quote->accepted_at?->toIso8601String(),
+            'rejected_at'     => $quote->rejected_at?->toIso8601String(),
         ]);
 
         return response()->json([
@@ -113,7 +117,11 @@ class QuoteController extends Controller
             'reference'       => 'QUO-' . $n,
             'customer_id'     => $customer->id,
             'date'            => $request->date,
-            'status'          => $request->status,
+            // Only the customer can accept/reject (Client Portal) - never
+            // create a quote already carrying a decision.
+            'status'          => in_array($request->status, [Quote::STATUS_ACCEPTED, Quote::STATUS_REJECTED], true)
+                ? Quote::STATUS_DRAFT
+                : $request->status,
             'expiration_date' => $request->expiration_date,
             'payment_terms'   => $request->payment_terms,
             'sub_total'       => $calculation->subTotal,
@@ -168,6 +176,8 @@ class QuoteController extends Controller
                 'address'         => $customer->address_billing ?? $customer->address ?? '',
                 'date'            => $quote->date,
                 'status'          => $quote->status,
+                'accepted_at'     => $quote->accepted_at?->toIso8601String(),
+                'rejected_at'     => $quote->rejected_at?->toIso8601String(),
                 'expiration_date' => $quote->expiration_date,
                 'payment_terms'   => $quote->payment_terms,
                 'sub_total'       => $quote->sub_total,
@@ -183,6 +193,21 @@ class QuoteController extends Controller
 
     public function update(QuoteRequest $request, Quote $quote): JsonResponse
     {
+        // Client Portal Step 5 - once the customer has accepted a quote,
+        // what they agreed to (customer, lines, prices, taxes, discounts,
+        // totals) is frozen. It can still be converted, sent or cancelled.
+        if ($quote->status === Quote::STATUS_ACCEPTED) {
+            return response()->json(['message' => __('quote.locked_accepted')], 422);
+        }
+
+        // Only the customer can accept/reject (via the portal) - an edit
+        // never sets either status, and never moves a rejected quote out
+        // of its decision.
+        $status = $request->status;
+        if ($quote->status === Quote::STATUS_REJECTED || in_array($status, [Quote::STATUS_ACCEPTED, Quote::STATUS_REJECTED], true)) {
+            $status = $quote->status;
+        }
+
         $customer = Customer::where('uuid', $request->customer_id)->firstOrFail();
 
         $carts = $request->carts ?? [];
@@ -209,7 +234,7 @@ class QuoteController extends Controller
         Quote::where('id', $quote->id)->update([
             'customer_id'     => $customer->id,
             'date'            => $request->date,
-            'status'          => $request->status,
+            'status'          => $status,
             'expiration_date' => $request->expiration_date,
             'payment_terms'   => $request->payment_terms,
             'sub_total'       => $calculation->subTotal,
@@ -247,8 +272,13 @@ class QuoteController extends Controller
 
     public function destroy(Quote $quote): JsonResponse
     {
+        // What the customer accepted in the Client Portal stays on record.
+        if ($quote->status === Quote::STATUS_ACCEPTED) {
+            return response()->json(['message' => __('quote.cannot_delete_accepted')], 422);
+        }
+
         $quote->delete();
-        return response()->json(['message' => 'Quote deleted successfully.'], 200);
+        return response()->json(['message' => __('quote.deleted')], 200);
     }
 
     public function bulkDelete(Request $request): JsonResponse
@@ -258,9 +288,34 @@ class QuoteController extends Controller
             'ids.*' => 'string',
         ]);
 
-        $count = Quote::whereIn('uuid', $validated['ids'])->delete();
+        // Same "delete what's allowed, report what was skipped" shape as
+        // InvoiceController::bulkDelete() - accepted quotes are never deleted.
+        $quotes = Quote::whereIn('uuid', $validated['ids'])->get(['id', 'uuid', 'status']);
 
-        return response()->json(['message' => "$count quote(s) deleted."]);
+        $skipped   = $quotes->filter(fn (Quote $quote) => $quote->status === Quote::STATUS_ACCEPTED);
+        $deletable = $quotes->reject(fn (Quote $quote) => $quote->status === Quote::STATUS_ACCEPTED);
+
+        if ($deletable->isEmpty() && $skipped->isNotEmpty()) {
+            return response()->json([
+                'message' => __('quote.cannot_delete_accepted'),
+                'deleted' => [],
+                'skipped' => $skipped->pluck('uuid')->values(),
+            ], 422);
+        }
+
+        if ($deletable->isNotEmpty()) {
+            Quote::whereIn('id', $deletable->pluck('id'))->delete();
+        }
+
+        $message = $skipped->isNotEmpty()
+            ? __('quote.bulk_deleted_with_skipped', ['count' => $deletable->count(), 'skipped' => $skipped->count()])
+            : __('quote.bulk_deleted', ['count' => $deletable->count()]);
+
+        return response()->json([
+            'message' => $message,
+            'deleted' => $deletable->pluck('uuid')->values(),
+            'skipped' => $skipped->pluck('uuid')->values(),
+        ]);
     }
 
     // ── Duplicate quote ────────────────────────────────────
@@ -414,8 +469,13 @@ class QuoteController extends Controller
             ], 500);
         }
 
-        $quote->status = 'sent';
-        $quote->save();
+        // Re-sending the email must never reopen a decision the customer
+        // already made in the Client Portal (Step 4) - an accepted or
+        // rejected quote keeps its status and timestamp.
+        if (!in_array($quote->status, [Quote::STATUS_ACCEPTED, Quote::STATUS_REJECTED], true)) {
+            $quote->status = 'sent';
+            $quote->save();
+        }
 
         return response()->json([
             'message' => "Devis envoyé à {$customer->email}.",

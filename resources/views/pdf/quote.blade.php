@@ -26,11 +26,11 @@ $primary = !empty($company?->brand_color) ? $company->brand_color : '#E91E63';
 
 // ── Status badge ───────────────────────────────────────────────────────────
 $statusLabels = match ($locale) {
-    'fr'    => ['draft' => 'Brouillon', 'sent' => 'Envoyé',  'converted' => 'Converti',  'cancelled' => 'Annulé'],
-    'es'    => ['draft' => 'Borrador',  'sent' => 'Enviado', 'converted' => 'Convertido', 'cancelled' => 'Cancelado'],
-    default => ['draft' => 'Draft',     'sent' => 'Sent',    'converted' => 'Converted',  'cancelled' => 'Cancelled'],
+    'fr'    => ['draft' => 'Brouillon', 'sent' => 'Envoyé',  'converted' => 'Converti',  'cancelled' => 'Annulé',    'accepted' => 'Accepté',  'rejected' => 'Refusé'],
+    'es'    => ['draft' => 'Borrador',  'sent' => 'Enviado', 'converted' => 'Convertido', 'cancelled' => 'Cancelado', 'accepted' => 'Aceptado', 'rejected' => 'Rechazado'],
+    default => ['draft' => 'Draft',     'sent' => 'Sent',    'converted' => 'Converted',  'cancelled' => 'Cancelled', 'accepted' => 'Accepted', 'rejected' => 'Rejected'],
 };
-$statusColors = ['draft' => '#6b7280', 'sent' => '#0284c7', 'converted' => '#16a34a', 'cancelled' => '#dc2626'];
+$statusColors = ['draft' => '#6b7280', 'sent' => '#0284c7', 'converted' => '#16a34a', 'cancelled' => '#dc2626', 'accepted' => '#16a34a', 'rejected' => '#dc2626'];
 $statusLabel  = $statusLabels[$quote->status ?? 'draft'] ?? ucfirst($quote->status ?? 'draft');
 $statusColor  = $statusColors[$quote->status  ?? 'draft'] ?? '#6b7280';
 

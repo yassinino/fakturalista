@@ -151,4 +151,25 @@ return [
         'footer_support' => 'Support',
         'footer_note'    => 'You are receiving this email because you enabled activity notifications in Settings → Notifications.',
     ],
+
+    // Client Portal Step 5 - a customer accepted/rejected a quote from the portal
+    'quote_decision_notification' => [
+        'subject_accepted'  => 'Quote :reference accepted by :client',
+        'subject_rejected'  => 'Quote :reference rejected by :client',
+        'hero_title_accepted'    => 'Quote accepted',
+        'hero_title_rejected'    => 'Quote rejected',
+        'hero_subtitle_accepted' => 'Your customer accepted your quote from their portal.',
+        'hero_subtitle_rejected' => 'Your customer rejected your quote from their portal.',
+        'greeting_hello'    => 'Hello',
+        'body_accepted'     => 'Quote :reference was accepted by :client on :date.',
+        'body_rejected'     => 'Quote :reference was rejected by :client on :date.',
+        'label_client'      => 'Client',
+        'label_quote'       => 'Quote',
+        'cta_button'        => 'View quote →',
+        'help_contact'      => 'A question? Write to us at',
+        'help_response'     => 'and we\'ll get back to you within 24 hours.',
+        'footer_tagline'    => 'Invoicing for freelancers and businesses',
+        'footer_support'    => 'Support',
+        'footer_note'       => 'You are receiving this email because you enabled activity notifications in Settings → Notifications.',
+    ],
 ];

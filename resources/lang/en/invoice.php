@@ -67,5 +67,15 @@ return [
         'bulk_deleted'                  => ':count invoice(s) deleted.',
         'bulk_deleted_with_skipped'     => ':count invoice(s) deleted. :skipped skipped (already issued).',
         'ubl_export_failed'             => 'UBL export failed. Try again or contact support if the problem persists.',
+        'pdf_export_failed'             => 'PDF generation failed. Try again or contact support if the problem persists.',
+    ],
+
+    // Client Portal Step 6A - online payment via Stripe Connect
+    'portal_payment' => [
+        'already_paid'         => 'This invoice has already been paid.',
+        'not_payable'          => 'This invoice cannot be paid online.',
+        'currency_unsupported' => 'This invoice’s currency is not supported for online payment.',
+        'unavailable'          => 'Online payment is not available right now. Please try again later.',
+        'in_progress'          => 'A payment is already in progress for this invoice. Please wait a few minutes.',
     ],
 ];

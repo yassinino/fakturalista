@@ -68,5 +68,15 @@ return [
         'bulk_deleted'                  => ':count facture(s) supprimée(s).',
         'bulk_deleted_with_skipped'     => ':count facture(s) supprimée(s). :skipped ignorée(s) (déjà émises).',
         'ubl_export_failed'             => 'L’export UBL a échoué. Réessayez ou contactez le support si le problème persiste.',
+        'pdf_export_failed'             => 'La génération du PDF a échoué. Réessayez ou contactez le support si le problème persiste.',
+    ],
+
+    // Client Portal Step 6A - online payment via Stripe Connect
+    'portal_payment' => [
+        'already_paid'         => 'Cette facture est déjà payée.',
+        'not_payable'          => 'Cette facture ne peut pas être payée en ligne.',
+        'currency_unsupported' => 'La devise de cette facture n’est pas prise en charge pour le paiement en ligne.',
+        'unavailable'          => 'Le paiement en ligne n’est pas disponible pour le moment. Veuillez réessayer plus tard.',
+        'in_progress'          => 'Un paiement est déjà en cours pour cette facture. Veuillez patienter quelques minutes.',
     ],
 ];

@@ -11,6 +11,7 @@ use Stripe\Checkout\Session as StripeCheckoutSession;
 use Stripe\Customer as StripeCustomer;
 use Stripe\Stripe;
 use Stripe\Subscription as StripeSubscription;
+use Tests\Support\FakeStripe;
 use Tests\TestCase;
 
 /**
@@ -31,18 +32,31 @@ use Tests\TestCase;
  * one is confirmed and persisted - see that method and
  * SubscriptionController::createCheckoutSession()'s own comments.
  *
- * Uses the real Stripe TEST-mode API throughout (not mocked), since that is
- * the only way to prove Stripe itself ends up with exactly one active
- * subscription after an upgrade, not two.
+ * Runs fully offline (Step 6A.1) against Tests\Support\FakeStripe, a
+ * stateful in-memory Stripe emulator behind stripe-php's own HTTP-client
+ * hook - Stripe-side state (which subscriptions are active/cancelled) is
+ * still asserted through the real SDK, just without the network.
  */
 class SubscriptionUpgradeTest extends TestCase
 {
     private array $createdTenantIds = [];
     private array $stripeSubscriptionsToCancel = [];
 
+    private FakeStripe $stripe;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Offline and deterministic: Stripe's network layer is the in-memory
+        // Tests\Support\FakeStripe (the real SDK still builds every request),
+        // and webhooks are signed with a test-only secret so signature
+        // verification still runs for real. No real Stripe credentials.
+        config([
+            'services.stripe.secret'         => 'sk_test_offline_fake',
+            'services.stripe.webhook_secret' => 'whsec_test_offline_upgrade',
+        ]);
+        $this->stripe = FakeStripe::install();
         Stripe::setApiKey(config('services.stripe.secret'));
     }
 
@@ -58,6 +72,7 @@ class SubscriptionUpgradeTest extends TestCase
         foreach ($this->createdTenantIds as $id) {
             Tenant::find($id)?->delete();
         }
+        FakeStripe::uninstall();
         parent::tearDown();
     }
 

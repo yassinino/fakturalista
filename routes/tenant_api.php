@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientPortalController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FamilyController;
@@ -37,6 +38,44 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password',  [AuthController::class, 'resetPassword']);
 Route::get('/countries', [CountryController::class, 'index']);
+
+// Client Portal data (Step 1's endpoint, moved here in Step 2 so the same
+// URL, routes/tenant.php's GET /portal/{token}, can serve the Vue page
+// shell instead - same controller/security logic, unchanged, just
+// registered under /api like every other JSON endpoint in this app).
+Route::get('/portal/{token}', [ClientPortalController::class, 'show'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.show');
+
+// Client Portal document downloads (Step 3) - same token-based
+// authorization and rate limiter as the endpoint above; see
+// ClientPortalController::resolvePortalCustomer()/authorize*ForCustomer().
+Route::get('/portal/{token}/invoices/{invoice}/pdf', [ClientPortalController::class, 'invoicePdf'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.invoice-pdf');
+Route::get('/portal/{token}/invoices/{invoice}/ubl', [ClientPortalController::class, 'invoiceUbl'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.invoice-ubl');
+Route::get('/portal/{token}/quotes/{quote}/pdf', [ClientPortalController::class, 'quotePdf'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.quote-pdf');
+
+// Client Portal quote accept/reject (Step 4) - same token-based
+// authorization and rate limiter as every other portal route above; see
+// ClientPortalController::acceptQuote()/rejectQuote().
+Route::post('/portal/{token}/quotes/{quote}/accept', [ClientPortalController::class, 'acceptQuote'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.quote-accept');
+Route::post('/portal/{token}/quotes/{quote}/reject', [ClientPortalController::class, 'rejectQuote'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.quote-reject');
+
+// Client Portal invoice payment (Step 6A) - starts a Stripe Checkout on
+// the seller's connected account. Takes NO body: amount, currency and
+// account are all decided server-side (PortalInvoicePaymentService).
+Route::post('/portal/{token}/invoices/{invoice}/payment/stripe', [ClientPortalController::class, 'startInvoicePayment'])
+    ->middleware('throttle:client-portal')
+    ->name('client-portal.invoice-pay-stripe');
 
 // ── Authenticated ─────────────────────────────────────────────────────────
 Route::middleware(['auth:api', 'set.locale'])->group(function () {
@@ -100,6 +139,11 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
 
         // Customers
         Route::post('/customers/bulk-delete', [CustomerController::class, 'bulkDelete']);
+        // Client Portal link for a customer (admin) - see CustomerPortalAccessController.
+        Route::get('/customers/{customer}/portal-access',             [\App\Http\Controllers\CustomerPortalAccessController::class, 'show']);
+        Route::post('/customers/{customer}/portal-access',            [\App\Http\Controllers\CustomerPortalAccessController::class, 'store']);
+        Route::post('/customers/{customer}/portal-access/regenerate', [\App\Http\Controllers\CustomerPortalAccessController::class, 'regenerate']);
+        Route::delete('/customers/{customer}/portal-access',          [\App\Http\Controllers\CustomerPortalAccessController::class, 'destroy']);
         Route::resource('/customers', CustomerController::class);
 
         // Users (team management) - seat limit enforced via PlanService,

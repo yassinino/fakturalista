@@ -33,7 +33,12 @@ class QuoteToInvoiceService
     public function convert(Quote $quote): Invoice
     {
         if ($quote->status === Quote::STATUS_CONVERTED) {
-            throw new \RuntimeException('Este presupuesto ya ha sido convertido en factura.');
+            throw new \RuntimeException(__('quote.already_converted'));
+        }
+
+        // Client Portal Step 5 - the customer declined this quote.
+        if ($quote->status === Quote::STATUS_REJECTED) {
+            throw new \RuntimeException(__('quote.cannot_convert_rejected'));
         }
 
         Log::info('Quote conversion started', [

@@ -13,6 +13,10 @@ import LayoutFront from "@/layouts/variations/Front.vue";
 // Frontend: Landing
 const Landing = () => import("@/views/starter/LandingView.vue");
 
+// Client Portal (public, token-secured - no admin layout, see
+// App\Http\Controllers\ClientPortalController and routes/tenant.php)
+const ClientPortal = () => import("@/views/portal/ClientPortalView.vue");
+
 const AuthSignIn     = () => import("@/views/SignIn.vue");
 const AuthSignOut    = () => import("@/views/SignOut.vue");
 const ForgotPassword = () => import("@/views/ForgotPassword.vue");
@@ -66,6 +70,13 @@ const routes = [
         component: Landing,
       },
     ],
+  },
+  // Client Portal - a standalone page with no parent layout (no admin
+  // sidebar/header, see ClientPortalView.vue's own self-contained markup).
+  {
+    path: "/portal/:token",
+    name: "client-portal",
+    component: ClientPortal,
   },
   {
     path: "/admin",
@@ -337,9 +348,15 @@ router.afterEach((to, from) => {
 
 // Auth + billing navigation guard
 const AUTH_ROUTES  = ['auth-signin', 'auth-signout', 'auth-forgot-password', 'auth-reset-password'];
-const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'backend-subscription-checkout-success', 'landing'];
+const BYPASS_NAMES = [...AUTH_ROUTES, 'onboarding', 'backend-subscription', 'backend-subscription-checkout-success', 'landing', 'client-portal'];
 
 router.beforeEach(async (to, from, next) => {
+  // Client Portal is public and has nothing to do with an admin session -
+  // never redirect it to login, and never run the admin-only checks below.
+  if (to.name === 'client-portal') {
+    return next();
+  }
+
   const store = useTemplateStore();
   const isLoggedIn = !!store.app.accessToken;
 

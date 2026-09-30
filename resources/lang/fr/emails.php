@@ -151,4 +151,25 @@ return [
         'footer_support' => 'Support',
         'footer_note'    => 'Vous recevez cet e-mail car vous avez activé les notifications d\'activité dans Paramètres → Notifications.',
     ],
+
+    // Client Portal Step 5 - a customer accepted/rejected a quote from the portal
+    'quote_decision_notification' => [
+        'subject_accepted'  => 'Devis :reference accepté par :client',
+        'subject_rejected'  => 'Devis :reference refusé par :client',
+        'hero_title_accepted'    => 'Devis accepté',
+        'hero_title_rejected'    => 'Devis refusé',
+        'hero_subtitle_accepted' => 'Votre client a accepté votre devis depuis son portail.',
+        'hero_subtitle_rejected' => 'Votre client a refusé votre devis depuis son portail.',
+        'greeting_hello'    => 'Bonjour',
+        'body_accepted'     => 'Le devis :reference a été accepté par :client le :date.',
+        'body_rejected'     => 'Le devis :reference a été refusé par :client le :date.',
+        'label_client'      => 'Client',
+        'label_quote'       => 'Devis',
+        'cta_button'        => 'Voir le devis →',
+        'help_contact'      => 'Une question ? Écrivez-nous à',
+        'help_response'     => 'nous vous répondrons en moins de 24 heures.',
+        'footer_tagline'    => 'Facturation pour indépendants et entreprises',
+        'footer_support'    => 'Support',
+        'footer_note'       => 'Vous recevez cet e-mail car vous avez activé les notifications d\'activité dans Paramètres → Notifications.',
+    ],
 ];

@@ -75,11 +75,18 @@ class CompanyProfileController extends Controller
             'swift' => 'nullable|string|max:255',
             'logo' => 'nullable|image|max:2048',
             'stamp' => 'nullable|image|max:2048',
-            // Sent as a JSON string alongside the rest of this multipart
-            // form (see settings.vue saveAll()). Unknown keys/out-of-range
-            // day values are dropped, not rejected - NotificationPreferencesService::resolve()
-            // only ever keeps the known, allowed shape.
-            'notification_preferences' => 'nullable|json',
+            // Either a JSON string (settings.vue's multipart form, see
+            // saveAll()) or an array/object (e.g. the GET /settings payload
+            // PUT straight back) - see NotificationPreferencesService::decodeInput().
+            // Unknown keys/out-of-range day values are dropped, not
+            // rejected - resolve() only ever keeps the known, allowed shape.
+            'notification_preferences' => ['nullable', function (string $attribute, mixed $value, \Closure $fail) {
+                try {
+                    app(NotificationPreferencesService::class)->decodeInput($value);
+                } catch (\InvalidArgumentException) {
+                    $fail(__('validation.json', ['attribute' => $attribute]));
+                }
+            }],
         ]);
 
         // Trim identifier fields - accidental leading/trailing whitespace
@@ -98,10 +105,12 @@ class CompanyProfileController extends Controller
             $validated['default_tax_code'] = null;
         }
 
-        // Decode + sanitize before assignment - the `array` cast would
-        // otherwise double-encode this already-JSON-string request field.
-        $validated['notification_preferences'] = app(NotificationPreferencesService::class)
-            ->resolve(json_decode($validated['notification_preferences'] ?? 'null', true));
+        // Decode (either input form) + sanitize before assignment - the
+        // `array` cast would otherwise double-encode a JSON-string field.
+        $preferences = app(NotificationPreferencesService::class);
+        $validated['notification_preferences'] = $preferences->resolve(
+            $preferences->decodeInput($validated['notification_preferences'] ?? null)
+        );
 
         // Actualizar campos simples
         $profile->fill($validated);
