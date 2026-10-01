@@ -35,6 +35,10 @@ use App\Http\Controllers\UserController;
 
 // ── Public (no auth) ─────────────────────────────────────────────────────
 Route::post('login', [AuthController::class, 'login']);
+// One-time auto-login right after self-service registration (see
+// SignupLoginTicketService) - public, single-use tickets, throttled.
+Route::post('signup-ticket', [AuthController::class, 'exchangeSignupTicket'])
+    ->middleware('throttle:signup-ticket');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password',  [AuthController::class, 'resetPassword']);
 Route::get('/countries', [CountryController::class, 'index']);
@@ -88,6 +92,7 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
     // Onboarding (bypasses RequireOnboarding and EnforceSubscription)
     Route::get('/onboarding',  [OnboardingController::class, 'show']);
     Route::post('/onboarding', [OnboardingController::class, 'store']);
+    Route::post('/onboarding/skip', [OnboardingController::class, 'skip']);
 
     // Subscription (bypasses both guards - needed to subscribe from expired state)
     Route::get('/subscription',              [SubscriptionController::class, 'index']);

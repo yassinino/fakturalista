@@ -64,6 +64,12 @@ class RouteServiceProvider extends ServiceProvider
         // "Find my workspace" lookup (routes/web.php POST /login) - read-only,
         // but still capable of confirming/denying whether an email has an
         // account, so it gets its own light limiter rather than none.
+        // Post-registration auto-login ticket exchange (routes/tenant_api.php
+        // POST /api/signup-ticket) - a legitimate browser uses it once.
+        RateLimiter::for('signup-ticket', function (Request $request) {
+            return Limit::perMinute(10)->by('signup-ticket-ip:' . $request->ip());
+        });
+
         RateLimiter::for('login-finder', function (Request $request) {
             return Limit::perMinutes(10, 10)->by($request->ip());
         });

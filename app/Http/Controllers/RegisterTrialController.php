@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterTrialRequest;
+use App\Services\Auth\SignupLoginTicketService;
 use App\Services\MathCaptchaService;
 use App\Services\TenantProvisioningService;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +24,10 @@ use Illuminate\View\View;
  */
 class RegisterTrialController extends Controller
 {
-    public function __construct(private TenantProvisioningService $provisioning) {}
+    public function __construct(
+        private TenantProvisioningService $provisioning,
+        private SignupLoginTicketService $loginTickets,
+    ) {}
 
     public function create(): View
     {
@@ -82,7 +86,16 @@ class RegisterTrialController extends Controller
                 'domain'    => $domain,
             ]);
 
-            return redirect()->away('https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email));
+            // Auto-login: a one-time ticket the tenant's login page exchanges
+            // for a normal Passport token (SignupLoginTicketService). It
+            // travels in the URL *fragment*, which browsers never send to a
+            // server or in a Referer header. If it's missing/expired the
+            // page simply falls back to the pre-filled login form as before.
+            $ticket = $this->loginTickets->issue($tenant, $email);
+            $url    = 'https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email)
+                . ($ticket ? '#signup=' . $ticket : '');
+
+            return redirect()->away($url);
 
         } catch (\Throwable $e) {
             // TenantProvisioningService already logged the real exception

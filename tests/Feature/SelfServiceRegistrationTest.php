@@ -86,7 +86,13 @@ class SelfServiceRegistrationTest extends TestCase
         $tenant = $this->registeredTenant($email);
         $domain = $tenant->domains->first()->domain;
 
-        $response->assertRedirect('https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email));
+        // Same landing page as before, plus the one-time auto-login ticket in
+        // the URL fragment (see SignupAutoLoginAndOnboardingSkipTest).
+        $response->assertRedirect();
+        $this->assertMatchesRegularExpression(
+            '~^' . preg_quote('https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email), '~') . '#signup=[A-Za-z0-9]{64}$~',
+            $response->headers->get('Location')
+        );
 
         // No business name is collected at signup - the owner's own name
         // is used as a placeholder until onboarding sets the real one.

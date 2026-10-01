@@ -241,12 +241,13 @@ const state = reactive({
 });
 
 // Self-service registration (RegisterTrialController) redirects the
-// browser straight to this page with the just-registered email and a
-// "welcome" flag - true auto-login isn't possible across the domain
-// switch from the central marketing site to this tenant's own subdomain
-// (auth is tenant-DB-scoped), so the smoothest safe alternative is: the
-// account is already fully provisioned, just pre-fill the one field the
-// visitor already knows (the email they just typed) and greet them.
+// browser straight to this page with the just-registered email, a
+// "welcome" flag and - in the URL fragment - a one-time signup ticket.
+// The ticket is exchanged once for a normal Passport token (POST
+// signup-ticket, same response as /login), so the new user lands in the
+// app without typing their password again. If the ticket is missing,
+// expired or already used, this page simply stays the pre-filled login
+// form it always was.
 onMounted(() => {
   if (route.query.email) {
     state.email = String(route.query.email);
@@ -254,7 +255,33 @@ onMounted(() => {
   if (route.query.welcome === '1') {
     welcomeMessage.value = t('auth.welcomeAfterRegister');
   }
+
+  const ticket = new URLSearchParams(window.location.hash.slice(1)).get('signup');
+  if (ticket) {
+    // Never leave the ticket in the address bar / history.
+    history.replaceState(history.state, '', window.location.pathname + window.location.search);
+    signInWithSignupTicket(ticket);
+  }
 });
+
+function signInWithSignupTicket(ticket) {
+  isLoading.value = true;
+  welcomeMessage.value = t('auth.signingInAfterRegister');
+
+  axios
+    .post("/signup-ticket", { ticket })
+    .then((res) => {
+      store.loginUser(res.data.data);
+      setLocale(res.data.data?.user?.locale || "fr");
+      // Onboarding isn't done yet, so the router guard sends this straight
+      // on to "Votre entreprise".
+      window.location.href = "/admin/dashboard";
+    })
+    .catch(() => {
+      isLoading.value = false;
+      welcomeMessage.value = t('auth.welcomeAfterRegister');
+    });
+}
 
 const rules = computed(() => ({
   email:    { required, email, minLength: minLength(3) },

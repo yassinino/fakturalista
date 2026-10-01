@@ -154,6 +154,36 @@ class AuthController extends Controller
         ]], 200);
     }
 
+    /**
+     * POST /signup-ticket - completes the auto-login right after
+     * self-service registration (see SignupLoginTicketService). Issues the
+     * exact same Passport token and response shape as login(); the ticket
+     * is single-use, short-lived and bound to this tenant.
+     */
+    public function exchangeSignupTicket(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ticket' => 'required|string|size:64',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => 'UnAuthorised Access'], 401);
+        }
+
+        $user = app(\App\Services\Auth\SignupLoginTicketService::class)->redeem($request->input('ticket'));
+
+        if (!$user) {
+            return response()->json(['error' => 'UnAuthorised Access'], 401);
+        }
+
+        return response(['data' => [
+            'user'            => $user,
+            'accessToken'     => $user->createToken('authToken')->accessToken,
+            'billing'         => $this->billingState(),
+            'company_context' => $this->companyContext(),
+        ]], 200);
+    }
+
     public function user(Request $request){
         $user = $request->user();
         return response([

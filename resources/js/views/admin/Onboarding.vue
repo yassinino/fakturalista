@@ -134,9 +134,15 @@
                 />
               </div>
 
-              <button type="submit" class="ob-btn-submit">
+              <button type="submit" class="ob-btn-submit" :disabled="isSkipping">
                 <span class="ob-btn-text">{{ $t('onboarding.continueBtn') }}</span>
               </button>
+
+              <!-- Secondary: reach the dashboard now, complete this later in Settings -->
+              <button type="button" class="ob-btn-link" :disabled="isSkipping" data-test="onboarding-skip" @click="skipOnboarding">
+                <i v-if="isSkipping" class="fa fa-spinner fa-spin me-1"></i>{{ $t('onboarding.skipForNowBtn') }}
+              </button>
+              <p class="ob-skip-hint">{{ $t('onboarding.skipForNowHint') }}</p>
             </form>
           </template>
 
@@ -257,6 +263,7 @@ const { t }  = useI18n();
 
 const isDark       = computed(() => store.settings.darkMode);
 const isLoading    = ref(false);
+const isSkipping   = ref(false);
 const errorMessage = ref('');
 const countries    = ref([]);
 
@@ -354,6 +361,35 @@ function goToDashboard() {
 
 function goToCreateInvoice() {
   router.push({ name: 'backend-create-invoice' });
+}
+
+// "Ignorer pour le moment": no company data is invented - only what the
+// user already typed on this screen is sent (OnboardingController::skip()).
+async function skipOnboarding() {
+  if (isSkipping.value) return;
+  isSkipping.value   = true;
+  errorMessage.value = '';
+
+  try {
+    await axios.post('onboarding/skip', {
+      trade_name: form.trade_name?.trim() || null,
+      phone:      form.phone?.trim() || null,
+    });
+
+    // Same refresh as onSubmit() so the router guard lets the user through.
+    const userRes = await axios.get('user');
+    if (userRes.data.billing) {
+      store.setBillingStatus(userRes.data.billing);
+    }
+    if (userRes.data.company_context) {
+      store.setCompanyContext(userRes.data.company_context);
+    }
+
+    goToDashboard();
+  } catch (err) {
+    errorMessage.value = err.response?.data?.message || t('onboarding.genericError');
+    isSkipping.value = false;
+  }
 }
 
 async function onSubmit() {
@@ -986,6 +1022,13 @@ async function onSubmit() {
 }
 
 .ob-btn-link:hover { color: var(--brand); }
+.ob-btn-link:disabled { opacity: .6; cursor: not-allowed; }
+.ob-skip-hint {
+  margin: 2px 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
 
 /* ══════════════════════════════════════════════════════════════
    STEP 3 - SUCCESS

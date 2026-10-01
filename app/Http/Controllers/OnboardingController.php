@@ -145,16 +145,7 @@ class OnboardingController extends Controller
             $request->user()?->update(['name' => $validated['owner_name']]);
         }
 
-        // Start the free trial on the central Tenant record.
-        $tenant = tenancy()->tenant;
-        $tenant->update([
-            'country'             => $profile->country_code,
-            'currency'            => $profile->currency,
-            'language'            => $profile->locale,
-            'timezone'            => $profile->timezone,
-            'subscription_status' => 'trialing',
-            'trial_ends_at'       => now()->addDays(config('billing.trial_days')),
-        ]);
+        $tenant = $this->startTrial($profile);
 
         Log::info('Onboarding completed', [
             'tenant_id'      => $tenant->id,
@@ -166,5 +157,70 @@ class OnboardingController extends Controller
             'onboarding_completed' => true,
             'trial_ends_at'        => $tenant->trial_ends_at,
         ]);
+    }
+
+    /**
+     * POST /onboarding/skip - "Ignorer pour le moment" on "Votre entreprise".
+     *
+     * Lets a new user reach the dashboard straight away without inventing
+     * any company data: only what they actually typed on that screen (a
+     * non-empty trade name / phone) is kept; everything else stays empty,
+     * with the provisioning-time country/currency/locale defaults that
+     * ensureCompanyProfile() already seeded. Onboarding is then marked done
+     * and the trial started exactly like store(), so no gate (onboarding,
+     * subscription) blocks the app; the rest is completed later in Settings.
+     */
+    public function skip(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'trade_name' => 'nullable|string|max:255',
+            'phone'      => 'nullable|string|max:50',
+        ]);
+
+        $profile = app(TenantContextService::class)->ensureCompanyProfile();
+
+        if ($profile->onboarding_completed_at !== null) {
+            return response()->json([
+                'message'              => __('onboarding.already_completed'),
+                'onboarding_completed' => true,
+            ]);
+        }
+
+        $entered = array_filter(
+            array_map(fn ($v) => is_string($v) ? trim($v) : $v, $validated),
+            fn ($v) => $v !== null && $v !== ''
+        );
+
+        $profile->update($entered + ['onboarding_completed_at' => now()]);
+
+        $tenant = $this->startTrial($profile);
+
+        Log::info('Onboarding skipped', [
+            'tenant_id'     => $tenant->id,
+            'kept_fields'   => array_keys($entered),
+            'trial_ends_at' => $tenant->trial_ends_at,
+        ]);
+
+        return response()->json([
+            'onboarding_completed' => true,
+            'skipped'              => true,
+            'trial_ends_at'        => $tenant->trial_ends_at,
+        ]);
+    }
+
+    /** Start the free trial on the central Tenant record (shared by store() and skip()). */
+    private function startTrial(CompanyProfile $profile): \App\Models\Tenant
+    {
+        $tenant = tenancy()->tenant;
+        $tenant->update([
+            'country'             => $profile->country_code,
+            'currency'            => $profile->currency,
+            'language'            => $profile->locale,
+            'timezone'            => $profile->timezone,
+            'subscription_status' => 'trialing',
+            'trial_ends_at'       => now()->addDays(config('billing.trial_days')),
+        ]);
+
+        return $tenant;
     }
 }
