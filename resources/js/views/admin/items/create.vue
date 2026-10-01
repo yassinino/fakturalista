@@ -224,7 +224,7 @@
 
                 <!-- Category -->
                 <div class="itc-field">
-                  <label class="itc-label itc-label--req" for="itc-family">{{ $t('items.fields.family') }}</label>
+                  <label class="itc-label" for="itc-family">{{ $t('items.fields.family') }}</label>
                   <VueSelect
                     id="itc-family"
                     v-model="state.family_id"
@@ -232,13 +232,7 @@
                     label="name"
                     :reduce="o => o.id"
                     :placeholder="$t('items.selectFamilyPlaceholder')"
-                    @update:modelValue="v$.family_id.$touch()"
-                    :class="{ 'itc-vs-err': v$.family_id.$error }"
                   />
-                  <p v-if="v$.family_id.$error" class="itc-err-msg">
-                    <i class="fa fa-circle-exclamation"></i>
-                    {{ $t('items.form.categoryRequired') }}
-                  </p>
                   <button type="button" class="itc-link-btn" @click="openFamilyModal">
                     <i class="fa fa-plus"></i>
                     {{ $t('items.createFamilyLink') }}
@@ -480,7 +474,7 @@ function openFamilyModal() {
 
 const rules = computed(() => ({
   name: { required },
-  family_id: { required },
+  // Category is optional (items.family_id is nullable).
 }));
 const rule_fm = computed(() => ({ name: { required } }));
 

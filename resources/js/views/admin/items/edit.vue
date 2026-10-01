@@ -161,7 +161,7 @@
             </div>
 
             <div class="inv-field-group">
-              <label class="inv-label inv-label-req">{{ $t('items.fields.family') }}</label>
+              <label class="inv-label">{{ $t('items.fields.family') }}</label>
               <VueSelect
                 id="item-family"
                 v-model="state.family_id"
@@ -169,12 +169,7 @@
                 label="name"
                 :reduce="(option) => option.id"
                 :placeholder="$t('items.selectFamilyPlaceholder')"
-                @update:modelValue="() => v$.family_id.$touch()"
-                :class="{ 'inv-select-err': v$.family_id.$error }"
               ></VueSelect>
-              <p v-if="v$.family_id.$error" class="inv-err-msg">
-                <i class="fa fa-exclamation-circle me-1"></i>{{ $t('items.form.categoryRequired') }}
-              </p>
               <small>
                 <a href="" data-bs-toggle="modal" data-bs-target="#modal-block-vcenter">
                   {{ $t("items.createFamilyLink") }}
@@ -370,7 +365,7 @@ onMounted(async () => {
 
 const rules = computed(() => ({
   name:      { required },
-  family_id: { required },
+  // Category is optional (items.family_id is nullable).
 }));
 
 const rule_fm = computed(() => ({

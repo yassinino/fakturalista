@@ -715,11 +715,17 @@ onMounted(() => {
   --db-bg:          #f3f5f8;
   --db-surface:     #ffffff;
   --db-surface-2:   #f8fafc;
-  --db-border:      #e6eaef;
+  /* Light-mode contrast (tester feedback): muted text was #8b96a8 (2.9:1 on
+     white - failed WCAG AA) and the card border nearly vanished on the page
+     background. Muted text now 5.4:1 on white / 4.9:1 on --db-bg while
+     staying lighter than --db-text-2 (8.1:1), so the hierarchy holds. */
+  --db-border:      #d9dee6;
   --db-border-2:    #ccd2db;
   --db-text-1:      #0d1117;
   --db-text-2:      #445066;
-  --db-text-3:      #8b96a8;
+  --db-text-3:      #5f6b7e;
+  /* Non-text icons (e.g. an unchecked checklist circle): >= 3:1 on white. */
+  --db-icon-muted:  #7c8799;
   --db-pink:        var(--brand-primary);
   --db-pink-dk:     var(--brand-primary-hover);
   --db-pink-bg:     rgba(233, 30, 99, 0.08);
@@ -753,6 +759,7 @@ onMounted(() => {
   --db-text-1:    var(--dark-text);
   --db-text-2:    var(--dark-text-muted);
   --db-text-3:    var(--dark-text-disabled);
+  --db-icon-muted: var(--dark-border-subtle); /* unchanged dark look */
   --db-pink-bg:   rgba(233, 30, 99, 0.14);
   --db-green-bg:  rgba(0, 168, 84, 0.14);
   --db-blue-bg:   rgba(37, 99, 235, 0.14);
@@ -1003,7 +1010,7 @@ onMounted(() => {
 
 .db-checklist-icon {
   font-size: 15px;
-  color: var(--db-border);
+  color: var(--db-icon-muted);
   flex: none;
 }
 
@@ -1039,12 +1046,10 @@ onMounted(() => {
   font-weight: 500;
   color: var(--db-pink);
   text-decoration: none;
-  opacity: 0.8;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
 }
 .db-card-link:hover {
-  opacity: 1;
-  color: var(--db-pink);
+  color: var(--db-pink-dk);
   text-decoration: none;
 }
 

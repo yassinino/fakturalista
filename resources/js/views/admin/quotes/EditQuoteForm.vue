@@ -68,7 +68,11 @@
                 @blur="v$.customer_id.$touch"
                 :placeholder="$t('quotes.form.clientPlaceholder')"
                 :class="{ 'inv-select-err': v$.customer_id.$errors.length }"
-              />
+              >
+                <template #list-footer="{ search }">
+                  <QuickCreateAction :label="$t('invoices.form.quickCreate.newCustomer')" data-test="quick-customer-open" @activate="openQuickCustomer(search)" />
+                </template>
+              </VueSelect>
               <p v-if="v$.customer_id.$errors.length" class="inv-err-msg">
                 <i class="fa fa-exclamation-circle me-1"></i>{{ $t('documents.selectCustomer') }}
               </p>
@@ -154,7 +158,11 @@
                       @option:selected="v => selectProduct(index, v)"
                       :placeholder="$t('quotes.form.productPlaceholder')"
                       class="inv-line-vs"
-                    />
+                    >
+                      <template #list-footer="{ search }">
+                        <QuickCreateAction :label="$t('invoices.form.quickCreate.newItem')" data-test="quick-item-open" @activate="openQuickItem(index, search)" />
+                      </template>
+                    </VueSelect>
                     <input
                       class="inv-input inv-desc-sub"
                       v-model="cart.description"
@@ -294,6 +302,19 @@
       @send="handleModalSend"
     />
 
+    <!-- Quick create (stays on this page - the form state is untouched) -->
+    <QuickCustomerModal
+      v-if="quickCustomer.open"
+      :initial-name="quickCustomer.search"
+      @cancel="quickCustomer.open = false"
+      @created="onQuickCustomerCreated"
+    />
+    <QuickItemModal
+      v-if="quickItem.open"
+      :initial-name="quickItem.search"
+      @cancel="quickItem.open = false"
+      @created="onQuickItemCreated"
+    />
   </div><!-- /.content -->
 </template>
 
@@ -303,6 +324,10 @@ import { useTaxPresets } from '@/composables/useTaxPresets';
 import { previewTaxGroups, taxFields, taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import VueSelect from "vue-select";
+import QuickCustomerModal from "../invoices/QuickCustomerModal.vue";
+import QuickItemModal from "../invoices/QuickItemModal.vue";
+import QuickCreateAction from "../invoices/QuickCreateAction.vue";
+import { useQuickCreate } from "../invoices/useQuickCreate.js";
 import FlatPickr from "vue-flatpickr-component";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
@@ -509,6 +534,16 @@ const handleModalSend = async (message) => {
     sendingEmail.value = false;
   }
 };
+// ── Quick create (customer / product-service) - shared with the other
+// invoice/quote forms (useQuickCreate). Selection reuses this form's own
+// onClientSelect / selectProduct, so nothing else in the form changes.
+const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCustomerCreated, onQuickItemCreated } = useQuickCreate({
+  customers,
+  items,
+  selectCustomer: (created) => { state.customer_id = created.uuid; onClientSelect(created); },
+  selectItem:     (line, created) => { if (state.carts[line]) selectProduct(line, created); },
+  isLocked:       () => locked.value,
+});
 </script>
 
 <style scoped>

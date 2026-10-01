@@ -41,7 +41,8 @@ class ItemRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'family_id' => 'required',
+            // Category is optional; when given it must be a real category.
+            'family_id' => 'nullable|integer|exists:families,id',
             'type' => 'required|in:1,2',
             'sales_price' => 'nullable|numeric|min:0',
             'purchase_price' => 'nullable|numeric|min:0',

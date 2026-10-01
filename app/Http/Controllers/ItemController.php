@@ -87,7 +87,12 @@ class ItemController extends Controller
             'description' => $request->description,
         ]);
 
-        return response()->json(['message' => 'Item added!'], 201);
+        // `item` is additive: lets the invoice quick-create modal select the
+        // record it just created (same id format as index()).
+        return response()->json([
+            'message' => 'Item added!',
+            'item'    => ['id' => (string) $new_item->id, 'uuid' => $new_item->uuid, 'name' => $new_item->name],
+        ], 201);
     }
 
     /**

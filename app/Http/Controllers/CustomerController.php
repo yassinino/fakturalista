@@ -109,7 +109,12 @@ class CustomerController extends Controller
             }
         }
 
-        return response(['message' => 'Customer added!'], 200);
+        // `customer` is additive: lets the invoice quick-create modal select
+        // the record it just created (by uuid) without guessing by name.
+        return response([
+            'message'  => 'Customer added!',
+            'customer' => ['uuid' => $new_customer->uuid, 'name' => $new_customer->name],
+        ], 200);
     }
 
     /**
