@@ -9,10 +9,6 @@
           <h1 class="inv-page-title">{{ $t('quotes.newTitle') }}</h1>
           <p class="inv-page-hint">{{ $t('quotes.form.pageHint') }}</p>
         </div>
-        <button class="inv-btn inv-btn-primary" type="button" @click="handleSave" :disabled="saving || !taxReady">
-          <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
-          {{ $t('quotes.form.createBtn') }}
-        </button>
       </div>
 
       <form @submit.prevent="handleSave" novalidate>
@@ -68,26 +64,6 @@
                   />
                 </div>
               </div>
-
-              <button
-                type="button"
-                class="inv-more-btn"
-                @click="showAdvanced = !showAdvanced"
-              >
-                <i class="fa" :class="showAdvanced ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                {{ $t('quotes.form.moreOptions') }}
-              </button>
-
-              <Transition name="inv-slide">
-                <div v-if="showAdvanced" class="inv-adv-panel">
-                  <label class="inv-label">{{ $t('documents.status') }}</label>
-                  <select class="inv-select" v-model="state.status">
-                    <option value="">{{ $t('quotes.form.statusNoState') }}</option>
-                    <option value="1">{{ $t('quotes.form.statusAccepted') }}</option>
-                    <option value="0">{{ $t('quotes.form.statusPending') }}</option>
-                  </select>
-                </div>
-              </Transition>
             </div>
 
           </div>
@@ -111,7 +87,7 @@
                   <th class="inv-th inv-col-del"></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ref="linesBody">
                 <tr
                   v-for="(cart, index) in state.carts"
                   :key="index"
@@ -124,6 +100,8 @@
                       label="name"
                       :reduce="o => o.id"
                       @option:selected="v => selectProduct(index, v)"
+                      @search="q => onLineSearch(index, q)"
+                      @search:blur="onLineSearchBlur(index)"
                       :placeholder="$t('quotes.form.productPlaceholder')"
                       class="inv-line-vs"
                     >
@@ -135,7 +113,7 @@
                       class="inv-input inv-desc-sub"
                       v-model="cart.description"
                       :placeholder="$t('quotes.form.descSubPlaceholder')"
-                      @keydown.enter.prevent="addNewItem"
+                      @keydown.enter.prevent="onLineEnter(index)"
                     />
                   </td>
 
@@ -146,6 +124,7 @@
                       inputmode="decimal"
                       v-decimal="{ decimals: 2 }"
                       @focus="$event.target.select()"
+                      @keydown.enter.prevent="onLineEnter(index)"
                     />
                   </td>
 
@@ -163,7 +142,7 @@
                       inputmode="decimal"
                       v-decimal="{ decimals: 2 }"
                       @focus="$event.target.select()"
-                      @keydown.enter.prevent="addNewItem"
+                      @keydown.enter.prevent="onLineEnter(index)"
                     />
                   </td>
 
@@ -177,22 +156,34 @@
                   </td>
 
                   <td class="inv-td">
-                    <button
-                      type="button"
-                      class="inv-del-btn"
-                      @click="removeCart(cart)"
-                      :disabled="state.carts.length === 1"
-                      :title="$t('quotes.form.removeLineTitle')"
-                    >
-                      <i class="fa fa-times"></i>
-                    </button>
+                    <div class="inv-line-actions">
+                      <button
+                        type="button"
+                        class="inv-dup-btn"
+                        data-test="duplicate-line"
+                        @click="duplicateLine(index)"
+                        :title="$t('quotes.form.duplicateLineTitle')"
+                        :aria-label="$t('quotes.form.duplicateLineTitle')"
+                      >
+                        <i class="fa fa-copy"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="inv-del-btn"
+                        @click="removeCart(cart)"
+                        :disabled="state.carts.length === 1"
+                        :title="$t('quotes.form.removeLineTitle')"
+                      >
+                        <i class="fa fa-times"></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <button type="button" class="inv-add-line" @click="addNewItem">
+          <button type="button" class="inv-add-line" @click="addLineAndFocus">
             <i class="fa fa-plus"></i> {{ $t('quotes.form.addLine') }}
           </button>
         </section>
@@ -202,14 +193,24 @@
              ═══════════════════════════════════════ -->
         <section class="inv-card inv-bottom-card">
 
+          <!-- Optional fields - "Plus d'options", collapsed by default -->
           <div class="inv-note-col">
-            <label class="inv-label">{{ $t('documents.note') }}</label>
-            <textarea
-              class="inv-textarea"
-              v-model="state.note"
-              rows="4"
-              :placeholder="$t('quotes.form.notesPlaceholder')"
-            ></textarea>
+            <MoreOptions v-model="showAdvanced" :label="$t('quotes.form.moreOptions')">
+              <label class="inv-label">{{ $t('documents.status') }}</label>
+              <select class="inv-select" v-model="state.status">
+                <option value="">{{ $t('quotes.form.statusNoState') }}</option>
+                <option value="1">{{ $t('quotes.form.statusAccepted') }}</option>
+                <option value="0">{{ $t('quotes.form.statusPending') }}</option>
+              </select>
+
+              <label class="inv-label">{{ $t('documents.note') }}</label>
+              <textarea
+                class="inv-textarea"
+                v-model="state.note"
+                rows="4"
+                :placeholder="$t('quotes.form.notesPlaceholder')"
+              ></textarea>
+            </MoreOptions>
           </div>
 
           <div class="inv-totals-col">
@@ -239,15 +240,24 @@
             <i class="fa fa-keyboard me-1"></i>
             {{ $t('quotes.form.footerHint') }}
           </span>
-          <button
-            class="inv-btn inv-btn-primary"
-            type="button"
-            @click="handleSave"
-            :disabled="saving || !taxReady"
-          >
-            <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
-            {{ $t('quotes.form.createBtn') }}
-          </button>
+          <!-- The one primary action (the top-bar duplicate was removed):
+               always visible, desktop and mobile. -->
+          <div class="inv-footer-action">
+            <span class="inv-footer-next" data-test="next-step-hint">
+              <i class="fa fa-info-circle me-1"></i>{{ $t('quotes.form.nextStepHint') }}
+            </span>
+            <button
+              class="inv-btn inv-btn-primary"
+              type="button"
+              data-test="primary-create"
+              @click="handleSave"
+              :disabled="saving || !taxReady"
+              :aria-busy="saving ? 'true' : 'false'"
+            >
+              <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
+              {{ $t('quotes.form.createBtn') }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -265,6 +275,9 @@
       @cancel="quickItem.open = false"
       @created="onQuickItemCreated"
     />
+
+    <!-- Leaving with unsaved changes (in-app navigation) -->
+    <UnsavedChangesModal v-if="showLeaveConfirm" @stay="stay" @leave="leave" />
   </div><!-- /.content -->
 </template>
 
@@ -274,6 +287,11 @@ import { useTaxPresets } from '@/composables/useTaxPresets';
 import { previewTaxGroups, taxFields, taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import VueSelect from "vue-select";
+import { useLineEditing } from "../invoices/useLineEditing.js";
+import UnsavedChangesModal from "../invoices/UnsavedChangesModal.vue";
+import { useUnsavedChanges } from "../invoices/useUnsavedChanges.js";
+import { documentFingerprint } from "../invoices/documentFingerprint.mjs";
+import { useFreeTextLines } from "../invoices/useFreeTextLines.js";
 import QuickCustomerModal from "../invoices/QuickCustomerModal.vue";
 import QuickItemModal from "../invoices/QuickItemModal.vue";
 import QuickCreateAction from "../invoices/QuickCreateAction.vue";
@@ -283,6 +301,7 @@ import axios from "axios";
 import { useI18n } from "vue-i18n";
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import MoreOptions from "../invoices/MoreOptions.vue";
 
 const { t } = useI18n();
 const emit = defineEmits(["saveDocument"]);
@@ -388,7 +407,7 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, state);
 
 const handleSave = async () => {
-  if (!taxReady.value) return;
+  if (saving.value || !taxReady.value) return;
   const valid = await v$.value.$validate();
   if (!valid) return;
 
@@ -402,8 +421,14 @@ const handleSave = async () => {
 
   state.discount_amount = discountTotal.value;
 
-  emit("saveDocument", state);
-  saving.value = false;
+  // Stays disabled (spinner) until the parent's request has finished -
+  // the parent calls done() - so a double click can't create two documents.
+  // done(success): only a successful save drops the unsaved-changes
+  // protection (before the parent redirects); a failed save stays protected.
+  emit("saveDocument", state, (success) => {
+    saving.value = false;
+    if (success) markSaved();
+  });
 };
 // ── Quick create (customer / product-service) - shared with the other
 // invoice/quote forms (useQuickCreate). Selection reuses this form's own
@@ -413,6 +438,20 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   items,
   selectCustomer: (created) => { state.customer_id = created.uuid; onClientSelect(created); },
   selectItem:     (line, created) => { if (state.carts[line]) selectProduct(line, created); },
+});
+// Free-text lines: text typed in the product selector without picking an
+// item is kept as the line description (no catalog item needed/created).
+const { onLineSearch, onLineSearchBlur } = useFreeTextLines(() => state.carts);
+// ── Unsaved-change protection (browser leave + in-app navigation).
+// Only meaningful document data counts - automatic defaults (dates, qty 1,
+// unit, workspace tax) never do; see documentFingerprint.mjs.
+const { showLeaveConfirm, stay, leave, markSaved } = useUnsavedChanges(() => documentFingerprint(state, defaultTax()));
+// Keyboard line entry + "Dupliquer la ligne" (shared with Create Quote/Invoice).
+const linesBody = ref(null);
+const { onLineEnter, addLineAndFocus, duplicateLine } = useLineEditing({
+  getCarts: () => state.carts,
+  addLine: addNewItem,
+  linesRoot: linesBody,
 });
 </script>
 
@@ -444,7 +483,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-page-hint {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -463,7 +502,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0 0 14px;
 }
 
@@ -491,7 +530,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-label-req::after {
   content: " *";
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
 .inv-input {
@@ -569,7 +608,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 }
 
 .inv-addr-preview i {
-  color: var(--brand-primary);
+  color: var(--brand-text);
   margin-right: 4px;
 }
 
@@ -596,7 +635,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   transition: color 0.15s;
 }
 
-.inv-more-btn:hover { color: var(--brand-primary); }
+.inv-more-btn:hover { color: var(--brand-text); }
 
 .inv-adv-panel {
   margin-top: 12px;
@@ -632,7 +671,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #9ca3af;
+  color: var(--text-muted);
   padding: 0 8px 10px;
   border-bottom: 2px solid #f1f4f8;
   white-space: nowrap;
@@ -653,7 +692,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 }
 
 .inv-td-desc { padding-left: 0; }
-:global(.rtl-support) .inv-td-desc { padding-left: 8px; padding-right: 0; }
+.rtl-support .inv-td-desc { padding-left: 8px; padding-right: 0; }
 
 .inv-td-rowtotal {
   text-align: right;
@@ -697,8 +736,28 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-add-line:hover {
   border-color: var(--brand-primary);
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
+
+.inv-line-actions { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.inv-dup-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1.5px solid #e2e8f0;
+  color: #64748b;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.inv-dup-btn:hover { background: #f8fafc; color: var(--brand-text); border-color: var(--brand-primary); }
+.inv-dup-btn:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+.dark-mode .inv-dup-btn { border-color: var(--dark-border); color: var(--dark-text-muted); }
+.dark-mode .inv-dup-btn:hover { background: rgba(233, 30, 99, 0.12); color: var(--brand-text); }
 
 .inv-del-btn {
   width: 30px;
@@ -740,13 +799,13 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 .inv-tot-val   { font-size: 0.9rem; font-weight: 600; color: #0f172a; }
 
 .inv-tot-tax .inv-tot-label { font-size: 0.82rem; padding-left: 8px; }
-:global(.rtl-support) .inv-tot-tax .inv-tot-label { padding-left: 0; padding-right: 8px; }
+.rtl-support .inv-tot-tax .inv-tot-label { padding-left: 0; padding-right: 8px; }
 
 .inv-tot-divider { border-top: 2px solid #0f172a; margin: 10px 0; }
 
 .inv-tot-grand       { padding: 4px 0; }
 .inv-tot-grand-label { font-size: 1rem; font-weight: 700; color: #0f172a; }
-.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); }
+.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-text); }
 
 /* ── Buttons ── */
 .inv-btn {
@@ -809,9 +868,29 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   gap: 16px;
 }
 
+.inv-footer-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-inline-start: auto;
+}
+.inv-footer-next {
+  font-size: 0.78rem;
+  color: #6b7280;
+  max-width: 340px;
+  text-align: end;
+  line-height: 1.35;
+}
+.dark-mode .inv-footer-next { color: var(--dark-text-muted); }
+@media (max-width: 768px) {
+  .inv-footer-action { width: 100%; flex-direction: column; align-items: stretch; gap: 6px; }
+  .inv-footer-next { max-width: none; text-align: center; font-size: 0.72rem; }
+  .inv-footer-action .inv-btn { width: 100%; justify-content: center; }
+}
+
 .inv-footer-hint {
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 /* ── vue-select overrides ── */
@@ -848,67 +927,67 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .inv-page-title,
-:global(.dark-mode) .inv-td-rowtotal,
-:global(.dark-mode) .inv-tot-val,
-:global(.dark-mode) .inv-tot-grand-label { color: var(--dark-text); }
+.dark-mode .inv-page-title,
+.dark-mode .inv-td-rowtotal,
+.dark-mode .inv-tot-val,
+.dark-mode .inv-tot-grand-label { color: var(--dark-text); }
 
-:global(.dark-mode) .inv-page-hint,
-:global(.dark-mode) .inv-section-label,
-:global(.dark-mode) .inv-field-hint,
-:global(.dark-mode) .inv-more-btn,
-:global(.dark-mode) .inv-th,
-:global(.dark-mode) .inv-desc-sub,
-:global(.dark-mode) .inv-add-line,
-:global(.dark-mode) .inv-tot-label,
-:global(.dark-mode) .inv-footer-hint,
-:global(.dark-mode) .inv-label { color: var(--dark-text-muted); }
+.dark-mode .inv-page-hint,
+.dark-mode .inv-section-label,
+.dark-mode .inv-field-hint,
+.dark-mode .inv-more-btn,
+.dark-mode .inv-th,
+.dark-mode .inv-desc-sub,
+.dark-mode .inv-add-line,
+.dark-mode .inv-tot-label,
+.dark-mode .inv-footer-hint,
+.dark-mode .inv-label { color: var(--dark-text-muted); }
 
-:global(.dark-mode) .inv-card {
+.dark-mode .inv-card {
   background: #1e293b;
   border-color: #334155;
 }
 
-:global(.dark-mode) .inv-input,
-:global(.dark-mode) .inv-select,
-:global(.dark-mode) .inv-textarea {
+.dark-mode .inv-input,
+.dark-mode .inv-select,
+.dark-mode .inv-textarea {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
 
-:global(.dark-mode) .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
+.dark-mode .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
 
-:global(.dark-mode) .inv-addr-preview,
-:global(.dark-mode) .inv-adv-panel {
+.dark-mode .inv-addr-preview,
+.dark-mode .inv-adv-panel {
   background: #0f172a;
   color: #94a3b8;
 }
 
-:global(.dark-mode) .inv-th { border-bottom-color: var(--dark-border); }
-:global(.dark-mode) .inv-td { border-bottom-color: var(--dark-border-subtle); }
+.dark-mode .inv-th { border-bottom-color: var(--dark-border); }
+.dark-mode .inv-td { border-bottom-color: var(--dark-border-subtle); }
 
-:global(.dark-mode) .inv-add-line { border-color: var(--dark-border); }
-:global(.dark-mode) .inv-add-line:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+.dark-mode .inv-add-line { border-color: var(--dark-border); }
+.dark-mode .inv-add-line:hover { border-color: var(--brand-primary); color: var(--brand-text); }
 
-:global(.dark-mode) .inv-del-btn:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); }
+.dark-mode .inv-del-btn:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); }
 
-:global(.dark-mode) .inv-tot-divider { border-top-color: var(--dark-border); }
+.dark-mode .inv-tot-divider { border-top-color: var(--dark-border); }
 
-:global(.dark-mode) .inv-sticky-footer {
+.dark-mode .inv-sticky-footer {
   background: rgba(15, 23, 42, 0.92);
   border-top-color: #334155;
 }
 
-:global(.dark-mode) :deep(.vs__dropdown-toggle) {
+.dark-mode .content :deep(.vs__dropdown-toggle) {
   background: #0f172a;
   border-color: #334155;
 }
-:global(.dark-mode) :deep(.vs__search),
-:global(.dark-mode) :deep(.vs__selected) { color: var(--dark-text-secondary); }
-:global(.dark-mode) :deep(.vs__placeholder) { color: var(--dark-text-muted); }
-:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle) { background: var(--dark-input); }
-:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) { background: var(--dark-input); }
+.dark-mode .content :deep(.vs__search),
+.dark-mode .content :deep(.vs__selected) { color: var(--dark-text-secondary); }
+.dark-mode .content :deep(.vs__placeholder) { color: var(--dark-text-muted); }
+.dark-mode .content :deep(.inv-line-vs .vs__dropdown-toggle) { background: var(--dark-input); }
+.dark-mode .content :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) { background: var(--dark-input); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {

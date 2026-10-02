@@ -331,7 +331,7 @@ defineExpose({
   --dt-thead-bg:           #f8f9fb;
   --dt-row-hover:          #f8fafc;
   --dt-cell-color:         #374151;
-  --dt-muted:              #9ca3af;
+  --dt-muted:              var(--text-muted); /* headers, pills, "showing" - AA */
   --dt-text:               #1f2937;
   --dt-input-border:       #e5e7eb;
   --dt-input-bg:           #f9fafb;
@@ -342,16 +342,16 @@ defineExpose({
   --dt-action-hover-color: #374151;
   --dt-pill-active-bg:     #1e293b;
   --dt-pill-active-border: #1e293b;
-  --dt-sortable-hover:     #6b7280;
+  --dt-sortable-hover:     #1f2937;
   --dt-radius:             9px;
 }
 
-:global(.dark-mode) .dt-shell {
+.dark-mode .dt-shell {
   --dt-border:             rgba(255, 255, 255, 0.07);
   --dt-thead-bg:           #1c2333;
   --dt-row-hover:          rgba(255, 255, 255, 0.04);
   --dt-cell-color:         #c9d1d9;
-  --dt-muted:              #6e7681;
+  --dt-muted:              var(--text-muted);
   --dt-text:               #e6edf3;
   --dt-input-border:       #30363d;
   --dt-input-bg:           #161b25;
@@ -790,14 +790,14 @@ defineExpose({
    Cell text-align already flips for free (inherited from
    #page-container.rtl-support's text-align: right); only the
    icon/positional pieces below need a manual mirror. */
-:global(.rtl-support) .dt-search-icon {
+.rtl-support .dt-search-icon {
   left: auto;
   right: 10px;
 }
-:global(.rtl-support) .dt-search {
+.rtl-support .dt-search {
   padding: 0 30px 0 12px;
 }
-:global(.rtl-support) .dt-perpage {
+.rtl-support .dt-perpage {
   padding: 0 10px 0 28px;
   background-position: left 9px center;
 }

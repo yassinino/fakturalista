@@ -209,41 +209,43 @@
 
   <!-- Convert confirmation modal -->
   <Teleport to="body">
-    <div v-if="showConvertModal" class="cq-overlay" @click.self="closeConvertModal">
-      <div
-        class="cq-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="cq-title"
-        @keydown.esc.prevent="closeConvertModal"
-        tabindex="-1"
-        ref="convertModalEl"
-      >
-        <div class="cq-header">
-          <h3 class="cq-title" id="cq-title">
-            <i class="fa fa-bolt me-2" style="color:#16a34a"></i>{{ $t("quotes.convertTitle") }}
-          </h3>
-          <button class="cq-close" @click="closeConvertModal" :disabled="converting">&times;</button>
-        </div>
-        <div class="cq-body">
-          <p class="cq-message">
-            {{ $t("quotes.convertMessage") }}
-            <strong>{{ quoteToConvert?.reference }}</strong>
-          </p>
-          <p class="cq-hint">
-            <i class="fa fa-info-circle me-1 text-muted"></i>
-            {{ $t("quotes.convertHint") }}
-          </p>
-        </div>
-        <div class="cq-footer">
-          <button class="cq-btn cq-btn-cancel" @click="closeConvertModal" :disabled="converting">
-            {{ $t("common.cancel") }}
-          </button>
-          <button class="cq-btn cq-btn-confirm" @click="confirmConvert" :disabled="converting">
-            <i v-if="converting" class="fa fa-spinner fa-spin me-1"></i>
-            <i v-else class="fa fa-bolt me-1"></i>
-            Convert
-          </button>
+    <div class="theme-scope" :class="themeScope">
+      <div v-if="showConvertModal" class="cq-overlay" @click.self="closeConvertModal">
+        <div
+          class="cq-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cq-title"
+          @keydown.esc.prevent="closeConvertModal"
+          tabindex="-1"
+          ref="convertModalEl"
+        >
+          <div class="cq-header">
+            <h3 class="cq-title" id="cq-title">
+              <i class="fa fa-bolt me-2" style="color:#16a34a"></i>{{ $t("quotes.convertTitle") }}
+            </h3>
+            <button class="cq-close" @click="closeConvertModal" :disabled="converting">&times;</button>
+          </div>
+          <div class="cq-body">
+            <p class="cq-message">
+              {{ $t("quotes.convertMessage") }}
+              <strong>{{ quoteToConvert?.reference }}</strong>
+            </p>
+            <p class="cq-hint">
+              <i class="fa fa-info-circle me-1 text-muted"></i>
+              {{ $t("quotes.convertHint") }}
+            </p>
+          </div>
+          <div class="cq-footer">
+            <button class="cq-btn cq-btn-cancel" @click="closeConvertModal" :disabled="converting">
+              {{ $t("common.cancel") }}
+            </button>
+            <button class="cq-btn cq-btn-confirm" @click="confirmConvert" :disabled="converting">
+              <i v-if="converting" class="fa fa-spinner fa-spin me-1"></i>
+              <i v-else class="fa fa-bolt me-1"></i>
+              Convert
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -253,6 +255,7 @@
 
 <script setup>
 import { ref, reactive, computed, nextTick, onMounted } from "vue";
+import { useThemeScope } from "@/composables/useThemeScope";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -263,6 +266,8 @@ import SendInvoiceModal from "@/views/admin/invoices/SendInvoiceModal.vue";
 import BulkActionBar    from "@/views/admin/layouts/BulkActionBar.vue";
 import BulkDeleteModal  from "@/views/admin/layouts/BulkDeleteModal.vue";
 import ExportMenu       from "@/components/ExportMenu.vue";
+
+const themeScope = useThemeScope();
 
 const { t, locale } = useI18n();
 const router  = useRouter();
@@ -649,23 +654,23 @@ async function confirmConvert() {
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .cq-modal { background: var(--dark-surface-elevated); }
-:global(.dark-mode) .cq-header,
-:global(.dark-mode) .cq-footer { border-color: var(--dark-border); }
-:global(.dark-mode) .cq-title { color: var(--dark-text); }
-:global(.dark-mode) .cq-close { color: var(--dark-text-disabled); }
-:global(.dark-mode) .cq-close:hover:not(:disabled) { color: var(--dark-text); }
-:global(.dark-mode) .cq-message { color: var(--dark-text-secondary); }
-:global(.dark-mode) .cq-hint {
+.dark-mode .cq-modal { background: var(--dark-surface-elevated); }
+.dark-mode .cq-header,
+.dark-mode .cq-footer { border-color: var(--dark-border); }
+.dark-mode .cq-title { color: var(--dark-text); }
+.dark-mode .cq-close { color: var(--dark-text-disabled); }
+.dark-mode .cq-close:hover:not(:disabled) { color: var(--dark-text); }
+.dark-mode .cq-message { color: var(--dark-text-secondary); }
+.dark-mode .cq-hint {
   color: var(--dark-text-muted);
   background: var(--dark-input);
 }
-:global(.dark-mode) .cq-btn-cancel {
+.dark-mode .cq-btn-cancel {
   background: var(--dark-surface);
   border-color: var(--dark-border);
   color: var(--dark-text-muted);
 }
-:global(.dark-mode) .cq-btn-cancel:hover:not(:disabled) {
+.dark-mode .cq-btn-cancel:hover:not(:disabled) {
   background: var(--dark-input);
   border-color: var(--dark-border);
   color: var(--dark-text);

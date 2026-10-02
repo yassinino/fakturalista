@@ -237,8 +237,8 @@ onMounted(async () => {
 :global(#sidebar) {
   --sk-bg:          #0b0e17;
   --sk-border:      rgba(255, 255, 255, 0.065);
-  --sk-text:        #6e7a96;
-  --sk-text-dim:    #353a52;
+  --sk-text:        #8d98b2; /* 6.7:1 on --sk-bg */
+  --sk-text-dim:    #737f9c; /* section labels, 4.8:1 */
   --sk-hover-bg:    rgba(255, 255, 255, 0.055);
   --sk-hover-tx:    #b8c2e0;
   --sk-active-bg:   rgba(233, 30, 99, 0.09);
@@ -247,7 +247,7 @@ onMounted(async () => {
   --sk-btn-bg:      rgba(255, 255, 255, 0.07);
   --sk-btn-hover:   rgba(255, 255, 255, 0.13);
   --sk-soon-bg:     rgba(255, 255, 255, 0.06);
-  --sk-soon-tx:     #4b5575;
+  --sk-soon-tx:     #7a86a3; /* 4.7:1 on --sk-soon-bg */
 }
 
 /* ── Force dark shell (always dark regardless of app theme) ─────── */
@@ -515,16 +515,16 @@ onMounted(async () => {
 /* ════════════════════════════════
    MINI SIDEBAR MODE
    ════════════════════════════════ */
-:global(.sidebar-mini #sidebar) .sk-link {
+.sidebar-mini #sidebar .sk-link {
   justify-content: center;
   padding: 0;
 }
 
-:global(.sidebar-mini #sidebar) .sk-section {
+.sidebar-mini #sidebar .sk-section {
   margin-bottom: 8px;
 }
 
-:global(.sidebar-mini #sidebar) .sk-hd {
+.sidebar-mini #sidebar .sk-hd {
   padding: 0 12px;
   justify-content: center;
 }
@@ -567,11 +567,11 @@ onMounted(async () => {
   border-left: 1px solid var(--sk-border) !important;
 }
 
-:global(.rtl-support) .sk-hd {
+.rtl-support .sk-hd {
   padding: 0 22px 0 16px;
 }
 
-:global(.rtl-support) .sk-hd::after {
+.rtl-support .sk-hd::after {
   background: linear-gradient(
     to left,
     var(--sk-accent) 0%,
@@ -580,21 +580,21 @@ onMounted(async () => {
   );
 }
 
-:global(.rtl-support) .sk-logo {
+.rtl-support .sk-logo {
   margin-left: 0;
   margin-right: -6px;
 }
 
-:global(.rtl-support) .sk-sec-label {
+.rtl-support .sk-sec-label {
   margin: 0 10px 5px 0;
 }
 
-:global(.rtl-support) .sk-link--on {
+.rtl-support .sk-link--on {
   box-shadow: inset -3px 0 0 var(--sk-accent);
 }
 
 @media (max-width: 991px) {
-  :global(.rtl-support) .sk-hd {
+  .rtl-support .sk-hd {
     padding: 0 16px 0 14px;
   }
 }

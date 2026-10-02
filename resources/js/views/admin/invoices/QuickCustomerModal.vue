@@ -39,6 +39,55 @@
         <p v-if="v$.last_name.$error" class="qc-err-msg">{{ $t('validation.required') }}</p>
       </div>
     </div>
+
+    <!-- Optional details - collapsed by default so the quick form stays tiny -->
+    <button type="button" class="qc-more-btn" :aria-expanded="String(showMore)" aria-controls="qc-cust-more"
+      data-test="quick-customer-more" @click="showMore = !showMore">
+      <i class="fa" :class="showMore ? 'fa-minus' : 'fa-plus'"></i>
+      {{ showMore ? $t('invoices.form.quickCreate.lessInfo') : $t('invoices.form.quickCreate.moreInfo') }}
+    </button>
+
+    <div v-if="showMore" id="qc-cust-more" class="qc-more">
+      <div class="qc-two-col">
+        <div class="qc-field">
+          <label class="qc-label" for="qc-cust-email">{{ $t('customers.fields.email') }}</label>
+          <input id="qc-cust-email" v-model.trim="form.email" type="email" class="qc-input" :class="{ 'qc-input--err': v$.email.$error }"
+            autocomplete="email" inputmode="email" />
+          <p v-if="v$.email.$error" class="qc-err-msg">{{ $t('invoices.form.quickCreate.invalidEmail') }}</p>
+        </div>
+        <div class="qc-field">
+          <label class="qc-label" for="qc-cust-phone">{{ $t('customers.fields.phone') }}</label>
+          <input id="qc-cust-phone" v-model="form.phone" type="tel" class="qc-input" autocomplete="tel" />
+        </div>
+      </div>
+
+      <div class="qc-field">
+        <label class="qc-label" for="qc-cust-address">{{ $t('customers.fields.address') }}</label>
+        <input id="qc-cust-address" v-model="form.address_billing" type="text" class="qc-input" autocomplete="street-address" />
+      </div>
+
+      <div class="qc-two-col">
+        <div class="qc-field">
+          <label class="qc-label" for="qc-cust-city">{{ $t('customers.fields.city') }}</label>
+          <input id="qc-cust-city" v-model="form.city_billing" type="text" class="qc-input" autocomplete="address-level2" />
+        </div>
+        <div class="qc-field">
+          <label class="qc-label" for="qc-cust-postcode">{{ $t('customers.fields.postalCode') }}</label>
+          <input id="qc-cust-postcode" v-model="form.post_code_billing" type="text" class="qc-input" autocomplete="postal-code" />
+        </div>
+      </div>
+
+      <!-- Same country rule as the full Customers page: ICE for Moroccan
+           companies only, NIF for everyone else. -->
+      <div v-if="isMorocco && form.type === 1" class="qc-field">
+        <label class="qc-label" for="qc-cust-ice">{{ $t('customers.fields.ice') }}</label>
+        <input id="qc-cust-ice" v-model="form.ice" type="text" class="qc-input" maxlength="32" />
+      </div>
+      <div v-else-if="!isMorocco" class="qc-field">
+        <label class="qc-label" for="qc-cust-nif">{{ $t('customers.fields.nif') }}</label>
+        <input id="qc-cust-nif" v-model="form.tax_id" type="text" class="qc-input" maxlength="20" />
+      </div>
+    </div>
   </QuickCreateModal>
 </template>
 
@@ -54,7 +103,9 @@ import { reactive, ref, computed, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import { useI18n } from 'vue-i18n';
 import useVuelidate from '@vuelidate/core';
-import { requiredIf } from '@vuelidate/validators';
+import { requiredIf, email } from '@vuelidate/validators';
+import { useTenantCountry } from '@/composables/useTenantCountry';
+import { buildQuickCustomerPayload } from './quickCustomerPayload.mjs';
 import QuickCreateModal from './QuickCreateModal.vue';
 
 const props = defineProps({
@@ -63,7 +114,13 @@ const props = defineProps({
 const emit = defineEmits(['cancel', 'created']);
 const { t } = useI18n();
 
-const form = reactive({ type: 1, name: props.initialName.trim(), first_name: '', last_name: '' });
+const form = reactive({
+  type: 1, name: props.initialName.trim(), first_name: '', last_name: '',
+  // Optional details (existing customer fields, saved by POST /customers).
+  email: '', phone: '', address_billing: '', city_billing: '', post_code_billing: '', ice: '', tax_id: '',
+});
+const showMore = ref(false);
+const { isMorocco } = useTenantCountry();
 const saving = ref(false);
 const error = ref('');
 const firstInput = ref(null);
@@ -71,6 +128,7 @@ const firstInput = ref(null);
 const rules = computed(() => ({
   name:      { required: requiredIf(() => form.type === 1 && !form.name.trim()) },
   last_name: { required: requiredIf(() => form.type === 2 && !form.last_name.trim()) },
+  email:     { email },
 }));
 const v$ = useVuelidate(rules, form);
 
@@ -86,9 +144,7 @@ async function submit() {
 
   saving.value = true;
   try {
-    const payload = form.type === 1
-      ? { type: 1, name: form.name.trim(), contacts: [] }
-      : { type: 2, first_name: form.first_name.trim() || null, last_name: form.last_name.trim(), contacts: [] };
+    const payload = buildQuickCustomerPayload(form, { isMorocco: isMorocco.value });
 
     const res = await axios.post('/customers', payload);
     emit('created', res.data?.customer?.uuid ?? null);
@@ -101,3 +157,28 @@ async function submit() {
   }
 }
 </script>
+
+<style scoped>
+.qc-more-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--qc-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.qc-more-btn:hover { text-decoration: underline; }
+.qc-more-btn:focus-visible { outline: 2px solid var(--qc-accent); outline-offset: 2px; border-radius: 4px; }
+.qc-more {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--qc-border);
+}
+</style>

@@ -66,8 +66,8 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
 
 /* dark mode - the app's real toggle (.dark-mode class), not
    prefers-color-scheme/data-theme which don't reflect it. */
-:global(.dark-mode) .bb-banner--trial   { color: var(--dark-warning-text); background: rgba(245,158,11,0.08); }
-:global(.dark-mode) .bb-banner--readonly { color: #f472b6; background: rgba(233,30,99,0.08); }
+.dark-mode .bb-banner--trial   { color: var(--dark-warning-text); background: rgba(245,158,11,0.08); }
+.dark-mode .bb-banner--readonly { color: #f472b6; background: rgba(233,30,99,0.08); }
 
 .bb-icon {
   font-size: 16px;
@@ -82,7 +82,7 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
   font-weight: 700;
   font-size: 13px;
   text-decoration: none;
-  color: var(--brand-primary);
+  color: var(--brand-text);
   padding: 6px 14px;
   border: 1.5px solid rgba(233,30,99,0.35);
   border-radius: 8px;
@@ -94,6 +94,6 @@ const showAny = computed(() => store.billing.showTrialBanner || store.billing.is
 }
 
 .bb-cta--white {
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 </style>

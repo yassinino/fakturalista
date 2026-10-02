@@ -522,7 +522,9 @@ async function handleSave() {
 /* ─────────────────────────────────────────────
    DESIGN TOKENS
 ───────────────────────────────────────────── */
-.itc {
+/* The sticky footer is a sibling of .itc, so it needs the tokens too. */
+.itc,
+.itc-footer {
   --accent:        var(--brand-primary);
   --accent-bg:     rgba(233, 30, 99, 0.07);
   --accent-ring:   rgba(233, 30, 99, 0.15);
@@ -534,8 +536,8 @@ async function handleSave() {
 
   --text:          #0f172a;
   --text-body:     #374151;
-  --text-muted:    #64748b;
-  --text-dim:      #94a3b8;
+  --text-muted:    #51607a;
+  --text-dim:      #5f6b7e; /* tertiary text, still AA (>= 4.6:1) on page + card */
 
   --shadow-sm:     0 1px 2px rgba(0,0,0,0.06);
   --radius:        14px;
@@ -545,7 +547,8 @@ async function handleSave() {
 }
 
 /* ── Dark mode ── */
-:global(.dark-mode) .itc {
+.dark-mode .itc,
+.dark-mode .itc-footer {
   --bg:            var(--dark-surface);
   --bg-subtle:     var(--dark-surface-elevated);
   --border:        var(--dark-border-subtle);
@@ -569,7 +572,7 @@ async function handleSave() {
   padding: 14px 18px;
   margin-bottom: 20px;
 }
-:global(.dark-mode) .itc-banner {
+.dark-mode .itc-banner {
   background: rgba(234,88,12,0.08);
   border-color: rgba(234,88,12,0.3);
 }
@@ -577,8 +580,8 @@ async function handleSave() {
 .itc-banner__body { flex: 1; min-width: 0; }
 .itc-banner__body strong { display: block; font-size: 0.875rem; font-weight: 600; color: #9a3412; }
 .itc-banner__body span  { font-size: 0.8rem; color: #c2410c; }
-:global(.dark-mode) .itc-banner__body strong { color: #fb923c; }
-:global(.dark-mode) .itc-banner__body span   { color: #fdba74; }
+.dark-mode .itc-banner__body strong { color: #fb923c; }
+.dark-mode .itc-banner__body span   { color: #fdba74; }
 
 /* ─────────────────────────────────────────────
    PAGE HEADER
@@ -763,7 +766,7 @@ async function handleSave() {
   user-select: none;
   letter-spacing: 0.04em;
 }
-:global(.rtl-support) .itc-prefix {
+.rtl-support .itc-prefix {
   border-right: none;
   border-left: 1.5px solid var(--border);
 }
@@ -1019,7 +1022,7 @@ async function handleSave() {
   padding: 3px 10px;
   border-radius: 100px;
 }
-.itc-preview__type-badge--product { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.itc-preview__type-badge--product { background: rgba(59,130,246,0.1); color: var(--info-text); }
 .itc-preview__type-badge--service { background: rgba(139,92,246,0.1);  color: #8b5cf6; }
 .itc-preview__status-dot {
   width: 8px;
@@ -1083,7 +1086,7 @@ async function handleSave() {
   font-weight: 600;
   color: var(--text-dim);
 }
-.itc-preview__status-label--on { color: #16a34a; }
+.itc-preview__status-label--on { color: var(--success-text); }
 
 /* ─────────────────────────────────────────────
    BUTTONS
@@ -1138,7 +1141,7 @@ async function handleSave() {
   border-top: 1px solid var(--border);
   padding: 12px 0;
 }
-:global(.dark-mode) .itc-footer { background: var(--dark-surface); }
+.dark-mode .itc-footer { background: var(--dark-surface); }
 .itc-footer__inner {
   max-width: 1320px;
   margin: 0 auto;

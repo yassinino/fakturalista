@@ -27,25 +27,25 @@ const store = useTemplateStore();
 /* ── Light theme ────────────────────────────────────────────── */
 .fk-footer {
   --fk-border:   #eaecf0;
-  --fk-copy:     #a8b0c0;
+  --fk-copy:     var(--text-muted);
   --fk-ver-bg:   #f4f6fa;
   --fk-ver-bd:   #e4e8f0;
-  --fk-ver-tx:   #a8b0c0;
+  --fk-ver-tx:   var(--text-muted);
   --fk-dot:      #22c55e;
   --fk-dot-glow: rgba(34, 197, 94, 0.2);
-  --fk-status:   #a8b0c0;
+  --fk-status:   var(--text-muted);
 }
 
 /* ── Dark mode ──────────────────────────────────────────────── */
-:global(.dark-mode) .fk-footer {
+.dark-mode .fk-footer {
   --fk-border:   rgba(255, 255, 255, 0.07);
-  --fk-copy:     #4e5b72;
+  --fk-copy:     var(--dark-text-disabled);
   --fk-ver-bg:   rgba(255, 255, 255, 0.04);
   --fk-ver-bd:   rgba(255, 255, 255, 0.08);
-  --fk-ver-tx:   #4e5b72;
+  --fk-ver-tx:   var(--dark-text-disabled);
   --fk-dot:      #22c55e;
   --fk-dot-glow: rgba(34, 197, 94, 0.12);
-  --fk-status:   #4e5b72;
+  --fk-status:   var(--dark-text-disabled);
 }
 
 /* ── Shell ──────────────────────────────────────────────────── */

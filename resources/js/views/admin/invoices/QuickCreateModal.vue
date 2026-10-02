@@ -71,7 +71,7 @@ const titleId = 'qc-title-' + Math.random().toString(36).slice(2, 8);
   padding: 16px;
   background: rgba(15, 23, 42, 0.45);
 }
-:global(.dark-mode) .qc-overlay {
+.dark-mode .qc-overlay {
   --qc-bg:     var(--dark-surface);
   --qc-subtle: var(--dark-surface-elevated);
   --qc-border: var(--dark-border-subtle);
@@ -109,7 +109,7 @@ const titleId = 'qc-title-' + Math.random().toString(36).slice(2, 8);
 .qc-body { display: flex; flex-direction: column; gap: 14px; }
 
 .qc-error { margin: 14px 0 0; font-size: 0.8rem; color: #dc2626; }
-:global(.dark-mode) .qc-error { color: #f87171; }
+.dark-mode .qc-error { color: #f87171; }
 .qc-hint  { margin: 12px 0 0; font-size: 0.75rem; color: var(--qc-muted); }
 
 .qc-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }

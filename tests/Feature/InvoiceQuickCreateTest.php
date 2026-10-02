@@ -64,6 +64,30 @@ class InvoiceQuickCreateTest extends TestCase
         $this->assertArrayHasKey('address_billing', $list[$company['uuid']]);
     }
 
+    public function test_quick_customer_with_optional_details_saves_them_and_lists_them_for_selection(): void
+    {
+        // Exactly what QuickCustomerModal sends after "+ Ajouter plus d'informations".
+        $uuid = $this->postJson($this->url('customers'), [
+            'type' => 1, 'name' => 'Atlas Conseil',
+            'email' => 'contact@atlas.ma', 'phone' => '+212600000000', 'address_billing' => '12 Rue Allal',
+            'city_billing' => 'Rabat', 'post_code_billing' => '10000', 'ice' => '001234567000089', 'contacts' => [],
+        ])->assertOk()->json('customer.uuid');
+
+        $saved = $this->tenant->run(fn () => Customer::where('uuid', $uuid)->first());
+        $this->assertSame('contact@atlas.ma', $saved->email);
+        $this->assertSame('+212600000000', $saved->phone);
+        $this->assertSame('12 Rue Allal', $saved->address_billing);
+        $this->assertSame('Rabat', $saved->city_billing);
+        $this->assertSame('10000', $saved->post_code_billing);
+        $this->assertSame('001234567000089', $saved->ice);
+
+        // The dropdown list the form reloads carries what onClientSelect() and sending use.
+        $listed = collect($this->getJson($this->url('customers'))->json('customers'))->firstWhere('uuid', $uuid);
+        $this->assertSame('12 Rue Allal', $listed['address_billing']);
+        $this->assertSame('contact@atlas.ma', $listed['email']);
+        $this->assertSame('+212600000000', $listed['phone']);
+    }
+
     public function test_quick_item_creation_returns_an_id_matching_the_invoice_item_list(): void
     {
         $familyId = $this->tenant->run(fn () => Family::create(['name' => 'Services'])->id);

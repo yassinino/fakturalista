@@ -177,8 +177,8 @@ defineExpose({ run });
 .xpm-item-icon--csv  { color: #2563eb; }
 
 /* Dark mode - the app's global .dark-mode class on #page-container */
-:global(.dark-mode) .xpm-btn,
-:global(.dark-mode) .xpm-panel {
+.dark-mode .xpm-btn,
+.dark-mode .xpm-panel {
   --xpm-surface: var(--dark-surface-elevated);
   --xpm-border: var(--dark-border-subtle);
   --xpm-border-2: var(--dark-border);
@@ -188,6 +188,6 @@ defineExpose({ run });
 }
 
 /* RTL - the panel opens from the reading-start side instead of a fixed right:0 */
-:global(.rtl-support) .xpm-panel { right: auto; left: 0; }
-:global(.rtl-support) .xpm-item { text-align: right; }
+.rtl-support .xpm-panel { right: auto; left: 0; }
+.rtl-support .xpm-item { text-align: right; }
 </style>

@@ -1329,8 +1329,8 @@ function formatDate(dateStr) {
 .pt-pay-banner--confirmed { background: #ECFDF5; border-color: #A7F3D0; color: #14532D; }
 .pt-pay-banner--pending   { background: #FFFBEB; border-color: #FDE68A; color: #78350F; }
 .pt-pay-banner--cancelled { background: var(--pt-surface); border-color: var(--pt-border); color: var(--pt-text); }
-:global(html[dir="rtl"]) .pt-pay-banner-close { margin: -6px 0 -6px -6px; }
+html[dir="rtl"] .pt-pay-banner-close { margin: -6px 0 -6px -6px; }
 
 /* ── RTL (Arabic) ── */
-:global(html[dir="rtl"]) .pt-page { direction: rtl; }
+html[dir="rtl"] .pt-page { direction: rtl; }
 </style>

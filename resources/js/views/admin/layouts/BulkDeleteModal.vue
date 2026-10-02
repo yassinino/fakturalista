@@ -1,26 +1,28 @@
 <template>
   <Teleport to="body">
-    <div v-if="show" class="bdm-overlay" @click.self="$emit('cancel')">
-      <div class="bdm-modal" role="dialog" aria-modal="true">
-        <div class="bdm-header">
-          <h3 class="bdm-title">
-            <i class="fa fa-exclamation-triangle me-2" style="color:#ef4444"></i>
-            {{ t('common.deleteSelected') }}
-          </h3>
-          <button class="bdm-close" @click="$emit('cancel')" :disabled="loading">&times;</button>
-        </div>
-        <div class="bdm-body">
-          <p class="bdm-message" v-html="t('common.bulkDeleteConfirm', { count })"></p>
-        </div>
-        <div class="bdm-footer">
-          <button class="bdm-btn bdm-btn-cancel" @click="$emit('cancel')" :disabled="loading">
-            {{ t('common.cancel') }}
-          </button>
-          <button class="bdm-btn bdm-btn-confirm" @click="$emit('confirm')" :disabled="loading">
-            <i v-if="loading" class="fa fa-spinner fa-spin me-1"></i>
-            <i v-else class="fa fa-trash me-1"></i>
-            {{ t('common.delete') }} ({{ count }})
-          </button>
+    <div class="theme-scope" :class="themeScope">
+      <div v-if="show" class="bdm-overlay" @click.self="$emit('cancel')">
+        <div class="bdm-modal" role="dialog" aria-modal="true">
+          <div class="bdm-header">
+            <h3 class="bdm-title">
+              <i class="fa fa-exclamation-triangle me-2" style="color:#ef4444"></i>
+              {{ t('common.deleteSelected') }}
+            </h3>
+            <button class="bdm-close" @click="$emit('cancel')" :disabled="loading">&times;</button>
+          </div>
+          <div class="bdm-body">
+            <p class="bdm-message" v-html="t('common.bulkDeleteConfirm', { count })"></p>
+          </div>
+          <div class="bdm-footer">
+            <button class="bdm-btn bdm-btn-cancel" @click="$emit('cancel')" :disabled="loading">
+              {{ t('common.cancel') }}
+            </button>
+            <button class="bdm-btn bdm-btn-confirm" @click="$emit('confirm')" :disabled="loading">
+              <i v-if="loading" class="fa fa-spinner fa-spin me-1"></i>
+              <i v-else class="fa fa-trash me-1"></i>
+              {{ t('common.delete') }} ({{ count }})
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -29,6 +31,9 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n';
+import { useThemeScope } from "@/composables/useThemeScope";
+
+const themeScope = useThemeScope();
 const { t } = useI18n();
 defineProps({
   show:    { type: Boolean, default: false },
@@ -116,13 +121,13 @@ defineEmits(['confirm', 'cancel']);
 /* Dark mode - the app's real toggle (.dark-mode class on #page-container),
    not prefers-color-scheme/data-theme which don't reflect the in-app
    toggle state. */
-:global(.dark-mode) .bdm-modal   { background: var(--dark-surface-elevated); }
-:global(.dark-mode) .bdm-header  { border-color: var(--dark-border); }
-:global(.dark-mode) .bdm-title   { color: var(--dark-text); }
-:global(.dark-mode) .bdm-close   { color: var(--dark-text-disabled); }
-:global(.dark-mode) .bdm-close:hover:not(:disabled) { color: var(--dark-text-muted); }
-:global(.dark-mode) .bdm-message { color: var(--dark-text-secondary); }
-:global(.dark-mode) .bdm-footer  { border-color: var(--dark-border); }
-:global(.dark-mode) .bdm-btn-cancel { background: var(--dark-border); color: var(--dark-text-muted); }
-:global(.dark-mode) .bdm-btn-cancel:hover:not(:disabled) { background: var(--dark-border); }
+.dark-mode .bdm-modal   { background: var(--dark-surface-elevated); }
+.dark-mode .bdm-header  { border-color: var(--dark-border); }
+.dark-mode .bdm-title   { color: var(--dark-text); }
+.dark-mode .bdm-close   { color: var(--dark-text-disabled); }
+.dark-mode .bdm-close:hover:not(:disabled) { color: var(--dark-text-muted); }
+.dark-mode .bdm-message { color: var(--dark-text-secondary); }
+.dark-mode .bdm-footer  { border-color: var(--dark-border); }
+.dark-mode .bdm-btn-cancel { background: var(--dark-border); color: var(--dark-text-muted); }
+.dark-mode .bdm-btn-cancel:hover:not(:disabled) { background: var(--dark-border); }
 </style>

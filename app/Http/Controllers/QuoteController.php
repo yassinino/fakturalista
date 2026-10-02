@@ -148,7 +148,11 @@ class QuoteController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Quote created successfully.'], 200);
+        // `quote.uuid` is additive: lets the create page open the new quote.
+        return response()->json([
+            'message' => 'Quote created successfully.',
+            'quote'   => ['uuid' => $new_quote->uuid],
+        ], 200);
     }
 
     public function show(Quote $quote): JsonResponse

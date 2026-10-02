@@ -410,7 +410,7 @@ const chartOptions = computed(() => {
   --rp-border-2:    #ccd2db;
   --rp-text-1:      #0d1117;
   --rp-text-2:      #445066;
-  --rp-text-3:      #8b96a8;
+  --rp-text-3:      var(--text-muted);
   --rp-pink:        var(--brand-primary);
   --rp-pink-bg:     rgba(233, 30, 99, 0.08);
   --rp-green:       #00a854;
@@ -423,6 +423,14 @@ const chartOptions = computed(() => {
   --rp-red-bg:      rgba(220, 38, 38, 0.09);
   --rp-purple:      #7c3aed;
   --rp-purple-bg:   rgba(124, 58, 237, 0.09);
+  /* Text variants of the accents above (fills stay vivid; text uses the
+     shared AA shades from custom/_main.scss, which switch with .dark-mode). */
+  --rp-pink-text:   var(--brand-text);
+  --rp-green-text:  var(--success-text);
+  --rp-blue-text:   var(--info-text);
+  --rp-orange-text: var(--warning-text);
+  --rp-red-text:    var(--danger-text);
+  --rp-purple-text: #6d28d9;
   --rp-shadow-sm:   0 1px 4px rgba(13, 17, 23, 0.06), 0 2px 8px rgba(13, 17, 23, 0.05);
   --rp-shadow-md:   0 4px 16px rgba(13, 17, 23, 0.10), 0 1px 4px rgba(13, 17, 23, 0.05);
   --rp-radius:      14px;
@@ -430,7 +438,7 @@ const chartOptions = computed(() => {
 }
 
 /* ── Tokens: Dark ───────────────────────────────────────────── */
-:global(.dark-mode) .rp-wrap {
+.dark-mode .rp-wrap {
   --rp-bg:        var(--dark-bg);
   --rp-surface:   var(--dark-surface);
   --rp-surface-2: var(--dark-surface-elevated);
@@ -447,6 +455,7 @@ const chartOptions = computed(() => {
   --rp-purple-bg: rgba(124, 58, 237, 0.14);
   --rp-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
   --rp-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
+  --rp-purple-text: #a78bfa;
 }
 
 .rp-wrap {
@@ -591,10 +600,10 @@ const chartOptions = computed(() => {
   font-size: 16px;
   flex-shrink: 0;
 }
-.rp-kpi-icon-wrap--pink   { background: var(--rp-pink-bg);   color: var(--rp-pink); }
-.rp-kpi-icon-wrap--green  { background: var(--rp-green-bg);  color: var(--rp-green); }
-.rp-kpi-icon-wrap--blue   { background: var(--rp-blue-bg);   color: var(--rp-blue); }
-.rp-kpi-icon-wrap--orange { background: var(--rp-orange-bg); color: var(--rp-orange); }
+.rp-kpi-icon-wrap--pink   { background: var(--rp-pink-bg);   color: var(--rp-pink-text); }
+.rp-kpi-icon-wrap--green  { background: var(--rp-green-bg);  color: var(--rp-green-text); }
+.rp-kpi-icon-wrap--blue   { background: var(--rp-blue-bg);   color: var(--rp-blue-text); }
+.rp-kpi-icon-wrap--orange { background: var(--rp-orange-bg); color: var(--rp-orange-text); }
 
 .rp-kpi-body { flex: 1; min-width: 0; }
 .rp-kpi-label {
@@ -623,8 +632,8 @@ const chartOptions = computed(() => {
   gap: 5px;
 }
 .rp-kpi-trend i { font-size: 10px; }
-.rp-kpi-trend--up   { color: var(--rp-green); }
-.rp-kpi-trend--down { color: var(--rp-red); }
+.rp-kpi-trend--up   { color: var(--rp-green-text); }
+.rp-kpi-trend--down { color: var(--rp-red-text); }
 .rp-kpi-trend--flat { color: var(--rp-text-3); }
 .rp-kpi-trend-label { font-weight: 400; color: var(--rp-text-3); }
 
@@ -799,6 +808,6 @@ const chartOptions = computed(() => {
    Numeric table columns (.rp-td-right) intentionally stay
    right-aligned in RTL too - same convention already used for the
    invoice/quote line-item tables elsewhere in the app. */
-:global(.rtl-support) .rp-period-select { padding: 8px 14px 8px 34px; }
-:global(.rtl-support) .rp-period-chevron { right: auto; left: 13px; }
+.rtl-support .rp-period-select { padding: 8px 14px 8px 34px; }
+.rtl-support .rp-period-chevron { right: auto; left: 13px; }
 </style>

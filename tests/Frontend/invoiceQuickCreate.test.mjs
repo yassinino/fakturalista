@@ -36,9 +36,13 @@ globalThis.__qcPosts = posts;
 
 const Shell = (await import(toDataUrl(compile('QuickCreateModal.vue')))).default;
 const shellUrl = toDataUrl(compile('QuickCreateModal.vue'));
+const fakeTenantCountry = toDataUrl(`import { computed } from ${JSON.stringify(import.meta.resolve('vue'))};
+  export function useTenantCountry() { return { isMorocco: computed(() => !!globalThis.__qcMorocco) }; }`);
 const QuickCustomerModal = (await import(toDataUrl(compile('QuickCustomerModal.vue', {
   axios: fakeAxios,
   './QuickCreateModal.vue': shellUrl,
+  '@/composables/useTenantCountry': fakeTenantCountry,
+  './quickCustomerPayload.mjs': new URL('quickCustomerPayload.mjs', dir).href,
 })))).default;
 
 function render(component, props = {}, locale = 'fr') {

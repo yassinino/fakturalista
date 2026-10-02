@@ -469,7 +469,7 @@ async function handleSave() {
 
 .inv-page-hint {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -495,7 +495,7 @@ async function handleSave() {
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0 0 14px;
 }
 
@@ -525,7 +525,7 @@ async function handleSave() {
 
 .inv-label-req::after {
   content: " *";
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
 .inv-input {
@@ -618,12 +618,12 @@ async function handleSave() {
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
-.items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+.items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-text); }
 
 .items-type-btn--active {
   border-color: var(--brand-primary);
   background: rgba(233, 30, 99, 0.06);
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
 /* ── Status switch ── */
@@ -719,7 +719,7 @@ async function handleSave() {
 
 .inv-footer-hint {
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 /* ── vue-select overrides ── */
@@ -746,56 +746,56 @@ async function handleSave() {
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .inv-page-title { color: var(--dark-text); }
+.dark-mode .inv-page-title { color: var(--dark-text); }
 
-:global(.dark-mode) .inv-page-hint,
-:global(.dark-mode) .inv-section-label,
-:global(.dark-mode) .items-required-note,
-:global(.dark-mode) .items-field-hint,
-:global(.dark-mode) .inv-footer-hint,
-:global(.dark-mode) .inv-label,
-:global(.dark-mode) .items-switch-label { color: var(--dark-text-muted); }
+.dark-mode .inv-page-hint,
+.dark-mode .inv-section-label,
+.dark-mode .items-required-note,
+.dark-mode .items-field-hint,
+.dark-mode .inv-footer-hint,
+.dark-mode .inv-label,
+.dark-mode .items-switch-label { color: var(--dark-text-muted); }
 
-:global(.dark-mode) .items-back-btn {
+.dark-mode .items-back-btn {
   border-color: #334155;
   color: #94a3b8;
 }
-:global(.dark-mode) .items-back-btn:hover { background: var(--dark-surface); border-color: var(--dark-border); }
+.dark-mode .items-back-btn:hover { background: var(--dark-surface); border-color: var(--dark-border); }
 
-:global(.dark-mode) .inv-card {
+.dark-mode .inv-card {
   background: #1e293b;
   border-color: #334155;
 }
 
-:global(.dark-mode) .inv-input,
-:global(.dark-mode) .inv-select,
-:global(.dark-mode) .inv-textarea,
-:global(.dark-mode) .items-type-btn {
+.dark-mode .inv-input,
+.dark-mode .inv-select,
+.dark-mode .inv-textarea,
+.dark-mode .items-type-btn {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
 
-:global(.dark-mode) .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
+.dark-mode .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
 
-:global(.dark-mode) .items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
-:global(.dark-mode) .items-type-btn--active {
+.dark-mode .items-type-btn:hover { border-color: var(--brand-primary); color: var(--brand-text); }
+.dark-mode .items-type-btn--active {
   background: rgba(233, 30, 99, 0.12);
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
-:global(.dark-mode) .inv-sticky-footer {
+.dark-mode .inv-sticky-footer {
   background: rgba(15, 23, 42, 0.92);
   border-top-color: #334155;
 }
 
-:global(.dark-mode) :deep(.vs__dropdown-toggle) {
+.dark-mode .content :deep(.vs__dropdown-toggle) {
   background: #0f172a;
   border-color: #334155;
 }
-:global(.dark-mode) :deep(.vs__search),
-:global(.dark-mode) :deep(.vs__selected) { color: var(--dark-text-secondary); }
-:global(.dark-mode) :deep(.vs__placeholder) { color: var(--dark-text-muted); }
+.dark-mode .content :deep(.vs__search),
+.dark-mode .content :deep(.vs__selected) { color: var(--dark-text-secondary); }
+.dark-mode .content :deep(.vs__placeholder) { color: var(--dark-text-muted); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {

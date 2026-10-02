@@ -28,6 +28,33 @@
   --brand-primary-active: #ad1457;
 }
 
+// ── Semantic theme tokens ───────────────────────────────────────────────
+// One vocabulary for both themes: light values here, dark values under
+// .dark-mode below (the app's single theme switch, set on #page-container by
+// BaseLayout.vue and on teleported content via useThemeScope()). Text tokens
+// are chosen for WCAG AA (>= 4.5:1) on every surface they sit on.
+:root {
+  --bg-page:        #f3f5f8;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #ffffff;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #5f6b7e;
+  --border:         #e2e8f0;
+  --input-bg:       #ffffff;
+  --hover-bg:       #f1f5f9;
+  --brand:          var(--brand-primary);
+  --brand-hover:    var(--brand-primary-hover);
+  // Pink *as text* (links, accents on white/tinted surfaces). The fill pink
+  // (--brand) reads 4.3:1 as small text; this shade of it (the existing
+  // hover pink) reads >= 5.2:1 on white, the page background and pink tints.
+  --brand-text:     #c2185b;
+  --success-text:   #15803d;
+  --warning-text:   #b45309;
+  --danger-text:    #b91c1c;
+  --info-text:      #2563eb;
+}
+
 // ── Dark theme, centralized ─────────────────────────────────────────────
 // Single source of truth for every dark-mode color in the app. Page-level
 // <style scoped> blocks (plain CSS) read these via var(--dark-*) instead
@@ -48,7 +75,7 @@
   --dark-text:             #F8FAFC; // primary
   --dark-text-secondary:   #CBD5E1;
   --dark-text-muted:       #94A3B8;
-  --dark-text-disabled:    #64748B;
+  --dark-text-disabled:    #8291A7; // tertiary text: >= 4.5:1 on every dark surface
 
   // Status tints - dark-tinted background + readable saturated text,
   // reused everywhere instead of each page inventing its own badge colors.
@@ -60,6 +87,28 @@
   --dark-danger-text:  #F87171;
   --dark-info-bg:      rgba(59, 130, 246, 0.16);
   --dark-info-text:    #60A5FA;
+
+  // Semantic tokens (see :root above), dark values.
+  --bg-page:        var(--dark-bg);
+  --bg-surface:     var(--dark-surface);
+  --bg-elevated:    var(--dark-surface-elevated);
+  --text-primary:   var(--dark-text);
+  --text-secondary: var(--dark-text-secondary);
+  --text-muted:     var(--dark-text-muted);
+  --border:         var(--dark-border);
+  --input-bg:       var(--dark-input);
+  --hover-bg:       rgba(255, 255, 255, 0.06);
+  --brand-text:     #f06292;
+  --success-text:   var(--dark-success-text);
+  --warning-text:   var(--dark-warning-text);
+  --danger-text:    var(--dark-danger-text);
+  --info-text:      var(--dark-info-text);
+}
+
+// Wrapper for content teleported to <body> (see composables/useThemeScope.js):
+// carries .dark-mode like #page-container but never generates a box itself.
+.theme-scope {
+  display: contents;
 }
 
 // ── Core theme: exact-palette overrides ─────────────────────────────────
@@ -256,6 +305,10 @@
 }
 
 // ── Outline primary ───────────────────────────────────────────────────
+.text-danger,
+.dark-mode .text-danger {
+  color: var(--danger-text) !important; // validation/error text
+}
 .btn-outline-primary {
   --bs-btn-hover-bg:           #fff0f6;
   --bs-btn-hover-border-color: #E91E63;
@@ -457,4 +510,44 @@
     --bs-btn-active-border-color: #484f58;
     --bs-btn-active-color:       #e6edf3;
   }
+}
+
+// ── Shared text contrast (WCAG AA), both themes ─────────────────────────
+// Bootstrap/OneUI utility colors used directly in templates. Each reads its
+// value from the semantic tokens above, so .dark-mode flips them with the
+// rest of the theme instead of needing a second set of rules.
+:root {
+  --bs-link-color:       var(--brand-text);
+  --bs-link-hover-color: var(--brand-primary-active);
+}
+.text-muted,
+.dark-mode .text-muted {
+  color: var(--text-muted) !important;
+}
+.text-primary,
+.dark-mode .text-primary {
+  color: var(--brand-text) !important;
+}
+.btn-outline-primary {
+  --bs-btn-color:          var(--brand-text);
+  --bs-btn-disabled-color: var(--brand-text);
+}
+
+// Status pills: `bg-X-light text-X` pairs (invoice/quote/payment status).
+// OneUI's saturated text on its pale tints sat at 2-3:1; dark mode showed
+// the light tints unchanged. Light: same tints, deeper text. Dark: the
+// shared dark status tints/text.
+.bg-success-light.text-success   { color: #3f6212 !important; }
+.bg-info-light.text-info         { color: #155e75 !important; }
+.bg-warning-light.text-warning   { color: #9a3412 !important; }
+.bg-danger-light.text-danger     { color: #991b1b !important; }
+.bg-secondary-light.text-secondary { color: #475569 !important; background-color: #e2e8f0 !important; }
+.bg-primary-light.text-primary   { color: var(--brand-text) !important; background-color: rgba(233, 30, 99, 0.10) !important; }
+.dark-mode {
+  .bg-success-light.text-success   { background-color: var(--dark-success-bg) !important; color: var(--dark-success-text) !important; }
+  .bg-info-light.text-info         { background-color: var(--dark-info-bg) !important;    color: var(--dark-info-text) !important; }
+  .bg-warning-light.text-warning   { background-color: var(--dark-warning-bg) !important; color: var(--dark-warning-text) !important; }
+  .bg-danger-light.text-danger     { background-color: var(--dark-danger-bg) !important;  color: var(--dark-danger-text) !important; }
+  .bg-secondary-light.text-secondary { background-color: rgba(148, 163, 184, 0.16) !important; color: var(--dark-text-secondary) !important; }
+  .bg-primary-light.text-primary   { background-color: rgba(233, 30, 99, 0.16) !important; color: var(--brand-text) !important; }
 }

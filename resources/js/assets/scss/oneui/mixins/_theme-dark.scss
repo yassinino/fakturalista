@@ -60,16 +60,18 @@
       color: darken($body-bg-dark, 20%);
     }
 
-    // Links
-    a:not(.mini-nav-item):not(.badge):not(.btn):not(.btn-block-option):not(.block):not(.dropdown-item):not(.nav-link):not(.page-link):not(.alert-link):not(.nav-main-link):not(.list-group-item-action):not(.close):not(.fc-event):not(.text-success-light):not(.text-danger-light):not(.text-warning-light):not(.text-info-light) {
-      color: lighten($primary, 5%);
+    // Links - the exclusion chain sits in :where() so it adds no specificity:
+    // as 17 chained :not()s it outranked every component's own link/button
+    // color (e.g. white text on pink <router-link> buttons turned pink).
+    a:where(:not(.mini-nav-item):not(.badge):not(.btn):not(.btn-block-option):not(.block):not(.dropdown-item):not(.nav-link):not(.page-link):not(.alert-link):not(.nav-main-link):not(.list-group-item-action):not(.close):not(.fc-event):not(.text-success-light):not(.text-danger-light):not(.text-warning-light):not(.text-info-light)) {
+      color: var(--brand-text, lighten($primary, 5%)); // AA on dark surfaces (custom/_main.scss)
 
       &.link-fx::before {
         background-color: lighten($primary, 5%);
       }
 
       &:hover {
-        color: $primary;
+        color: #f48fb1;
       }
     }
 

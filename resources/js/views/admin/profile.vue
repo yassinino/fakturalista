@@ -461,7 +461,7 @@ const submitPassword = async () => {
 
 /* Dark mode - the app's real toggle (.dark-mode class), not
    prefers-color-scheme/data-theme which don't reflect it. */
-:global(.dark-mode) .pf-page {
+.dark-mode .pf-page {
   --pf-page:     var(--dark-bg);
   --pf-surface:  var(--dark-surface);
   --pf-border:   var(--dark-border-subtle);

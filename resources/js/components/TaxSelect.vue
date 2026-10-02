@@ -201,43 +201,43 @@ function selectTax(event) {
    not prefers-color-scheme - that only reflects the OS, which can desync
    from the in-app toggle and leave this select light while everything
    else around it is dark (or vice versa). */
-:global(.dark-mode) .tax-select {
+.dark-mode .tax-select {
   color: var(--dark-text-secondary);
   background-color: var(--dark-input);
   border-color: var(--dark-border);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-:global(.dark-mode) .tax-select:hover:not(:disabled) {
+.dark-mode .tax-select:hover:not(:disabled) {
   border-color: var(--brand-primary-active);
 }
 
-:global(.dark-mode) .tax-select:focus {
+.dark-mode .tax-select:focus {
   border-color: var(--brand-primary);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23E91E63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-:global(.dark-mode) .tax-select:disabled {
+.dark-mode .tax-select:disabled {
   background-color: var(--dark-surface);
   opacity: 0.5;
 }
 
-:global(.dark-mode) .tax-select option {
+.dark-mode .tax-select option {
   color: var(--dark-text-secondary);
   background-color: var(--dark-surface-elevated);
 }
 
-:global(.dark-mode) .tax-select-custom-input {
+.dark-mode .tax-select-custom-input {
   color: var(--dark-text-secondary);
   background-color: var(--dark-input);
   border-color: var(--dark-border);
 }
 
-:global(.dark-mode) .tax-select-custom-input:hover:not(:disabled) {
+.dark-mode .tax-select-custom-input:hover:not(:disabled) {
   border-color: var(--brand-primary-active);
 }
 
-:global(.dark-mode) .tax-select-custom-input:focus {
+.dark-mode .tax-select-custom-input:focus {
   border-color: var(--brand-primary);
 }
 </style>

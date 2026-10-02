@@ -83,10 +83,10 @@ defineEmits(['delete', 'clear']);
 
 /* Dark mode - the app's real toggle (.dark-mode class), not
    prefers-color-scheme/data-theme which don't reflect it. */
-:global(.dark-mode) .bab-bar { background: rgba(233, 30, 99, 0.08); border-color: rgba(233, 30, 99, 0.25); }
-:global(.dark-mode) .bab-label { color: #f48fb1; }
-:global(.dark-mode) .bab-btn-clear { border-color: var(--dark-border); color: var(--dark-text-muted); }
-:global(.dark-mode) .bab-btn-clear:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: var(--dark-border); }
+.dark-mode .bab-bar { background: rgba(233, 30, 99, 0.08); border-color: rgba(233, 30, 99, 0.25); }
+.dark-mode .bab-label { color: #f48fb1; }
+.dark-mode .bab-btn-clear { border-color: var(--dark-border); color: var(--dark-text-muted); }
+.dark-mode .bab-btn-clear:hover:not(:disabled) { background: rgba(255,255,255,0.05); border-color: var(--dark-border); }
 
 /* Transition */
 .bab-enter-active,

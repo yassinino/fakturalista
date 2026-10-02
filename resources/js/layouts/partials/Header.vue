@@ -631,7 +631,9 @@ onUnmounted(() => {
 
 <style scoped>
 /* ═══════════════════════════════════════════════════════════════
-   Header - all styles scoped; uses :global(.dark-mode) for dark
+   Header - all styles scoped; dark values hang off .dark-mode on
+   #page-container (the app's one theme switch - BaseLayout.vue folds the
+   OS preference into it when darkModeSystem is on)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Tokens: light ─────────────────────────────────────────── */
@@ -642,13 +644,14 @@ onUnmounted(() => {
   --hdr-shadow:     0 1px 0 rgba(0,0,0,.06), 0 2px 12px rgba(0,0,0,.04);
   --hdr-text:       #0f1117;
   --hdr-text-2:     #445066;
-  --hdr-text-3:     #8b96a8;
+  --hdr-text-3:     var(--text-muted);
   --hdr-surface:    #ffffff;
   --hdr-surface-2:  #f6f8fa;
   --hdr-border-2:   #e1e5ea;
   --hdr-pink:       #E91E63;
   --hdr-pink-dk:    #c2185b;
   --hdr-pink-bg:    rgba(233, 30, 99, 0.08);
+  --hdr-pink-text:  var(--brand-text); /* pink as text: AA in both themes */
   --hdr-hover:      rgba(0, 0, 0, 0.04);
   --hdr-icon-btn-bg:rgba(0, 0, 0, 0.0);
   --hdr-ease:       cubic-bezier(0.4, 0, 0.2, 1);
@@ -657,8 +660,8 @@ onUnmounted(() => {
 }
 
 /* ── Tokens: dark (OneUI's .dark-mode on #page-container) ─── */
-:global(.dark-mode) .hdr-root,
-:global(.page-header-dark) .hdr-root {
+.dark-mode .hdr-root,
+.page-header-dark .hdr-root {
   --hdr-bg:         rgba(15, 20, 32, 0.92); /* var(--dark-header) #0F1420, kept translucent for the header's existing frosted-glass blur */
   --hdr-border:     var(--dark-border);
   --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
@@ -674,28 +677,6 @@ onUnmounted(() => {
   --hdr-shadow-dd:  0 8px 30px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.25);
 }
 
-/* System dark preference */
-/* Kept in sync with the .dark-mode block above (same values) - a user
-   whose OS is dark but who explicitly switched the app to light mode
-   would otherwise still see this fire, since it isn't gated on the
-   actual in-app toggle the way .dark-mode is. */
-@media (prefers-color-scheme: dark) {
-  .hdr-root {
-    --hdr-bg:         rgba(15, 20, 32, 0.92);
-    --hdr-border:     var(--dark-border);
-    --hdr-shadow:     0 1px 0 rgba(0,0,0,.4), 0 2px 16px rgba(0,0,0,.25);
-    --hdr-text:       var(--dark-text);
-    --hdr-text-2:     var(--dark-text-muted);
-    --hdr-text-3:     var(--dark-text-disabled);
-    --hdr-surface:    var(--dark-surface-elevated);
-    --hdr-surface-2:  var(--dark-surface);
-    --hdr-border-2:   var(--dark-border-subtle);
-    --hdr-pink-bg:    rgba(233, 30, 99, 0.14);
-    --hdr-hover:      rgba(255, 255, 255, 0.06);
-    --hdr-icon-btn-bg:rgba(255, 255, 255, 0.0);
-    --hdr-shadow-dd:  0 8px 30px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25);
-  }
-}
 
 /* ── Override OneUI #page-header global styles ─────────────── */
 #page-header {
@@ -885,7 +866,7 @@ onUnmounted(() => {
   color: var(--hdr-text-3);
 }
 
-.hdr-sr-spin-icon { color: var(--hdr-pink); }
+.hdr-sr-spin-icon { color: var(--hdr-pink-text); }
 
 .hdr-sr-empty { flex-direction: column; gap: 6px; align-items: center; padding: 24px 14px; text-align: center; }
 .hdr-sr-empty-icon { font-size: 20px; opacity: 0.3; margin-bottom: 4px; }
@@ -925,7 +906,7 @@ onUnmounted(() => {
   font-size: 12px;
   flex-shrink: 0;
 }
-.hdr-sr-icon--inv { background: rgba(233, 30, 99, 0.10); color: var(--hdr-pink); }
+.hdr-sr-icon--inv { background: rgba(233, 30, 99, 0.10); color: var(--hdr-pink-text); }
 .hdr-sr-icon--qt  { background: rgba(99, 102, 241, 0.10); color: #6366f1; }
 .hdr-sr-icon--cu  { background: rgba(16, 185, 129, 0.10); color: #10b981; }
 
@@ -1052,7 +1033,7 @@ onUnmounted(() => {
 }
 .hdr-action-btn--ghost:hover {
   border-color: var(--hdr-pink);
-  color: var(--hdr-pink);
+  color: var(--hdr-pink-text);
   background: var(--hdr-pink-bg);
   text-decoration: none;
 }
@@ -1093,7 +1074,7 @@ onUnmounted(() => {
   height: 28px;
   border-radius: 50%;
   background: var(--hdr-pink-bg);
-  color: var(--hdr-pink);
+  color: var(--hdr-pink-text);
   font-size: 10px;
   font-weight: 700;
   display: flex;
@@ -1148,7 +1129,7 @@ onUnmounted(() => {
   height: 44px;
   border-radius: 50%;
   background: var(--hdr-pink-bg);
-  color: var(--hdr-pink);
+  color: var(--hdr-pink-text);
   font-size: 15px;
   font-weight: 700;
   display: flex;
@@ -1355,48 +1336,50 @@ onUnmounted(() => {
 }
 
 /* ── RTL (Arabic) ─────────────────────────────────────────────
-   Mirrors the physical left/right rules above. Uses :global(.rtl-support)
-   the same way dark mode uses :global(.dark-mode) above, since #page-container
-   (not this component's own root) carries the toggled class. */
-:global(.rtl-support) .hdr-search-icon-left {
+   Mirrors the physical left/right rules above. Like .dark-mode, .rtl-support
+   sits on #page-container, so it's written as a plain ancestor selector
+   (`.rtl-support .x`). Never `:global(.rtl-support) .x`: Vue 3.2's scoped-CSS
+   compiler drops everything after :global(...), leaving a bare
+   `.rtl-support {}` rule that restyles the whole page container. */
+.rtl-support .hdr-search-icon-left {
   left: auto;
   right: 12px;
 }
-:global(.rtl-support) .hdr-search-input {
+.rtl-support .hdr-search-input {
   padding: 0 36px 0 80px;
 }
-:global(.rtl-support) .hdr-search-spin,
-:global(.rtl-support) .hdr-search-clear,
-:global(.rtl-support) .hdr-search-kbd {
+.rtl-support .hdr-search-spin,
+.rtl-support .hdr-search-clear,
+.rtl-support .hdr-search-kbd {
   right: auto;
   left: 10px;
 }
-:global(.rtl-support) .hdr-sr-item {
+.rtl-support .hdr-sr-item {
   text-align: right;
 }
-:global(.rtl-support) .hdr-right {
+.rtl-support .hdr-right {
   margin-left: 0;
   margin-right: auto;
 }
-:global(.rtl-support) .hdr-dd-item {
+.rtl-support .hdr-dd-item {
   text-align: right;
 }
-:global(.rtl-support) .hdr-toggle {
+.rtl-support .hdr-toggle {
   margin-left: 0;
   margin-right: auto;
 }
-:global(.rtl-support) .hdr-toggle-knob {
+.rtl-support .hdr-toggle-knob {
   left: auto;
   right: 2px;
 }
-:global(.rtl-support) .hdr-toggle--on .hdr-toggle-knob {
+.rtl-support .hdr-toggle--on .hdr-toggle-knob {
   transform: translateX(-14px);
 }
-:global(.rtl-support) .hdr-mobile-search .hdr-search-input {
+.rtl-support .hdr-mobile-search .hdr-search-input {
   padding-left: 80px;
   padding-right: 32px;
 }
-:global(.rtl-support) .hdr-profile-chevron--open {
+.rtl-support .hdr-profile-chevron--open {
   transform: rotate(180deg);
 }
 </style>

@@ -33,7 +33,7 @@ defineEmits(['activate']);
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: var(--brand-primary);
+  color: var(--brand-text);
   font-size: 0.85rem;
   font-weight: 600;
   text-align: start;
@@ -41,7 +41,7 @@ defineEmits(['activate']);
 }
 .inv-qc-action button:hover,
 .inv-qc-action button:focus-visible { background: rgba(233, 30, 99, 0.08); outline: none; }
-:global(.dark-mode) .inv-qc-action { border-top-color: var(--dark-border-subtle); }
-:global(.dark-mode) .inv-qc-action button:hover,
-:global(.dark-mode) .inv-qc-action button:focus-visible { background: rgba(233, 30, 99, 0.16); }
+.dark-mode .inv-qc-action { border-top-color: var(--dark-border-subtle); }
+.dark-mode .inv-qc-action button:hover,
+.dark-mode .inv-qc-action button:focus-visible { background: rgba(233, 30, 99, 0.16); }
 </style>

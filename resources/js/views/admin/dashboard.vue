@@ -739,6 +739,14 @@ onMounted(() => {
   --db-red-bg:      rgba(220, 38, 38, 0.09);
   --db-purple:      #7c3aed;
   --db-purple-bg:   rgba(124, 58, 237, 0.09);
+  /* Text variants of the accents above: the fills stay vivid, text uses the
+     shared AA-contrast shades (custom/_main.scss), which switch with .dark-mode. */
+  --db-pink-text:   var(--brand-text);
+  --db-green-text:  var(--success-text);
+  --db-blue-text:   var(--info-text);
+  --db-orange-text: var(--warning-text);
+  --db-red-text:    var(--danger-text);
+  --db-purple-text: #6d28d9;
   --db-shadow-xs:   0 1px 2px rgba(13, 17, 23, 0.05);
   --db-shadow-sm:   0 1px 4px rgba(13, 17, 23, 0.06), 0 2px 8px rgba(13, 17, 23, 0.05);
   --db-shadow-md:   0 4px 16px rgba(13, 17, 23, 0.10), 0 1px 4px rgba(13, 17, 23, 0.05);
@@ -750,7 +758,7 @@ onMounted(() => {
 /* ── Tokens: Dark - the app's real toggle (.dark-mode class on
    #page-container), not prefers-color-scheme/data-theme which don't
    reflect the in-app toggle state. ─────────────────────────────── */
-:global(.dark-mode) .db-wrap {
+.dark-mode .db-wrap {
   --db-bg:        var(--dark-bg);
   --db-surface:   var(--dark-surface);
   --db-surface-2: var(--dark-surface-elevated);
@@ -766,6 +774,7 @@ onMounted(() => {
   --db-orange-bg: rgba(224, 123, 0, 0.14);
   --db-red-bg:    rgba(220, 38, 38, 0.14);
   --db-purple-bg: rgba(124, 58, 237, 0.14);
+  --db-purple-text: #a78bfa;
   --db-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
   --db-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
   --db-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -917,10 +926,10 @@ onMounted(() => {
 }
 .db-kpi:hover .db-kpi-icon-wrap { transform: scale(1.07); }
 
-.db-kpi-icon-wrap--pink   { background: var(--db-pink-bg);   color: var(--db-pink); }
-.db-kpi-icon-wrap--green  { background: var(--db-green-bg);  color: var(--db-green); }
-.db-kpi-icon-wrap--blue   { background: var(--db-blue-bg);   color: var(--db-blue); }
-.db-kpi-icon-wrap--orange { background: var(--db-orange-bg); color: var(--db-orange); }
+.db-kpi-icon-wrap--pink   { background: var(--db-pink-bg);   color: var(--db-pink-text); }
+.db-kpi-icon-wrap--green  { background: var(--db-green-bg);  color: var(--db-green-text); }
+.db-kpi-icon-wrap--blue   { background: var(--db-blue-bg);   color: var(--db-blue-text); }
+.db-kpi-icon-wrap--orange { background: var(--db-orange-bg); color: var(--db-orange-text); }
 .db-kpi-icon-wrap--muted  { background: var(--db-surface-2); color: var(--db-text-3); }
 
 .db-kpi-body { flex: 1; min-width: 0; }
@@ -943,7 +952,7 @@ onMounted(() => {
   font-variant-numeric: tabular-nums;
   line-height: 1.15;
 }
-.db-kpi-value--warn { color: var(--db-orange); }
+.db-kpi-value--warn { color: var(--db-orange-text); }
 
 .db-kpi-meta {
   font-size: 12px;
@@ -951,9 +960,9 @@ onMounted(() => {
   line-height: 1;
 }
 .db-kpi-meta--neutral { color: var(--db-text-3); }
-.db-kpi-meta--green   { color: var(--db-green); }
-.db-kpi-meta--blue    { color: var(--db-blue); }
-.db-kpi-meta--orange  { color: var(--db-orange); }
+.db-kpi-meta--green   { color: var(--db-green-text); }
+.db-kpi-meta--blue    { color: var(--db-blue-text); }
+.db-kpi-meta--orange  { color: var(--db-orange-text); }
 
 /* ── Main Grid ───────────────────────────────────────────────── */
 .db-main-grid {
@@ -1006,7 +1015,7 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.db-checklist-item a:hover { color: var(--db-pink); text-decoration: underline; }
+.db-checklist-item a:hover { color: var(--db-pink-text); text-decoration: underline; }
 
 .db-checklist-icon {
   font-size: 15px;
@@ -1044,7 +1053,7 @@ onMounted(() => {
 .db-card-link {
   font-size: 12px;
   font-weight: 500;
-  color: var(--db-pink);
+  color: var(--db-pink-text);
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -1094,7 +1103,7 @@ onMounted(() => {
 
 .db-td-ref {
   font-weight: 700;
-  color: var(--db-pink);
+  color: var(--db-pink-text);
   white-space: nowrap;
   letter-spacing: 0.01em;
 }
@@ -1121,7 +1130,7 @@ onMounted(() => {
   height: 30px;
   border-radius: 50%;
   background: var(--db-pink-bg);
-  color: var(--db-pink);
+  color: var(--db-pink-text);
   font-size: 10px;
   font-weight: 700;
   display: inline-flex;
@@ -1148,9 +1157,9 @@ onMounted(() => {
   white-space: nowrap;
 }
 .db-pill--gray   { background: rgba(139, 150, 168, 0.12); color: var(--db-text-2); }
-.db-pill--blue   { background: var(--db-blue-bg);         color: var(--db-blue); }
-.db-pill--green  { background: var(--db-green-bg);        color: var(--db-green); }
-.db-pill--red    { background: var(--db-red-bg);          color: var(--db-red); }
+.db-pill--blue   { background: var(--db-blue-bg);         color: var(--db-blue-text); }
+.db-pill--green  { background: var(--db-green-bg);        color: var(--db-green-text); }
+.db-pill--red    { background: var(--db-red-bg);          color: var(--db-red-text); }
 
 /* ── Empty State ─────────────────────────────────────────────── */
 .db-empty-state {
@@ -1192,7 +1201,7 @@ onMounted(() => {
 /* ── Inline Error ────────────────────────────────────────────── */
 .db-inline-err {
   background: var(--db-orange-bg);
-  color: var(--db-orange);
+  color: var(--db-orange-text);
   font-size: 12px;
   font-weight: 500;
   padding: 10px 20px;
@@ -1233,10 +1242,10 @@ onMounted(() => {
   margin-top: 1px;
 }
 
-.db-tl-dot--green  { background: var(--db-green-bg);  color: var(--db-green); }
-.db-tl-dot--blue   { background: var(--db-blue-bg);   color: var(--db-blue); }
+.db-tl-dot--green  { background: var(--db-green-bg);  color: var(--db-green-text); }
+.db-tl-dot--blue   { background: var(--db-blue-bg);   color: var(--db-blue-text); }
 .db-tl-dot--gray   { background: var(--db-surface-2); color: var(--db-text-3); border: 1px solid var(--db-border); }
-.db-tl-dot--red    { background: var(--db-red-bg);    color: var(--db-red); }
+.db-tl-dot--red    { background: var(--db-red-bg);    color: var(--db-red-text); }
 
 .db-tl-body { flex: 1; min-width: 0; }
 
@@ -1358,10 +1367,10 @@ onMounted(() => {
 }
 .db-qa:hover .db-qa-icon { transform: scale(1.1); }
 
-.db-qa-icon--pink   { background: var(--db-pink-bg);   color: var(--db-pink); }
-.db-qa-icon--blue   { background: var(--db-blue-bg);   color: var(--db-blue); }
-.db-qa-icon--green  { background: var(--db-green-bg);  color: var(--db-green); }
-.db-qa-icon--purple { background: var(--db-purple-bg); color: var(--db-purple); }
+.db-qa-icon--pink   { background: var(--db-pink-bg);   color: var(--db-pink-text); }
+.db-qa-icon--blue   { background: var(--db-blue-bg);   color: var(--db-blue-text); }
+.db-qa-icon--green  { background: var(--db-green-bg);  color: var(--db-green-text); }
+.db-qa-icon--purple { background: var(--db-purple-bg); color: var(--db-purple-text); }
 
 .db-qa-label {
   font-size: 11px;
@@ -1371,7 +1380,7 @@ onMounted(() => {
   line-height: 1.35;
   transition: color 0.16s var(--db-ease);
 }
-.db-qa:hover .db-qa-label { color: var(--db-pink); }
+.db-qa:hover .db-qa-label { color: var(--db-pink-text); }
 
 /* ── Stats Strip ─────────────────────────────────────────────── */
 .db-stats-strip {
@@ -1425,7 +1434,7 @@ onMounted(() => {
 /* ── Urgent Overdue ──────────────────────────────────────────── */
 .db-warn-badge {
   background: var(--db-orange-bg);
-  color: var(--db-orange);
+  color: var(--db-orange-text);
   font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
@@ -1488,7 +1497,7 @@ onMounted(() => {
 .db-urgent-days {
   font-size: 10px;
   font-weight: 600;
-  color: var(--db-orange);
+  color: var(--db-orange-text);
   background: var(--db-orange-bg);
   padding: 1px 6px;
   border-radius: 4px;
@@ -1511,7 +1520,7 @@ onMounted(() => {
   padding: 14px 18px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--db-green);
+  color: var(--db-green-text);
   box-shadow: var(--db-shadow-sm);
   margin-bottom: 0;
 }
@@ -1608,7 +1617,7 @@ onMounted(() => {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   background: var(--db-pink-bg);
-  color: var(--db-pink);
+  color: var(--db-pink-text);
   padding: 2px 9px;
   border-radius: 999px;
 }
@@ -1644,9 +1653,9 @@ onMounted(() => {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.db-usage-count--green  { color: var(--db-green); }
-.db-usage-count--orange { color: var(--db-orange); }
-.db-usage-count--red    { color: var(--db-red); }
+.db-usage-count--green  { color: var(--db-green-text); }
+.db-usage-count--orange { color: var(--db-orange-text); }
+.db-usage-count--red    { color: var(--db-red-text); }
 
 .db-usage-track {
   height: 6px;
@@ -1680,7 +1689,7 @@ onMounted(() => {
   margin-top: 4px;
   padding: 9px 14px;
   background: var(--db-pink-bg);
-  color: var(--db-pink);
+  color: var(--db-pink-text);
   border: 1px dashed rgba(233, 30, 99, 0.3);
   border-radius: 10px;
   font-size: 12px;
@@ -1715,15 +1724,15 @@ onMounted(() => {
    Physical left/right positioning that direction:rtl alone can't
    fix (absolute-positioned spine line, and a border used as a
    divider between flex-reversed siblings). */
-:global(.rtl-support) .db-tl-spine {
+.rtl-support .db-tl-spine {
   left: auto;
   right: 11px;
 }
-:global(.rtl-support) .db-stat {
+.rtl-support .db-stat {
   border-right: none;
   border-left: 1px solid var(--db-border);
 }
-:global(.rtl-support) .db-stat:last-child {
+.rtl-support .db-stat:last-child {
   border-left: none;
 }
 </style>

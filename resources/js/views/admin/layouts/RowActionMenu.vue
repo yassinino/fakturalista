@@ -13,20 +13,24 @@
 
   <!-- Menu teleported to <body> so overflow:hidden on parent blocks can't clip it -->
   <Teleport to="body">
-    <div
-      v-if="open"
-      ref="menuRef"
-      class="ram-menu"
-      :style="menuStyle"
-      @click="close"
-    >
-      <slot />
+    <div v-if="open" class="theme-scope" :class="themeScope">
+      <div
+        ref="menuRef"
+        class="ram-menu"
+        :style="menuStyle"
+        @click="close"
+      >
+        <slot />
+      </div>
     </div>
   </Teleport>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useThemeScope } from "@/composables/useThemeScope";
+
+const themeScope = useThemeScope();
 
 const open       = ref(false);
 const triggerRef = ref(null);
@@ -207,12 +211,12 @@ onBeforeUnmount(() => {
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container), not prefers-color-scheme which doesn't reflect the
    in-app toggle state. ──────────────────────────────────────────── */
-:global(.dark-mode) .dt-action-btn:hover {
+.dark-mode .dt-action-btn:hover {
   background: rgba(255, 255, 255, 0.07);
   color: #e6edf3;
 }
 
-:global(.dark-mode) .ram-menu {
+.dark-mode .ram-menu {
   background: #1e293b;
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow:
@@ -220,31 +224,31 @@ onBeforeUnmount(() => {
     0 1px 4px  rgba(0, 0, 0, 0.35);
 }
 
-:global(.dark-mode) :deep(.dropdown-item) {
+.dark-mode .ram-menu :deep(.dropdown-item) {
   color: #cbd5e1 !important;
 }
 
-:global(.dark-mode) :deep(.dropdown-item:hover),
-:global(.dark-mode) :deep(.dropdown-item:focus) {
+.dark-mode .ram-menu :deep(.dropdown-item:hover),
+.dark-mode .ram-menu :deep(.dropdown-item:focus) {
   background: rgba(255, 255, 255, 0.07) !important;
   color: #f1f5f9 !important;
 }
 
-:global(.dark-mode) :deep(.dropdown-item.text-danger) {
+.dark-mode .ram-menu :deep(.dropdown-item.text-danger) {
   color: #f87171 !important;
 }
 
-:global(.dark-mode) :deep(.dropdown-item.text-danger:hover),
-:global(.dark-mode) :deep(.dropdown-item.text-danger:focus) {
+.dark-mode .ram-menu :deep(.dropdown-item.text-danger:hover),
+.dark-mode .ram-menu :deep(.dropdown-item.text-danger:focus) {
   background: rgba(239, 68, 68, 0.13) !important;
   color: #fca5a5 !important;
 }
 
-:global(.dark-mode) :deep(.dropdown-item.text-muted) {
+.dark-mode .ram-menu :deep(.dropdown-item.text-muted) {
   color: #64748b !important;
 }
 
-:global(.dark-mode) :deep(.dropdown-divider) {
+.dark-mode .ram-menu :deep(.dropdown-divider) {
   border-top-color: rgba(255, 255, 255, 0.07) !important;
 }
 </style>

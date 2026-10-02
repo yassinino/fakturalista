@@ -822,7 +822,7 @@ function methodLabel(method) {
 }
 .pay-kpi:hover .pay-kpi-icon-wrap { transform: scale(1.07); }
 
-.pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .08);   color: var(--brand-primary); }
+.pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .08);   color: var(--brand-text); }
 .pay-kpi-icon-wrap--green  { background: rgba(22, 163, 74, .09);    color: #16a34a; }
 .pay-kpi-icon-wrap--blue   { background: rgba(37, 99, 235, .09);   color: #2563eb; }
 .pay-kpi-icon-wrap--orange { background: rgba(224, 123, 0, .09);   color: #e07b00; }
@@ -836,7 +836,7 @@ function methodLabel(method) {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .07em;
-  color: #8b96a8;
+  color: var(--text-muted);
   margin: 0 0 7px;
 }
 
@@ -849,7 +849,7 @@ function methodLabel(method) {
   font-variant-numeric: tabular-nums;
   line-height: 1.15;
 }
-.pay-kpi-value--warn { color: #e07b00; }
+.pay-kpi-value--warn { color: var(--warning-text); }
 
 .pay-kpi-sk {
   display: inline-block;
@@ -867,12 +867,12 @@ function methodLabel(method) {
   font-size: 12px;
   margin: 0;
   line-height: 1;
-  color: #8b96a8;
+  color: var(--text-muted);
 }
-.pay-kpi-meta--neutral { color: #8b96a8; }
-.pay-kpi-meta--green   { color: #16a34a; }
-.pay-kpi-meta--blue    { color: #2563eb; }
-.pay-kpi-meta--orange  { color: #e07b00; }
+.pay-kpi-meta--neutral { color: var(--text-muted); }
+.pay-kpi-meta--green   { color: var(--success-text); }
+.pay-kpi-meta--blue    { color: var(--info-text); }
+.pay-kpi-meta--orange  { color: var(--warning-text); }
 
 /* ── Status badge (overdue = orange) ──────────────────────────── */
 .pay-badge-overdue {
@@ -907,7 +907,7 @@ function methodLabel(method) {
   display: flex;
   flex-direction: column;
 }
-:global(.rtl-support) .pay-panel {
+.rtl-support .pay-panel {
   border-left: none;
   border-right: 1px solid var(--bs-border-color);
 }
@@ -1001,7 +1001,7 @@ function methodLabel(method) {
 }
 
 .pay-modal-dialog .form-label .text-danger {
-  color: var(--brand-primary) !important;
+  color: var(--brand-text) !important;
 }
 
 /* ── Inputs & selects ─────────────────────────────────────────── */
@@ -1132,34 +1132,34 @@ function methodLabel(method) {
 /* ── Dark mode ────────────────────────────────────────────────── */
 /* Dark mode - the app's real toggle (.dark-mode class on #page-container),
    not prefers-color-scheme which doesn't reflect the in-app toggle state. */
-:global(.dark-mode) .skel {
+.dark-mode .skel {
   background: linear-gradient(90deg, var(--dark-surface) 25%, var(--dark-surface-elevated) 50%, var(--dark-surface) 75%);
   background-size: 200% 100%;
 }
-:global(.dark-mode) .pay-badge-overdue { background-color: var(--dark-warning-bg); color: var(--dark-warning-text); }
+.dark-mode .pay-badge-overdue { background-color: var(--dark-warning-bg); color: var(--dark-warning-text); }
 
-:global(.dark-mode) .pay-kpi {
+.dark-mode .pay-kpi {
   background: var(--dark-surface);
   border-color: var(--dark-border-subtle);
   box-shadow: 0 1px 4px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.25);
 }
-:global(.dark-mode) .pay-kpi:hover {
+.dark-mode .pay-kpi:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,.45), 0 1px 4px rgba(0,0,0,.3);
   border-color: var(--dark-border);
 }
-:global(.dark-mode) .pay-kpi--alert { border-color: rgba(224, 123, 0, .35); }
+.dark-mode .pay-kpi--alert { border-color: rgba(224, 123, 0, .35); }
 
-:global(.dark-mode) .pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .14); }
-:global(.dark-mode) .pay-kpi-icon-wrap--green  { background: rgba(22, 163, 74, .14);  }
-:global(.dark-mode) .pay-kpi-icon-wrap--blue   { background: rgba(37, 99, 235, .14); }
-:global(.dark-mode) .pay-kpi-icon-wrap--orange { background: rgba(224, 123, 0, .14); }
-:global(.dark-mode) .pay-kpi-icon-wrap--muted  { background: rgba(107, 114, 128, .14); color: var(--dark-text-muted); }
+.dark-mode .pay-kpi-icon-wrap--pink   { background: rgba(233, 30, 99, .14); }
+.dark-mode .pay-kpi-icon-wrap--green  { background: rgba(22, 163, 74, .14);  }
+.dark-mode .pay-kpi-icon-wrap--blue   { background: rgba(37, 99, 235, .14); }
+.dark-mode .pay-kpi-icon-wrap--orange { background: rgba(224, 123, 0, .14); }
+.dark-mode .pay-kpi-icon-wrap--muted  { background: rgba(107, 114, 128, .14); color: var(--dark-text-muted); }
 
-:global(.dark-mode) .pay-kpi-label { color: var(--dark-text-disabled); }
-:global(.dark-mode) .pay-kpi-value { color: var(--dark-text); }
-:global(.dark-mode) .pay-kpi-meta--neutral { color: var(--dark-text-disabled); }
+.dark-mode .pay-kpi-label { color: var(--dark-text-disabled); }
+.dark-mode .pay-kpi-value { color: var(--dark-text); }
+.dark-mode .pay-kpi-meta--neutral { color: var(--dark-text-disabled); }
 
-:global(.dark-mode) .pay-kpi-sk {
+.dark-mode .pay-kpi-sk {
   background: linear-gradient(90deg, var(--dark-surface) 25%, var(--dark-surface-elevated) 50%, var(--dark-surface) 75%);
   background-size: 200% 100%;
 }

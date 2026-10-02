@@ -1,73 +1,75 @@
 <template>
   <Teleport to="body">
-    <div class="sim-overlay" @click.self="$emit('close')">
-      <div
-        class="sim-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="sim-title"
-        ref="modalEl"
-        tabindex="-1"
-        @keydown.esc.prevent="$emit('close')"
-      >
+    <div class="theme-scope" :class="themeScope">
+      <div class="sim-overlay" @click.self="$emit('close')">
+        <div
+          class="sim-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sim-title"
+          ref="modalEl"
+          tabindex="-1"
+          @keydown.esc.prevent="$emit('close')"
+        >
 
-        <!-- Header -->
-        <div class="sim-header">
-          <h3 class="sim-title" id="sim-title">
-            <i class="fa fa-paper-plane me-2" style="color:var(--brand-primary)"></i>{{ isQuote ? $t('sendModal.titleQuote') : $t('sendModal.titleInvoice') }}
-          </h3>
-          <button class="sim-close" @click="$emit('close')" :aria-label="$t('common.close')">&times;</button>
-        </div>
-
-        <!-- Body -->
-        <div class="sim-body">
-
-          <!-- To field -->
-          <div class="sim-field">
-            <label class="sim-label">{{ $t('sendModal.recipient') }}</label>
-            <div v-if="customerEmail" class="sim-email-display">
-              <i class="fa fa-envelope sim-email-icon"></i>
-              <span>{{ customerEmail }}</span>
-            </div>
-            <div v-else class="sim-no-email">
-              <i class="fa fa-exclamation-triangle me-2"></i>
-              {{ $t('sendModal.noEmail') }}
-            </div>
+          <!-- Header -->
+          <div class="sim-header">
+            <h3 class="sim-title" id="sim-title">
+              <i class="fa fa-paper-plane me-2" style="color:var(--brand-text)"></i>{{ isQuote ? $t('sendModal.titleQuote') : $t('sendModal.titleInvoice') }}
+            </h3>
+            <button class="sim-close" @click="$emit('close')" :aria-label="$t('common.close')">&times;</button>
           </div>
 
-          <!-- Message field -->
-          <div class="sim-field">
-            <label class="sim-label">{{ $t('sendModal.message') }}</label>
-            <textarea
-              class="sim-textarea"
-              v-model="message"
-              rows="9"
-              :disabled="!customerEmail"
-              :placeholder="$t('sendModal.customMsg')"
-            ></textarea>
-            <p class="sim-hint">
-              <i class="fa fa-paperclip me-1"></i>{{ isQuote ? $t('sendModal.attachedQuote') : $t('sendModal.attachedInvoice') }}
-            </p>
+          <!-- Body -->
+          <div class="sim-body">
+
+            <!-- To field -->
+            <div class="sim-field">
+              <label class="sim-label">{{ $t('sendModal.recipient') }}</label>
+              <div v-if="customerEmail" class="sim-email-display">
+                <i class="fa fa-envelope sim-email-icon"></i>
+                <span>{{ customerEmail }}</span>
+              </div>
+              <div v-else class="sim-no-email">
+                <i class="fa fa-exclamation-triangle me-2"></i>
+                {{ $t('sendModal.noEmail') }}
+              </div>
+            </div>
+
+            <!-- Message field -->
+            <div class="sim-field">
+              <label class="sim-label">{{ $t('sendModal.message') }}</label>
+              <textarea
+                class="sim-textarea"
+                v-model="message"
+                rows="9"
+                :disabled="!customerEmail"
+                :placeholder="$t('sendModal.customMsg')"
+              ></textarea>
+              <p class="sim-hint">
+                <i class="fa fa-paperclip me-1"></i>{{ isQuote ? $t('sendModal.attachedQuote') : $t('sendModal.attachedInvoice') }}
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div class="sim-footer">
+            <button class="sim-btn sim-btn-cancel" @click="$emit('close')" :disabled="sending">
+              {{ $t('common.cancel') }}
+            </button>
+            <button
+              class="sim-btn sim-btn-send"
+              @click="handleSend"
+              :disabled="!customerEmail || sending"
+            >
+              <i v-if="sending" class="fa fa-spinner fa-spin me-1"></i>
+              <i v-else class="fa fa-paper-plane me-1"></i>
+              {{ $t('sendModal.send') }}
+            </button>
           </div>
 
         </div>
-
-        <!-- Footer -->
-        <div class="sim-footer">
-          <button class="sim-btn sim-btn-cancel" @click="$emit('close')" :disabled="sending">
-            {{ $t('common.cancel') }}
-          </button>
-          <button
-            class="sim-btn sim-btn-send"
-            @click="handleSend"
-            :disabled="!customerEmail || sending"
-          >
-            <i v-if="sending" class="fa fa-spinner fa-spin me-1"></i>
-            <i v-else class="fa fa-paper-plane me-1"></i>
-            {{ $t('sendModal.send') }}
-          </button>
-        </div>
-
       </div>
     </div>
   </Teleport>
@@ -75,7 +77,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useThemeScope } from "@/composables/useThemeScope";
 import { useI18n } from 'vue-i18n';
+
+const themeScope = useThemeScope();
 
 const { t } = useI18n();
 
@@ -208,7 +213,7 @@ function handleSend() {
 }
 
 .sim-email-icon {
-  color: var(--brand-primary);
+  color: var(--brand-text);
   font-size: 13px;
 }
 
@@ -305,43 +310,43 @@ function handleSend() {
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .sim-modal { background: var(--dark-surface); }
-:global(.dark-mode) .sim-header,
-:global(.dark-mode) .sim-footer { border-color: var(--dark-border); }
-:global(.dark-mode) .sim-title { color: var(--dark-text); }
-:global(.dark-mode) .sim-close { color: var(--dark-text-disabled); }
-:global(.dark-mode) .sim-close:hover { color: var(--dark-text-secondary); }
-:global(.dark-mode) .sim-label,
-:global(.dark-mode) .sim-hint { color: var(--dark-text-muted); }
+.dark-mode .sim-modal { background: var(--dark-surface); }
+.dark-mode .sim-header,
+.dark-mode .sim-footer { border-color: var(--dark-border); }
+.dark-mode .sim-title { color: var(--dark-text); }
+.dark-mode .sim-close { color: var(--dark-text-disabled); }
+.dark-mode .sim-close:hover { color: var(--dark-text-secondary); }
+.dark-mode .sim-label,
+.dark-mode .sim-hint { color: var(--dark-text-muted); }
 
-:global(.dark-mode) .sim-email-display {
+.dark-mode .sim-email-display {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
 
-:global(.dark-mode) .sim-no-email {
+.dark-mode .sim-no-email {
   background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.3);
   color: #fbbf24;
 }
 
-:global(.dark-mode) .sim-textarea {
+.dark-mode .sim-textarea {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
-:global(.dark-mode) .sim-textarea:disabled {
+.dark-mode .sim-textarea:disabled {
   background: #1e293b;
   color: #64748b;
 }
 
-:global(.dark-mode) .sim-btn-cancel {
+.dark-mode .sim-btn-cancel {
   background: #1e293b;
   border-color: #334155;
   color: #94a3b8;
 }
-:global(.dark-mode) .sim-btn-cancel:hover:not(:disabled) {
+.dark-mode .sim-btn-cancel:hover:not(:disabled) {
   background: #0f172a;
   border-color: #475569;
   color: #e2e8f0;

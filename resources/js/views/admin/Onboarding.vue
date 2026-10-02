@@ -580,7 +580,7 @@ async function onSubmit() {
   background: rgba(255,255,255,0.1);
   z-index: 0;
 }
-:global(.rtl-support) .ob-steps::before {
+.rtl-support .ob-steps::before {
   left: auto;
   right: 15px;
 }
@@ -801,7 +801,7 @@ async function onSubmit() {
   padding-right: 38px;
   cursor: pointer;
 }
-:global(.rtl-support) .ob-select {
+.rtl-support .ob-select {
   background-position: left 14px center;
   padding-right: 12px;
   padding-left: 38px;
@@ -903,7 +903,7 @@ async function onSubmit() {
   cursor: pointer;
   transition: background 0.15s;
 }
-:global(.rtl-support) .ob-logo-remove {
+.rtl-support .ob-logo-remove {
   right: auto;
   left: 8px;
 }

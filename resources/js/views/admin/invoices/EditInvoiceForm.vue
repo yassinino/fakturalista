@@ -50,6 +50,14 @@
         </div>
       </div>
 
+      <!-- Just created: "here is your document, here's what to do next" -->
+      <DocumentCreatedBanner
+        v-if="justCreated && !createdBannerDismissed"
+        :title="$t('invoices.form.createdTitle')"
+        :text="$t('invoices.form.createdNextSteps', { issue: $t('invoices.actionIssue'), send: $t('invoices.sendAndSave') })"
+        @dismiss="createdBannerDismissed = true"
+      />
+
       <form @submit.prevent="handleSave" novalidate>
 
         <!-- ═══════════════════════════════════════
@@ -156,6 +164,8 @@
                       label="name"
                       :reduce="o => o.id"
                       @option:selected="v => selectProduct(index, v)"
+                      @search="q => onLineSearch(index, q)"
+                      @search:blur="onLineSearchBlur(index)"
                       :placeholder="$t('invoices.form.productPlaceholder')"
                       class="inv-line-vs"
                     >
@@ -344,6 +354,8 @@ import { useTaxPresets } from '@/composables/useTaxPresets';
 import { previewTaxGroups, taxFields, taxLabel } from '@/utils/tax.mjs';
 import { reactive, ref, computed, onMounted } from "vue";
 import VueSelect from "vue-select";
+import DocumentCreatedBanner from "./DocumentCreatedBanner.vue";
+import { useFreeTextLines } from "./useFreeTextLines.js";
 import QuickCustomerModal from "./QuickCustomerModal.vue";
 import QuickItemModal from "./QuickItemModal.vue";
 import QuickCreateAction from "./QuickCreateAction.vue";
@@ -359,7 +371,10 @@ import SendInvoiceModal from "./SendInvoiceModal.vue";
 
 const props = defineProps({
   invoice: { type: Object, required: true },
+  // Opened right after "Create" - shows the next-steps banner once.
+  justCreated: { type: Boolean, default: false },
 });
+const createdBannerDismissed = ref(false);
 
 const emit   = defineEmits(["saveDocument"]);
 const { t }  = useI18n();
@@ -611,6 +626,9 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   selectCustomer: (created) => { state.customer_id = created.uuid; onClientSelect(created); },
   selectItem:     (line, created) => { if (state.carts[line]) selectProduct(line, created); },
 });
+// Free-text lines: text typed in the product selector without picking an
+// item is kept as the line description (no catalog item needed/created).
+const { onLineSearch, onLineSearchBlur } = useFreeTextLines(() => state.carts);
 </script>
 
 <style scoped>
@@ -646,7 +664,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-page-hint {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0;
   display: flex;
   align-items: center;
@@ -665,9 +683,9 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   text-transform: uppercase;
 }
 
-.inv-status-draft     { background: #f0f2f5; color: #6b7280; }
+.inv-status-draft     { background: #f0f2f5; color: #475569; }
 .inv-status-issued    { background: #dbeafe; color: #1d4ed8; }
-.inv-status-paid      { background: #dcfce7; color: #16a34a; }
+.inv-status-paid      { background: #dcfce7; color: #15803d; }
 .inv-status-cancelled { background: #fee2e2; color: #dc2626; }
 
 /* ── Top bar action buttons group ── */
@@ -693,7 +711,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin: 0 0 14px;
 }
 
@@ -727,7 +745,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-label-req::after {
   content: " *";
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
 .inv-input {
@@ -802,7 +820,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   line-height: 1.5;
 }
 
-.inv-addr-preview i { color: var(--brand-primary); margin-right: 4px; }
+.inv-addr-preview i { color: var(--brand-text); margin-right: 4px; }
 
 /* ── Dates ── */
 .inv-date-row {
@@ -827,7 +845,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   transition: color 0.15s;
 }
 
-.inv-more-btn:hover { color: var(--brand-primary); }
+.inv-more-btn:hover { color: var(--brand-text); }
 
 .inv-adv-panel {
   margin-top: 12px;
@@ -872,7 +890,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #9ca3af;
+  color: var(--text-muted);
   padding: 0 8px 10px;
   border-bottom: 2px solid #f1f4f8;
   white-space: nowrap;
@@ -893,7 +911,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 }
 
 .inv-td-desc    { padding-left: 0; }
-:global(.rtl-support) .inv-td-desc { padding-left: 8px; padding-right: 0; }
+.rtl-support .inv-td-desc { padding-left: 8px; padding-right: 0; }
 .inv-td-rowtotal {
   text-align: right;
   font-weight: 600;
@@ -937,7 +955,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-add-line:hover {
   border-color: var(--brand-primary);
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 
 /* Delete button */
@@ -981,13 +999,13 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 .inv-tot-val   { font-size: 0.9rem; font-weight: 600; color: #0f172a; }
 
 .inv-tot-tax .inv-tot-label { font-size: 0.82rem; padding-left: 8px; }
-:global(.rtl-support) .inv-tot-tax .inv-tot-label { padding-left: 0; padding-right: 8px; }
+.rtl-support .inv-tot-tax .inv-tot-label { padding-left: 0; padding-right: 8px; }
 
 .inv-tot-divider { border-top: 2px solid #0f172a; margin: 10px 0; }
 
 .inv-tot-grand { padding: 4px 0; }
 .inv-tot-grand-label { font-size: 1rem; font-weight: 700; color: #0f172a; }
-.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-primary); }
+.inv-tot-grand-val   { font-size: 1.5rem; font-weight: 800; color: var(--brand-text); }
 
 /* ── Buttons ── */
 .inv-btn {
@@ -1023,7 +1041,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 .inv-btn-outline {
   background: transparent;
   border-color: var(--brand-primary);
-  color: var(--brand-primary);
+  color: var(--brand-text);
 }
 .inv-btn-outline:hover:not(:disabled) {
   background: #fff0f6;
@@ -1043,13 +1061,13 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 }
 
 .inv-btn-send {
-  background: #0ea5e9;
+  background: #0277b6; /* sky, deepened from #0ea5e9 so white text reads 4.9:1 */
   color: #fff !important;
-  border-color: #0ea5e9;
+  border-color: #0277b6;
 }
 .inv-btn-send:hover:not(:disabled) {
-  background: #0284c7;
-  border-color: #0284c7;
+  background: #0369a1;
+  border-color: #0369a1;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.22);
 }
@@ -1102,7 +1120,7 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 .inv-footer-hint {
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 /* ── vue-select overrides (scoped via :deep) ── */
@@ -1139,85 +1157,85 @@ const { quickCustomer, quickItem, openQuickCustomer, openQuickItem, onQuickCusto
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .inv-page-title,
-:global(.dark-mode) .inv-td-rowtotal,
-:global(.dark-mode) .inv-tot-val,
-:global(.dark-mode) .inv-tot-grand-label { color: var(--dark-text); }
+.dark-mode .inv-page-title,
+.dark-mode .inv-td-rowtotal,
+.dark-mode .inv-tot-val,
+.dark-mode .inv-tot-grand-label { color: var(--dark-text); }
 
-:global(.dark-mode) .inv-page-hint,
-:global(.dark-mode) .inv-section-label,
-:global(.dark-mode) .inv-field-hint,
-:global(.dark-mode) .inv-adv-hint,
-:global(.dark-mode) .inv-more-btn,
-:global(.dark-mode) .inv-th,
-:global(.dark-mode) .inv-desc-sub,
-:global(.dark-mode) .inv-add-line,
-:global(.dark-mode) .inv-tot-label,
-:global(.dark-mode) .inv-footer-hint,
-:global(.dark-mode) .inv-label { color: var(--dark-text-muted); }
+.dark-mode .inv-page-hint,
+.dark-mode .inv-section-label,
+.dark-mode .inv-field-hint,
+.dark-mode .inv-adv-hint,
+.dark-mode .inv-more-btn,
+.dark-mode .inv-th,
+.dark-mode .inv-desc-sub,
+.dark-mode .inv-add-line,
+.dark-mode .inv-tot-label,
+.dark-mode .inv-footer-hint,
+.dark-mode .inv-label { color: var(--dark-text-muted); }
 
-:global(.dark-mode) .inv-card {
+.dark-mode .inv-card {
   background: #1e293b;
   border-color: #334155;
 }
 
-:global(.dark-mode) .inv-input,
-:global(.dark-mode) .inv-select,
-:global(.dark-mode) .inv-textarea {
+.dark-mode .inv-input,
+.dark-mode .inv-select,
+.dark-mode .inv-textarea {
   background: #0f172a;
   border-color: #334155;
   color: #e2e8f0;
 }
 
-:global(.dark-mode) .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
+.dark-mode .inv-input.inv-input-err { border-color: var(--dark-danger-text); }
 
-:global(.dark-mode) .inv-addr-preview,
-:global(.dark-mode) .inv-adv-panel {
+.dark-mode .inv-addr-preview,
+.dark-mode .inv-adv-panel {
   background: #0f172a;
   color: #94a3b8;
 }
 
-:global(.dark-mode) .inv-th { border-bottom-color: var(--dark-border); }
-:global(.dark-mode) .inv-td { border-bottom-color: var(--dark-border-subtle); }
+.dark-mode .inv-th { border-bottom-color: var(--dark-border); }
+.dark-mode .inv-td { border-bottom-color: var(--dark-border-subtle); }
 
-:global(.dark-mode) .inv-add-line { border-color: var(--dark-border); }
-:global(.dark-mode) .inv-add-line:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+.dark-mode .inv-add-line { border-color: var(--dark-border); }
+.dark-mode .inv-add-line:hover { border-color: var(--brand-primary); color: var(--brand-text); }
 
-:global(.dark-mode) .inv-del-btn:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); }
+.dark-mode .inv-del-btn:hover:not(:disabled) { background: rgba(239, 68, 68, 0.12); }
 
-:global(.dark-mode) .inv-tot-divider { border-top-color: var(--dark-border); }
+.dark-mode .inv-tot-divider { border-top-color: var(--dark-border); }
 
-:global(.dark-mode) .inv-sticky-footer {
+.dark-mode .inv-sticky-footer {
   background: rgba(15, 23, 42, 0.92);
   border-top-color: #334155;
 }
 
-:global(.dark-mode) :deep(.vs__dropdown-toggle) {
+.dark-mode .content :deep(.vs__dropdown-toggle) {
   background: #0f172a;
   border-color: #334155;
 }
-:global(.dark-mode) :deep(.vs__search),
-:global(.dark-mode) :deep(.vs__selected) { color: var(--dark-text-secondary); }
-:global(.dark-mode) :deep(.vs__placeholder) { color: var(--dark-text-muted); }
-:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle) { background: var(--dark-input); }
-:global(.dark-mode) :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) { background: var(--dark-input); }
+.dark-mode .content :deep(.vs__search),
+.dark-mode .content :deep(.vs__selected) { color: var(--dark-text-secondary); }
+.dark-mode .content :deep(.vs__placeholder) { color: var(--dark-text-muted); }
+.dark-mode .content :deep(.inv-line-vs .vs__dropdown-toggle) { background: var(--dark-input); }
+.dark-mode .content :deep(.inv-line-vs .vs__dropdown-toggle:focus-within) { background: var(--dark-input); }
 
-:global(.dark-mode) .inv-status-draft     { background: rgba(148, 163, 184, 0.18); color: var(--dark-text-muted); }
-:global(.dark-mode) .inv-status-issued    { background: rgba(37, 99, 235, 0.18);   color: var(--dark-info-text); }
-:global(.dark-mode) .inv-status-paid      { background: rgba(22, 163, 74, 0.18);   color: var(--dark-success-text); }
-:global(.dark-mode) .inv-status-cancelled { background: rgba(220, 38, 38, 0.18);   color: var(--dark-danger-text); }
+.dark-mode .inv-status-draft     { background: rgba(148, 163, 184, 0.18); color: var(--dark-text-muted); }
+.dark-mode .inv-status-issued    { background: rgba(37, 99, 235, 0.18);   color: var(--dark-info-text); }
+.dark-mode .inv-status-paid      { background: rgba(22, 163, 74, 0.18);   color: var(--dark-success-text); }
+.dark-mode .inv-status-cancelled { background: rgba(220, 38, 38, 0.18);   color: var(--dark-danger-text); }
 
-:global(.dark-mode) .inv-btn-ghost {
+.dark-mode .inv-btn-ghost {
   background: #1e293b;
   border-color: #334155;
   color: #94a3b8;
 }
-:global(.dark-mode) .inv-btn-ghost:hover:not(:disabled) {
+.dark-mode .inv-btn-ghost:hover:not(:disabled) {
   background: #0f172a;
   border-color: #475569;
   color: #e2e8f0;
 }
-:global(.dark-mode) .inv-btn-outline:hover:not(:disabled) {
+.dark-mode .inv-btn-outline:hover:not(:disabled) {
   background: rgba(233, 30, 99, 0.12);
 }
 

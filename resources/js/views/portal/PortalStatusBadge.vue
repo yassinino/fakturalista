@@ -42,12 +42,12 @@ defineProps({
 .pt-badge--cancelled  { background: #F3F4F6; color: #6B7280; }
 .pt-badge--rejected   { background: #FEF2F2; color: #B91C1C; }
 
-:global(.dark-mode) .pt-badge--paid      { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
-:global(.dark-mode) .pt-badge--pending   { background: rgba(29, 78, 216, 0.2);   color: #93C5FD; }
-:global(.dark-mode) .pt-badge--sent      { background: rgba(29, 78, 216, 0.2);   color: #93C5FD; }
-:global(.dark-mode) .pt-badge--converted { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
-:global(.dark-mode) .pt-badge--accepted  { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
-:global(.dark-mode) .pt-badge--overdue   { background: rgba(185, 28, 28, 0.2);   color: #FCA5A5; }
-:global(.dark-mode) .pt-badge--cancelled { background: rgba(107, 114, 128, 0.25); color: #D1D5DB; }
-:global(.dark-mode) .pt-badge--rejected  { background: rgba(185, 28, 28, 0.2);   color: #FCA5A5; }
+.dark-mode .pt-badge--paid      { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
+.dark-mode .pt-badge--pending   { background: rgba(29, 78, 216, 0.2);   color: #93C5FD; }
+.dark-mode .pt-badge--sent      { background: rgba(29, 78, 216, 0.2);   color: #93C5FD; }
+.dark-mode .pt-badge--converted { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
+.dark-mode .pt-badge--accepted  { background: rgba(21, 128, 61, 0.18);  color: #4ADE80; }
+.dark-mode .pt-badge--overdue   { background: rgba(185, 28, 28, 0.2);   color: #FCA5A5; }
+.dark-mode .pt-badge--cancelled { background: rgba(107, 114, 128, 0.25); color: #D1D5DB; }
+.dark-mode .pt-badge--rejected  { background: rgba(185, 28, 28, 0.2);   color: #FCA5A5; }
 </style>

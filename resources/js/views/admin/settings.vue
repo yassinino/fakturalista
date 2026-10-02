@@ -1492,7 +1492,7 @@ function saveSignature() {
   --sp-border:    #E3E6F3;
   --sp-shadow:    0 1px 2px rgba(14,18,50,.04), 0 4px 14px rgba(14,18,50,.06);
   --sp-text:      #111827;
-  --sp-muted:     #64708A;
+  --sp-muted:     #5a6680; /* AA on the tinted page background */
   --sp-field-bg:  #F8F9FE;
   --sp-accent:    var(--brand-primary);
   --sp-accent2:   var(--brand-primary-hover);
@@ -1506,7 +1506,7 @@ function saveSignature() {
 
 /* Dark mode - the app's real toggle (.dark-mode class), not
    prefers-color-scheme/data-theme which don't reflect it. */
-:global(.dark-mode) .settings-page {
+.dark-mode .settings-page {
   --sp-page:     var(--dark-bg);
   --sp-surface:  var(--dark-surface);
   --sp-border:   var(--dark-border-subtle);
@@ -1613,7 +1613,7 @@ function saveSignature() {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.25);
+  color: rgba(255,255,255,.5); /* nav group labels: >= 5.1:1 on the dark rail */
   user-select: none;
 }
 
@@ -1677,7 +1677,7 @@ function saveSignature() {
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--sp-accent);
+  color: var(--brand-text);
   margin-bottom: 0.4rem;
 }
 
@@ -1783,7 +1783,7 @@ function saveSignature() {
   color: var(--sp-muted);
   line-height: 1.45;
 }
-.sr-req { color: var(--sp-accent); }
+.sr-req { color: var(--brand-text); }
 
 /* Sub-label for inputs within a group */
 .sc-ftext.mb-1 { margin-bottom: 0.25rem !important; }
@@ -1817,7 +1817,7 @@ function saveSignature() {
 }
 .sr-inp code {
   font-size: 0.78rem;
-  color: var(--sp-accent);
+  color: var(--brand-text);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1871,7 +1871,7 @@ function saveSignature() {
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--sp-accent);
+  color: var(--brand-text);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -2033,7 +2033,7 @@ function saveSignature() {
 .nt-chip:has(input:checked) {
   border-color: var(--sp-accent);
   background: rgba(233,30,99,.08);
-  color: var(--sp-accent);
+  color: var(--brand-text);
   font-weight: 600;
 }
 .nt-chip input:disabled { cursor: not-allowed; }
@@ -2060,7 +2060,7 @@ function saveSignature() {
   gap: 0.875rem;
   z-index: 950;
 }
-:global(.rtl-support) .sp-savebar {
+.rtl-support .sp-savebar {
   right: auto;
   left: 1.75rem;
 }
@@ -2178,7 +2178,7 @@ function saveSignature() {
   background: rgba(34,197,94,.04);
 }
 
-:global(.dark-mode) .stripe-block--connected {
+.dark-mode .stripe-block--connected {
   background: var(--dark-success-bg);
   border-color: rgba(34,197,94,.3);
 }
@@ -2188,7 +2188,7 @@ function saveSignature() {
   background: rgba(245,158,11,.05);
 }
 
-:global(.dark-mode) .stripe-block--warn { background: var(--dark-warning-bg); border-color: rgba(245,158,11,.3); }
+.dark-mode .stripe-block--warn { background: var(--dark-warning-bg); border-color: rgba(245,158,11,.3); }
 
 /* Status badges */
 .stripe-badge {
@@ -2211,8 +2211,8 @@ function saveSignature() {
   color: #d97706;
 }
 
-:global(.dark-mode) .stripe-badge--green { color: var(--dark-success-text); }
-:global(.dark-mode) .stripe-badge--amber { color: var(--dark-warning-text); }
+.dark-mode .stripe-badge--green { color: var(--dark-success-text); }
+.dark-mode .stripe-badge--amber { color: var(--dark-warning-text); }
 
 /* Capability pills */
 .stripe-caps {
@@ -2231,8 +2231,8 @@ function saveSignature() {
 .stripe-cap-item--ok  { color: #16a34a; }
 .stripe-cap-item--no  { color: #dc2626; }
 
-:global(.dark-mode) .stripe-cap-item--ok { color: var(--dark-success-text); }
-:global(.dark-mode) .stripe-cap-item--no { color: var(--dark-danger-text); }
+.dark-mode .stripe-cap-item--ok { color: var(--dark-success-text); }
+.dark-mode .stripe-cap-item--no { color: var(--dark-danger-text); }
 
 /* Action row */
 .stripe-actions {
@@ -2262,21 +2262,21 @@ function saveSignature() {
   flex-shrink: 0;
   margin-right: 0.75rem;
 }
-:global(.rtl-support) .stripe-warn-icon {
+.rtl-support .stripe-warn-icon {
   margin-right: 0;
   margin-left: 0.75rem;
 }
 
 /* Notifications toggle - mirrors the same knob-position pattern already
    used for .hdr-toggle (Header.vue) and .tb-toggle (templates.vue). */
-:global(.rtl-support) .nt-toggle-track::after {
+.rtl-support .nt-toggle-track::after {
   left: auto;
   right: 2px;
 }
-:global(.rtl-support) .nt-toggle input:checked + .nt-toggle-track::after {
+.rtl-support .nt-toggle input:checked + .nt-toggle-track::after {
   transform: translateX(-16px);
 }
-:global(.rtl-support) .nt-days-label {
+.rtl-support .nt-days-label {
   margin-right: 0;
   margin-left: 0.25rem;
 }

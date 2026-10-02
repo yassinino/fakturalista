@@ -2,6 +2,7 @@
   <EditQuoteForm
     v-if="quote"
     :quote="quote"
+    :just-created="justCreated"
     @saveDocument="saveQuote"
   />
   <div v-else class="content">
@@ -25,6 +26,9 @@ const route   = useRoute();
 const { t }   = useI18n();
 
 const uuid  = route.params.id;
+// Arrived here straight from "Create quote" (see quotes/create.vue).
+const justCreated = route.query.created === '1';
+if (justCreated) router.replace({ query: {} }).catch(() => {});
 const quote = ref(null);
 
 onMounted(async () => {

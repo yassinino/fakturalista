@@ -191,7 +191,7 @@ onBeforeUnmount(() => {
 
 .cs-icon { font-size: 44px; margin-bottom: 16px; }
 .cs-icon--success { color: #10b981; }
-.cs-icon--pending { color: var(--brand-primary); }
+.cs-icon--pending { color: var(--brand-text); }
 
 .cs-title {
   font-size: 20px;
@@ -261,25 +261,25 @@ onBeforeUnmount(() => {
   font-family: inherit;
   cursor: pointer;
 }
-.cs-btn-link:hover { color: var(--brand-primary); }
+.cs-btn-link:hover { color: var(--brand-text); }
 
 /* ── Dark mode - the app's real toggle (.dark-mode class on
    #page-container, see BaseLayout.vue), additive overrides only. ──── */
-:global(.dark-mode) .cs-root { background: var(--dark-bg); }
-:global(.dark-mode) .cs-card {
+.dark-mode .cs-root { background: var(--dark-bg); }
+.dark-mode .cs-card {
   background: var(--dark-surface);
   border-color: var(--dark-border-subtle);
 }
-:global(.dark-mode) .cs-logo-name,
-:global(.dark-mode) .cs-title,
-:global(.dark-mode) .cs-summary-value { color: var(--dark-text); }
-:global(.dark-mode) .cs-subtitle,
-:global(.dark-mode) .cs-summary-label,
-:global(.dark-mode) .cs-btn-link { color: var(--dark-text-muted); }
+.dark-mode .cs-logo-name,
+.dark-mode .cs-title,
+.dark-mode .cs-summary-value { color: var(--dark-text); }
+.dark-mode .cs-subtitle,
+.dark-mode .cs-summary-label,
+.dark-mode .cs-btn-link { color: var(--dark-text-muted); }
 
-:global(.dark-mode) .cs-summary {
+.dark-mode .cs-summary {
   background: var(--dark-input);
   border-color: var(--dark-border-subtle);
 }
-:global(.dark-mode) .cs-summary-row { border-bottom-color: var(--dark-border-subtle); }
+.dark-mode .cs-summary-row { border-bottom-color: var(--dark-border-subtle); }
 </style>

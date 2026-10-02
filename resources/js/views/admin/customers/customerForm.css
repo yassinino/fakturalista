@@ -6,7 +6,9 @@
 /* ─────────────────────────────────────────────
    DESIGN TOKENS  (mirrors items/create token system)
 ───────────────────────────────────────────── */
-.ctc {
+/* The sticky footer is a sibling of .ctc, so it needs the tokens too. */
+.ctc,
+.ctc-footer {
   --accent:       var(--brand-primary);
   --accent-bg:    rgba(233, 30, 99, 0.07);
   --accent-ring:  rgba(233, 30, 99, 0.15);
@@ -18,8 +20,8 @@
 
   --text:         #0f172a;
   --text-body:    #374151;
-  --text-muted:   #64748b;
-  --text-dim:     #94a3b8;
+  --text-muted:   #51607a;
+  --text-dim:     #5f6b7e; /* tertiary text, still AA (>= 4.6:1) on page + card */
 
   --shadow-sm:    0 1px 2px rgba(0,0,0,0.06);
   --radius:       14px;
@@ -28,7 +30,8 @@
   padding-bottom: 96px;
 }
 
-:global(.dark-mode) .ctc {
+.dark-mode .ctc,
+.dark-mode .ctc-footer {
   --bg:         var(--dark-surface);
   --bg-subtle:  var(--dark-surface-elevated);
   --border:     var(--dark-border-subtle);
@@ -173,7 +176,7 @@
 .ctc-seg__btn + .ctc-seg__btn {
   border-left: 1.5px solid var(--border);
 }
-:global(.rtl-support) .ctc-seg__btn + .ctc-seg__btn {
+.rtl-support .ctc-seg__btn + .ctc-seg__btn {
   border-left: none;
   border-right: 1.5px solid var(--border);
 }
@@ -300,7 +303,7 @@
   border-top: 1px solid var(--border);
   padding: 12px 0;
 }
-:global(.dark-mode) .ctc-footer { background: var(--dark-surface); }
+.dark-mode .ctc-footer { background: var(--dark-surface); }
 .ctc-footer__inner {
   max-width: 1320px;
   margin: 0 auto;

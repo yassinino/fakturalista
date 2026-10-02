@@ -77,48 +77,50 @@
 
     <!-- ── Add / Edit modal ── -->
     <Teleport to="body">
-      <div v-if="showModal" class="usr-overlay" @click.self="closeModal">
-        <div class="usr-modal" role="dialog" aria-modal="true">
-          <div class="usr-modal__header">
-            <h3 class="usr-modal__title">{{ editing ? $t('team.modal.editTitle') : $t('team.modal.addTitle') }}</h3>
-            <button class="usr-modal__close" type="button" @click="closeModal" :disabled="saving">&times;</button>
+      <div class="theme-scope" :class="themeScope">
+        <div v-if="showModal" class="usr-overlay" @click.self="closeModal">
+          <div class="usr-modal" role="dialog" aria-modal="true">
+            <div class="usr-modal__header">
+              <h3 class="usr-modal__title">{{ editing ? $t('team.modal.editTitle') : $t('team.modal.addTitle') }}</h3>
+              <button class="usr-modal__close" type="button" @click="closeModal" :disabled="saving">&times;</button>
+            </div>
+            <form @submit.prevent="submitForm">
+              <div class="usr-modal__body">
+                <div class="mb-3">
+                  <label class="form-label">{{ $t('team.modal.name') }}</label>
+                  <input v-model="form.name" type="text" class="form-control" required maxlength="150">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">{{ $t('team.modal.email') }}</label>
+                  <input v-model="form.email" type="email" class="form-control" required maxlength="255">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">{{ $t('team.modal.password') }}</label>
+                  <input v-model="form.password" type="password" class="form-control" autocomplete="new-password">
+                  <small class="form-text text-muted">
+                    {{ editing ? $t('team.modal.passwordEditHint') : $t('team.modal.passwordHint') }}
+                  </small>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">{{ $t('team.modal.role') }}</label>
+                  <select v-model="form.role" class="form-select" :disabled="editing && editingUser?.is_owner">
+                    <option value="member">{{ $t('team.roles.member') }}</option>
+                    <option value="admin">{{ $t('team.roles.admin') }}</option>
+                  </select>
+                </div>
+                <p v-if="formError" class="text-danger small mb-0">{{ formError }}</p>
+              </div>
+              <div class="usr-modal__footer">
+                <button type="button" class="btn btn-secondary" @click="closeModal" :disabled="saving">
+                  {{ $t('team.modal.cancel') }}
+                </button>
+                <button type="submit" class="btn btn-primary" :disabled="saving">
+                  <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
+                  {{ saving ? $t('team.modal.saving') : $t('team.modal.save') }}
+                </button>
+              </div>
+            </form>
           </div>
-          <form @submit.prevent="submitForm">
-            <div class="usr-modal__body">
-              <div class="mb-3">
-                <label class="form-label">{{ $t('team.modal.name') }}</label>
-                <input v-model="form.name" type="text" class="form-control" required maxlength="150">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ $t('team.modal.email') }}</label>
-                <input v-model="form.email" type="email" class="form-control" required maxlength="255">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ $t('team.modal.password') }}</label>
-                <input v-model="form.password" type="password" class="form-control" autocomplete="new-password">
-                <small class="form-text text-muted">
-                  {{ editing ? $t('team.modal.passwordEditHint') : $t('team.modal.passwordHint') }}
-                </small>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ $t('team.modal.role') }}</label>
-                <select v-model="form.role" class="form-select" :disabled="editing && editingUser?.is_owner">
-                  <option value="member">{{ $t('team.roles.member') }}</option>
-                  <option value="admin">{{ $t('team.roles.admin') }}</option>
-                </select>
-              </div>
-              <p v-if="formError" class="text-danger small mb-0">{{ formError }}</p>
-            </div>
-            <div class="usr-modal__footer">
-              <button type="button" class="btn btn-secondary" @click="closeModal" :disabled="saving">
-                {{ $t('team.modal.cancel') }}
-              </button>
-              <button type="submit" class="btn btn-primary" :disabled="saving">
-                <i v-if="saving" class="fa fa-spinner fa-spin me-1"></i>
-                {{ saving ? $t('team.modal.saving') : $t('team.modal.save') }}
-              </button>
-            </div>
-          </form>
         </div>
       </div>
     </Teleport>
@@ -127,11 +129,14 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+import { useThemeScope } from "@/composables/useThemeScope";
 import axios from 'axios';
 import { useI18n } from 'vue-i18n';
 import { createToaster } from '@meforma/vue-toaster';
 import BaseBlock from '@/components/BaseBlock.vue';
 import RowActionMenu from '@/views/admin/layouts/RowActionMenu.vue';
+
+const themeScope = useThemeScope();
 
 const { t } = useI18n();
 const toaster = createToaster();
@@ -259,7 +264,7 @@ function deleteUser(user) {
   margin-right: 14px;
   white-space: nowrap;
 }
-:global(.rtl-support) .usr-usage {
+.rtl-support .usr-usage {
   margin-right: 0;
   margin-left: 14px;
 }
@@ -336,7 +341,7 @@ function deleteUser(user) {
 
 /* Dark mode - the app's real toggle (.dark-mode class), not
    prefers-color-scheme/data-theme which don't reflect it. */
-:global(.dark-mode) .usr-modal { background: var(--dark-surface-elevated); }
-:global(.dark-mode) .usr-modal__header, :global(.dark-mode) .usr-modal__footer { border-color: var(--dark-border); }
-:global(.dark-mode) .usr-modal__title { color: var(--dark-text); }
+.dark-mode .usr-modal { background: var(--dark-surface-elevated); }
+.dark-mode .usr-modal__header, .dark-mode .usr-modal__footer { border-color: var(--dark-border); }
+.dark-mode .usr-modal__title { color: var(--dark-text); }
 </style>
