@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
@@ -51,6 +52,13 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'language',
             'status',
         ];
+    }
+
+    /** The tenant's current (active or trialing) subscription - same rule as EditTenant. */
+    public function currentSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'tenant_id')
+            ->ofMany(['created_at' => 'max', 'id' => 'max'], fn ($q) => $q->whereIn('status', ['active', 'trialing']));
     }
 
     // ── Billing helpers ───────────────────────────────────────

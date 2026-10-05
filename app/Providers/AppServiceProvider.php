@@ -7,6 +7,7 @@ use App\Models\Quote;
 use App\Models\TenantDomainVisit;
 use App\Observers\InvoiceObserver;
 use App\Observers\QuoteObserver;
+use App\Services\TenantUsageStats;
 use App\Services\Verifactu\Auth\AeatAuthenticationProvider;
 use App\Services\Verifactu\Auth\CustomerCertificateProvider;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
         // docs/verifactu-aeat-connectivity.md §2 for why AeatVerifactuClient
         // depends on the interface, not this class, directly.
         $this->app->bind(AeatAuthenticationProvider::class, CustomerCertificateProvider::class);
+
+        // Backoffice tenant usage figures - memoised for the request only.
+        $this->app->scoped(TenantUsageStats::class);
     }
 
     public function boot(): void

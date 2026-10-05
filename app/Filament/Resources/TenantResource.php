@@ -6,6 +6,7 @@ use App\Filament\Resources\TenantResource\Pages;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Tenant;
+use App\Services\TenantUsageStats;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -137,7 +138,7 @@ class TenantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with('domains'))
+            ->modifyQueryUsing(fn ($query) => $query->with(['domains', 'currentSubscription.plan']))
             ->columns([
                 Tables\Columns\TextColumn::make('company_name')
                     ->label('Empresa')
@@ -159,12 +160,35 @@ class TenantResource extends Resource
                     ->label('Propietario')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('country')
                     ->label('País')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('plan')
+                    ->label('Plan')
+                    ->getStateUsing(fn (Tenant $record) => $record->currentSubscription?->plan?->translate('name'))
+                    ->badge()
+                    ->color('gray')
+                    ->placeholder('-'),
+
+                // ── Usage (live, read from each tenant DB - see TenantUsageStats) ──
+                static::usageColumn('invoices', 'Facturas'),
+                static::usageColumn('quotes', 'Presupuestos'),
+                static::usageColumn('customers', 'Clientes'),
+                static::usageColumn('users', 'Usuarios'),
+                static::usageColumn('payments', 'Pagos')
+                    ->tooltip('Facturas marcadas como pagadas')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('last_activity')
+                    ->label('Última actividad')
+                    ->getStateUsing(fn (Tenant $record, $livewire) => static::usage($record, $livewire)['last_activity'] ?? null)
+                    ->since()
+                    ->dateTimeTooltip('d/m/Y H:i')
+                    ->placeholder('-'),
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
@@ -200,7 +224,7 @@ class TenantResource extends Resource
                     ->label('Creado')
                     ->date('d/m/Y')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -336,6 +360,32 @@ class TenantResource extends Resource
                         ->placeholder('-'),
                 ])->columns(3),
 
+            Infolists\Components\Section::make('Uso')
+                ->description('Actividad del tenant, leída en directo de su base de datos.')
+                ->schema([
+                    static::usageEntry('invoices', 'Facturas'),
+                    static::usageEntry('quotes', 'Presupuestos'),
+                    static::usageEntry('customers', 'Clientes'),
+                    static::usageEntry('users', 'Usuarios'),
+                    static::usageEntry('payments', 'Pagos registrados')
+                        ->helperText('Facturas marcadas como pagadas'),
+                    Infolists\Components\TextEntry::make('plan')
+                        ->label('Plan')
+                        ->getStateUsing(fn (Tenant $record) => $record->currentSubscription?->plan?->translate('name'))
+                        ->badge()
+                        ->color('gray')
+                        ->placeholder('-'),
+                    Infolists\Components\TextEntry::make('created_at')
+                        ->label('Creado')
+                        ->dateTime('d/m/Y H:i'),
+                    Infolists\Components\TextEntry::make('last_activity')
+                        ->label('Última actividad')
+                        ->getStateUsing(fn (Tenant $record) => static::usage($record)['last_activity'] ?? null)
+                        ->dateTime('d/m/Y H:i')
+                        ->helperText(fn (Tenant $record) => static::usage($record)['last_activity']?->diffForHumans())
+                        ->placeholder('Sin actividad'),
+                ])->columns(4),
+
             Infolists\Components\Section::make('Registro')
                 ->schema([
                     Infolists\Components\TextEntry::make('created_at')->label('Creado')->dateTime('d/m/Y H:i'),
@@ -343,6 +393,42 @@ class TenantResource extends Resource
                 ])->columns(2),
 
         ]);
+    }
+
+    // ── Usage helpers ─────────────────────────────────────────────────────
+
+    /**
+     * Usage figures for a tenant; null when its database can't be read. In the
+     * table, the whole current page is loaded in one query on first use.
+     */
+    public static function usage(Tenant $record, $livewire = null): ?array
+    {
+        $batch = $livewire && method_exists($livewire, 'getTableRecords')
+            ? $livewire->getTableRecords()
+            : [];
+
+        return app(TenantUsageStats::class)->for($record, $batch);
+    }
+
+    protected static function usageColumn(string $key, string $label): Tables\Columns\TextColumn
+    {
+        return Tables\Columns\TextColumn::make('usage_' . $key)
+            ->label($label)
+            ->getStateUsing(fn (Tenant $record, $livewire) => static::usage($record, $livewire)[$key] ?? null)
+            ->numeric()
+            ->alignEnd()
+            ->placeholder('-');
+    }
+
+    protected static function usageEntry(string $key, string $label): Infolists\Components\TextEntry
+    {
+        return Infolists\Components\TextEntry::make('usage_' . $key)
+            ->label($label)
+            ->getStateUsing(fn (Tenant $record) => static::usage($record)[$key] ?? null)
+            ->numeric()
+            ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+            ->weight('semibold')
+            ->placeholder('-');
     }
 
     // ── Relations & pages ─────────────────────────────────────────────────
