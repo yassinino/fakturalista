@@ -172,4 +172,14 @@ return [
         'footer_support'    => 'Support',
         'footer_note'       => 'Vous recevez cet e-mail car vous avez activé les notifications d\'activité dans Paramètres → Notifications.',
     ],
+
+    'feedback_reply' => [
+        'subject'        => 'Réponse à votre retour sur Fakturalista',
+        'greeting'       => 'Bonjour :name,',
+        'greeting_plain' => 'Bonjour,',
+        'intro'          => 'Merci pour votre retour. Voici la réponse de notre équipe :',
+        'signature'      => "L'équipe Fakturalista",
+        'original_label' => 'Votre message du :date',
+        'footer_note'    => 'Vous pouvez répondre directement à cet e-mail.',
+    ],
 ];

@@ -172,4 +172,14 @@ return [
         'footer_support'    => 'Soporte',
         'footer_note'       => 'Recibes este correo porque activaste las notificaciones de actividad en Ajustes → Notificaciones.',
     ],
+
+    'feedback_reply' => [
+        'subject'        => 'Respuesta a tu comentario sobre Fakturalista',
+        'greeting'       => 'Hola :name,',
+        'greeting_plain' => 'Hola,',
+        'intro'          => 'Gracias por tu comentario. Esta es la respuesta de nuestro equipo:',
+        'signature'      => 'El equipo de Fakturalista',
+        'original_label' => 'Tu mensaje del :date',
+        'footer_note'    => 'Puedes responder directamente a este correo.',
+    ],
 ];

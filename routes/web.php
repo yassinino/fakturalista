@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterTrialController;
 use App\Http\Controllers\StripeWebhookController;
@@ -57,6 +58,11 @@ $siteRoutes = function () {
     Route::post('/contact', [HomeController::class, 'sendContact'])
         ->middleware('throttle:contact')
         ->name('contact.send');
+    // Feedback widget (resources/views/partials/feedback.blade.php) - public,
+    // no account; honeypot + 'feedback' limiter, stored centrally.
+    Route::post('/feedback', [FeedbackController::class, 'storePublic'])
+        ->middleware('throttle:feedback')
+        ->name('feedback.store');
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     Route::get('/faq', [HomeController::class, 'faq'])->name('faq');

@@ -1,0 +1,1 @@
+import{C as e,h as a,ad as n,ae as s}from"./main-f029fdeb.js";function t(){const o=e();return{isSpain:a(()=>o.companyLoaded&&n(o.company)),isMorocco:a(()=>o.companyLoaded&&s(o.company))}}export{t as u};

@@ -957,6 +957,12 @@
     </div>
     <!-- /#site -->
 
+    {{-- Central site only: tenant-domain pages that reuse this layout
+         (subscription/cancel) have no public /feedback endpoint. --}}
+    @unless (tenancy()->initialized)
+        @include('partials.feedback')
+    @endunless
+
     <!-- Dependency Scripts -->
     <script src="{{ url('dependencies/jquery/jquery.min.js') }}"></script>
     <script src="{{ url('dependencies/bootstrap/js/bootstrap.min.js') }}"></script>

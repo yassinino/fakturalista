@@ -172,4 +172,14 @@ return [
         'footer_support'    => 'الدعم',
         'footer_note'       => 'تصلك هذه الرسالة لأنك فعّلت إشعارات النشاط من الإعدادات ← الإشعارات.',
     ],
+
+    'feedback_reply' => [
+        'subject'        => 'رد على ملاحظتك حول Fakturalista',
+        'greeting'       => 'مرحبًا :name،',
+        'greeting_plain' => 'مرحبًا،',
+        'intro'          => 'شكرًا على ملاحظتك. إليك رد فريقنا:',
+        'signature'      => 'فريق Fakturalista',
+        'original_label' => 'رسالتك بتاريخ :date',
+        'footer_note'    => 'يمكنك الرد مباشرة على هذا البريد الإلكتروني.',
+    ],
 ];

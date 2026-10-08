@@ -5,6 +5,7 @@ import { useTemplateStore } from "@/stores/template";
 import axios from "axios";
 import { useI18n } from "vue-i18n";
 import { setLocale } from "@/i18n";
+import FeedbackModal from "@/components/FeedbackModal.vue";
 
 const store  = useTemplateStore();
 const router = useRouter();
@@ -54,6 +55,9 @@ const handleUserProfileUpdated = (e) => {
   userAvatar.value = user.avatar_url || DEFAULT_AVATAR;
   if (user.locale) setLocale(user.locale);
 };
+
+// ── Feedback ──────────────────────────────────────────────────
+const feedbackOpen = ref(false);
 
 // ── Search ────────────────────────────────────────────────────
 const searchTerm    = ref("");
@@ -455,6 +459,20 @@ onUnmounted(() => {
           <span>{{ $t('header.newQuoteBtn') }}</span>
         </router-link>
 
+        <!-- Feedback (all sizes; label from xl) -->
+        <button
+          type="button"
+          class="hdr-icon-btn hdr-feedback-btn"
+          :title="$t('feedback.title')"
+          :aria-label="$t('feedback.button')"
+          aria-haspopup="dialog"
+          :aria-expanded="feedbackOpen"
+          @click="feedbackOpen = true"
+        >
+          <i class="fa fa-comment-dots" aria-hidden="true"></i>
+          <span class="hdr-feedback-label d-none d-xl-inline">{{ $t('feedback.button') }}</span>
+        </button>
+
         <!-- Settings shortcut (medium+) -->
         <router-link
           :to="{ name: 'backend-settings' }"
@@ -625,6 +643,7 @@ onUnmounted(() => {
       <div class="hdr-loader-fill"></div>
     </div>
 
+    <FeedbackModal v-model="feedbackOpen" :email="userEmail" />
   </header>
 </template>
 
@@ -992,6 +1011,17 @@ onUnmounted(() => {
   color: var(--hdr-text);
   text-decoration: none;
 }
+
+/* ── Feedback button ─────────────────────────────────────────── */
+.hdr-feedback-btn {
+  width: auto;
+  min-width: 34px;
+  gap: 7px;
+  padding: 0 9px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.hdr-feedback-btn .fa { font-size: 14px; }
 
 /* ── Action buttons ──────────────────────────────────────────── */
 .hdr-action-btn {

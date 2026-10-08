@@ -172,4 +172,14 @@ return [
         'footer_support'    => 'Support',
         'footer_note'       => 'You are receiving this email because you enabled activity notifications in Settings → Notifications.',
     ],
+
+    'feedback_reply' => [
+        'subject'        => 'Reply to your Fakturalista feedback',
+        'greeting'       => 'Hello :name,',
+        'greeting_plain' => 'Hello,',
+        'intro'          => 'Thank you for your feedback. Here is our team\'s reply:',
+        'signature'      => 'The Fakturalista team',
+        'original_label' => 'Your message of :date',
+        'footer_note'    => 'You can reply directly to this email.',
+    ],
 ];

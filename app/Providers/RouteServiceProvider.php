@@ -81,6 +81,22 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinutes(10, 5)->by('contact-ip:' . $request->ip());
         });
 
+        // Feedback widget. Public site (POST /feedback): per IP, short burst
+        // + daily cap, on top of the honeypot. Tenant app (POST /api/feedback):
+        // per tenant user - the IP is shared by whole offices.
+        RateLimiter::for('feedback', function (Request $request) {
+            return [
+                Limit::perMinutes(10, 5)->by('feedback-ip:' . $request->ip()),
+                Limit::perDay(30)->by('feedback-ip-day:' . $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('feedback-tenant', function (Request $request) {
+            $key = tenant()?->getTenantKey() . ':' . ($request->user()?->getAuthIdentifier() ?? $request->ip());
+
+            return Limit::perHour(15)->by('feedback-tenant:' . $key);
+        });
+
         // Client Portal (routes/tenant.php GET /portal/{token}) - a public,
         // token-secured, no-CAPTCHA endpoint (Client Portal Step 1). The
         // token itself is the real defense (a cryptographically random

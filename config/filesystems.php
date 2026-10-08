@@ -44,6 +44,17 @@ return [
             'throw' => false,
         ],
 
+        // Feedback screenshots (App\Models\Feedback). Private: served only to
+        // backoffice admins through FeedbackAttachmentController. Not listed
+        // in config/tenancy.php's filesystem disks, so tenant-app uploads land
+        // in the same central folder as public-site ones.
+        'feedback' => [
+            'driver' => 'local',
+            'root' => storage_path('app/feedback'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

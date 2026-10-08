@@ -7,6 +7,7 @@ use App\Http\Controllers\ClientPortalController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\InvoiceController;
@@ -88,6 +89,11 @@ Route::middleware(['auth:api', 'set.locale'])->group(function () {
     Route::get('/user',             [AuthController::class, 'user']);
     Route::put('/user',             [AuthController::class, 'update']);
     Route::post('/logout',          [AuthController::class, 'logout']);
+
+    // Feedback widget (Header.vue) - stored centrally, attributed to this
+    // tenant + user server-side. Available in every onboarding/billing state.
+    Route::post('/feedback', [FeedbackController::class, 'storeTenant'])
+        ->middleware('throttle:feedback-tenant');
 
     // Onboarding (bypasses RequireOnboarding and EnforceSubscription)
     Route::get('/onboarding',  [OnboardingController::class, 'show']);
