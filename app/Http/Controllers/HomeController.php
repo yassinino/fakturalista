@@ -50,7 +50,7 @@ class HomeController extends Controller
             fn (Plan $plan) => PlanPricingPresenter::present($plan, $locale, $market, $baselineFeatureSlugs)
         );
 
-        return view('index', compact('cards', 'locale', 'market'));
+        return view('index', compact('cards', 'locale', 'market', 'plans'));
     }
 
     public function contact()
@@ -105,7 +105,7 @@ class HomeController extends Controller
             fn (Plan $plan) => PlanPricingPresenter::present($plan, $locale, $market, $baselineFeatureSlugs)
         );
 
-        return view('pricing', compact('cards', 'locale', 'market'));
+        return view('pricing', compact('cards', 'locale', 'market', 'plans'));
     }
 
     /**

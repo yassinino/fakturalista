@@ -3,11 +3,11 @@
 @section('title', __('site.cookie_policy.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.cookie_policy.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.cookie_policy.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.cookie_policy.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/cookie-policy') }}" />
+@include('partials.seo', [
+    'description' => __('site.cookie_policy.meta_desc'),
+    'path'        => '/cookie-policy',
+    'breadcrumbs' => [[__('site.cookie_policy.page_title'), '/cookie-policy']],
+])
 @endsection
 
 @section('content')

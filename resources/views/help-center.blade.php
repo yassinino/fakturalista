@@ -3,11 +3,11 @@
 @section('title', __('site.help.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.help.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.help.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.help.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/help-center') }}" />
+@include('partials.seo', [
+    'description' => __('site.help.meta_desc'),
+    'path'        => '/help-center',
+    'breadcrumbs' => [[__('site.help.page_title'), '/help-center']],
+])
 @endsection
 
 @section('content')

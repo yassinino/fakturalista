@@ -3,54 +3,34 @@
 @section('title', $post->meta_title)
 
 @section('meta')
-<meta name="description" content="{{ $post->meta_description }}" />
-
-{{-- Open Graph --}}
-<meta property="og:title" content="{{ $post->meta_title }}" />
-<meta property="og:description" content="{{ $post->meta_description }}" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="{{ url('/blog/' . $post->slug) }}" />
-@if ($post->featured_image)
-<meta property="og:image" content="{{ Storage::disk('public')->url($post->featured_image) }}" />
-@endif
+@php
+    $postImage = $post->featured_image ? Storage::disk('public')->url($post->featured_image) : Seo::asset(config('seo.default_image'));
+    $postUrl   = Seo::canonical('/blog/' . $post->slug);
+@endphp
+@include('partials.seo', [
+    'description' => $post->meta_description,
+    'path'        => '/blog/' . $post->slug,
+    'locales'     => ['fr'],
+    'type'        => 'article',
+    'image'       => $postImage,
+    'breadcrumbs' => [[__('site.blog.page_title'), '/blog'], [$post->title, '/blog/' . $post->slug]],
+    'schema'      => [[
+        '@type'            => 'BlogPosting',
+        '@id'              => $postUrl . '#article',
+        'headline'         => \Illuminate\Support\Str::limit($post->title, 110, ''),
+        'description'      => $post->meta_description,
+        'url'              => $postUrl,
+        'mainEntityOfPage' => $postUrl,
+        'image'            => $postImage,
+        'inLanguage'       => 'fr',
+        'datePublished'    => $post->published_at->toIso8601String(),
+        'dateModified'     => $post->updated_at->toIso8601String(),
+        'author'           => ['@type' => 'Organization', '@id' => Seo::organizationId(), 'name' => 'Fakturalista', 'url' => config('seo.canonical_url') . '/'],
+        'publisher'        => ['@id' => Seo::organizationId()],
+    ]],
+])
 <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}" />
 <meta property="article:modified_time" content="{{ $post->updated_at->toIso8601String() }}" />
-
-{{-- Canonical --}}
-<link rel="canonical" href="{{ url('/blog/' . $post->slug) }}" />
-
-{{-- JSON-LD BlogPosting --}}
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": {{ Js::from($post->meta_title) }},
-    "description": {{ Js::from($post->meta_description) }},
-    "url": {{ Js::from(url('/blog/' . $post->slug)) }},
-    @if ($post->featured_image)
-    "image": {{ Js::from(Storage::disk('public')->url($post->featured_image)) }},
-    @endif
-    "datePublished": "{{ $post->published_at->toIso8601String() }}",
-    "dateModified": "{{ $post->updated_at->toIso8601String() }}",
-    "author": {
-        "@type": "Organization",
-        "name": "Fakturalista",
-        "url": {{ Js::from(url('/')) }}
-    },
-    "publisher": {
-        "@type": "Organization",
-        "name": "Fakturalista",
-        "logo": {
-            "@type": "ImageObject",
-            "url": {{ Js::from(url('assets/logo.svg')) }}
-        }
-    },
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": {{ Js::from(url('/blog/' . $post->slug)) }}
-    }
-}
-</script>
 @endsection
 
 @section('content')
@@ -89,6 +69,18 @@
     /* Meta */
     .post-meta-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
     .post-meta-bar time { font-size: 14px; color: #797687; }
+
+    /* End-of-article CTA + related solutions */
+    .post-cta { margin: 56px 0 0; padding: 32px; border-radius: 16px; background: #fff5f8; border: 1px solid #fde0ea; }
+    .post-cta h2 { font-size: 1.35rem; color: #2b2350; margin: 0 0 8px; }
+    .post-cta p { color: #4b5563; margin: 0 0 20px; font-size: 16px; line-height: 1.6; }
+    .post-cta-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .post-cta-link { color: #c2185b; font-weight: 600; }
+    .post-related { margin-top: 36px; }
+    .post-related h2 { font-size: 1.1rem; color: #2b2350; margin-bottom: 12px; }
+    .post-related ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .post-related a { display: block; padding: 12px 14px; border: 1px solid #efe7e7; border-radius: 10px; color: #2b2350; font-weight: 600; font-size: 15px; }
+    .post-related a:hover { border-color: #fa7070; color: #c2185b; text-decoration: none; }
 </style>
 
 <!--==========================-->
@@ -101,7 +93,7 @@
             <ul class="post-meta">
                 <li>
                     <time datetime="{{ $post->published_at->toIso8601String() }}">
-                        {{ $post->published_at->translatedFormat('d \d\e F \d\e Y') }}
+                        {{ $post->published_at->locale('fr')->isoFormat('LL') }}
                     </time>
                 </li>
             </ul>
@@ -124,7 +116,9 @@
 <!--==========================-->
 <section style="padding: 60px 0 80px;">
     <div class="container">
-        <article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
+        {{-- Articles are written in French: keep that language/direction even
+             when the surrounding site chrome is shown in Arabic. --}}
+        <article class="post-article" lang="fr" dir="ltr">
 
             <a href="{{ url('/blog') }}" class="back-link">
                 <i class="fas fa-arrow-left"></i> {{ __('site.blog.back_to_blog') }}
@@ -136,15 +130,34 @@
                 <img
                     src="{{ Storage::disk('public')->url($post->featured_image) }}"
                     alt="{{ $post->title }}"
-                    itemprop="image"
+                    width="1200" height="630"
                 />
             </div>
             @endif
 
             {{-- Body --}}
-            <div class="post-body" itemprop="articleBody">
+            <div class="post-body">
                 {!! $post->body !!}
             </div>
+
+            {{-- Conversion + internal links to the market pages. --}}
+            <aside class="post-cta" aria-labelledby="post-cta-title">
+                <h2 id="post-cta-title">{{ __('site.seo.blog_cta_title') }}</h2>
+                <p>{{ __('site.seo.blog_cta_text', ['days' => Seo::trialDays()]) }}</p>
+                <div class="post-cta-actions">
+                    <a href="{{ url('/register') }}" class="pix-btn">{{ __('site.seo.cta_primary') }}</a>
+                    <a href="{{ url('/pricing') }}" class="post-cta-link">{{ __('site.seo.cta_pricing') }} →</a>
+                </div>
+            </aside>
+
+            <nav class="post-related" aria-labelledby="post-related-title">
+                <h2 id="post-related-title">{{ __('site.seo.blog_related') }}</h2>
+                <ul>
+                    @foreach (\App\Support\MarketLandingPages::all() as $relatedPage)
+                        <li><a href="{{ url($relatedPage['path']) }}">{{ __('landing.' . $relatedPage['key'] . '.nav_label', [], 'fr') }}</a></li>
+                    @endforeach
+                </ul>
+            </nav>
 
             {{-- Footer --}}
             <hr style="margin: 48px 0 32px; border-color: #efe7e7;">
@@ -152,7 +165,6 @@
                 <a href="{{ url('/blog') }}" class="back-link">
                     <i class="fas fa-arrow-left"></i> {{ __('site.blog.all_articles') }}
                 </a>
-                <a href="{{ url('/register') }}" class="pix-btn">{{ __('site.blog.try_cta') }}</a>
             </div>
 
         </article>

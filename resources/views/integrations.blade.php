@@ -3,11 +3,11 @@
 @section('title', __('site.integrations.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.integrations.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.integrations.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.integrations.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/integrations') }}" />
+@include('partials.seo', [
+    'description' => __('site.integrations.meta_desc'),
+    'path'        => '/integrations',
+    'breadcrumbs' => [[__('site.integrations.page_title'), '/integrations']],
+])
 @endsection
 
 @section('content')

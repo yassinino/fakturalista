@@ -2,17 +2,17 @@
 
 @section('title', __('site.home.meta_title'))
 
+@php $homeFaq = collect(range(1, 8))->map(fn ($i) => [__('site.home.faq_q' . $i), __('site.home.faq_a' . $i)])->all(); @endphp
 @section('meta')
-<meta name="description" content="{{ __('site.home.meta_description') }}" />
-<meta name="keywords" content="software de facturación, facturación para autónomos, crear facturas, presupuestos, gestión de clientes" />
-<meta property="og:title" content="{{ __('site.home.meta_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.home.meta_description') }}" />
-<meta property="og:image" content="{{ url('assets/panel_fakturalista.png') }}" />
-<meta property="og:url" content="{{ url('/') }}" />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="Fakturalista" />
-<meta name="twitter:card" content="summary_large_image" />
-<link rel="canonical" href="{{ url('/') }}" />
+@include('partials.seo', [
+    'description' => __('site.home.meta_description'),
+    'path'        => '/',
+    'schema'      => [
+        Seo::softwareApplication($plans, __('site.home.meta_description'), Seo::locale()),
+        Seo::faqPage($homeFaq),
+    ],
+])
+<link rel="preload" as="image" href="{{ url('assets/panel_fakturalista.webp') }}" imagesrcset="{{ url('assets/panel_fakturalista-800.webp') }} 800w, {{ url('assets/panel_fakturalista.webp') }} 1500w" imagesizes="(max-width: 900px) 100vw, 1100px" type="image/webp" />
 @endsection
 
 @section('content')
@@ -36,7 +36,7 @@
     --fk-radius-sm:   12px;
     --fk-shadow-sm:   0 2px 10px rgba(15, 23, 42, .05);
     --fk-shadow-md:   0 20px 60px rgba(15, 23, 42, .08);
-    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: 'Poppins', 'Poppins Fallback', system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--fk-ink);
     background: #fff;
     overflow-x: clip;
@@ -53,7 +53,7 @@
 }
 
 .fk-home h1, .fk-home h2, .fk-home h3 {
-    font-family: 'Poppins', system-ui, sans-serif;
+    font-family: 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
     color: var(--fk-ink);
     letter-spacing: -0.02em;
 }
@@ -78,6 +78,18 @@ html { scroll-behavior: smooth; }
    inline script below confirms JS actually ran, so the animation is a
    pure enhancement and never a requirement for visibility. ─────────── */
 .fk-reveal { opacity: 1; transform: none; }
+/* Arial scaled to Poppins' metrics: text keeps (almost) the same size
+   while the web font loads, so the visible hero doesn't jump on swap. */
+@font-face {
+    font-family: 'Poppins Fallback';
+    src: local('Arial'), local('Helvetica');
+    ascent-override: 92.33%;
+    descent-override: 30.78%;
+    line-gap-override: 8.79%;
+    size-adjust: 113.73%;
+}
+/* Above the fold: visible on first paint (it holds the LCP element). */
+.fk-js .fk-hero .fk-reveal { opacity: 1; transform: none; transition: none; }
 .fk-js .fk-reveal {
     opacity: 0;
     transform: translateY(22px);
@@ -902,14 +914,19 @@ document.addEventListener('click', function (e) {
         <div class="fk-container">
             <div class="fk-hero-visual fk-reveal">
                 <div class="fk-hero-frame">
-                    <img
-                        src="{{ url('assets/panel_fakturalista.png') }}"
-                        alt="{{ __('site.home.hero_image_alt') }}"
-                        class="fk-hero-shot"
-                        width="1500" height="1125"
-                        loading="eager"
-                        fetchpriority="high"
-                    >
+                    <picture>
+                        <source type="image/webp"
+                                srcset="{{ url('assets/panel_fakturalista-800.webp') }} 800w, {{ url('assets/panel_fakturalista.webp') }} 1500w"
+                                sizes="(max-width: 900px) 100vw, 1100px">
+                        <img
+                            src="{{ url('assets/panel_fakturalista.png') }}"
+                            alt="{{ __('site.home.hero_image_alt') }}"
+                            class="fk-hero-shot"
+                            width="1500" height="1125"
+                            loading="eager"
+                            fetchpriority="high"
+                        >
+                    </picture>
                 </div>
                 <div class="fk-float-card fk-float-card--paid" aria-hidden="true">
                     <span class="fk-float-check">
@@ -918,7 +935,8 @@ document.addEventListener('click', function (e) {
                     {{ __('site.home.hero_float_paid') }}
                 </div>
                 <div class="fk-float-card fk-float-card--amount" aria-hidden="true">
-                    {{ __('site.home.hero_float_amount') }}
+                    {{-- Number group isolated LTR so the space thousands separator isn't reordered in Arabic. --}}
+                    {!! preg_replace('/\d[\d\s.,]*\d/u', '<bdi dir="ltr" style="white-space:nowrap">$0</bdi>', e(__('site.home.hero_float_amount'))) !!}
                 </div>
             </div>
         </div>
@@ -1242,6 +1260,16 @@ document.addEventListener('click', function (e) {
                     <h3>{{ __('site.home.feature_ubl_title') }}</h3>
                     <p>{{ __('site.home.feature_ubl_text') }}</p>
                 </div>
+                <div class="fk-feature-cell">
+                    <svg class="fk-feature-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 21h8M12 18v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 11l2.5 2.5L16 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <h3>{{ __('site.home.feature_portal_title') }}</h3>
+                    <p>{{ __('site.home.feature_portal_text') }}</p>
+                </div>
+                <div class="fk-feature-cell">
+                    <svg class="fk-feature-icon" viewBox="0 0 24 24" fill="none"><path d="M6 16V11a6 6 0 1112 0v5l1.5 2h-15L6 16z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 20a2 2 0 004 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                    <h3>{{ __('site.home.feature_reminders_title') }}</h3>
+                    <p>{{ __('site.home.feature_reminders_text') }}</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1338,6 +1366,36 @@ document.addEventListener('click', function (e) {
         </div>
     </section>
 
+    {{-- ============================ SOLUTIONS (MOROCCO) ============================
+         Internal links to the market landing pages (Home -> solutions ->
+         pricing -> signup). --}}
+    @php $fkLandingLocale = Seo::locale() === 'ar' ? 'ar' : 'fr'; @endphp
+    <section class="fk-features fk-solutions" id="solutions">
+        <div class="fk-container">
+            <div class="fk-section-head fk-reveal">
+                <span class="fk-kicker">{{ __('site.home.solutions_kicker') }}</span>
+                <h2>{{ __('site.home.solutions_title') }}</h2>
+                <p>{{ __('site.home.solutions_text') }}</p>
+            </div>
+            <div class="fk-feature-grid fk-reveal">
+                @foreach (['logiciel-facturation' => 'invoicing', 'logiciel-devis-facture' => 'quotes', 'facturation-electronique' => 'einvoicing', 'facturation-btp' => 'btp'] as $fkSlug => $fkKey)
+                    <a class="fk-feature-cell fk-solution-link" href="{{ Seo::url('/ma/' . $fkSlug, $fkLandingLocale) }}">
+                        <h3>{{ __('site.home.solutions_' . $fkKey . '_title') }}</h3>
+                        <p>{{ __('site.home.solutions_' . $fkKey . '_text') }}</p>
+                        <span class="fk-solution-more" aria-hidden="true">→</span>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    <style>
+    .fk-solution-link { display: block; color: inherit; text-decoration: none; position: relative; }
+    .fk-solution-link:hover { color: inherit; text-decoration: none; }
+    .fk-solution-link h3 { color: var(--fk-pink-dark, #C2185B); }
+    .fk-solution-more { display: inline-block; margin-top: 10px; color: var(--fk-pink, #E91E63); font-weight: 700; }
+    html[dir="rtl"] .fk-solution-more { transform: scaleX(-1); }
+    </style>
+
     {{-- ============================ FAQ ============================ --}}
     <section class="fk-faq">
         <div class="fk-container">
@@ -1345,7 +1403,7 @@ document.addEventListener('click', function (e) {
                 <h2>{{ __('site.home.faq_title') }}</h2>
             </div>
             <div class="fk-faq-list fk-reveal" id="fk-faq-list">
-                @foreach ([1,2,3,4,5,6] as $i)
+                @foreach (range(1, 8) as $i)
                     <div class="fk-faq-item" data-open="false">
                         <button type="button" class="fk-faq-q" aria-expanded="false">
                             <span>{{ __('site.home.faq_q' . $i) }}</span>
@@ -1427,7 +1485,7 @@ document.addEventListener('click', function (e) {
         above is gated to es - not shown to es/en visitors since no
         translated copy for this section was written for them.
     --}}
-    @if(app()->getLocale() === 'fr')
+    @if(in_array(app()->getLocale(), ['fr', 'ar'], true))
     <section class="fk-spain" id="facturation-maroc">
         <div class="fk-container">
             <div class="fk-spain-panel fk-reveal">
@@ -1441,7 +1499,7 @@ document.addEventListener('click', function (e) {
 
                     <div class="fk-spain-card">
                         <span class="fk-spain-card-badge">{{ __('site.home.morocco_card_badge') }}</span>
-                        <a href="{{ route('blog.index') }}" class="fk-spain-card-link">
+                        <a href="{{ Seo::url('/ma/facturation-electronique', $fkLandingLocale) }}" class="fk-spain-card-link">
                             {{ __('site.home.morocco_cta') }}
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>

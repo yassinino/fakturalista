@@ -3,11 +3,11 @@
 @section('title', __('site.privacy_policy.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.privacy_policy.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.privacy_policy.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.privacy_policy.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/privacy-policy') }}" />
+@include('partials.seo', [
+    'description' => __('site.privacy_policy.meta_desc'),
+    'path'        => '/privacy-policy',
+    'breadcrumbs' => [[__('site.privacy_policy.page_title'), '/privacy-policy']],
+])
 @endsection
 
 @section('content')

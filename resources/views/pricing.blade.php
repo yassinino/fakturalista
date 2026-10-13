@@ -3,11 +3,12 @@
 @section('title', __('site.pricing.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.pricing.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.pricing.page_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.pricing.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/pricing') }}" />
+@include('partials.seo', [
+    'description' => __('site.pricing.meta_desc'),
+    'path'        => '/pricing',
+    'breadcrumbs' => [[__('site.pricing.page_title'), '/pricing']],
+    'schema'      => [Seo::softwareApplication($plans, __('site.pricing.meta_desc'), Seo::locale())],
+])
 @endsection
 
 @section('content')

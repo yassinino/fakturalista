@@ -1,58 +1,84 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(app()->getLocale(), config('app.rtl_locales', []), true) ? 'rtl' : 'ltr' }}">
+<html lang="@yield('html_lang', str_replace('_', '-', app()->getLocale()))" dir="{{ in_array(app()->getLocale(), config('app.rtl_locales', []), true) ? 'rtl' : 'ltr' }}">
 
 <head>
     <!-- Meta Data -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-    <title>@yield('title', 'Fakturalista') - Fakturalista</title>
+    @php $fkPageTitle = trim($__env->yieldContent('title', 'Fakturalista')); @endphp
+    <title>{{ str_contains($fkPageTitle, 'Fakturalista') ? $fkPageTitle : $fkPageTitle . ' - Fakturalista' }}</title>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url('assets/icon.svg') }}" />
-    <link rel="mask-icon" href="assets/img/fav/safari-pinned-tab.svg" color="#fa7070" />
+    <link rel="mask-icon" href="{{ url('assets/icon.svg') }}" color="#fa7070" />
 
     <meta name="msapplication-TileColor" content="#fa7070" />
     <meta name="theme-color" content="#fa7070" />
     @hasSection('meta')
         @yield('meta')
     @else
-        <meta name="description" content="Fakturalista es una plataforma moderna de facturación online que te permite crear, enviar y gestionar facturas profesionales en segundos.">
-        <meta name="keywords" content="facturación, facturas online, SaaS, gestión de gastos, pagos instantáneos, software de facturación, Fakturalista">
-        <meta property="og:title" content="Fakturalista – Software de facturación online" />
-        <meta property="og:description" content="Crea y envía facturas profesionales, controla tus gastos y acepta pagos instantáneos con Fakturalista." />
-        <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
-        <meta property="og:url" content="{{ url()->current() }}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Fakturalista" />
-        <link rel="canonical" href="{{ url()->current() }}" />
+        {{-- Pages without their own SEO block (signup, login finder,
+             tenant-not-found, checkout cancel) are utility pages: kept out
+             of the index, links still followed. --}}
+        <meta name="description" content="{{ __('site.home.meta_description') }}" />
+        <meta name="robots" content="noindex, follow" />
     @endif
+    @foreach (array_filter(config('seo.verification', [])) as $seoEngine => $seoToken)
+        <meta name="{{ $seoEngine === 'google' ? 'google-site-verification' : 'msvalidate.01' }}" content="{{ $seoToken }}" />
+    @endforeach
+    @unless (tenancy()->initialized)
+    <script type="application/ld+json">{!! Seo::jsonLd([
+        '@context' => 'https://schema.org',
+        '@graph'   => [
+            [
+                '@type'        => 'Organization',
+                '@id'          => Seo::organizationId(),
+                'name'         => config('seo.organization.name'),
+                'url'          => config('seo.canonical_url') . '/',
+                'logo'         => Seo::asset(config('seo.organization.logo')),
+                'email'        => config('seo.organization.email'),
+                'contactPoint' => [[
+                    '@type'             => 'ContactPoint',
+                    'contactType'       => 'customer support',
+                    'email'             => config('seo.organization.email'),
+                    'telephone'         => config('seo.organization.telephone'),
+                    'areaServed'        => config('seo.organization.area_served'),
+                    'availableLanguage' => ['French', 'Arabic', 'English'],
+                ]],
+            ] + (config('seo.organization.same_as') ? ['sameAs' => config('seo.organization.same_as')] : []),
+            [
+                '@type'      => 'WebSite',
+                '@id'        => config('seo.canonical_url') . '/#website',
+                'name'       => 'Fakturalista',
+                'url'        => config('seo.canonical_url') . '/',
+                'inLanguage' => ['fr', 'ar', 'en'],
+                'publisher'  => ['@id' => Seo::organizationId()],
+            ],
+        ],
+    ]) !!}</script>
+    @endunless
     <meta name="author" content="Fakturalista">
     <!-- Dependency Styles -->
     <link rel="stylesheet" href="{{ url('dependencies/bootstrap/css/bootstrap.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ url('dependencies/fontawesome/css/all.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('dependencies/swiper/css/swiper.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('dependencies/wow/css/animate.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('dependencies/magnific-popup/css/magnific-popup.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('dependencies/components-elegant-icons/css/elegant-icons.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('dependencies/simple-line-icons/css/simple-line-icons.css') }}" type="text/css" />
+    {{-- Not needed for the first paint (sliders, popups, scroll animations,
+         drawer/secondary icons): loaded without blocking rendering. --}}
+    @foreach (['dependencies/swiper/css/swiper.min.css', 'dependencies/wow/css/animate.css', 'dependencies/magnific-popup/css/magnific-popup.css', 'dependencies/components-elegant-icons/css/elegant-icons.min.css', 'dependencies/simple-line-icons/css/simple-line-icons.css'] as $fkAsyncCss)
+    <link rel="stylesheet" href="{{ url($fkAsyncCss) }}" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="{{ url($fkAsyncCss) }}" /></noscript>
+    @endforeach
 
     <!-- Site Stylesheet -->
     <link rel="stylesheet" href="{{ url('front/assets/css/app.css') }}" type="text/css" />
 
     <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap" rel="stylesheet" />
+    {{-- Only the weights the site's CSS actually uses (was 2 x 18 faces). --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Satisfy&display=swap" rel="stylesheet" />
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY0S2MP872"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-YY0S2MP872');
-    </script>
+    @include('partials.analytics')
 
     <style>
     /* ── Top sales bar - slim, above the main nav, same on every page ──
@@ -362,6 +388,7 @@
         transition: background .1s;
         white-space: nowrap;
         line-height: 1;
+        text-decoration: none;
     }
     .fk-lang-item:hover { background: #f3f4f6; color: #111827; }
     .fk-lang-item.fk-active { color: #E91E63; font-weight: 600; background: #fff0f6; }
@@ -443,7 +470,7 @@
     /* ── Grid ────────────────────────────────────────────────────────── */
     .fk-footer-grid {
         display: grid;
-        grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
         gap: 48px 40px;
         padding-bottom: 56px;
         border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -558,7 +585,7 @@
     /* ── Responsive ──────────────────────────────────────────────────── */
     @media (max-width: 1199px) {
         .fk-footer-grid {
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 40px 32px;
         }
         .fk-footer-brand { grid-column: 1 / -1; }
@@ -752,6 +779,15 @@
         </div>
     </div>
     <!-- /.page-loader -->
+    {{-- The theme only fades the loader out on window "load" (every image,
+         font and script), which held back Largest Contentful Paint. The
+         content is usable as soon as the DOM is parsed. --}}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var loader = document.querySelector('.page-loader');
+        if (loader) { loader.style.transition = 'opacity .25s'; loader.style.opacity = '0'; setTimeout(function () { loader.style.display = 'none'; }, 260); }
+    });
+    </script>
 
     <div id="main_content">
 
@@ -796,9 +832,9 @@
                     <!-- /.toggle-menu -->
 
                     <div class="site-mobile-logo">
-                        <a href="index.html" class="logo">
-                            <img src="{{ url('assets/icon.svg') }}" alt="site logo" class="main-logo" />
-                            <img src="{{ url('assets/icon.svg') }}" alt="site logo" class="sticky-logo" />
+                        <a href="{{ Seo::url('/') }}" class="logo">
+                            <img src="{{ url('assets/icon.svg') }}" alt="Fakturalista" class="main-logo" width="40" height="40" />
+                            <img src="{{ url('assets/icon.svg') }}" alt="" class="sticky-logo" width="40" height="40" />
                         </a>
                     </div>
 
@@ -809,25 +845,25 @@
                         </div>
 
                         <div class="site-logo">
-                            <a href="{{ url('/') }}" class="logo">
-                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="main-logo" />
-                                <img src="{{ url('assets/logo.svg') }}" alt="site logo" class="sticky-logo" />
+                            <a href="{{ Seo::url('/') }}" class="logo">
+                                <img src="{{ url('assets/logo.svg') }}" alt="Fakturalista" class="main-logo" />
+                                <img src="{{ url('assets/logo.svg') }}" alt="" class="sticky-logo" />
                             </a>
                         </div>
                         <!-- /.site-logo -->
 
                         <div class="menu-wrapper" data-top="992">
                             <ul class="site-main-menu">
-                                <li><a href="{{ url('/') }}#funciones">{{ __('site.nav.features') }}</a></li>
-                                <li><a href="{{ url('/pricing') }}">{{ __('site.nav.pricing') }}</a></li>
-                                <li><a href="{{ url('/') }}#como-funciona">{{ __('site.nav.how_it_works') }}</a></li>
-                                <li><a href="{{ url('/help-center') }}">{{ __('site.nav.resources') }}</a></li>
-                                <li><a href="{{ url('/contact') }}">{{ __('site.nav.contact') }}</a></li>
+                                <li><a href="{{ Seo::url('/') }}#funciones">{{ __('site.nav.features') }}</a></li>
+                                <li><a href="{{ Seo::url('/pricing') }}">{{ __('site.nav.pricing') }}</a></li>
+                                <li><a href="{{ Seo::url('/') }}#como-funciona">{{ __('site.nav.how_it_works') }}</a></li>
+                                <li><a href="{{ Seo::url('/help-center') }}">{{ __('site.nav.resources') }}</a></li>
+                                <li><a href="{{ Seo::url('/contact') }}">{{ __('site.nav.contact') }}</a></li>
                             </ul>
 
                             <div class="nav-right">
-                                <a href="{{ url('/login') }}" class="nav-login">{{ __('site.nav.login') }}</a>
-                                <a href="{{ url('/register') }}" class="nav-btn">{{ __('site.nav.cta') }}</a>
+                                <a href="{{ Seo::url('/login') }}" class="nav-login">{{ __('site.nav.login') }}</a>
+                                <a href="{{ Seo::url('/register') }}" class="nav-btn">{{ __('site.nav.cta') }}</a>
                             </div>
                         </div>
                         <!-- /.menu-wrapper -->
@@ -851,7 +887,7 @@
                     <div class="fk-prefooter-badge">{{ __('site.footer.cta_badge') }}</div>
                     <h2 class="fk-prefooter-title">{{ __('site.footer.cta_title') }}</h2>
                     <p class="fk-prefooter-sub">{{ __('site.footer.cta_sub') }}</p>
-                    <a href="{{ url('/register') }}" class="fk-prefooter-btn">
+                    <a href="{{ Seo::url('/register') }}" class="fk-prefooter-btn">
                         {{ __('site.footer.cta_btn') }}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
@@ -872,21 +908,34 @@
 
                         <!-- Brand column -->
                         <div class="fk-footer-brand">
-                            <a href="{{ url('/') }}" class="fk-footer-logo-link">
+                            <a href="{{ Seo::url('/') }}" class="fk-footer-logo-link">
                                 <img src="{{ url('assets/logo.svg') }}" alt="Fakturalista" class="fk-footer-logo" />
                             </a>
                             <p class="fk-footer-desc">{{ __('site.footer.tagline') }}</p>
-                            <a href="{{ url('/register') }}" class="fk-footer-brand-cta">{{ __('site.nav.cta') }}</a>
+                            <a href="{{ Seo::url('/register') }}" class="fk-footer-brand-cta">{{ __('site.nav.cta') }}</a>
                         </div>
 
                         <!-- Product column -->
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.product') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="{{ url('/pricing') }}">{{ __('site.footer.product_pricing') }}</a></li>
-                                <li><a href="{{ url('/security') }}">{{ __('site.footer.product_security') }}</a></li>
-                                <li><a href="{{ url('/integrations') }}">{{ __('site.footer.product_integrations') }}</a></li>
-                                <li><a href="{{ url('/faq') }}">{{ __('site.footer.product_faq') }}</a></li>
+                                <li><a href="{{ Seo::url('/pricing') }}">{{ __('site.footer.product_pricing') }}</a></li>
+                                <li><a href="{{ Seo::url('/security') }}">{{ __('site.footer.product_security') }}</a></li>
+                                <li><a href="{{ Seo::url('/integrations') }}">{{ __('site.footer.product_integrations') }}</a></li>
+                                <li><a href="{{ Seo::url('/faq') }}">{{ __('site.footer.product_faq') }}</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Solutions (Morocco) column - crawlable path to the
+                             market landing pages from every public page. -->
+                        @php $fkLandingLocale = Seo::locale() === 'ar' ? 'ar' : 'fr'; @endphp
+                        <div class="fk-footer-col">
+                            <h4 class="fk-footer-col-title">{{ __('site.footer.solutions_title') }}</h4>
+                            <ul class="fk-footer-links">
+                                <li><a href="{{ Seo::url('/ma/logiciel-facturation', $fkLandingLocale) }}">{{ __('site.footer.solutions_invoicing') }}</a></li>
+                                <li><a href="{{ Seo::url('/ma/logiciel-devis-facture', $fkLandingLocale) }}">{{ __('site.footer.solutions_quotes') }}</a></li>
+                                <li><a href="{{ Seo::url('/ma/facturation-electronique', $fkLandingLocale) }}">{{ __('site.footer.solutions_einvoicing') }}</a></li>
+                                <li><a href="{{ Seo::url('/ma/facturation-btp', $fkLandingLocale) }}">{{ __('site.footer.solutions_btp') }}</a></li>
                             </ul>
                         </div>
 
@@ -894,9 +943,9 @@
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.company') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="{{ url('/about') }}">{{ __('site.footer.company_about') }}</a></li>
-                                <li><a href="{{ url('/contact') }}">{{ __('site.footer.company_contact') }}</a></li>
-                                <li><a href="{{ url('/blog') }}">{{ __('site.footer.company_blog') }}</a></li>
+                                <li><a href="{{ Seo::url('/about') }}">{{ __('site.footer.company_about') }}</a></li>
+                                <li><a href="{{ Seo::url('/contact') }}">{{ __('site.footer.company_contact') }}</a></li>
+                                <li><a href="{{ Seo::url('/blog') }}">{{ __('site.footer.company_blog') }}</a></li>
                             </ul>
                         </div>
 
@@ -904,12 +953,12 @@
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.resources') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="{{ url('/documentation') }}">{{ __('site.footer.resources_docs') }}</a></li>
-                                <li><a href="{{ url('/help-center') }}">{{ __('site.footer.resources_help') }}</a></li>
-                                <li><a href="{{ url('/api-docs') }}">{{ __('site.footer.resources_api') }}</a></li>
-                                <li><a href="{{ url('/changelog') }}">{{ __('site.footer.resources_changelog') }}</a></li>
+                                <li><a href="{{ Seo::url('/documentation') }}">{{ __('site.footer.resources_docs') }}</a></li>
+                                <li><a href="{{ Seo::url('/help-center') }}">{{ __('site.footer.resources_help') }}</a></li>
+                                <li><a href="{{ Seo::url('/api-docs') }}">{{ __('site.footer.resources_api') }}</a></li>
+                                <li><a href="{{ Seo::url('/changelog') }}">{{ __('site.footer.resources_changelog') }}</a></li>
                                 @if(app()->getLocale() === 'es')
-                                    <li><a href="{{ url('/verifactu') }}">{{ __('site.footer.resources_verifactu') }}</a></li>
+                                    <li><a href="{{ Seo::url('/verifactu') }}">{{ __('site.footer.resources_verifactu') }}</a></li>
                                 @endif
                             </ul>
                         </div>
@@ -918,10 +967,10 @@
                         <div class="fk-footer-col">
                             <h4 class="fk-footer-col-title">{{ __('site.footer.legal_title') }}</h4>
                             <ul class="fk-footer-links">
-                                <li><a href="{{ url('/privacy-policy') }}">{{ __('site.footer.privacy') }}</a></li>
-                                <li><a href="{{ url('/terms') }}">{{ __('site.footer.terms') }}</a></li>
-                                <li><a href="{{ url('/legal-notice') }}">{{ __('site.footer.legal') }}</a></li>
-                                <li><a href="{{ url('/cookie-policy') }}">{{ __('site.footer.cookies') }}</a></li>
+                                <li><a href="{{ Seo::url('/privacy-policy') }}">{{ __('site.footer.privacy') }}</a></li>
+                                <li><a href="{{ Seo::url('/terms') }}">{{ __('site.footer.terms') }}</a></li>
+                                <li><a href="{{ Seo::url('/legal-notice') }}">{{ __('site.footer.legal') }}</a></li>
+                                <li><a href="{{ Seo::url('/cookie-policy') }}">{{ __('site.footer.cookies') }}</a></li>
                             </ul>
                         </div>
 
@@ -974,8 +1023,6 @@
     <script src="{{ url('dependencies/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
     <script src="{{ url('dependencies/jquery.parallax-scroll/js/jquery.parallax-scroll.js') }}"></script>
     <script src="{{ url('dependencies/magnific-popup/js/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ url('dependencies/gmap3/js/gmap3.min.js') }}"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDk2HrmqE4sWSei0XdKGbOMOHN3Mm2Bf-M&#038;ver=2.1.6"></script>
 
     <!-- Site Scripts -->
     <script src="{{ url('front/assets/js/header.js') }}"></script>

@@ -25,6 +25,7 @@ Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
+    'noindex',
 ])->group(function () {
 
     Route::prefix('admin/subscription/checkout')->middleware('set.locale')->group(function () {
@@ -75,6 +76,9 @@ Route::middleware([
     // in Step 6A.1: Stripe sends Connect events for ALL connected accounts to
     // one URL, which a tenant domain can't serve. The canonical endpoint is
     // the central POST /stripe/connect/webhook (routes/web.php).
+
+    // Tenant workspaces are private: nothing here belongs in search results.
+    Route::get('/robots.txt', [\App\Http\Controllers\RobotsController::class, 'tenant']);
 
     Route::get('/', function () {
         return redirect('/admin/login');

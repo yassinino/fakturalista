@@ -48,6 +48,11 @@ return [
         'cta_sub'              => 'Create your free account and start invoicing in minutes.',
         'cta_btn'              => 'Start for free',
         'cta_note'             => 'No credit card required',
+        'solutions_title' => 'Morocco solutions',
+        'solutions_invoicing' => 'Invoicing software',
+        'solutions_quotes' => 'Quotes and invoices',
+        'solutions_einvoicing' => 'E-invoicing',
+        'solutions_btp' => 'Construction invoicing',
     ],
 
     'lang' => [
@@ -59,9 +64,8 @@ return [
     ],
 
     'home' => [
-        'meta_title'       => 'Invoicing software for freelancers and small businesses',
-        'meta_description' => 'Create professional invoices and quotes, manage your clients and track payments from one place. Start for free, no credit card required.',
-
+        'meta_title'       => 'Online invoicing software: quotes, invoices and payments',
+        'meta_description' => 'Create quotes and invoices in seconds, track payments and manage your clients. Built for freelancers and SMEs in Morocco. 14-day free trial, no card required.',
         // Hero
         'hero_badge'        => 'Simple invoicing for freelancers and small businesses',
         'hero_title_l1'     => 'Invoice easily.',
@@ -72,7 +76,7 @@ return [
         'hero_microcopy'    => 'No credit card required · Set up in minutes',
         'hero_image_alt'    => 'Invoice creation screen in Fakturalista',
         'hero_float_paid'   => 'Invoice paid',
-        'hero_float_amount' => '€1,250.00',
+        'hero_float_amount' => 'MAD 12,500.00',
         'hero_ai_mention'   => 'Also create your invoices in seconds with AI',
 
         // Problem → solution
@@ -115,7 +119,7 @@ return [
         'show3_text'     => 'Keep your clients and your catalog of products or services in one place. Check each client\'s history and every payment status without hunting around.',
         'show3_bullet_1' => 'Client profile with full history',
         'show3_bullet_2' => 'Product and service catalog',
-        'show3_bullet_3' => 'Online payments and payment tracking',
+        'show3_bullet_3' => 'Payment and collection tracking',
         'show3_image_alt'=> 'Fakturalista clients and service catalog panel',
         'show3_mock_payment_received' => 'Payment received — Invoice #0041',
         'show3_mock_client1_initials' => 'JD',
@@ -168,7 +172,7 @@ return [
         'feature_clients_title'   => 'Clients',
         'feature_clients_text'    => 'All your client information in one place.',
         'feature_payments_title'  => 'Payments',
-        'feature_payments_text'   => 'Accept online payments and track your collections.',
+        'feature_payments_text'   => 'Record payments received and track what is still outstanding.',
         'feature_services_title'  => 'Services',
         'feature_services_text'   => 'Keep your product and service catalog up to date.',
         'feature_reports_title'   => 'Reports',
@@ -176,7 +180,7 @@ return [
         'feature_templates_title' => 'Templates',
         'feature_templates_text'  => 'Customize the design of your invoices and quotes.',
         'feature_multilang_title' => 'Multilingual',
-        'feature_multilang_text'  => 'Available in Spanish, French and English.',
+        'feature_multilang_text'  => 'Interface in French, Arabic and English.',
         'feature_ai_title'        => 'AI-assisted invoicing',
         'feature_ai_text'         => 'Describe your invoice in one sentence, AI prepares the details, you check before confirming.',
         'feature_ubl_title'       => 'UBL 2.1 Export',
@@ -225,6 +229,31 @@ return [
         'faq_a5'    => 'Yes. Each business has its own independent database, and only you and the users you invite can access your account.',
         'faq_q6'    => 'Can I cancel anytime?',
         'faq_a6'    => 'Yes. You can cancel your subscription anytime from your account settings, no commitment.',
+        'feature_portal_title' => 'Client portal',
+        'feature_portal_text' => 'Your clients view and download their invoices and quotes online, and accept a quote in one click.',
+        'feature_reminders_title' => 'Due-date alerts',
+        'feature_reminders_text' => 'Get an email before an invoice is due and as soon as it is overdue, so you follow up at the right time.',
+        'faq_q7' => 'Is Fakturalista suited to Moroccan businesses?',
+        'faq_a7' => 'Yes. Invoices are in dirhams, the 20% and 10% VAT rates and exempt operations are preconfigured, and you can record the ICE, IF and RC of your company and your clients. The interface is available in French and Arabic.',
+        'faq_q8' => 'Can I export my invoices and data?',
+        'faq_a8' => 'Yes. Every invoice downloads as a PDF, your invoice, quote, payment and client lists export to Excel, and each invoice can be generated as UBL 2.1 XML.',
+        'solutions_kicker' => 'Solutions for Morocco',
+        'solutions_title' => 'Invoicing that fits your business',
+        'solutions_text' => 'See how Fakturalista covers the everyday needs of Moroccan businesses, from the first quote to tracking payments.',
+        'solutions_invoicing_title' => 'Invoicing software for Morocco',
+        'solutions_invoicing_text' => 'Invoices in dirhams, 20% and 10% VAT, ICE and payment tracking.',
+        'solutions_quotes_title' => 'Quotes and invoices',
+        'solutions_quotes_text' => 'From a quote accepted online to the invoice, with no retyping.',
+        'solutions_einvoicing_title' => 'E-invoicing',
+        'solutions_einvoicing_text' => 'What is changing in Morocco and how to structure your invoices now.',
+        'solutions_btp_title' => 'Construction and trades',
+        'solutions_btp_text' => 'Itemised quotes, one-click conversion to invoices and tracking of paid or overdue invoices.',
+        'morocco_badge' => 'Invoicing in Morocco',
+        'morocco_title' => 'Get your business ready for the changes in invoicing',
+        'morocco_text_1' => 'E-invoicing is evolving in Morocco. Fakturalista already lets you structure your invoicing and export invoices in the standard UBL 2.1 format.',
+        'morocco_text_2' => 'We follow regulatory and technical developments so we can update Fakturalista once the official specifications are published.',
+        'morocco_card_badge' => 'UBL 2.1',
+        'morocco_cta' => 'Learn about e-invoicing',
     ],
 
     'freeTrial' => [
@@ -318,8 +347,8 @@ return [
 
 
     'pricing' => [
-        'page_title'              => 'Pricing',
-        'meta_desc'               => 'Simple, transparent pricing for every business. No hidden fees. Cancel anytime.',
+        'page_title'              => 'Invoicing software pricing',
+        'meta_desc'               => 'Fakturalista pricing in dirhams: monthly plans with no commitment and a 14-day free trial, no card required. Compare the features included.',
         'badge'                   => 'Plans for every stage',
         'title'                   => 'Simple pricing, no surprises',
         'sub'                     => 'Start free. Upgrade when you\'re ready.',
@@ -366,7 +395,7 @@ return [
     ],
 
     'about' => [
-        'page_title'       => 'About',
+        'page_title'       => 'About Fakturalista',
         'meta_desc'        => 'Fakturalista is a professional invoicing and management platform for freelancers and small businesses.',
         'banner_title'     => 'About Fakturalista',
         'banner_p1'        => 'Fakturalista is a web invoicing and management platform designed for freelancers and SMEs. Create, send and manage your invoices in minutes, with clients, products and reports all in one place.',
@@ -393,7 +422,7 @@ return [
     ],
 
     'contact' => [
-        'page_title'          => 'Contact',
+        'page_title'          => 'Contact Fakturalista',
         'meta_desc'           => 'A question about Fakturalista, your subscription or your invoicing? Write to us, our team replies directly.',
         'header_tag'          => 'Contact',
         'header_title'        => 'Tell us what you need. We reply in person.',
@@ -440,7 +469,7 @@ return [
     ],
 
     'blog' => [
-        'page_title'   => 'Blog',
+        'page_title'   => 'Blog: invoicing tips for small businesses',
         'meta_desc'    => 'Articles and tips on invoicing, management for freelancers and SMEs - Fakturalista Blog.',
         'og_title'     => 'Blog - Fakturalista',
         'og_desc'      => 'Articles and tips on invoicing, management for freelancers and SMEs.',
@@ -455,7 +484,7 @@ return [
     ],
 
     'faq' => [
-        'page_title'  => 'Frequently asked questions',
+        'page_title'  => 'Fakturalista FAQ',
         'meta_desc'   => 'Answers to the most common questions about Fakturalista: plans, invoices, payments, security and more.',
         'hero_title'  => 'Frequently asked questions',
         'hero_sub'    => 'Everything you need to know about Fakturalista. If you don\'t find your answer, just get in touch.',
@@ -918,6 +947,28 @@ return [
             'rate_limited'     => 'Too many submissions in a short time. Please try again in a few minutes.',
             'generic'          => 'Sending failed. Check your connection and try again.',
         ],
+    ],
+
+    'seo' => [
+        'home' => 'Home',
+        'faq_title' => 'Frequently asked questions',
+        'cta_primary' => 'Try Fakturalista for free',
+        'cta_first_invoice' => 'Create my first invoice',
+        'cta_features' => 'Explore the features',
+        'cta_pricing' => 'See pricing',
+        'cta_microcopy' => ':days-day free trial · No card required',
+        'related_title' => 'Learn more',
+        'blog_cta_title' => 'Switch to simpler invoicing',
+        'blog_cta_text' => 'Create quotes and invoices, track payments and keep everything in one place. :days-day free trial, no card required.',
+        'blog_sources' => 'Sources',
+        'blog_updated' => 'Updated on :date',
+        'blog_related' => 'Related solutions',
+        'not_found_title' => 'Page not found',
+        'not_found_text' => 'The page you are looking for does not exist or has moved.',
+        'gone_title' => 'Page removed',
+        'gone_text' => 'This page has been permanently removed.',
+        'back_home' => 'Back to home',
+        'see_blog' => 'Read the blog',
     ],
 
 ];

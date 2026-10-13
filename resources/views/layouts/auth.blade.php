@@ -5,7 +5,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-    <title>@yield('title', 'Fakturalista') - Fakturalista</title>
+    @php $fkPageTitle = trim($__env->yieldContent('title', 'Fakturalista')); @endphp
+    <title>{{ str_contains($fkPageTitle, 'Fakturalista') ? $fkPageTitle : $fkPageTitle . ' - Fakturalista' }}</title>
+    {{-- Signup / workspace finder: utility pages, kept out of the index. --}}
+    <meta name="robots" content="noindex, follow" />
+    @include('partials.analytics')
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url('assets/icon.svg') }}" />

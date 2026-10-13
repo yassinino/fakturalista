@@ -3,11 +3,11 @@
 @section('title', __('site.legal_notice.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.legal_notice.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.legal_notice.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.legal_notice.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/legal-notice') }}" />
+@include('partials.seo', [
+    'description' => __('site.legal_notice.meta_desc'),
+    'path'        => '/legal-notice',
+    'breadcrumbs' => [[__('site.legal_notice.page_title'), '/legal-notice']],
+])
 @endsection
 
 @section('content')

@@ -15,19 +15,20 @@
         <svg class="fk-lang-chevron" width="12" height="12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/></svg>
     </button>
     <div class="fk-lang-panel" role="listbox" aria-label="{{ __('site.lang.label') }}">
+        {{-- Plain links (?lang=xx) instead of POST forms: each language
+             version is its own crawlable URL (config/seo.php); SetLocale
+             also remembers the choice in the session. --}}
         @foreach($fkLangs as $fkCode => $fkName)
-        <form method="POST" action="{{ url('/locale') }}" class="fk-lang-form">
-            @csrf
-            <input type="hidden" name="locale" value="{{ $fkCode }}">
-            <button type="submit" class="fk-lang-item {{ $fkCurrent === $fkCode ? 'fk-active' : '' }}">
+            <a href="{{ Seo::url('/' . ltrim(request()->path(), '/'), $fkCode) }}{{ $fkCode === 'fr' && Seo::locale() !== 'fr' ? '?lang=fr' : '' }}"
+               class="fk-lang-item {{ $fkCurrent === $fkCode ? 'fk-active' : '' }}"
+               hreflang="{{ $fkCode }}" lang="{{ $fkCode }}" rel="alternate">
                 @if($fkCurrent === $fkCode)
                     <svg class="fk-lang-chk" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
                 @else
                     <span class="fk-lang-chk-empty" aria-hidden="true"></span>
                 @endif
                 {{ $fkName }}
-            </button>
-        </form>
+            </a>
         @endforeach
     </div>
 </div>

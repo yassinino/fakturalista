@@ -48,6 +48,11 @@ return [
         'cta_sub'              => 'Créez votre compte gratuit et commencez à facturer en quelques minutes.',
         'cta_btn'              => 'Commencer gratuitement',
         'cta_note'             => 'Sans carte de crédit',
+        'solutions_title' => 'Solutions Maroc',
+        'solutions_invoicing' => 'Logiciel de facturation',
+        'solutions_quotes' => 'Devis et factures',
+        'solutions_einvoicing' => 'Facturation électronique',
+        'solutions_btp' => 'Facturation BTP',
     ],
 
     'lang' => [
@@ -59,9 +64,8 @@ return [
     ],
 
     'home' => [
-        'meta_title'       => 'Logiciel de facturation pour indépendants et petites entreprises',
-        'meta_description' => 'Créez des factures et devis professionnels, gérez vos clients et suivez vos paiements depuis un seul endroit. Commencez gratuitement, sans carte de crédit.',
-
+        'meta_title'       => 'Logiciel de facturation en ligne : devis, factures et paiements',
+        'meta_description' => 'Créez vos devis et factures en quelques secondes, suivez vos paiements et gérez vos clients. Pensé pour les indépendants et PME au Maroc. Essai gratuit de 14 jours, sans carte.',
         // Hero
         'hero_badge'        => 'Facturation simple pour indépendants et petites entreprises',
         'hero_title_l1'     => 'Facturez facilement.',
@@ -72,7 +76,7 @@ return [
         'hero_microcopy'    => 'Sans carte de crédit · Configuration en quelques minutes',
         'hero_image_alt'    => 'Écran de création de facture dans Fakturalista',
         'hero_float_paid'   => 'Facture payée',
-        'hero_float_amount' => '1 250,00 €',
+        'hero_float_amount' => '12 500,00 DH',
         'hero_ai_mention'   => 'Créez aussi vos factures en quelques secondes avec l\'IA',
 
         // Problème → solution
@@ -115,7 +119,7 @@ return [
         'show3_text'     => 'Enregistrez vos clients et votre catalogue de produits ou services. Consultez l\'historique de chaque client et le statut de chaque paiement sans chercher partout.',
         'show3_bullet_1' => 'Fiche client avec historique complet',
         'show3_bullet_2' => 'Catalogue de produits et services',
-        'show3_bullet_3' => 'Paiements en ligne et suivi des encaissements',
+        'show3_bullet_3' => 'Suivi des paiements et des encaissements',
         'show3_image_alt'=> 'Panneau clients et catalogue de services Fakturalista',
         'show3_mock_payment_received' => 'Paiement reçu — Facture #0041',
         'show3_mock_client1_initials' => 'MD',
@@ -168,7 +172,7 @@ return [
         'feature_clients_title'   => 'Clients',
         'feature_clients_text'    => 'Toutes les informations de vos clients au même endroit.',
         'feature_payments_title'  => 'Paiements',
-        'feature_payments_text'   => 'Acceptez les paiements en ligne et suivez vos encaissements.',
+        'feature_payments_text'   => 'Enregistrez les paiements reçus et suivez ce qui reste à encaisser.',
         'feature_services_title'  => 'Services',
         'feature_services_text'   => 'Gardez à jour votre catalogue de produits et services.',
         'feature_reports_title'   => 'Rapports',
@@ -176,7 +180,7 @@ return [
         'feature_templates_title' => 'Modèles',
         'feature_templates_text'  => 'Personnalisez le design de vos factures et devis.',
         'feature_multilang_title' => 'Multilingue',
-        'feature_multilang_text'  => 'Disponible en espagnol, français et anglais.',
+        'feature_multilang_text'  => 'Interface en français, en arabe et en anglais.',
         'feature_ai_title'        => 'Facturation assistée par IA',
         'feature_ai_text'         => 'Décrivez votre facture en une phrase, l\'IA prépare les informations, vous vérifiez avant de valider.',
         'feature_ubl_title'       => 'Export UBL 2.1',
@@ -238,6 +242,25 @@ return [
         'faq_a5'    => 'Oui. Chaque activité dispose de sa propre base de données indépendante, et seuls vous et les utilisateurs que vous invitez pouvez accéder à votre compte.',
         'faq_q6'    => 'Puis-je annuler quand je veux ?',
         'faq_a6'    => 'Oui. Vous pouvez annuler votre abonnement à tout moment depuis votre espace, sans engagement.',
+        'feature_portal_title' => 'Portail client',
+        'feature_portal_text' => 'Vos clients consultent et téléchargent leurs factures et devis en ligne, et acceptent un devis en un clic.',
+        'feature_reminders_title' => 'Alertes d\'échéance',
+        'feature_reminders_text' => 'Recevez un e-mail avant l\'échéance d\'une facture et dès qu\'elle est en retard, pour relancer au bon moment.',
+        'faq_q7' => 'Fakturalista est-il adapté aux entreprises marocaines ?',
+        'faq_a7' => 'Oui. Vos factures sont en dirhams, les taux de TVA de 20 % et 10 % ainsi que les opérations exonérées sont préconfigurés, et vous pouvez renseigner l\'ICE, l\'IF et le RC de votre entreprise et de vos clients. L\'interface est disponible en français et en arabe.',
+        'faq_q8' => 'Puis-je exporter mes factures et mes données ?',
+        'faq_a8' => 'Oui. Chaque facture se télécharge en PDF, vos listes de factures, devis, paiements et clients s\'exportent vers Excel, et chaque facture peut être générée au format XML UBL 2.1.',
+        'solutions_kicker' => 'Solutions pour le Maroc',
+        'solutions_title' => 'Une facturation adaptée à votre activité',
+        'solutions_text' => 'Découvrez comment Fakturalista répond aux besoins concrets des entreprises marocaines, du premier devis au suivi des encaissements.',
+        'solutions_invoicing_title' => 'Logiciel de facturation Maroc',
+        'solutions_invoicing_text' => 'Factures en dirhams, TVA 20 % et 10 %, ICE et suivi des paiements.',
+        'solutions_quotes_title' => 'Devis et factures',
+        'solutions_quotes_text' => 'Du devis accepté en ligne à la facture, sans ressaisie.',
+        'solutions_einvoicing_title' => 'Facturation électronique',
+        'solutions_einvoicing_text' => 'Ce qui change au Maroc et comment structurer vos factures dès maintenant.',
+        'solutions_btp_title' => 'BTP et artisans',
+        'solutions_btp_text' => 'Devis détaillés par poste, conversion en facture et suivi des factures payées ou en retard.',
     ],
 
     'freeTrial' => [
@@ -331,8 +354,8 @@ return [
 
 
     'pricing' => [
-        'page_title'              => 'Tarifs',
-        'meta_desc'               => 'Tarification simple et transparente pour chaque entreprise. Sans frais cachés. Résiliez quand vous voulez.',
+        'page_title'              => 'Tarifs du logiciel de facturation',
+        'meta_desc'               => 'Les tarifs de Fakturalista en dirhams : formules mensuelles sans engagement, essai gratuit de 14 jours sans carte bancaire. Comparez les fonctionnalités incluses.',
         'badge'                   => 'Des plans pour chaque étape',
         'title'                   => 'Tarification simple, sans surprise',
         'sub'                     => 'Démarrez gratuitement. Passez au niveau supérieur quand vous êtes prêt.',
@@ -381,7 +404,7 @@ return [
     ],
 
     'about' => [
-        'page_title'       => 'À propos',
+        'page_title'       => 'À propos de Fakturalista',
         'meta_desc'        => 'Fakturalista est une plateforme de facturation et de gestion professionnelle pour les indépendants et les PME.',
         'banner_title'     => 'À propos de Fakturalista',
         'banner_p1'        => "Fakturalista est une plateforme web de facturation et de gestion conçue pour les indépendants et les PME. Créez, envoyez et gérez vos factures en quelques minutes, avec vos clients, produits et rapports au même endroit.",
@@ -408,7 +431,7 @@ return [
     ],
 
     'contact' => [
-        'page_title'          => 'Contact',
+        'page_title'          => 'Contactez Fakturalista',
         'meta_desc'           => 'Une question sur Fakturalista, votre abonnement ou votre facturation ? Écrivez-nous, notre équipe vous répond directement.',
         'header_tag'          => 'Contact',
         'header_title'        => 'Parlez-nous de votre besoin. On vous répond personnellement.',
@@ -455,8 +478,8 @@ return [
     ],
 
     'blog' => [
-        'page_title'   => 'Blog',
-        'meta_desc'    => 'Articles et conseils sur la facturation et la gestion pour indépendants et PME - Blog Fakturalista.',
+        'page_title'   => 'Blog : conseils de facturation pour TPE et indépendants',
+        'meta_desc'    => 'Guides pratiques sur la facturation au Maroc : mentions obligatoires, devis, relances, facturation électronique et outils pour TPE, PME et indépendants.',
         'og_title'     => 'Blog - Fakturalista',
         'og_desc'      => 'Articles et conseils sur la facturation et la gestion pour indépendants et PME.',
         'banner_title' => 'Blog',
@@ -470,7 +493,7 @@ return [
     ],
 
     'faq' => [
-        'page_title'  => 'Questions fréquentes',
+        'page_title'  => 'Questions fréquentes sur Fakturalista',
         'meta_desc'   => 'Réponses aux questions les plus fréquentes sur Fakturalista : formules, factures, paiements, sécurité et plus.',
         'hero_title'  => 'Questions fréquentes',
         'hero_sub'    => 'Tout ce que vous devez savoir sur Fakturalista. Si vous ne trouvez pas votre réponse, contactez-nous.',
@@ -933,6 +956,28 @@ return [
             'rate_limited'     => 'Trop d\'envois en peu de temps. Réessayez dans quelques minutes.',
             'generic'          => 'L\'envoi a échoué. Vérifiez votre connexion et réessayez.',
         ],
+    ],
+
+    'seo' => [
+        'home' => 'Accueil',
+        'faq_title' => 'Questions fréquentes',
+        'cta_primary' => 'Essayer Fakturalista gratuitement',
+        'cta_first_invoice' => 'Créer ma première facture',
+        'cta_features' => 'Découvrir les fonctionnalités',
+        'cta_pricing' => 'Voir les tarifs',
+        'cta_microcopy' => ':days jours d\'essai gratuit · Sans carte bancaire',
+        'related_title' => 'Pour aller plus loin',
+        'blog_cta_title' => 'Passez à une facturation plus simple',
+        'blog_cta_text' => 'Créez vos devis et factures, suivez vos paiements et retrouvez tout au même endroit. Essai gratuit de :days jours, sans carte bancaire.',
+        'blog_sources' => 'Sources',
+        'blog_updated' => 'Mis à jour le :date',
+        'blog_related' => 'Solutions associées',
+        'not_found_title' => 'Page introuvable',
+        'not_found_text' => 'La page que vous cherchez n\'existe pas ou a été déplacée.',
+        'gone_title' => 'Page supprimée',
+        'gone_text' => 'Cette page a été retirée définitivement.',
+        'back_home' => 'Retour à l\'accueil',
+        'see_blog' => 'Lire le blog',
     ],
 
 ];

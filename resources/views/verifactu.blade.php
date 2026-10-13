@@ -3,33 +3,12 @@
 @section('title', __('site.verifactu.meta_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.verifactu.meta_description') }}" />
-<meta name="keywords" content="VERI*FACTU, VeriFactu autónomos, software facturación VeriFactu, facturación electrónica España" />
-<meta property="og:title" content="{{ __('site.verifactu.meta_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.verifactu.meta_description') }}" />
-<meta property="og:image" content="{{ url('assets/panel_fakturalista.png') }}" />
-<meta property="og:url" content="{{ url('/verifactu') }}" />
-<meta property="og:type" content="article" />
-<meta property="og:site_name" content="Fakturalista" />
-<meta name="twitter:card" content="summary_large_image" />
-<link rel="canonical" href="{{ url('/verifactu') }}" />
-@php
-    $faqItems = collect(range(1, 6))->map(fn ($i) => [
-        '@type' => 'Question',
-        'name' => __('site.verifactu.faq_q' . $i),
-        'acceptedAnswer' => [
-            '@type' => 'Answer',
-            'text' => __('site.verifactu.faq_a' . $i),
-        ],
-    ])->values()->all();
-
-    $faqJsonLd = [
-        '@context' => 'https://schema.org',
-        '@type' => 'FAQPage',
-        'mainEntity' => $faqItems,
-    ];
-@endphp
-<script type="application/ld+json">{!! json_encode($faqJsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@include('partials.seo', [
+    'description' => __('site.verifactu.meta_description'),
+    'path'        => '/verifactu',
+    'breadcrumbs' => [[__('site.verifactu.meta_title'), '/verifactu']],
+    'schema'      => [Seo::faqPage(collect(range(1, 6))->map(fn ($i) => [__('site.verifactu.faq_q' . $i), __('site.verifactu.faq_a' . $i)])->all())],
+])
 @endsection
 
 @section('content')

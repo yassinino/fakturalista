@@ -3,11 +3,11 @@
 @section('title', __('site.faq.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.faq.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.faq.page_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.faq.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/faq') }}" />
+@include('partials.seo', [
+    'description' => __('site.faq.meta_desc'),
+    'path'        => '/faq',
+    'breadcrumbs' => [[__('site.faq.page_title'), '/faq']],
+])
 @endsection
 
 @section('content')

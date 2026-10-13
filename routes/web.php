@@ -35,7 +35,7 @@ $siteRoutes = function () {
     // Legacy manual free-trial request form - kept working (and its data,
     // if any, untouched) for historical reasons, but no longer linked to
     // from any public CTA - see the /register self-service flow below.
-    Route::get('/free-trial', [HomeController::class, 'freeTrial'])->name('free-trial');
+    // GET /free-trial is now a permanent redirect (config/seo.php 'redirects').
     Route::post('/free-trial', [HomeController::class, 'sendFreeTrial'])->name('free-trial.send');
 
     // Self-service trial signup - automatic tenant provisioning, replaces
@@ -81,6 +81,24 @@ $siteRoutes = function () {
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
     Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+    Route::get('/robots.txt', [\App\Http\Controllers\RobotsController::class, 'central'])->name('robots');
+
+    // Market SEO landing pages (App\Support\MarketLandingPages). Unknown
+    // slugs don't match and fall through to a 404.
+    foreach (\App\Support\MarketLandingPages::PAGES as $market => $pages) {
+        Route::get('/' . $market . '/{slug}', [\App\Http\Controllers\MarketLandingController::class, 'show'])
+            ->defaults('market', $market)
+            ->where('slug', implode('|', array_map('preg_quote', array_keys($pages))))
+            ->name('landing.' . $market);
+    }
+
+    // Replaced URLs (301) and removed ones (410) - config/seo.php.
+    foreach (config('seo.redirects', []) as $from => $to) {
+        Route::permanentRedirect($from, $to);
+    }
+    foreach (config('seo.gone', []) as $gonePath) {
+        Route::get($gonePath, fn () => abort(410));
+    }
 
     // Shown when $onFail redirects an unknown tenant subdomain to the central domain.
     Route::get('/tenant-not-found', [TenantNotFoundController::class, 'show'])->name('tenant.not-found');
@@ -92,9 +110,10 @@ Route::domain('fakturalista.test')
     ->group($siteRoutes);
 
 Route::domain('fakturalista.com')
-    ->middleware('set.locale')
+    ->middleware(['canonical.host', 'set.locale'])
     ->group($siteRoutes);
 
+// Duplicate host: every request 301s to the canonical one (canonical.host).
 Route::domain('www.fakturalista.com')
-    ->middleware('set.locale')
+    ->middleware(['canonical.host', 'set.locale'])
     ->group($siteRoutes);

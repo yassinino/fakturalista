@@ -3,11 +3,11 @@
 @section('title', __('site.security.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.security.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.security.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.security.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/security') }}" />
+@include('partials.seo', [
+    'description' => __('site.security.meta_desc'),
+    'path'        => '/security',
+    'breadcrumbs' => [[__('site.security.page_title'), '/security']],
+])
 @endsection
 
 @section('content')

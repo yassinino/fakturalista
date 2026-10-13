@@ -3,11 +3,11 @@
 @section('title', __('site.contact.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.contact.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.contact.page_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.contact.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/contact') }}" />
+@include('partials.seo', [
+    'description' => __('site.contact.meta_desc'),
+    'path'        => '/contact',
+    'breadcrumbs' => [[__('site.contact.page_title'), '/contact']],
+])
 @endsection
 
 @section('content')

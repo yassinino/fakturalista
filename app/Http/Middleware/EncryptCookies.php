@@ -12,6 +12,8 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Set by Google Analytics in the browser (not by Laravel); read as-is
+        // for the server-side sign_up conversion (GoogleAnalyticsConversion).
+        '_ga',
     ];
 }

@@ -9,11 +9,11 @@
 @section('title', __('site.api.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.api.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.api.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.api.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/api-docs') }}" />
+@include('partials.seo', [
+    'description' => __('site.api.meta_desc'),
+    'path'        => '/api-docs',
+    'breadcrumbs' => [[__('site.api.page_title'), '/api-docs']],
+])
 @endsection
 
 @section('content')

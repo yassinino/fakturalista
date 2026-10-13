@@ -95,6 +95,8 @@ class RegisterTrialController extends Controller
             $url    = 'https://' . $domain . '/admin/login?welcome=1&email=' . urlencode($email)
                 . ($ticket ? '#signup=' . $ticket : '');
 
+            app(\App\Services\Analytics\GoogleAnalyticsConversion::class)->signUp($request);
+
             return redirect()->away($url);
 
         } catch (\Throwable $e) {

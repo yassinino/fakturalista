@@ -3,11 +3,11 @@
 @section('title', __('site.changelog.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.changelog.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.changelog.hero_title') }} - Fakturalista" />
-<meta property="og:description" content="{{ __('site.changelog.meta_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/changelog') }}" />
+@include('partials.seo', [
+    'description' => __('site.changelog.meta_desc'),
+    'path'        => '/changelog',
+    'breadcrumbs' => [[__('site.changelog.page_title'), '/changelog']],
+])
 @endsection
 
 @section('content')

@@ -3,11 +3,12 @@
 @section('title', __('site.blog.page_title'))
 
 @section('meta')
-<meta name="description" content="{{ __('site.blog.meta_desc') }}" />
-<meta property="og:title" content="{{ __('site.blog.og_title') }}" />
-<meta property="og:description" content="{{ __('site.blog.og_desc') }}" />
-<meta property="og:type" content="website" />
-<link rel="canonical" href="{{ url('/blog') }}" />
+@include('partials.seo', [
+    'description' => __('site.blog.meta_desc'),
+    'path'        => '/blog',
+    'breadcrumbs' => [[__('site.blog.page_title'), '/blog']],
+    'locales'     => ['fr'],
+])
 @endsection
 
 @section('content')

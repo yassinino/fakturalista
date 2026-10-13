@@ -13,8 +13,16 @@ class SetLocale
     {
         $supported = config('app.supported_locales', ['es', 'fr', 'en']);
 
+        // Public site: an explicit ?lang= (a language version's own URL, see
+        // config/seo.php) wins and is remembered for the rest of the visit.
+        $urlLocale = $request->query('lang');
+        if (is_string($urlLocale) && in_array($urlLocale, config('seo.url_locales', []), true) && $request->hasSession()) {
+            $request->session()->put('locale', $urlLocale);
+            $locale = $urlLocale;
+        }
+
         // Authenticated user's saved preference takes highest priority
-        $locale = $request->user()?->locale;
+        $locale ??= $request->user()?->locale;
 
         // Fall back to session (used by the public site switcher). Guarded
         // by hasSession(): API routes carry no session middleware at all
