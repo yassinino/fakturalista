@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Controllers\Admin\BlogPostPreviewController;
 use App\Http\Controllers\Admin\FeedbackAttachmentController;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -62,6 +63,8 @@ class AdminPanelProvider extends PanelProvider
             ->authenticatedRoutes(function () {
                 Route::get('feedback-attachments/{feedback}', FeedbackAttachmentController::class)
                     ->name('feedback.attachment');
+                Route::get('blog-preview/{post}', BlogPostPreviewController::class)
+                    ->name('blog.preview');
             });
     }
 }

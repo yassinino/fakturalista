@@ -150,6 +150,8 @@
                 </div>
             </aside>
 
+            {{-- The market pages are Moroccan: not shown under France-targeted articles. --}}
+            @if ($post->target_country !== 'fr')
             <nav class="post-related" aria-labelledby="post-related-title">
                 <h2 id="post-related-title">{{ __('site.seo.blog_related') }}</h2>
                 <ul>
@@ -158,6 +160,7 @@
                     @endforeach
                 </ul>
             </nav>
+            @endif
 
             {{-- Footer --}}
             <hr style="margin: 48px 0 32px; border-color: #efe7e7;">

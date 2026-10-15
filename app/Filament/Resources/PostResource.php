@@ -111,6 +111,13 @@ class PostResource extends Resource
 
             Forms\Components\Section::make('SEO')
                 ->schema([
+                    Forms\Components\TextInput::make('primary_keyword')
+                        ->label('Mot-clé principal')
+                        ->maxLength(255),
+
+                    Forms\Components\TagsInput::make('secondary_keywords')
+                        ->label('Mots-clés secondaires'),
+
                     Forms\Components\TextInput::make('meta_title')
                         ->label('Meta título')
                         ->maxLength(70)
@@ -142,6 +149,15 @@ class PostResource extends Resource
                     ->sortable()
                     ->limit(60),
 
+                Tables\Columns\IconColumn::make('ai_generated')
+                    ->label('IA')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-sparkles')
+                    ->falseIcon('heroicon-o-pencil')
+                    ->trueColor('primary')
+                    ->falseColor('gray')
+                    ->tooltip(fn (Post $record) => $record->ai_generated ? 'Généré par l\'automatisation IA' : 'Rédigé manuellement'),
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Estado')
                     ->colors([
@@ -169,8 +185,15 @@ class PostResource extends Resource
                         'draft' => 'Borrador',
                         'published' => 'Publicado',
                     ]),
+                Tables\Filters\TernaryFilter::make('ai_generated')
+                    ->label('Généré par IA'),
             ])
             ->actions([
+                Tables\Actions\Action::make('preview')
+                    ->label('Aperçu')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->url(fn (Post $record) => route('filament.backoffice.blog.preview', ['post' => $record]), shouldOpenInNewTab: true),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

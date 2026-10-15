@@ -38,6 +38,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('analytics:geoip-update')
             ->monthlyOn(5, '03:30')
             ->withoutOverlapping();
+
+        // AI blog automation: one article per day at most (switches in the
+        // backoffice; disabled by default). The command only reserves the
+        // day's slot and queues the job, so it returns quickly; the unique
+        // slot_key in blog_generations makes any second run a no-op.
+        $schedule->command('blog:generate-daily')
+            ->dailyAt(config('blog_automation.schedule_time'))
+            ->timezone(config('blog_automation.timezone'))
+            ->withoutOverlapping(60)
+            ->runInBackground();
     }
 
     /**
