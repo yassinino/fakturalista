@@ -755,7 +755,7 @@ return [
         'meta_desc'               => 'Which cookies Fakturalista uses, why, and how to manage or opt out of them.',
         'hero_title'              => 'Cookie Policy',
         'hero_sub'                => 'Which cookies we use and how to control them.',
-        'updated'                 => 'Last updated: September 2026',
+        'updated'                 => 'Last updated: October 2026',
         'intro_title'             => 'What Are Cookies?',
         'intro_body'              => 'Cookies are small text files stored in your browser when you visit a website. Fakturalista uses cookies to make the service work, remember your language preference, and understand how visitors use the site.',
         'necessary_title'         => 'Necessary Cookies',
@@ -786,6 +786,8 @@ return [
         'changes_body'            => 'We may update this policy as we add or remove services. Changes will be published on this page with an updated date.',
         'contact_title'           => 'Contact',
         'contact_body'            => 'Questions about our cookie use: contact@fakturalista.com.',
+        'firstparty_title' => 'In-house audience measurement (no cookies)',
+        'firstparty_body' => 'To understand which pages of fakturalista.com are viewed, we also use our own audience measurement. It sets no cookies and writes nothing to your device. Your IP address is never stored: it is only used, at the time of the visit, to determine your country and to compute an anonymous identifier valid for a single day, whose secret key is destroyed daily. We only keep statistical data (page viewed, country, device type, referring site) for at most 13 months. This measurement only covers the public website, never your Fakturalista workspace, and it is disabled when your browser sends a "Do Not Track" or "Global Privacy Control" signal.',
     ],
 
     'captcha' => [

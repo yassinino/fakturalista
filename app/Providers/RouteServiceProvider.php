@@ -91,6 +91,11 @@ class RouteServiceProvider extends ServiceProvider
             ];
         });
 
+        // Analytics beacon: a person loads a few pages a minute at most.
+        RateLimiter::for('analytics', function (Request $request) {
+            return Limit::perMinute(60)->by('analytics-ip:' . $request->ip());
+        });
+
         RateLimiter::for('feedback-tenant', function (Request $request) {
             $key = tenant()?->getTenantKey() . ':' . ($request->user()?->getAuthIdentifier() ?? $request->ip());
 

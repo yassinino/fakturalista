@@ -10,6 +10,7 @@
     {{-- Signup / workspace finder: utility pages, kept out of the index. --}}
     <meta name="robots" content="noindex, follow" />
     @include('partials.analytics')
+    @include('partials.analytics-tracker', ['title' => $fkPageTitle ?? null])
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url('assets/icon.svg') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url('assets/icon.svg') }}" />

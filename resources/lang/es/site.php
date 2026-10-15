@@ -749,7 +749,7 @@ return [
         'meta_desc'               => 'Qué cookies utiliza Fakturalista, por qué y cómo gestionarlas o rechazarlas.',
         'hero_title'              => 'Política de cookies',
         'hero_sub'                => 'Qué cookies utilizamos y cómo controlarlas.',
-        'updated'                 => 'Última actualización: septiembre de 2026',
+        'updated'                 => 'Última actualización: octubre de 2026',
         'intro_title'             => '¿Qué son las cookies?',
         'intro_body'              => 'Las cookies son pequeños archivos de texto almacenados en su navegador cuando visita un sitio web. Fakturalista utiliza cookies para que el servicio funcione correctamente, recordar su preferencia de idioma y entender cómo los visitantes usan el sitio.',
         'necessary_title'         => 'Cookies necesarias',
@@ -780,6 +780,8 @@ return [
         'changes_body'            => 'Podemos actualizar esta política a medida que añadamos o eliminemos servicios. Los cambios se publicarán en esta página con una fecha actualizada.',
         'contact_title'           => 'Contacto',
         'contact_body'            => 'Preguntas sobre el uso de cookies: contact@fakturalista.com.',
+        'firstparty_title' => 'Medición de audiencia propia (sin cookies)',
+        'firstparty_body' => 'Para saber qué páginas de fakturalista.com se consultan, también usamos nuestra propia medición de audiencia. No instala cookies ni escribe nada en tu dispositivo. Tu dirección IP nunca se guarda: solo se usa, en el momento de la visita, para determinar tu país y calcular un identificador anónimo válido un solo día, cuya clave secreta se destruye a diario. Solo conservamos datos estadísticos (página visitada, país, tipo de dispositivo, sitio de origen) durante 13 meses como máximo. Esta medición solo afecta al sitio público, nunca a tu espacio Fakturalista, y se desactiva si tu navegador envía la señal «Do Not Track» o «Global Privacy Control».',
     ],
 
     'captcha' => [

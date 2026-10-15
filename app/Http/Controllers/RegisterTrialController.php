@@ -96,6 +96,8 @@ class RegisterTrialController extends Controller
                 . ($ticket ? '#signup=' . $ticket : '');
 
             app(\App\Services\Analytics\GoogleAnalyticsConversion::class)->signUp($request);
+            // Only here, after provisioning succeeded: never on a button click.
+            app(\App\Services\Analytics\AnalyticsTracker::class)->recordSignup($request);
 
             return redirect()->away($url);
 

@@ -60,6 +60,13 @@ $siteRoutes = function () {
         ->name('contact.send');
     // Feedback widget (resources/views/partials/feedback.blade.php) - public,
     // no account; honeypot + 'feedback' limiter, stored centrally.
+    // First-party analytics beacon (AnalyticsTracker): signed payload, so no
+    // CSRF token is needed; the tight limiter and dedupe guard against spam.
+    Route::post('/a/collect', \App\Http\Controllers\AnalyticsBeaconController::class)
+        ->middleware('throttle:analytics')
+        ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+        ->name('analytics.collect');
+
     Route::post('/feedback', [FeedbackController::class, 'storePublic'])
         ->middleware('throttle:feedback')
         ->name('feedback.store');

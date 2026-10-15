@@ -764,7 +764,7 @@ return [
         'meta_desc'               => 'Quels cookies Fakturalista utilise, pourquoi, et comment les gérer ou s\'y opposer.',
         'hero_title'              => 'Politique de cookies',
         'hero_sub'                => 'Quels cookies nous utilisons et comment les contrôler.',
-        'updated'                 => 'Dernière mise à jour : septembre 2026',
+        'updated'                 => 'Dernière mise à jour : octobre 2026',
         'intro_title'             => 'Qu\'est-ce qu\'un cookie ?',
         'intro_body'              => 'Les cookies sont de petits fichiers texte stockés dans votre navigateur lors de la visite d\'un site web. Fakturalista utilise des cookies pour assurer le fonctionnement du service, mémoriser vos préférences de langue et comprendre comment les visiteurs utilisent le site.',
         'necessary_title'         => 'Cookies nécessaires',
@@ -795,6 +795,8 @@ return [
         'changes_body'            => 'Nous pouvons mettre à jour cette politique en cas d\'ajout ou de suppression de services. Les modifications seront publiées sur cette page avec une date actualisée.',
         'contact_title'           => 'Contact',
         'contact_body'            => 'Questions sur notre utilisation des cookies : contact@fakturalista.com.',
+        'firstparty_title' => 'Mesure d\'audience interne (sans cookie)',
+        'firstparty_body' => 'Pour savoir quelles pages de fakturalista.com sont consultées, nous utilisons aussi notre propre mesure d\'audience. Elle ne dépose aucun cookie et n\'écrit rien sur votre appareil. Votre adresse IP n\'est jamais enregistrée : elle sert uniquement, au moment de la visite, à déterminer votre pays et à calculer un identifiant anonyme valable une seule journée, dont la clé secrète est détruite chaque jour. Nous ne conservons que des données statistiques (page consultée, pays, type d\'appareil, site d\'origine) pendant 13 mois au plus. Cette mesure ne concerne que le site public, jamais votre espace Fakturalista, et elle est désactivée si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».',
     ],
 
     'captcha' => [

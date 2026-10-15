@@ -26,6 +26,18 @@ class Kernel extends ConsoleKernel
         $schedule->command('invoices:send-reminders')
             ->dailyAt('08:15')
             ->withoutOverlapping();
+
+        // First-party analytics: retention policy + destruction of past
+        // visitor-hash salts (shortly after midnight, Morocco time), and the
+        // monthly refresh of the local GeoIP database (DB-IP publishes early
+        // in the month; a failed download keeps the previous file).
+        $schedule->command('analytics:prune')
+            ->dailyAt('00:10')
+            ->timezone(config('analytics.timezone'))
+            ->withoutOverlapping();
+        $schedule->command('analytics:geoip-update')
+            ->monthlyOn(5, '03:30')
+            ->withoutOverlapping();
     }
 
     /**

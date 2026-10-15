@@ -19,6 +19,7 @@ class RobotsController extends Controller
             'Disallow: /stripe/',
             'Disallow: /locale',
             'Disallow: /feedback',
+            'Disallow: /a/',
             '',
             'Sitemap: ' . config('seo.canonical_url') . '/sitemap.xml',
         ];

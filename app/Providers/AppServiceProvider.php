@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerTenantNotFoundHandler();
+        $this->registerAnalyticsWidgets();
 
         // Settings > Notifications - "Invoice paid" / "Quote converted".
         // See App\Observers\{InvoiceObserver,QuoteObserver} for why this is
@@ -97,5 +98,27 @@ class AppServiceProvider extends ServiceProvider
 
             return redirect()->away($redirectUrl);
         };
+    }
+
+    /**
+     * The Analytics page widgets live outside the panel's discovered widget
+     * folder (so they don't also appear on the main dashboard); Livewire
+     * still needs them registered to handle their filter updates.
+     */
+    private function registerAnalyticsWidgets(): void
+    {
+        foreach ([
+            \App\Filament\Analytics\Widgets\AnalyticsOverview::class,
+            \App\Filament\Analytics\Widgets\VisitorsTrendChart::class,
+            \App\Filament\Analytics\Widgets\PageviewsTrendChart::class,
+            \App\Filament\Analytics\Widgets\TrafficSourcesChart::class,
+            \App\Filament\Analytics\Widgets\DevicesChart::class,
+            \App\Filament\Analytics\Widgets\TopCountriesTable::class,
+            \App\Filament\Analytics\Widgets\SignupFunnel::class,
+            \App\Filament\Analytics\Widgets\TopPagesTable::class,
+            \App\Filament\Analytics\Widgets\ReferrersTable::class,
+        ] as $widget) {
+            \Livewire\Livewire::component(app(\Livewire\Mechanisms\ComponentRegistry::class)->getName($widget), $widget);
+        }
     }
 }

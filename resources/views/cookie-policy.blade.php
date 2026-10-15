@@ -206,6 +206,12 @@
             </div>
         </div>
 
+        {{-- First-party, cookieless audience measurement (config/analytics.php) --}}
+        <div class="lp-section">
+            <h2 class="lp-heading">{{ __('site.cookie_policy.firstparty_title') }}</h2>
+            <p class="lp-body">{{ __('site.cookie_policy.firstparty_body') }}</p>
+        </div>
+
         <div class="lp-section">
             <h2 class="lp-heading">{{ __('site.cookie_policy.manage_title') }}</h2>
             <p class="lp-body">{{ __('site.cookie_policy.manage_body') }}</p>
