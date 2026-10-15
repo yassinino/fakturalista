@@ -33,6 +33,20 @@ class Seo
         return in_array($locale, self::urlLocales(), true) ? $locale : self::defaultLocale();
     }
 
+    /**
+     * Host used by route() for public-site routes when no site request is
+     * being served (tenant subdomains, queue, console): APP_URL's host when
+     * it is a site domain (fakturalista.test locally), else the canonical one.
+     */
+    public static function siteDomain(): string
+    {
+        $appHost = strtolower((string) parse_url((string) config('app.url'), PHP_URL_HOST));
+
+        return in_array($appHost, config('seo.site_domains', []), true)
+            ? $appHost
+            : (string) parse_url((string) config('seo.canonical_url'), PHP_URL_HOST);
+    }
+
     public static function url(string $path, ?string $locale = null): string
     {
         return self::withLang(url($path), $locale ?? self::locale());

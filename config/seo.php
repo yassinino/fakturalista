@@ -15,6 +15,11 @@ return [
     // production alias 301-redirect to it (RedirectToCanonicalHost).
     'canonical_url' => rtrim(env('SEO_CANONICAL_URL', 'https://fakturalista.com'), '/'),
 
+    // Hosts serving the public site (routes/web.php, one route group matched
+    // with a {siteDomain} host pattern so every route name exists once and
+    // `php artisan route:cache` works). Tenant subdomains are not listed.
+    'site_domains' => ['fakturalista.com', 'www.fakturalista.com', 'fakturalista.test'],
+
     // Production hosts that must answer with a 301 to canonical_url's host.
     // Local/dev hosts (fakturalista.test) are never redirected.
     'redirect_hosts' => ['www.fakturalista.com'],

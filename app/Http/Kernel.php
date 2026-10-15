@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'set.locale'          => \App\Http\Middleware\SetLocale::class,
         'canonical.host'      => \App\Http\Middleware\RedirectToCanonicalHost::class,
+        'site.domain'         => \App\Http\Middleware\SiteDomain::class,
         'noindex'             => \App\Http\Middleware\NoIndex::class,
         'require.onboarding'  => \App\Http\Middleware\RequireOnboarding::class,
         'enforce.subscription'=> \App\Http\Middleware\EnforceSubscription::class,

@@ -32,6 +32,12 @@ class AppServiceProvider extends ServiceProvider
         $this->registerTenantNotFoundHandler();
         $this->registerAnalyticsWidgets();
 
+        // Default host for route() on public-site routes ({siteDomain}, see
+        // App\Http\Middleware\SiteDomain) outside a public-site request.
+        \Illuminate\Support\Facades\URL::defaults([
+            \App\Http\Middleware\SiteDomain::PARAMETER => \App\Support\Seo::siteDomain(),
+        ]);
+
         // Settings > Notifications - "Invoice paid" / "Quote converted".
         // See App\Observers\{InvoiceObserver,QuoteObserver} for why this is
         // a model observer rather than a change in the controllers that

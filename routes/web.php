@@ -111,16 +111,14 @@ $siteRoutes = function () {
     Route::get('/tenant-not-found', [TenantNotFoundController::class, 'show'])->name('tenant.not-found');
 };
 
-// Development domain registered first so production domains win route() name resolution.
-Route::domain('fakturalista.test')
-    ->middleware('set.locale')
-    ->group($siteRoutes);
-
-Route::domain('fakturalista.com')
-    ->middleware(['canonical.host', 'set.locale'])
-    ->group($siteRoutes);
-
-// Duplicate host: every request 301s to the canonical one (canonical.host).
-Route::domain('www.fakturalista.com')
-    ->middleware(['canonical.host', 'set.locale'])
+// One registration for every public-site host (config/seo.php 'site_domains'),
+// matched with a {siteDomain} host pattern. Registering the group once per
+// domain gave each route name three routes, which `route:cache` refuses
+// ("Another route has already been assigned name [...]") and made route()
+// resolve to whichever domain was registered last. SiteDomain fills
+// {siteDomain} with the current host for route() and removes it before the
+// controllers run; www 301s to the canonical host (canonical.host).
+Route::domain('{siteDomain}')
+    ->where(['siteDomain' => implode('|', array_map('preg_quote', config('seo.site_domains')))])
+    ->middleware(['site.domain', 'canonical.host', 'set.locale'])
     ->group($siteRoutes);
